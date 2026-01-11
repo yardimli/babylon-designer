@@ -1,33 +1,47 @@
 import { PointLight, DirectionalLight, Vector3, Color3, MeshBuilder, StandardMaterial } from "@babylonjs/core";
 
-export function createLight(type, scene) {
+export function createLight(type, savedData = null, scene) {
 	let light;
-	const id = `light_${Date.now()}`;
+	// Use saved ID or generate new
+	const id = savedData ? savedData.id : `light_${Date.now()}`;
 	
+	// 1. Create the Babylon Light
 	if (type === "point") {
 		light = new PointLight(id, new Vector3(0, 5, 0), scene);
-		light.diffuse = new Color3(1, 1, 1);
 	} else if (type === "directional") {
 		light = new DirectionalLight(id, new Vector3(0, -1, 0.5), scene);
-		light.position = new Vector3(0, 5, 0); // For gizmo visualization
 	}
 	
 	if (light) {
-		light.intensity = 1.0;
+		// 2. Apply Properties
+		if (savedData) {
+			light.position = new Vector3(savedData.position.x, savedData.position.y, savedData.position.z);
+			light.intensity = savedData.intensity;
+			light.diffuse = new Color3(savedData.diffuse.r, savedData.diffuse.g, savedData.diffuse.b);
+			if (type === "directional" && savedData.direction) {
+				light.direction = new Vector3(savedData.direction.x, savedData.direction.y, savedData.direction.z);
+			}
+		} else {
+			// Defaults
+			light.intensity = 1.0;
+			light.diffuse = new Color3(1, 1, 1);
+			light.position = new Vector3(0, 5, 0);
+		}
 		
-		// Create proxy mesh
+		// 3. Create Proxy Mesh for Gizmo Selection
 		const proxy = MeshBuilder.CreateSphere(id + "_proxy", {diameter: 0.5}, scene);
 		proxy.material = new StandardMaterial("lightMat", scene);
 		proxy.material.emissiveColor = Color3.Yellow();
-		proxy.position = light.position;
+		proxy.position = light.position; // Sync initial position
 		
-		// Store relationship in metadata so it survives serialization
+		// Metadata for Save/Load
 		proxy.metadata = {
 			isLightProxy: true,
 			lightId: light.id,
 			lightType: type
 		};
 		
+		// 4. Sync Logic
 		setupLightSync(proxy, light, scene);
 		
 		return proxy;
@@ -35,12 +49,8 @@ export function createLight(type, scene) {
 	return null;
 }
 
-// Helper to attach the behavior
 function setupLightSync(proxy, light, scene) {
-	// We use a unique observer wrapper to avoid adding duplicates if called multiple times
-	if (proxy._lightObserver) {
-		scene.onBeforeRenderObservable.remove(proxy._lightObserver);
-	}
+	if (proxy._lightObserver) scene.onBeforeRenderObservable.remove(proxy._lightObserver);
 	
 	proxy._lightObserver = scene.onBeforeRenderObservable.add(() => {
 		light.position = proxy.position;
@@ -50,14 +60,8 @@ function setupLightSync(proxy, light, scene) {
 	});
 }
 
-// Call this after loading a scene to reconnect proxies to lights
+// Helper to reconnect after load if needed (though createLight handles it now)
 export function restoreLightProxies(scene) {
-	scene.meshes.forEach(mesh => {
-		if (mesh.metadata && mesh.metadata.isLightProxy && mesh.metadata.lightId) {
-			const light = scene.getLightByID(mesh.metadata.lightId);
-			if (light) {
-				setupLightSync(mesh, light, scene);
-			}
-		}
-	});
+	// Not strictly needed if we use createLight during load,
+	// but good for safety if logic changes.
 }

@@ -34,7 +34,7 @@ export function setupUI() {
 			createPrimitive(type);
 			created = true;
 		} else if (category === "light") {
-			const proxy = createLight(type.toLowerCase(), scene);
+			const proxy = createLight(type.toLowerCase(), null, scene);
 			if(proxy) {
 				gizmoManager.attachToMesh(proxy);
 				created = true;
@@ -57,9 +57,10 @@ function createDraggableItem(name, category) {
 	return div;
 }
 
-function createPrimitive(type) {
+// Exported so the Loader can use it too
+export function createPrimitive(type, savedData = null) {
 	let mesh;
-	const id = `${type}_${Date.now()}`;
+	const id = savedData ? savedData.id : `${type}_${Date.now()}`;
 	
 	switch(type) {
 		case "Cube": mesh = MeshBuilder.CreateBox(id, {size: 1}, scene); break;
@@ -71,7 +72,25 @@ function createPrimitive(type) {
 	}
 	
 	if (mesh) {
-		mesh.position.y = 0.5;
+		// IMPORTANT: Store type in metadata for saving later
+		mesh.metadata = { type: type, isPrimitive: true };
+		
+		if (savedData) {
+			// Restore Transforms
+			mesh.position.set(savedData.position.x, savedData.position.y, savedData.position.z);
+			mesh.scaling.set(savedData.scaling.x, savedData.scaling.y, savedData.scaling.z);
+			if (mesh.rotationQuaternion) {
+				mesh.rotationQuaternion.set(savedData.rotation.x, savedData.rotation.y, savedData.rotation.z, savedData.rotation.w);
+			} else {
+				// If saved as Euler (though we prefer Quaternion)
+				mesh.rotation.set(savedData.rotation.x, savedData.rotation.y, savedData.rotation.z);
+			}
+		} else {
+			// New Object Defaults
+			mesh.position.y = 0.5;
+		}
+		
 		gizmoManager.attachToMesh(mesh);
 	}
+	return mesh;
 }
