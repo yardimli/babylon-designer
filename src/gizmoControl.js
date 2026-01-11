@@ -16,9 +16,10 @@ export function setupGizmos(scene) {
 	
 	gizmoManager = new GizmoManager(scene);
 	
+	// Default to Position Gizmo only
 	gizmoManager.positionGizmoEnabled = true;
-	gizmoManager.rotationGizmoEnabled = true;
-	gizmoManager.scaleGizmoEnabled = true;
+	gizmoManager.rotationGizmoEnabled = false;
+	gizmoManager.scaleGizmoEnabled = false;
 	gizmoManager.boundingBoxGizmoEnabled = false;
 	
 	gizmoManager.usePointerToAttachGizmos = true;
@@ -26,21 +27,39 @@ export function setupGizmos(scene) {
 	
 	gizmoManager.onAttachedToMeshObservable.add((mesh) => {
 		updatePropertyEditor(mesh);
-		
 		// Attach drag listeners to gizmos when they become active
 		if (mesh) {
-			const gizmos = [
-				gizmoManager.gizmos.positionGizmo,
-				gizmoManager.gizmos.rotationGizmo,
-				gizmoManager.gizmos.scaleGizmo
-			];
-			
-			gizmos.forEach(g => {
-				if (g && !g._hasObserver) {
-					g.onDragEndObservable.add(() => markModified());
-					g._hasObserver = true;
-				}
-			});
+			attachDragObservers();
+		}
+	});
+}
+
+// Function to switch gizmo modes
+export function setGizmoMode(mode) {
+	if (!gizmoManager) return;
+	
+	gizmoManager.positionGizmoEnabled = (mode === "position");
+	gizmoManager.rotationGizmoEnabled = (mode === "rotation");
+	gizmoManager.scaleGizmoEnabled = (mode === "scale");
+	
+	// Re-attach observers because new gizmos might have been created
+	attachDragObservers();
+}
+
+// Helper to attach observers to active gizmos
+function attachDragObservers() {
+	if (!gizmoManager || !gizmoManager.gizmos) return;
+	
+	const gizmos = [
+		gizmoManager.gizmos.positionGizmo,
+		gizmoManager.gizmos.rotationGizmo,
+		gizmoManager.gizmos.scaleGizmo
+	];
+	
+	gizmos.forEach(g => {
+		if (g && !g._hasObserver) {
+			g.onDragEndObservable.add(() => markModified());
+			g._hasObserver = true;
 		}
 	});
 }

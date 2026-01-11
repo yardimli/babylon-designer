@@ -1,6 +1,6 @@
 import { MeshBuilder, Vector3 } from "@babylonjs/core";
 import { scene } from "./scene.js";
-import { gizmoManager } from "./gizmoControl.js";
+import { gizmoManager, setGizmoMode } from "./gizmoControl.js";
 import { createLight } from "./lightManager.js";
 import { markModified } from "./sceneManager.js";
 
@@ -11,6 +11,9 @@ export function setupUI() {
 	const pList = document.getElementById("primitives-list");
 	const lList = document.getElementById("lights-list");
 	const canvas = document.getElementById("renderCanvas");
+	
+	// Setup Gizmo Buttons
+	setupGizmoButtons();
 	
 	primitives.forEach(type => {
 		const div = createDraggableItem(type, "primitive");
@@ -36,13 +39,42 @@ export function setupUI() {
 		} else if (category === "light") {
 			const proxy = createLight(type.toLowerCase(), null, scene);
 			if(proxy) {
-				gizmoManager.attachToMesh(proxy);
+				// gizmoManager is guaranteed to exist during runtime interactions
+				if (gizmoManager) gizmoManager.attachToMesh(proxy);
 				created = true;
 			}
 		}
 		
 		if (created) markModified();
 	});
+}
+
+function setupGizmoButtons() {
+	const btnPos = document.getElementById("btn-gizmo-pos");
+	const btnRot = document.getElementById("btn-gizmo-rot");
+	const btnScl = document.getElementById("btn-gizmo-scl");
+	
+	const setActive = (activeBtn) => {
+		[btnPos, btnRot, btnScl].forEach(btn => {
+			if (btn === activeBtn) btn.classList.add("btn-active");
+			else btn.classList.remove("btn-active");
+		});
+	};
+	
+	btnPos.onclick = () => {
+		setGizmoMode("position");
+		setActive(btnPos);
+	};
+	
+	btnRot.onclick = () => {
+		setGizmoMode("rotation");
+		setActive(btnRot);
+	};
+	
+	btnScl.onclick = () => {
+		setGizmoMode("scale");
+		setActive(btnScl);
+	};
 }
 
 function createDraggableItem(name, category) {
@@ -90,7 +122,11 @@ export function createPrimitive(type, savedData = null) {
 			mesh.position.y = 0.5;
 		}
 		
-		gizmoManager.attachToMesh(mesh);
+		// Fix: Check if gizmoManager exists before attaching.
+		// During scene load, gizmoManager is disposed (null) to prevent attaching to every loaded mesh.
+		if (gizmoManager) {
+			gizmoManager.attachToMesh(mesh);
+		}
 	}
 	return mesh;
 }
