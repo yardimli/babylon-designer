@@ -8,10 +8,12 @@ export function setupMaterialEditor() {
 	const btnOpen = document.getElementById("btn-open-mat-editor");
 	const modal = document.getElementById("material_modal");
 	const btnCreate = document.getElementById("btn-create-material");
+	const btnNew = document.getElementById("btn-new-material");
 	
 	initPreview();
 	
 	btnOpen.onclick = () => {
+		refreshMaterialList();
 		modal.showModal();
 		previewEngine.resize();
 	};
@@ -27,6 +29,14 @@ export function setupMaterialEditor() {
 		createMaterialInScene();
 		modal.close();
 	};
+	
+	// New Material Button Logic
+	if (btnNew) {
+		btnNew.onclick = (e) => {
+			e.preventDefault();
+			resetEditor();
+		};
+	}
 }
 
 function initPreview() {
@@ -38,13 +48,82 @@ function initPreview() {
 	// Better lighting for PBR
 	const light = new HemisphericLight("light", new Vector3(0, 1, 0), previewScene);
 	
-	previewSphere = MeshBuilder.CreateSphere("previewSphere", {diameter: 2}, previewScene);
+	previewSphere = MeshBuilder.CreateSphere("previewSphere", { diameter: 2 }, previewScene);
 	previewMaterial = new PBRMaterial("previewMat", previewScene);
 	previewSphere.material = previewMaterial;
 	
 	previewEngine.runRenderLoop(() => {
 		previewScene.render();
 	});
+}
+
+function refreshMaterialList() {
+	const listContainer = document.getElementById("material-list");
+	if (!listContainer) return;
+	
+	listContainer.innerHTML = "";
+	
+	// Filter out internal materials
+	const materials = scene.materials.filter(m =>
+		m.name !== "default material" &&
+		m.name !== "lightMat" &&
+		!m.name.startsWith("preview") &&
+		!m.name.startsWith("gizmo")
+	);
+	
+	if (materials.length === 0) {
+		listContainer.innerHTML = "<div class='text-xs opacity-50 p-2'>No custom materials</div>";
+		return;
+	}
+	
+	materials.forEach(mat => {
+		const btn = document.createElement("button");
+		btn.className = "btn btn-sm btn-ghost justify-start font-normal normal-case text-left w-full truncate";
+		btn.innerHTML = `<span class="w-3 h-3 rounded-full mr-2 inline-block border border-base-content/20" style="background-color: ${mat.albedoColor.toHexString()}"></span>${mat.name}`;
+		
+		btn.onclick = (e) => {
+			e.preventDefault();
+			loadMaterialIntoEditor(mat);
+			
+			// Visual feedback for selection
+			Array.from(listContainer.children).forEach(c => c.classList.remove("btn-active"));
+			btn.classList.add("btn-active");
+		};
+		
+		listContainer.appendChild(btn);
+	});
+}
+
+function loadMaterialIntoEditor(sourceMat) {
+	// 1. Update DOM Inputs
+	document.getElementById("mat-name").value = sourceMat.name;
+	document.getElementById("mat-albedo").value = sourceMat.albedoColor.toHexString();
+	document.getElementById("mat-emissive").value = sourceMat.emissiveColor.toHexString();
+	document.getElementById("mat-metallic").value = sourceMat.metallic || 0;
+	document.getElementById("mat-roughness").value = sourceMat.roughness || 1;
+	document.getElementById("mat-alpha").value = sourceMat.alpha || 1;
+	
+	// 2. Update Preview Material
+	updatePreviewMaterial();
+}
+
+function resetEditor() {
+	// Reset DOM Inputs to defaults
+	document.getElementById("mat-name").value = "New Material";
+	document.getElementById("mat-albedo").value = "#ffffff";
+	document.getElementById("mat-emissive").value = "#000000";
+	document.getElementById("mat-metallic").value = 0;
+	document.getElementById("mat-roughness").value = 1;
+	document.getElementById("mat-alpha").value = 1;
+	
+	// Clear selection in list
+	const listContainer = document.getElementById("material-list");
+	if (listContainer) {
+		Array.from(listContainer.children).forEach(c => c.classList.remove("btn-active"));
+	}
+	
+	// Update Preview
+	updatePreviewMaterial();
 }
 
 function updatePreviewMaterial() {
@@ -66,7 +145,7 @@ function createMaterialInScene() {
 	
 	// Check if exists or create new
 	let mat = scene.getMaterialByName(name);
-	if(!mat) {
+	if (!mat) {
 		mat = new PBRMaterial(name, scene);
 	}
 	
@@ -78,5 +157,5 @@ function createMaterialInScene() {
 	
 	// Refresh Property Editor Dropdown if a mesh is selected
 	const selected = scene.meshes.find(m => m.showBoundingBox); // A bit hacky, better to use gizmo state
-	if(selected) updatePropertyEditor(selected);
+	if (selected) updatePropertyEditor(selected);
 }

@@ -93,15 +93,27 @@
 
 <!-- Material Editor Modal -->
 <dialog id="material_modal" class="modal">
-	<div class="modal-box w-11/12 max-w-3xl">
+	<div class="modal-box w-11/12 max-w-5xl">
 		<h3 class="font-bold text-lg">Material Editor (PBR)</h3>
+		
 		<div class="flex gap-4 mt-4 h-96">
-			<!-- Preview -->
-			<div class="w-1/2 bg-black rounded overflow-hidden relative">
+			
+			<!-- Left: Material List -->
+			<div class="w-1/4 flex flex-col gap-2 border-r border-base-content/10 pr-2">
+				<button id="btn-new-material" class="btn btn-sm btn-outline btn-success w-full">+ New Material</button>
+				<div class="divider my-0"></div>
+				<div id="material-list" class="flex-1 overflow-y-auto flex flex-col gap-1">
+					<!-- Populated by JS -->
+				</div>
+			</div>
+			
+			<!-- Center: Preview -->
+			<div class="w-1/3 bg-black rounded overflow-hidden relative">
 				<canvas id="materialPreviewCanvas" class="w-full h-full"></canvas>
 			</div>
-			<!-- Controls -->
-			<div class="w-1/2 flex flex-col gap-2 overflow-y-auto pr-2">
+			
+			<!-- Right: Controls -->
+			<div class="w-1/3 flex flex-col gap-2 overflow-y-auto pr-2 pl-2">
 				<label class="input input-bordered flex items-center gap-2 input-sm">
 					Name <input type="text" id="mat-name" class="grow" value="New Material" />
 				</label>
