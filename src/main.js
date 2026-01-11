@@ -11,7 +11,7 @@ const scene = createScene(canvas);
 setupGizmos(scene);
 setupUI();
 setupMaterialEditor();
-setupSceneManager(); // Init Menu and Save/Load logic
+setupSceneManager();
 
 // Start loop
 scene.getEngine().runRenderLoop(() => {

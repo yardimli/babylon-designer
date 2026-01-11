@@ -1,11 +1,10 @@
 import { Vector3, Quaternion } from "@babylonjs/core";
 import { scene } from "./scene.js";
-import { markModified } from "./sceneManager.js"; // Import modified tracker
+import { markModified } from "./sceneManager.js";
 
 let currentMesh = null;
 let observer = null;
 
-// Helper to create vector3 inputs
 function createVec3Input(label, idPrefix, container) {
 	const wrapper = document.createElement("div");
 	wrapper.className = "flex flex-col gap-1 mb-2";
@@ -27,7 +26,6 @@ function createVec3Input(label, idPrefix, container) {
 	container.appendChild(wrapper);
 }
 
-// Initialize UI structure
 const transformContainer = document.getElementById("transform-container");
 createVec3Input("Position", "pos", transformContainer);
 createVec3Input("Rotation (Deg)", "rot", transformContainer);
@@ -37,7 +35,6 @@ createVec3Input("Pivot Point", "piv", transformContainer);
 export function updatePropertyEditor(mesh) {
 	const editor = document.getElementById("property-editor");
 	
-	// Clean up previous observer
 	if (observer) {
 		scene.onBeforeRenderObservable.remove(observer);
 		observer = null;
@@ -53,15 +50,11 @@ export function updatePropertyEditor(mesh) {
 	
 	editor.classList.remove("opacity-50", "pointer-events-none");
 	
-	// Populate Static Fields
 	document.getElementById("prop-id").value = mesh.name;
 	updateParentDropdown(mesh);
 	updateMaterialDropdown(mesh);
-	
-	// Bind Inputs
 	bindInputs(mesh);
 	
-	// Continuous update loop for transforms (in case gizmo moves it)
 	observer = scene.onBeforeRenderObservable.add(() => {
 		if(!currentMesh) return;
 		syncUIFromMesh(currentMesh);
@@ -73,7 +66,7 @@ function updateParentDropdown(mesh) {
 	select.innerHTML = '<option value="">None</option>';
 	
 	scene.meshes.forEach(m => {
-		if (m !== mesh && m.parent !== mesh) { // Simple cycle prevention
+		if (m !== mesh && m.parent !== mesh) {
 			const option = document.createElement("option");
 			option.value = m.name;
 			option.text = m.name;
@@ -86,7 +79,7 @@ function updateParentDropdown(mesh) {
 		const parentName = select.value;
 		const parent = scene.getMeshByName(parentName);
 		mesh.setParent(parent);
-		markModified(); // Mark as modified
+		markModified();
 	};
 }
 
@@ -105,19 +98,17 @@ function updateMaterialDropdown(mesh) {
 	select.onchange = () => {
 		const mat = scene.getMaterialByID(select.value);
 		mesh.material = mat;
-		markModified(); // Mark as modified
+		markModified();
 	};
 }
 
 function syncUIFromMesh(mesh) {
-	if(document.activeElement.tagName === "INPUT") return; // Don't overwrite while typing
+	if(document.activeElement.tagName === "INPUT") return;
 	
-	// Position
 	document.getElementById("pos-x").value = mesh.position.x.toFixed(2);
 	document.getElementById("pos-y").value = mesh.position.y.toFixed(2);
 	document.getElementById("pos-z").value = mesh.position.z.toFixed(2);
 	
-	// Rotation (Euler)
 	if(mesh.rotationQuaternion) {
 		const euler = mesh.rotationQuaternion.toEulerAngles();
 		document.getElementById("rot-x").value = (euler.x * 180 / Math.PI).toFixed(2);
@@ -129,12 +120,10 @@ function syncUIFromMesh(mesh) {
 		document.getElementById("rot-z").value = (mesh.rotation.z * 180 / Math.PI).toFixed(2);
 	}
 	
-	// Scale
 	document.getElementById("scl-x").value = mesh.scaling.x.toFixed(2);
 	document.getElementById("scl-y").value = mesh.scaling.y.toFixed(2);
 	document.getElementById("scl-z").value = mesh.scaling.z.toFixed(2);
 	
-	// Pivot
 	const pivot = mesh.getPivotPoint();
 	document.getElementById("piv-x").value = pivot.x.toFixed(2);
 	document.getElementById("piv-y").value = pivot.y.toFixed(2);
@@ -145,12 +134,10 @@ function bindInputs(mesh) {
 	const getVal = (id) => parseFloat(document.getElementById(id).value) || 0;
 	
 	const updateMesh = () => {
-		// Position
 		mesh.position.x = getVal("pos-x");
 		mesh.position.y = getVal("pos-y");
 		mesh.position.z = getVal("pos-z");
 		
-		// Rotation
 		const radX = getVal("rot-x") * Math.PI / 180;
 		const radY = getVal("rot-y") * Math.PI / 180;
 		const radZ = getVal("rot-z") * Math.PI / 180;
@@ -158,24 +145,21 @@ function bindInputs(mesh) {
 		if(!mesh.rotationQuaternion) mesh.rotationQuaternion = Quaternion.Identity();
 		Quaternion.FromEulerAnglesToRef(radX, radY, radZ, mesh.rotationQuaternion);
 		
-		// Scale
 		mesh.scaling.x = getVal("scl-x");
 		mesh.scaling.y = getVal("scl-y");
 		mesh.scaling.z = getVal("scl-z");
 		
-		// Pivot
 		mesh.setPivotPoint(new Vector3(getVal("piv-x"), getVal("piv-y"), getVal("piv-z")));
 		
-		markModified(); // Mark as modified
+		markModified();
 	};
 	
-	// Attach listeners
 	document.querySelectorAll("#property-editor input").forEach(input => {
 		input.oninput = updateMesh;
 	});
 	
 	document.getElementById("prop-id").onchange = (e) => {
 		mesh.name = e.target.value;
-		markModified(); // Mark as modified
+		markModified();
 	};
 }

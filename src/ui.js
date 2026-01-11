@@ -2,7 +2,7 @@ import { MeshBuilder, Vector3 } from "@babylonjs/core";
 import { scene } from "./scene.js";
 import { gizmoManager } from "./gizmoControl.js";
 import { createLight } from "./lightManager.js";
-import { markModified } from "./sceneManager.js"; // Import
+import { markModified } from "./sceneManager.js";
 
 const primitives = ["Cube", "Sphere", "Cylinder", "Plane", "Cone", "Pyramid"];
 const lights = ["Point", "Directional"];
@@ -12,19 +12,16 @@ export function setupUI() {
 	const lList = document.getElementById("lights-list");
 	const canvas = document.getElementById("renderCanvas");
 	
-	// Generate Primitive Buttons
 	primitives.forEach(type => {
 		const div = createDraggableItem(type, "primitive");
 		pList.appendChild(div);
 	});
 	
-	// Generate Light Buttons
 	lights.forEach(type => {
 		const div = createDraggableItem(type, "light");
 		lList.appendChild(div);
 	});
 	
-	// Handle Drop on Canvas
 	canvas.addEventListener("dragover", (e) => e.preventDefault());
 	canvas.addEventListener("drop", (e) => {
 		e.preventDefault();
@@ -63,7 +60,6 @@ function createDraggableItem(name, category) {
 function createPrimitive(type) {
 	let mesh;
 	const id = `${type}_${Date.now()}`;
-	const options = {};
 	
 	switch(type) {
 		case "Cube": mesh = MeshBuilder.CreateBox(id, {size: 1}, scene); break;
