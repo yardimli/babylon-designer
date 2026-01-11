@@ -1,7 +1,8 @@
 import { SceneSerializer, SceneLoader } from "@babylonjs/core";
 import { scene } from "./scene.js";
-import { setupGizmos } from "./gizmoControl.js";
+import { setupGizmos, disposeGizmos } from "./gizmoControl.js";
 import { updatePropertyEditor } from "./propertyEditor.js";
+import { restoreLightProxies } from "./lightManager.js";
 
 let currentFileName = null;
 let isModified = false;
@@ -31,7 +32,6 @@ export function setupSceneManager() {
 
 /**
  * Marks the scene as modified.
- * Should be called whenever a mesh is added, removed, or transformed.
  */
 export function markModified() {
 	if (!isModified) {
@@ -50,10 +50,8 @@ function updateStatus() {
 
 function handleSaveAction() {
 	if (currentFileName) {
-		// If we already have a filename, save directly without modal
 		saveSceneInternal(currentFileName.replace(".json", ""));
 	} else {
-		// Otherwise open "Save As" dialog
 		openSaveModal();
 	}
 }
@@ -69,7 +67,7 @@ function openSaveModal() {
 function openLoadModal() {
 	populateSceneList("load");
 	document.getElementById("modal-title").innerText = "Load Scene";
-	document.getElementById("btn-modal-save").classList.add("hidden"); // Hide save button in load mode
+	document.getElementById("btn-modal-save").classList.add("hidden");
 	saveLoadModal.showModal();
 }
 
@@ -117,41 +115,50 @@ async function loadSceneInternal(filename) {
 		
 		const jsonData = result.data;
 		
-		// 1. Clear current scene
-		scene.dispose();
+		// 1. Clean up existing scene
+		disposeGizmos(); // Remove gizmos first
+		updatePropertyEditor(null);
 		
-		// Note: scene.dispose() destroys the scene object. We must recreate it or clear contents.
-		// However, since 'scene' is exported as a const from scene.js, we can't reassign it easily.
-		// Better approach: Clear meshes/lights/materials.
-		
-		// Actually, let's use the internal clear loop to avoid breaking references
-		// But SceneLoader.Append works best on an existing scene.
-		
-		// Hard Reset Strategy:
-		// Since we cannot re-assign the exported 'scene' variable, we clear the engine's scene manually?
-		// Or simpler: Clear arrays.
+		// Clear meshes, lights, AND cameras to prevent duplication
 		while (scene.meshes.length > 0) scene.meshes[0].dispose();
 		while (scene.lights.length > 0) scene.lights[0].dispose();
+		while (scene.cameras.length > 0) scene.cameras[0].dispose();
+		
+		// Clear materials (except default if needed, but usually safe to clear all non-default)
 		while (scene.materials.length > 0) {
 			if (scene.materials[0].name !== "default material") scene.materials[0].dispose();
 			else break;
 		}
 		
-		// 2. Load
-		// We use 'data:' URI scheme for the JSON string to use SceneLoader
+		// 2. Load using SceneLoader
+		// We pass ".babylon" as the last argument so the loader knows it's a JSON scene
 		const dataString = "data:" + JSON.stringify(jsonData);
 		
-		SceneLoader.Append("", dataString, scene, () => {
-			currentFileName = filename;
-			isModified = false;
-			updateStatus();
-			
-			// Re-setup gizmos as the old manager is likely invalid or empty
-			setupGizmos(scene);
-			updatePropertyEditor(null);
-			
-			saveLoadModal.close();
-		});
+		SceneLoader.Append(
+			"",
+			dataString,
+			scene,
+			() => {
+				// On Success
+				currentFileName = filename;
+				isModified = false;
+				updateStatus();
+				
+				// Restore Logic
+				setupGizmos(scene);
+				restoreLightProxies(scene);
+				
+				saveLoadModal.close();
+			},
+			undefined, // onProgress
+			(scene, message, exception) => {
+				// On Error
+				console.error("Load Error:", message, exception);
+				alert("Error parsing scene file.");
+				scene.getEngine().hideLoadingUI(); // Ensure spinner stops
+			},
+			".babylon" // Plugin Extension Hint
+		);
 		
 	} catch (e) {
 		console.error(e);
@@ -165,10 +172,18 @@ function createNewScene() {
 	currentFileName = null;
 	isModified = false;
 	
+	disposeGizmos();
+	
 	// Clear Scene
 	while (scene.meshes.length > 0) scene.meshes[0].dispose();
 	while (scene.lights.length > 0) scene.lights[0].dispose();
+	// Note: We keep the camera for New Scene, or we could reset it.
+	// If we clear cameras, we must create a new one.
+	// For simplicity, we assume the user wants to keep the current view or we rely on scene.js defaults?
+	// Actually, scene.js creates the camera once. If we clear everything, we lose the camera.
+	// For "New Scene", let's just reset meshes/lights.
 	
+	setupGizmos(scene);
 	updateStatus();
 	updatePropertyEditor(null);
 }

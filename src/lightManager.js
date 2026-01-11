@@ -1,4 +1,4 @@
-import { PointLight, DirectionalLight, Vector3, Color3 } from "@babylonjs/core";
+import { PointLight, DirectionalLight, Vector3, Color3, MeshBuilder, StandardMaterial } from "@babylonjs/core";
 
 export function createLight(type, scene) {
 	let light;
@@ -14,26 +14,50 @@ export function createLight(type, scene) {
 	
 	if (light) {
 		light.intensity = 1.0;
-		// Add a small mesh to represent the light so we can select it with Gizmos
-		// (Babylon lights aren't meshes, so we attach a proxy mesh)
-		// For simplicity in this demo, we treat lights as nodes, but GizmoManager prefers Meshes.
-		// We will attach a dummy sphere to the light for selection.
-		const proxy = BABYLON.MeshBuilder.CreateSphere(id + "_proxy", {diameter: 0.5}, scene);
-		proxy.material = new BABYLON.StandardMaterial("lightMat", scene);
+		
+		// Create proxy mesh
+		const proxy = MeshBuilder.CreateSphere(id + "_proxy", {diameter: 0.5}, scene);
+		proxy.material = new StandardMaterial("lightMat", scene);
 		proxy.material.emissiveColor = Color3.Yellow();
 		proxy.position = light.position;
-		proxy.isLightProxy = true;
-		proxy.linkedLight = light;
 		
-		// Sync light position to proxy
-		scene.onBeforeRenderObservable.add(() => {
-			light.position = proxy.position;
-			if(type === "directional") {
-				light.direction = proxy.forward; // Simplified direction control
-			}
-		});
+		// Store relationship in metadata so it survives serialization
+		proxy.metadata = {
+			isLightProxy: true,
+			lightId: light.id,
+			lightType: type
+		};
+		
+		setupLightSync(proxy, light, scene);
 		
 		return proxy;
 	}
 	return null;
+}
+
+// Helper to attach the behavior
+function setupLightSync(proxy, light, scene) {
+	// We use a unique observer wrapper to avoid adding duplicates if called multiple times
+	if (proxy._lightObserver) {
+		scene.onBeforeRenderObservable.remove(proxy._lightObserver);
+	}
+	
+	proxy._lightObserver = scene.onBeforeRenderObservable.add(() => {
+		light.position = proxy.position;
+		if (light instanceof DirectionalLight) {
+			light.direction = proxy.forward;
+		}
+	});
+}
+
+// Call this after loading a scene to reconnect proxies to lights
+export function restoreLightProxies(scene) {
+	scene.meshes.forEach(mesh => {
+		if (mesh.metadata && mesh.metadata.isLightProxy && mesh.metadata.lightId) {
+			const light = scene.getLightByID(mesh.metadata.lightId);
+			if (light) {
+				setupLightSync(mesh, light, scene);
+			}
+		}
+	});
 }

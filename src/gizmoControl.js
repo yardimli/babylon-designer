@@ -4,7 +4,16 @@ import { markModified } from "./sceneManager.js";
 
 export let gizmoManager;
 
+export function disposeGizmos() {
+	if (gizmoManager) {
+		gizmoManager.dispose();
+		gizmoManager = null;
+	}
+}
+
 export function setupGizmos(scene) {
+	disposeGizmos(); // Ensure we don't have duplicates
+	
 	gizmoManager = new GizmoManager(scene);
 	
 	gizmoManager.positionGizmoEnabled = true;

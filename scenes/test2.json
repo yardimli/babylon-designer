@@ -64,7 +64,7 @@
       "name": "hemiLight",
       "id": "hemiLight",
       "state": "",
-      "uniqueId": 3,
+      "uniqueId": 208,
       "type": 3,
       "animations": [],
       "ranges": [],
@@ -136,7 +136,7 @@
       "name": "Camera",
       "id": "Camera",
       "state": "",
-      "uniqueId": 2,
+      "uniqueId": 214,
       "type": "ArcRotateCamera",
       "inputsmgr": {
         "ArcRotateCameraKeyboardMoveInput": {
@@ -277,7 +277,7 @@
         "mask": 255,
         "enabled": false
       },
-      "uniqueId": 210,
+      "uniqueId": 209,
       "plugins": {
         "DetailMapConfiguration": {
           "tags": null,
@@ -310,7 +310,7 @@
     "vertexData": [
       {
         "id": "16320a3d-3418-4f1b-b881-e3e6af7aeb86",
-        "uniqueId": 209,
+        "uniqueId": 210,
         "updatable": false,
         "positions": [
           0.5,
@@ -551,7 +551,7 @@
       },
       {
         "id": "e06e9f65-aa98-46d9-8fbb-62ca61902c2f",
-        "uniqueId": 212,
+        "uniqueId": 211,
         "updatable": false,
         "positions": [
           0,
@@ -33760,7 +33760,7 @@
     {
       "name": "Cube_1768133663770",
       "id": "Cube_1768133663770",
-      "uniqueId": 208,
+      "uniqueId": 212,
       "type": "Mesh",
       "position": [
         2.4176461696624756,
@@ -33818,7 +33818,7 @@
       "isBlocker": false,
       "sideOrientation": 1,
       "isUnIndexed": false,
-      "geometryUniqueId": 209,
+      "geometryUniqueId": 210,
       "geometryId": "16320a3d-3418-4f1b-b881-e3e6af7aeb86",
       "subMeshes": [
         {
@@ -33829,7 +33829,7 @@
           "indexCount": 36
         }
       ],
-      "materialUniqueId": 210,
+      "materialUniqueId": 209,
       "materialId": "default material",
       "instances": [],
       "animations": [],
@@ -33848,7 +33848,7 @@
     {
       "name": "Sphere_1768133667873",
       "id": "Sphere_1768133667873",
-      "uniqueId": 211,
+      "uniqueId": 213,
       "type": "Mesh",
       "position": [
         0,
@@ -33906,7 +33906,7 @@
       "isBlocker": false,
       "sideOrientation": 1,
       "isUnIndexed": false,
-      "geometryUniqueId": 212,
+      "geometryUniqueId": 211,
       "geometryId": "e06e9f65-aa98-46d9-8fbb-62ca61902c2f",
       "subMeshes": [
         {
@@ -33917,7 +33917,7 @@
           "indexCount": 13872
         }
       ],
-      "materialUniqueId": 210,
+      "materialUniqueId": 209,
       "materialId": "default material",
       "instances": [],
       "animations": [],
