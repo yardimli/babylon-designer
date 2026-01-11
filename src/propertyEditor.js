@@ -1,9 +1,11 @@
 import { Vector3, Quaternion } from "@babylonjs/core";
 import { scene } from "./scene.js";
 import { markModified } from "./sceneManager.js";
+import { selectMesh } from "./gizmoControl.js";
 
 let currentMesh = null;
 let observer = null;
+const collapsedNodes = new Set(); // Store IDs of collapsed nodes
 
 function createVec3Input(label, idPrefix, container) {
 	const wrapper = document.createElement("div");
@@ -42,6 +44,9 @@ export function updatePropertyEditor(mesh) {
 	
 	currentMesh = mesh;
 	
+	// Always refresh tree highlight when selection changes
+	highlightInTree(mesh);
+	
 	if (!mesh) {
 		editor.classList.add("opacity-50", "pointer-events-none");
 		document.getElementById("prop-id").value = "";
@@ -66,7 +71,7 @@ function updateParentDropdown(mesh) {
 	select.innerHTML = '<option value="">None</option>';
 	
 	scene.meshes.forEach(m => {
-		if (m !== mesh && m.parent !== mesh) {
+		if (m !== mesh && m.parent !== mesh && isUserMesh(m)) {
 			const option = document.createElement("option");
 			option.value = m.name;
 			option.text = m.name;
@@ -80,6 +85,7 @@ function updateParentDropdown(mesh) {
 		const parent = scene.getMeshByName(parentName);
 		mesh.setParent(parent);
 		markModified();
+		refreshSceneGraph(); // Update tree structure
 	};
 }
 
@@ -161,5 +167,114 @@ function bindInputs(mesh) {
 	document.getElementById("prop-id").onchange = (e) => {
 		mesh.name = e.target.value;
 		markModified();
+		refreshSceneGraph(); // Name changed, update tree
 	};
+}
+
+// ==========================================
+// SCENE TREE VIEW
+// ==========================================
+
+function isUserMesh(mesh) {
+	// Filter out internal meshes
+	return mesh.name !== "previewSphere" &&
+		!mesh.name.startsWith("gizmo") &&
+		mesh.name !== "hdrSkyBox" &&
+		(mesh.metadata?.isPrimitive || mesh.metadata?.isLightProxy);
+}
+
+export function refreshSceneGraph() {
+	const container = document.getElementById("scene-explorer");
+	if (!container) return;
+	
+	container.innerHTML = "";
+	
+	// Get root meshes (no parent)
+	const roots = scene.meshes.filter(m => !m.parent && isUserMesh(m));
+	
+	if (roots.length === 0) {
+		container.innerHTML = "<div class='opacity-50 italic'>Empty Scene</div>";
+		return;
+	}
+	
+	roots.forEach(mesh => {
+		container.appendChild(createTreeNode(mesh, 0));
+	});
+	
+	// Re-highlight if selection exists
+	if (currentMesh) highlightInTree(currentMesh);
+}
+
+function createTreeNode(mesh, level) {
+	const wrapper = document.createElement("div");
+	
+	// Row Container
+	const row = document.createElement("div");
+	row.className = "flex items-center hover:bg-base-content/10 rounded cursor-pointer p-1";
+	row.style.paddingLeft = `${level * 12 + 4}px`;
+	row.dataset.meshId = mesh.id;
+	
+	// Expand/Collapse Icon
+	const children = scene.meshes.filter(m => m.parent === mesh && isUserMesh(m));
+	const hasChildren = children.length > 0;
+	
+	const icon = document.createElement("span");
+	icon.className = "w-4 h-4 mr-1 flex items-center justify-center font-mono text-xs opacity-70";
+	if (hasChildren) {
+		const isCollapsed = collapsedNodes.has(mesh.id);
+		icon.innerText = isCollapsed ? "▶" : "▼";
+		icon.onclick = (e) => {
+			e.stopPropagation();
+			if (isCollapsed) collapsedNodes.delete(mesh.id);
+			else collapsedNodes.add(mesh.id);
+			refreshSceneGraph();
+		};
+	} else {
+		icon.innerText = "•";
+	}
+	row.appendChild(icon);
+	
+	// Name
+	const label = document.createElement("span");
+	label.innerText = mesh.name;
+	label.className = "truncate flex-1";
+	row.appendChild(label);
+	
+	// Selection Logic
+	row.onclick = () => {
+		selectMesh(mesh);
+	};
+	
+	wrapper.appendChild(row);
+	
+	// Children Container
+	if (hasChildren && !collapsedNodes.has(mesh.id)) {
+		const childrenContainer = document.createElement("div");
+		children.forEach(child => {
+			childrenContainer.appendChild(createTreeNode(child, level + 1));
+		});
+		wrapper.appendChild(childrenContainer);
+	}
+	
+	return wrapper;
+}
+
+function highlightInTree(mesh) {
+	const container = document.getElementById("scene-explorer");
+	if (!container) return;
+	
+	// Remove active class from all
+	container.querySelectorAll("[data-mesh-id]").forEach(el => {
+		el.classList.remove("bg-primary/20", "text-primary");
+	});
+	
+	if (mesh) {
+		const el = container.querySelector(`[data-mesh-id="${mesh.id}"]`);
+		if (el) {
+			el.classList.add("bg-primary/20", "text-primary");
+			// Ensure parent nodes are expanded?
+			// That would require traversing up and removing from collapsedNodes, then refreshing.
+			// For now, simple highlight.
+		}
+	}
 }

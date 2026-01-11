@@ -1,7 +1,7 @@
 import { Vector3, Color3, Quaternion, PBRMaterial } from "@babylonjs/core";
 import { scene } from "./scene.js";
 import { setupGizmos, disposeGizmos } from "./gizmoControl.js";
-import { updatePropertyEditor } from "./propertyEditor.js";
+import { updatePropertyEditor, refreshSceneGraph } from "./propertyEditor.js";
 import { createPrimitive } from "./ui.js";
 import { createLight } from "./lightManager.js";
 
@@ -241,6 +241,7 @@ async function loadSceneInternal(filename) {
 		currentFileName = filename;
 		isModified = false;
 		updateStatus();
+		refreshSceneGraph(); // Update tree
 		saveLoadModal.close();
 		
 	} catch (e) {
@@ -268,6 +269,7 @@ function createNewScene() {
 	setupGizmos(scene);
 	updateStatus();
 	updatePropertyEditor(null);
+	refreshSceneGraph(); // Update tree
 }
 
 async function populateSceneList(mode) {

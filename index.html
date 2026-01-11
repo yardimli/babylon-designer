@@ -54,33 +54,44 @@
 	</div>
 	
 	<!-- Right Sidebar: Properties -->
-	<div class="w-80 flex-none bg-base-200 p-4 border-l border-base-content/10 overflow-y-auto">
-		<h2 class="text-xl font-bold mb-4">Properties</h2>
-		<div id="property-editor" class="flex flex-col gap-3 opacity-50 pointer-events-none">
-			
-			<!-- ID -->
-			<label class="form-control w-full">
-				<div class="label"><span class="label-text">ID</span></div>
-				<input type="text" id="prop-id" class="input input-bordered w-full input-sm" />
-			</label>
-			
-			<!-- Parent -->
-			<label class="form-control w-full">
-				<div class="label"><span class="label-text">Parent</span></div>
-				<select id="prop-parent" class="select select-bordered w-full select-sm"></select>
-			</label>
-			
-			<!-- Material -->
-			<label class="form-control w-full">
-				<div class="label"><span class="label-text">Material</span></div>
-				<select id="prop-material" class="select select-bordered w-full select-sm"></select>
-			</label>
-			
-			<div class="divider my-1"></div>
-			
-			<!-- Transforms Helper -->
-			<div id="transform-container"></div>
+	<div class="w-80 flex-none bg-base-200 flex flex-col border-l border-base-content/10 overflow-hidden">
+		<!-- Hierarchy / Tree View -->
+		<div class="flex-none h-1/3 flex flex-col border-b border-base-content/10">
+			<h2 class="text-sm font-bold p-2 bg-base-300">Scene Hierarchy</h2>
+			<div id="scene-explorer" class="flex-1 overflow-y-auto p-2 text-sm select-none">
+				<!-- Tree populated by JS -->
+			</div>
+		</div>
 		
+		<!-- Properties Editor -->
+		<div class="flex-1 overflow-y-auto p-4">
+			<h2 class="text-xl font-bold mb-4">Properties</h2>
+			<div id="property-editor" class="flex flex-col gap-3 opacity-50 pointer-events-none">
+				
+				<!-- ID -->
+				<label class="form-control w-full">
+					<div class="label"><span class="label-text">ID</span></div>
+					<input type="text" id="prop-id" class="input input-bordered w-full input-sm" />
+				</label>
+				
+				<!-- Parent -->
+				<label class="form-control w-full">
+					<div class="label"><span class="label-text">Parent</span></div>
+					<select id="prop-parent" class="select select-bordered w-full select-sm"></select>
+				</label>
+				
+				<!-- Material -->
+				<label class="form-control w-full">
+					<div class="label"><span class="label-text">Material</span></div>
+					<select id="prop-material" class="select select-bordered w-full select-sm"></select>
+				</label>
+				
+				<div class="divider my-1"></div>
+				
+				<!-- Transforms Helper -->
+				<div id="transform-container"></div>
+			
+			</div>
 		</div>
 	</div>
 </div>

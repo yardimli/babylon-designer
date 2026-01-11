@@ -63,3 +63,10 @@ function attachDragObservers() {
 		}
 	});
 }
+
+// Helper to manually select a mesh (used by TreeView)
+export function selectMesh(mesh) {
+	if (gizmoManager) {
+		gizmoManager.attachToMesh(mesh);
+	}
+}

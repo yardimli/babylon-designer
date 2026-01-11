@@ -3,6 +3,7 @@ import { scene } from "./scene.js";
 import { gizmoManager, setGizmoMode } from "./gizmoControl.js";
 import { createLight } from "./lightManager.js";
 import { markModified } from "./sceneManager.js";
+import { refreshSceneGraph } from "./propertyEditor.js";
 
 const primitives = ["Cube", "Sphere", "Cylinder", "Plane", "Cone", "Pyramid"];
 const lights = ["Point", "Directional"];
@@ -45,7 +46,10 @@ export function setupUI() {
 			}
 		}
 		
-		if (created) markModified();
+		if (created) {
+			markModified();
+			refreshSceneGraph();
+		}
 	});
 }
 
