@@ -23,7 +23,7 @@ let axisObserver = null;
 export function getSkipMaterialNames() {
 	
 	const skipMaterialNames = [
-		"default material", "lightMat",
+		"default material", "lightMat", "transformNodeMat",
 		"gizmo_axisX_mat", "gizmo_axisY_mat", "gizmo_axisZ_mat",
 		"centerMat", "labelMat_X", "labelMat_Y", "labelMat_Z"
 	];

@@ -4,6 +4,7 @@ import { setupGizmos, disposeGizmos } from "./gizmoControl.js";
 import { updatePropertyEditor, refreshSceneGraph } from "./propertyEditor.js";
 import { createPrimitive } from "./ui.js";
 import { createLight } from "./lightManager.js";
+import { createTransformNode } from "./transformNodeManager.js";
 import { clearShadowManagers } from "./shadowManager.js";
 
 let currentFileName = null;
@@ -64,17 +65,17 @@ function openLoadModal() {
 async function saveSceneInternal(name) {
 	// 1. Build Simple JSON Object
 	const data = {
-		version: 1.0,
+		version: 1.1,
 		materials: [],
 		lights: [],
-		meshes: []
+		meshes: [],
+		transformNodes: []
 	};
 	
 	const skipNames = getSkipMaterialNames();
 	
 	// -- Save Materials --
 	scene.materials.forEach(mat => {
-		// Skip default or gizmo materials
 		if (skipNames.includes(mat.name) || mat.name.startsWith("preview")) return;
 		
 		const matData = {
@@ -100,39 +101,58 @@ async function saveSceneInternal(name) {
 					position: { x: light.position.x, y: light.position.y, z: light.position.z },
 					direction: light.direction ? { x: light.direction.x, y: light.direction.y, z: light.direction.z } : null,
 					intensity: light.intensity,
-					diffuse: { r: light.diffuse.r, g: light.diffuse.g, b: light.diffuse.b }
+					diffuse: { r: light.diffuse.r, g: light.diffuse.g, b: light.diffuse.b },
+					parentId: light.parent ? (light.parent.name || light.parent.id) : null
 				});
 			}
 		}
 	});
 	
+	// -- Save TransformNodes --
+	scene.transformNodes.forEach(node => {
+		if (node.metadata && node.metadata.isTransformNode) {
+			let rot = { x: 0, y: 0, z: 0, w: 1 };
+			if (node.rotationQuaternion) {
+				rot = { x: node.rotationQuaternion.x, y: node.rotationQuaternion.y, z: node.rotationQuaternion.z, w: node.rotationQuaternion.w };
+			} else {
+				const q = Quaternion.FromEulerVector(node.rotation);
+				rot = { x: q.x, y: q.y, z: q.z, w: q.w };
+			}
+			
+			data.transformNodes.push({
+				id: node.id,
+				name: node.name,
+				position: { x: node.position.x, y: node.position.y, z: node.position.z },
+				rotation: rot,
+				scaling: { x: node.scaling.x, y: node.scaling.y, z: node.scaling.z },
+				parentId: node.parent ? (node.parent.name || node.parent.id) : null
+			});
+		}
+	});
+	
 	// -- Save Primitives --
 	scene.meshes.forEach(mesh => {
-		// Only save meshes we marked as primitives
 		if (mesh.metadata && mesh.metadata.isPrimitive) {
-			// Get Rotation (Prefer Quaternion)
 			let rot = { x: 0, y: 0, z: 0, w: 1 };
 			if (mesh.rotationQuaternion) {
 				rot = { x: mesh.rotationQuaternion.x, y: mesh.rotationQuaternion.y, z: mesh.rotationQuaternion.z, w: mesh.rotationQuaternion.w };
 			} else {
-				// Convert Euler to Quat for consistency
 				const q = Quaternion.FromEulerVector(mesh.rotation);
 				rot = { x: q.x, y: q.y, z: q.z, w: q.w };
 			}
 			
-			// --- NEW: Get Pivot Point ---
 			const pivot = mesh.getPivotPoint();
 			
 			data.meshes.push({
 				id: mesh.id,
-				name: mesh.name, // --- NEW: Save the name explicitly ---
-				type: mesh.metadata.type, // "Cube", "Sphere", etc.
+				name: mesh.name,
+				type: mesh.metadata.type,
 				position: { x: mesh.position.x, y: mesh.position.y, z: mesh.position.z },
 				rotation: rot,
 				scaling: { x: mesh.scaling.x, y: mesh.scaling.y, z: mesh.scaling.z },
-				pivot: { x: pivot.x, y: pivot.y, z: pivot.z }, // Save pivot data
+				pivot: { x: pivot.x, y: pivot.y, z: pivot.z },
 				materialId: mesh.material ? mesh.material.id : null,
-				parentId: mesh.parent ? mesh.parent.name : null, // Simple parent by name/id
+				parentId: mesh.parent ? (mesh.parent.name || mesh.parent.id) : null,
 				receiveShadows: mesh.receiveShadows,
 				castShadows: mesh.metadata.castShadows || false
 			});
@@ -183,21 +203,22 @@ async function loadSceneInternal(filename) {
 		updatePropertyEditor(null);
 		clearShadowManagers();
 		
-		// Dispose all user meshes and lights.
 		const toDispose = [];
 		scene.meshes.forEach(m => {
-			if (m.name === "previewSphere") return; // Keep material editor preview
-			if (m.metadata && (m.metadata.isPrimitive || m.metadata.isLightProxy)) toDispose.push(m);
+			if (m.name === "previewSphere") return;
+			if (m.metadata && (m.metadata.isPrimitive || m.metadata.isLightProxy || m.metadata.isTransformNodeProxy)) toDispose.push(m);
 		});
-		// Also clean up lights linked to proxies
+		scene.transformNodes.forEach(t => {
+			if (t.name === "axisRoot") return;
+			if (t.metadata && t.metadata.isTransformNode) toDispose.push(t);
+		});
 		scene.lights.forEach(l => {
-			if (l.name !== "hemiLight" && l.name !== "light") toDispose.push(l); // Keep base lights
+			if (l.name !== "hemiLight" && l.name !== "light") toDispose.push(l);
 		});
 		
 		toDispose.forEach(n => n.dispose());
 		
-		// Clear Materials (except default)
-		const matsToDispose = scene.materials.filter(m => m.name !== "default material" && m.name !== "lightMat" && m.name !== "previewMat");
+		const matsToDispose = scene.materials.filter(m => m.name !== "default material" && m.name !== "lightMat" && m.name !== "previewMat" && m.name !== "transformNodeMat");
 		matsToDispose.forEach(m => m.dispose());
 		
 		// 2. Reconstruct Materials
@@ -213,49 +234,81 @@ async function loadSceneInternal(filename) {
 			});
 		}
 		
-		// 3. Reconstruct Lights
+		// 3. Reconstruct TransformNodes
+		if (data.transformNodes) {
+			data.transformNodes.forEach(nodeData => {
+				createTransformNode(nodeData, scene);
+			});
+		}
+		
+		// 4. Reconstruct Lights
 		if (data.lights) {
 			data.lights.forEach(lightData => {
 				createLight(lightData.type, lightData, scene);
 			});
 		}
 		
-		// 4. Reconstruct Meshes
+		// 5. Reconstruct Meshes
 		if (data.meshes) {
 			data.meshes.forEach(meshData => {
-				// createPrimitive handles shadow casting and pivot registration via savedData
 				const mesh = createPrimitive(meshData.type, meshData);
-				
-				// Re-link Material
 				if (meshData.materialId) {
 					const mat = scene.getMaterialByID(meshData.materialId);
 					if (mat) mesh.material = mat;
 				}
-				
-				// Restore Shadow Properties
 				if (mesh) {
 					mesh.receiveShadows = !!meshData.receiveShadows;
-					// castShadows handled in createPrimitive
 				}
 			});
-			
-			// Pass 2: Parenting (done after all meshes exist)
-			data.meshes.forEach(meshData => {
-				if (meshData.parentId) {
-					const child = scene.getMeshByID(meshData.id);
-					const parent = scene.getMeshByName(meshData.parentId) || scene.getMeshByID(meshData.parentId);
+		}
+		
+		// 6. Restore Hierarchy (Parenting)
+		// Helper to find parent by name or ID
+		const findParent = (idOrName) => {
+			if (!idOrName) return null;
+			return scene.getMeshByName(idOrName) ||
+				scene.getMeshByID(idOrName) ||
+				scene.getTransformNodeByName(idOrName) ||
+				scene.getTransformNodeByID(idOrName) ||
+				scene.getLightByName(idOrName) ||
+				scene.getLightByID(idOrName);
+		};
+		
+		// Apply parenting for all types
+		if (data.transformNodes) {
+			data.transformNodes.forEach(d => {
+				if (d.parentId) {
+					const child = scene.getTransformNodeByID(d.id);
+					const parent = findParent(d.parentId);
+					if (child && parent) child.parent = parent;
+				}
+			});
+		}
+		if (data.lights) {
+			data.lights.forEach(d => {
+				if (d.parentId) {
+					const child = scene.getLightByID(d.id);
+					const parent = findParent(d.parentId);
+					if (child && parent) child.parent = parent;
+				}
+			});
+		}
+		if (data.meshes) {
+			data.meshes.forEach(d => {
+				if (d.parentId) {
+					const child = scene.getMeshByID(d.id);
+					const parent = findParent(d.parentId);
 					if (child && parent) child.parent = parent;
 				}
 			});
 		}
 		
-		// Finish
 		setupGizmos(scene);
 		resetAxisIndicator();
 		currentFileName = filename;
 		isModified = false;
 		updateStatus();
-		refreshSceneGraph(); // Update tree
+		refreshSceneGraph();
 		saveLoadModal.close();
 		
 	} catch (e) {
@@ -273,9 +326,11 @@ function createNewScene() {
 	disposeGizmos();
 	clearShadowManagers();
 	
-	// Quick Clear
 	scene.meshes.forEach(m => {
-		if (m.metadata && (m.metadata.isPrimitive || m.metadata.isLightProxy)) m.dispose();
+		if (m.metadata && (m.metadata.isPrimitive || m.metadata.isLightProxy || m.metadata.isTransformNodeProxy)) m.dispose();
+	});
+	scene.transformNodes.forEach(t => {
+		if (t.name !== "axisRoot" && t.metadata && t.metadata.isTransformNode) t.dispose();
 	});
 	scene.lights.forEach(l => {
 		if (l.name !== "hemiLight") l.dispose();
@@ -284,7 +339,7 @@ function createNewScene() {
 	setupGizmos(scene);
 	updateStatus();
 	updatePropertyEditor(null);
-	refreshSceneGraph(); // Update tree
+	refreshSceneGraph();
 }
 
 async function populateSceneList(mode) {

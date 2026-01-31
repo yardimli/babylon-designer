@@ -1,11 +1,12 @@
-import { Vector3, Quaternion, Color3 } from "@babylonjs/core";
+import { Vector3, Quaternion, Color3, AbstractMesh, TransformNode } from "@babylonjs/core";
 import { scene } from "./scene.js";
 import { markModified } from "./sceneManager.js";
 import { selectMesh } from "./gizmoControl.js";
 import { createLight } from "./lightManager.js";
-import { setShadowCaster, disposeShadowGenerator } from "./shadowManager.js"; // Import new manager
+import { setShadowCaster, disposeShadowGenerator } from "./shadowManager.js";
+import { createTransformNode } from "./transformNodeManager.js";
 
-let currentMesh = null;
+let currentMesh = null; // Can be Mesh or TransformNode
 let observer = null;
 const collapsedNodes = new Set(); // Store IDs of collapsed nodes
 
@@ -36,7 +37,7 @@ createVec3Input("Rotation (Deg)", "rot", transformContainer);
 createVec3Input("Scale", "scl", transformContainer);
 createVec3Input("Pivot Point", "piv", transformContainer);
 
-export function updatePropertyEditor(mesh) {
+export function updatePropertyEditor(target) {
 	const editor = document.getElementById("property-editor");
 	
 	if (observer) {
@@ -44,37 +45,61 @@ export function updatePropertyEditor(mesh) {
 		observer = null;
 	}
 	
-	currentMesh = mesh;
+	currentMesh = target;
 	
 	// Always refresh tree highlight when selection changes
-	highlightInTree(mesh);
+	highlightInTree(target);
 	
-	if (!mesh) {
+	if (!target) {
 		editor.classList.add("opacity-50", "pointer-events-none");
 		document.getElementById("prop-id").value = "";
-		// Hide light properties when nothing is selected
 		document.getElementById("light-properties").classList.add("hidden");
 		return;
 	}
 	
 	editor.classList.remove("opacity-50", "pointer-events-none");
 	
-	document.getElementById("prop-id").value = mesh.name;
-	updateParentDropdown(mesh);
-	updateMaterialDropdown(mesh);
-	bindInputs(mesh);
-	bindDuplicateButton(mesh); // Bind duplicate button
-	bindDeleteButton(mesh); // Bind the delete button logic
+	document.getElementById("prop-id").value = target.name;
+	updateParentDropdown(target);
 	
-	// --- NEW: Handle Light Properties ---
+	// Material Dropdown - Hide for TransformNodes
+	const matSelect = document.getElementById("prop-material");
+	if (target.metadata && target.metadata.isTransformNode) {
+		matSelect.closest(".form-control").classList.add("hidden");
+	} else {
+		matSelect.closest(".form-control").classList.remove("hidden");
+		updateMaterialDropdown(target);
+	}
+	
+	bindInputs(target);
+	bindDuplicateButton(target);
+	bindDeleteButton(target);
+	
+	// --- Light Properties ---
 	const lightProps = document.getElementById("light-properties");
-	if (mesh.metadata && mesh.metadata.isLightProxy) {
+	if (target.metadata && target.metadata.isLightProxy) {
 		lightProps.classList.remove("hidden");
-		bindLightInputs(mesh);
+		bindLightInputs(target);
 	} else {
 		lightProps.classList.add("hidden");
 	}
-	// ------------------------------------
+	
+	// --- Shadow Properties ---
+	// Hide for TransformNodes
+	const shadowContainer = document.getElementById("prop-receive-shadows").closest(".form-control").parentElement;
+	// We need to target the container of shadow checkboxes.
+	// The HTML structure has checkboxes in separate form-controls.
+	// Let's just toggle visibility of the specific inputs.
+	const receiveShadowsInput = document.getElementById("prop-receive-shadows");
+	const castShadowsInput = document.getElementById("prop-cast-shadows");
+	
+	if (target.metadata && target.metadata.isTransformNode) {
+		receiveShadowsInput.closest(".form-control").classList.add("hidden");
+		castShadowsInput.closest(".form-control").classList.add("hidden");
+	} else {
+		receiveShadowsInput.closest(".form-control").classList.remove("hidden");
+		castShadowsInput.closest(".form-control").classList.remove("hidden");
+	}
 	
 	observer = scene.onBeforeRenderObservable.add(() => {
 		if (!currentMesh) return;
@@ -86,22 +111,33 @@ function updateParentDropdown(mesh) {
 	const select = document.getElementById("prop-parent");
 	select.innerHTML = '<option value="">None</option>';
 	
+	// List all valid parents (Meshes and TransformNodes)
+	const potentialParents = [];
 	scene.meshes.forEach(m => {
-		if (m !== mesh && m.parent !== mesh && isUserMesh(m)) {
+		if (isUserMesh(m)) potentialParents.push(m);
+	});
+	scene.transformNodes.forEach(t => {
+		if (t.metadata && t.metadata.isTransformNode) potentialParents.push(t);
+	});
+	
+	potentialParents.forEach(p => {
+		if (p !== mesh && p.parent !== mesh) {
 			const option = document.createElement("option");
-			option.value = m.name;
-			option.text = m.name;
-			if (mesh.parent === m) option.selected = true;
+			option.value = p.name;
+			option.text = p.name;
+			if (mesh.parent === p) option.selected = true;
 			select.appendChild(option);
 		}
 	});
 	
 	select.onchange = () => {
 		const parentName = select.value;
-		const parent = scene.getMeshByName(parentName);
+		let parent = scene.getMeshByName(parentName);
+		if (!parent) parent = scene.getTransformNodeByName(parentName);
+		
 		mesh.setParent(parent);
 		markModified();
-		refreshSceneGraph(); // Update tree structure
+		refreshSceneGraph();
 	};
 }
 
@@ -124,7 +160,6 @@ function updateMaterialDropdown(mesh) {
 	};
 }
 
-// --- NEW: Bind Light Inputs ---
 function bindLightInputs(mesh) {
 	const light = scene.getLightByID(mesh.metadata.lightId);
 	if (!light) return;
@@ -132,11 +167,9 @@ function bindLightInputs(mesh) {
 	const iInput = document.getElementById("prop-light-intensity");
 	const cInput = document.getElementById("prop-light-diffuse");
 	
-	// Initial Values
 	iInput.value = light.intensity;
 	cInput.value = light.diffuse.toHexString();
 	
-	// Bind Events
 	iInput.oninput = () => {
 		light.intensity = parseFloat(iInput.value) || 0;
 		markModified();
@@ -147,7 +180,6 @@ function bindLightInputs(mesh) {
 		markModified();
 	};
 }
-// ------------------------------
 
 function syncUIFromMesh(mesh) {
 	if (document.activeElement.tagName === "INPUT" && document.activeElement.type !== "checkbox" && document.activeElement.type !== "color") return;
@@ -176,27 +208,23 @@ function syncUIFromMesh(mesh) {
 	document.getElementById("piv-y").value = pivot.y.toFixed(2);
 	document.getElementById("piv-z").value = pivot.z.toFixed(2);
 	
-	// Sync Shadow Checkboxes
-	document.getElementById("prop-receive-shadows").checked = !!mesh.receiveShadows;
-	// Use metadata to check state
-	document.getElementById("prop-cast-shadows").checked = !!(mesh.metadata && mesh.metadata.castShadows);
+	// Sync Shadow Checkboxes (Only for Meshes)
+	if (mesh instanceof AbstractMesh) {
+		document.getElementById("prop-receive-shadows").checked = !!mesh.receiveShadows;
+		document.getElementById("prop-cast-shadows").checked = !!(mesh.metadata && mesh.metadata.castShadows);
+	}
 	
-	// --- NEW: Sync Light Properties ---
+	// Sync Light Properties
 	if (mesh.metadata && mesh.metadata.isLightProxy) {
 		const light = scene.getLightByID(mesh.metadata.lightId);
 		if (light) {
 			const iInput = document.getElementById("prop-light-intensity");
 			const cInput = document.getElementById("prop-light-diffuse");
 			
-			if (document.activeElement !== iInput) {
-				iInput.value = light.intensity;
-			}
-			if (document.activeElement !== cInput) {
-				cInput.value = light.diffuse.toHexString();
-			}
+			if (document.activeElement !== iInput) iInput.value = light.intensity;
+			if (document.activeElement !== cInput) cInput.value = light.diffuse.toHexString();
 		}
 	}
-	// ----------------------------------
 }
 
 function bindInputs(mesh) {
@@ -224,7 +252,6 @@ function bindInputs(mesh) {
 	};
 	
 	document.querySelectorAll("#property-editor input[type='number']").forEach(input => {
-		// Skip light inputs here, they are bound separately
 		if (input.id.startsWith("prop-light")) return;
 		input.oninput = updateMesh;
 	});
@@ -232,31 +259,31 @@ function bindInputs(mesh) {
 	document.getElementById("prop-id").onchange = (e) => {
 		mesh.name = e.target.value;
 		markModified();
-		refreshSceneGraph(); // Name changed, update tree
+		refreshSceneGraph();
 	};
 	
-	// Bind Shadow Checkboxes
-	document.getElementById("prop-receive-shadows").onchange = (e) => {
-		mesh.receiveShadows = e.target.checked;
-		markModified();
-	};
-	
-	document.getElementById("prop-cast-shadows").onchange = (e) => {
-		// --- NEW: Use Shadow Manager ---
-		setShadowCaster(mesh, e.target.checked);
-		markModified();
-	};
+	// Bind Shadow Checkboxes (Only if visible/mesh)
+	if (mesh instanceof AbstractMesh) {
+		document.getElementById("prop-receive-shadows").onchange = (e) => {
+			mesh.receiveShadows = e.target.checked;
+			markModified();
+		};
+		
+		document.getElementById("prop-cast-shadows").onchange = (e) => {
+			setShadowCaster(mesh, e.target.checked);
+			markModified();
+		};
+	}
 }
 
-// Logic for the Duplicate Button
-function bindDuplicateButton(mesh) {
+function bindDuplicateButton(node) {
 	const btn = document.getElementById("btn-duplicate-asset");
 	if (!btn) return;
 	
 	btn.onclick = () => {
-		const newMesh = duplicateHierarchy(mesh, mesh.parent);
-		if (newMesh) {
-			selectMesh(newMesh);
+		const newNode = duplicateHierarchy(node, node.parent);
+		if (newNode) {
+			selectMesh(newNode);
 			markModified();
 			refreshSceneGraph();
 		}
@@ -267,12 +294,12 @@ function duplicateHierarchy(node, parent) {
 	let newNode = null;
 	
 	if (node.metadata && node.metadata.isLightProxy) {
-		// Handle Light Duplication
+		// Light Duplication
 		const oldLight = scene.getLightByID(node.metadata.lightId);
 		if (oldLight) {
 			const savedData = {
-				id: null, // generate new
-				position: node.position, // use proxy position
+				id: null,
+				position: node.position,
 				intensity: oldLight.intensity,
 				diffuse: oldLight.diffuse,
 				direction: oldLight.direction ? { x: oldLight.direction.x, y: oldLight.direction.y, z: oldLight.direction.z } : null
@@ -280,21 +307,29 @@ function duplicateHierarchy(node, parent) {
 			newNode = createLight(node.metadata.lightType, savedData, scene);
 			if (newNode && parent) newNode.parent = parent;
 		}
+	} else if (node.metadata && node.metadata.isTransformNode) {
+		// TransformNode Duplication
+		const savedData = {
+			id: null,
+			position: node.position,
+			rotation: node.rotationQuaternion || Quaternion.FromEulerVector(node.rotation),
+			scaling: node.scaling,
+			name: node.name + "_dup"
+		};
+		newNode = createTransformNode(savedData, scene);
+		if (newNode && parent) newNode.parent = parent;
+		
 	} else if (node.metadata && node.metadata.isPrimitive) {
-		// Handle Primitive Duplication
+		// Mesh Duplication
 		const name = node.name + "_dup";
 		newNode = node.clone(name, parent);
 		newNode.id = name + "_" + Date.now();
 		
-		// Deep copy metadata
 		if (node.metadata) {
 			newNode.metadata = JSON.parse(JSON.stringify(node.metadata));
 		}
 		
-		// Copy shadow props
 		newNode.receiveShadows = node.receiveShadows;
-		
-		// --- NEW: Register Shadow Caster if needed ---
 		if (newNode.metadata && newNode.metadata.castShadows) {
 			setShadowCaster(newNode, true);
 		}
@@ -303,7 +338,7 @@ function duplicateHierarchy(node, parent) {
 	if (newNode) {
 		// Recursively duplicate children
 		node.getChildren().forEach(child => {
-			if (isUserMesh(child)) {
+			if (isGraphNode(child)) {
 				duplicateHierarchy(child, newNode);
 			}
 		});
@@ -312,33 +347,33 @@ function duplicateHierarchy(node, parent) {
 	return newNode;
 }
 
-// Logic for the Delete Button
-function bindDeleteButton(mesh) {
+function bindDeleteButton(node) {
 	const btn = document.getElementById("btn-delete-asset");
 	if (!btn) return;
 	
 	btn.onclick = () => {
-		if (confirm(`Are you sure you want to delete "${mesh.name}"?`)) {
+		if (confirm(`Are you sure you want to delete "${node.name}"?`)) {
 			// 1. Handle Light Proxy cleanup
-			if (mesh.metadata && mesh.metadata.isLightProxy) {
-				const light = scene.getLightByID(mesh.metadata.lightId);
+			if (node.metadata && node.metadata.isLightProxy) {
+				const light = scene.getLightByID(node.metadata.lightId);
 				if (light) {
-					// --- NEW: Dispose Shadow Generator ---
 					disposeShadowGenerator(light);
 					light.dispose();
 				}
 			}
 			
-			// 2. Deselect first to clear gizmos and UI
+			// 2. Deselect
 			selectMesh(null);
 			
-			// --- NEW: Unregister from shadows before disposal ---
-			setShadowCaster(mesh, false);
+			// 3. Unregister shadows if mesh
+			if (node instanceof AbstractMesh) {
+				setShadowCaster(node, false);
+			}
 			
-			// 3. Dispose the mesh (and its children by default)
-			mesh.dispose();
+			// 4. Dispose
+			node.dispose();
 			
-			// 4. Update State
+			// 5. Update State
 			markModified();
 			refreshSceneGraph();
 		}
@@ -349,8 +384,18 @@ function bindDeleteButton(mesh) {
 // SCENE TREE VIEW
 // ==========================================
 
+// Helper to identify nodes that should appear in the tree
+function isGraphNode(node) {
+	if (node instanceof AbstractMesh) {
+		return isUserMesh(node);
+	}
+	if (node.getClassName() === "TransformNode") {
+		return node.metadata && node.metadata.isTransformNode;
+	}
+	return false;
+}
+
 function isUserMesh(mesh) {
-	// Filter out internal meshes
 	return mesh.name !== "previewSphere" &&
 		!mesh.name.startsWith("gizmo") &&
 		mesh.name !== "hdrSkyBox" &&
@@ -363,44 +408,44 @@ export function refreshSceneGraph() {
 	
 	container.innerHTML = "";
 	
-	// Get root meshes (no parent)
-	const roots = scene.meshes.filter(m => !m.parent && isUserMesh(m));
+	// Get root nodes (no parent) that are user objects
+	const roots = scene.rootNodes.filter(n => !n.parent && isGraphNode(n));
 	
 	if (roots.length === 0) {
 		container.innerHTML = "<div class='opacity-50 italic'>Empty Scene</div>";
 		return;
 	}
 	
-	roots.forEach(mesh => {
-		container.appendChild(createTreeNode(mesh, 0));
+	roots.forEach(node => {
+		container.appendChild(createTreeNode(node, 0));
 	});
 	
-	// Re-highlight if selection exists
 	if (currentMesh) highlightInTree(currentMesh);
 }
 
-function createTreeNode(mesh, level) {
+function createTreeNode(node, level) {
 	const wrapper = document.createElement("div");
 	
 	// Row Container
 	const row = document.createElement("div");
 	row.className = "flex items-center hover:bg-base-content/10 rounded cursor-pointer p-1";
 	row.style.paddingLeft = `${level * 12 + 4}px`;
-	row.dataset.meshId = mesh.id;
+	row.dataset.meshId = node.id;
 	
 	// Expand/Collapse Icon
-	const children = scene.meshes.filter(m => m.parent === mesh && isUserMesh(m));
+	// Filter children to only show graph nodes
+	const children = node.getChildren().filter(child => isGraphNode(child));
 	const hasChildren = children.length > 0;
 	
 	const icon = document.createElement("span");
 	icon.className = "w-4 h-4 mr-1 flex items-center justify-center font-mono text-xs opacity-70";
 	if (hasChildren) {
-		const isCollapsed = collapsedNodes.has(mesh.id);
+		const isCollapsed = collapsedNodes.has(node.id);
 		icon.innerText = isCollapsed ? "▶" : "▼";
 		icon.onclick = (e) => {
 			e.stopPropagation();
-			if (isCollapsed) collapsedNodes.delete(mesh.id);
-			else collapsedNodes.add(mesh.id);
+			if (isCollapsed) collapsedNodes.delete(node.id);
+			else collapsedNodes.add(node.id);
 			refreshSceneGraph();
 		};
 	} else {
@@ -410,19 +455,25 @@ function createTreeNode(mesh, level) {
 	
 	// Name
 	const label = document.createElement("span");
-	label.innerText = mesh.name;
+	label.innerText = node.name;
 	label.className = "truncate flex-1";
+	
+	// Visual distinction for TransformNodes
+	if (node.metadata && node.metadata.isTransformNode) {
+		label.className += " text-secondary";
+	}
+	
 	row.appendChild(label);
 	
 	// Selection Logic
 	row.onclick = () => {
-		selectMesh(mesh);
+		selectMesh(node);
 	};
 	
 	wrapper.appendChild(row);
 	
 	// Children Container
-	if (hasChildren && !collapsedNodes.has(mesh.id)) {
+	if (hasChildren && !collapsedNodes.has(node.id)) {
 		const childrenContainer = document.createElement("div");
 		children.forEach(child => {
 			childrenContainer.appendChild(createTreeNode(child, level + 1));
@@ -433,17 +484,16 @@ function createTreeNode(mesh, level) {
 	return wrapper;
 }
 
-function highlightInTree(mesh) {
+function highlightInTree(node) {
 	const container = document.getElementById("scene-explorer");
 	if (!container) return;
 	
-	// Remove active class from all
 	container.querySelectorAll("[data-mesh-id]").forEach(el => {
 		el.classList.remove("bg-primary/20", "text-primary");
 	});
 	
-	if (mesh) {
-		const el = container.querySelector(`[data-mesh-id="${mesh.id}"]`);
+	if (node) {
+		const el = container.querySelector(`[data-mesh-id="${node.id}"]`);
 		if (el) {
 			el.classList.add("bg-primary/20", "text-primary");
 		}

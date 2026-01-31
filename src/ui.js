@@ -2,11 +2,12 @@ import { MeshBuilder, Vector3, Quaternion } from "@babylonjs/core";
 import { scene } from "./scene.js";
 import { gizmoManager, setGizmoMode } from "./gizmoControl.js";
 import { createLight } from "./lightManager.js";
+import { createTransformNode } from "./transformNodeManager.js";
 import { markModified } from "./sceneManager.js";
 import { refreshSceneGraph } from "./propertyEditor.js";
 import { setShadowCaster } from "./shadowManager.js";
 
-const primitives = ["Cube", "Sphere", "Cylinder", "Plane", "Ground", "Cone", "Pyramid"];
+const primitives = ["Cube", "Sphere", "Cylinder", "Plane", "Ground", "Cone", "Pyramid", "Empty"];
 const lights = ["Point", "Directional"];
 
 export function setupUI() {
@@ -36,12 +37,15 @@ export function setupUI() {
 		let created = false;
 		
 		if (category === "primitive") {
-			createPrimitive(type);
+			if (type === "Empty") {
+				createTransformNode(null, scene);
+			} else {
+				createPrimitive(type);
+			}
 			created = true;
 		} else if (category === "light") {
 			const proxy = createLight(type.toLowerCase(), null, scene);
 			if (proxy) {
-				// gizmoManager is guaranteed to exist during runtime interactions
 				if (gizmoManager) gizmoManager.attachToMesh(proxy);
 				created = true;
 			}
@@ -129,12 +133,10 @@ export function createPrimitive(type, savedData = null) {
 		mesh.metadata = { type: type, isPrimitive: true };
 		
 		if (savedData) {
-			// --- NEW: Restore Name if available ---
 			if (savedData.name) {
 				mesh.name = savedData.name;
 			}
 			
-			// Restore Transforms
 			mesh.position.set(savedData.position.x, savedData.position.y, savedData.position.z);
 			mesh.scaling.set(savedData.scaling.x, savedData.scaling.y, savedData.scaling.z);
 			
@@ -150,7 +152,6 @@ export function createPrimitive(type, savedData = null) {
 					savedData.rotation.w
 				);
 			} else {
-				// Fallback if data happens to be Euler (legacy support)
 				mesh.rotationQuaternion = Quaternion.FromEulerAngles(
 					savedData.rotation.x,
 					savedData.rotation.y,
@@ -158,29 +159,21 @@ export function createPrimitive(type, savedData = null) {
 				);
 			}
 			
-			// --- NEW: Restore Pivot Point ---
 			if (savedData.pivot) {
 				mesh.setPivotPoint(new Vector3(savedData.pivot.x, savedData.pivot.y, savedData.pivot.z));
 			}
 			
-			// Restore Shadow Casting
 			if (savedData.castShadows) {
 				setShadowCaster(mesh, true);
 			}
 		} else {
-			// New Object Defaults
 			mesh.position.y = 0.5;
-			
-			// Enable shadows by default
 			setShadowCaster(mesh, true);
-			
-			// Enable receive shadows for floor-like objects
 			if (type === "Ground" || type === "Plane") {
 				mesh.receiveShadows = true;
 			}
 		}
 		
-		// Fix: Check if gizmoManager exists before attaching.
 		if (gizmoManager) {
 			gizmoManager.attachToMesh(mesh);
 		}
