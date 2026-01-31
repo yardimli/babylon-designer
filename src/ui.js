@@ -1,3 +1,5 @@
+/* src/ui.js */
+
 import { MeshBuilder, Vector3, Quaternion } from "@babylonjs/core";
 import { scene, getUniqueId } from "./scene.js";
 import { gizmoManager, setGizmoMode } from "./gizmoControl.js";
@@ -6,6 +8,8 @@ import { createTransformNode } from "./transformNodeManager.js";
 import { markModified } from "./sceneManager.js";
 import { refreshSceneGraph } from "./propertyEditor.js";
 import { setShadowCaster } from "./shadowManager.js";
+// NEW: Import History
+import { recordState } from "./historyManager.js";
 
 const primitives = ["Cube", "Sphere", "Cylinder", "Plane", "Ground", "Cone", "Pyramid", "Empty"];
 const lights = ["Point", "Directional"];
@@ -54,6 +58,8 @@ export function setupUI() {
 		if (created) {
 			markModified();
 			refreshSceneGraph();
+			// NEW: Record History
+			recordState();
 		}
 	});
 }

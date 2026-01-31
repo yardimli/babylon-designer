@@ -1,6 +1,10 @@
+/* src/gizmoControl.js */
+
 import { GizmoManager, PointerEventTypes } from "@babylonjs/core";
 import { updatePropertyEditor } from "./propertyEditor.js";
 import { markModified } from "./sceneManager.js";
+// NEW: Import History
+import { recordState } from "./historyManager.js";
 
 export let gizmoManager;
 
@@ -106,7 +110,11 @@ function attachDragObservers() {
 	
 	gizmos.forEach(g => {
 		if (g && !g._hasObserver) {
-			g.onDragEndObservable.add(() => markModified());
+			g.onDragEndObservable.add(() => {
+				markModified();
+				// NEW: Record history on drag end
+				recordState();
+			});
 			g._hasObserver = true;
 		}
 	});

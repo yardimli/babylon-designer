@@ -1,3 +1,5 @@
+/* src/propertyEditor.js */
+
 import { Vector3, Quaternion, Color3, AbstractMesh, TransformNode } from "@babylonjs/core";
 import { scene, getUniqueId } from "./scene.js";
 import { markModified } from "./sceneManager.js";
@@ -5,6 +7,8 @@ import { selectMesh } from "./gizmoControl.js";
 import { createLight } from "./lightManager.js";
 import { setShadowCaster, disposeShadowGenerator } from "./shadowManager.js";
 import { createTransformNode } from "./transformNodeManager.js";
+// NEW: Import History
+import { recordState } from "./historyManager.js";
 
 let currentMesh = null; // Can be Mesh or TransformNode
 let observer = null;
@@ -47,7 +51,7 @@ export function updatePropertyEditor(target) {
 	
 	currentMesh = target;
 	
-	// Always refresh tree highlight when selection changes
+	// Always refresh tree highlight when selection selection changes
 	highlightInTree(target);
 	
 	if (!target) {
@@ -143,6 +147,8 @@ function updateParentDropdown(mesh) {
 		
 		markModified();
 		refreshSceneGraph();
+		// NEW: Record History
+		recordState();
 	};
 }
 
@@ -162,6 +168,8 @@ function updateMaterialDropdown(mesh) {
 		const mat = scene.getMaterialByID(select.value);
 		mesh.material = mat;
 		markModified();
+		// NEW: Record History
+		recordState();
 	};
 }
 
@@ -175,14 +183,18 @@ function bindLightInputs(mesh) {
 	iInput.value = light.intensity;
 	cInput.value = light.diffuse.toHexString();
 	
-	iInput.oninput = () => {
+	iInput.onchange = () => {
 		light.intensity = parseFloat(iInput.value) || 0;
 		markModified();
+		// NEW: Record History
+		recordState();
 	};
 	
-	cInput.oninput = () => {
+	cInput.onchange = () => {
 		light.diffuse = Color3.FromHexString(cInput.value);
 		markModified();
+		// NEW: Record History
+		recordState();
 	};
 }
 
@@ -259,6 +271,8 @@ function bindInputs(mesh) {
 	document.querySelectorAll("#property-editor input[type='number']").forEach(input => {
 		if (input.id.startsWith("prop-light")) return;
 		input.oninput = updateMesh;
+		// NEW: Record History on change (committed)
+		input.onchange = recordState;
 	});
 	
 	// Handle Renaming with ID Uniqueness Check
@@ -277,6 +291,8 @@ function bindInputs(mesh) {
 		
 		markModified();
 		refreshSceneGraph();
+		// NEW: Record History
+		recordState();
 	};
 	
 	// Bind Shadow Checkboxes (Only if visible/mesh)
@@ -284,11 +300,15 @@ function bindInputs(mesh) {
 		document.getElementById("prop-receive-shadows").onchange = (e) => {
 			mesh.receiveShadows = e.target.checked;
 			markModified();
+			// NEW: Record History
+			recordState();
 		};
 		
 		document.getElementById("prop-cast-shadows").onchange = (e) => {
 			setShadowCaster(mesh, e.target.checked);
 			markModified();
+			// NEW: Record History
+			recordState();
 		};
 	}
 }
@@ -303,6 +323,8 @@ function bindDuplicateButton(node) {
 			selectMesh(newNode);
 			markModified();
 			refreshSceneGraph();
+			// NEW: Record History
+			recordState();
 		}
 	};
 }
@@ -396,6 +418,8 @@ function bindDeleteButton(node) {
 			// 5. Update State
 			markModified();
 			refreshSceneGraph();
+			// NEW: Record History
+			recordState();
 		}
 	};
 }

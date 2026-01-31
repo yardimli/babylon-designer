@@ -1,3 +1,5 @@
+/* src/sceneManager.js */
+
 import { Vector3, Color3, Quaternion, PBRMaterial } from "@babylonjs/core";
 import { scene, resetAxisIndicator, getSkipMaterialNames, getUniqueId } from "./scene.js";
 import { setupGizmos, disposeGizmos } from "./gizmoControl.js";
@@ -6,6 +8,8 @@ import { createPrimitive } from "./ui.js";
 import { createLight } from "./lightManager.js";
 import { createTransformNode } from "./transformNodeManager.js";
 import { clearShadowManagers } from "./shadowManager.js";
+// NEW: Import History Manager
+import { setupHistory } from "./historyManager.js";
 
 let currentFileName = null;
 let isModified = false;
@@ -24,6 +28,9 @@ export function setupSceneManager() {
 		const name = saveNameInput.value.trim();
 		if (name) saveSceneInternal(name);
 	};
+	
+	// NEW: Initialize History
+	setupHistory(serializeScene, loadSceneData);
 }
 
 export function markModified() {
@@ -60,10 +67,10 @@ function openLoadModal() {
 }
 
 // ==========================================
-// CUSTOM SAVE LOGIC
+// SERIALIZATION (Refactored for History)
 // ==========================================
-async function saveSceneInternal(name) {
-	// 1. Build Simple JSON Object
+
+export function serializeScene() {
 	const data = {
 		version: 1.1,
 		materials: [],
@@ -159,6 +166,12 @@ async function saveSceneInternal(name) {
 		}
 	});
 	
+	return data;
+}
+
+async function saveSceneInternal(name) {
+	const data = serializeScene();
+	
 	// 2. Send to Backend
 	try {
 		const response = await fetch('/api/scenes', {
@@ -184,8 +197,137 @@ async function saveSceneInternal(name) {
 }
 
 // ==========================================
-// CUSTOM LOAD LOGIC
+// LOADING (Refactored for History)
 // ==========================================
+
+export async function loadSceneData(data) {
+	// 1. Clear Scene
+	disposeGizmos();
+	updatePropertyEditor(null);
+	clearShadowManagers();
+	
+	const toDispose = [];
+	scene.meshes.forEach(m => {
+		if (m.name === "previewSphere") return;
+		if (m.metadata && (m.metadata.isPrimitive || m.metadata.isLightProxy || m.metadata.isTransformNodeProxy)) toDispose.push(m);
+	});
+	scene.transformNodes.forEach(t => {
+		if (t.name === "axisRoot") return;
+		if (t.metadata && t.metadata.isTransformNode) toDispose.push(t);
+	});
+	scene.lights.forEach(l => {
+		if (l.name !== "hemiLight" && l.name !== "light") toDispose.push(l);
+	});
+	
+	toDispose.forEach(n => n.dispose());
+	
+	const matsToDispose = scene.materials.filter(m => m.name !== "default material" && m.name !== "lightMat" && m.name !== "previewMat" && m.name !== "transformNodeMat");
+	matsToDispose.forEach(m => m.dispose());
+	
+	// Map to store original ID -> new Unique ID (in case of conflict in file or with system)
+	const idMap = new Map();
+	
+	// 2. Reconstruct Materials
+	if (data.materials) {
+		data.materials.forEach(matData => {
+			const mat = new PBRMaterial(matData.name, scene);
+			mat.id = matData.id;
+			mat.albedoColor = new Color3(...matData.albedo);
+			mat.emissiveColor = new Color3(...matData.emissive);
+			mat.metallic = matData.metallic;
+			mat.roughness = matData.roughness;
+			mat.alpha = matData.alpha;
+		});
+	}
+	
+	// 3. Reconstruct TransformNodes
+	if (data.transformNodes) {
+		data.transformNodes.forEach(nodeData => {
+			const node = createTransformNode(nodeData, scene);
+			if (node) {
+				idMap.set(nodeData.id, node.id);
+			}
+		});
+	}
+	
+	// 4. Reconstruct Lights
+	if (data.lights) {
+		data.lights.forEach(lightData => {
+			const proxy = createLight(lightData.type, lightData, scene);
+			if (proxy) {
+				const light = scene.getLightByID(proxy.metadata.lightId);
+				if (light) {
+					idMap.set(lightData.id, light.id);
+				}
+			}
+		});
+	}
+	
+	// 5. Reconstruct Meshes
+	if (data.meshes) {
+		data.meshes.forEach(meshData => {
+			const mesh = createPrimitive(meshData.type, meshData);
+			if (mesh) {
+				idMap.set(meshData.id, mesh.id);
+				
+				if (meshData.materialId) {
+					const mat = scene.getMaterialByID(meshData.materialId);
+					if (mat) mesh.material = mat;
+				}
+				mesh.receiveShadows = !!meshData.receiveShadows;
+			}
+		});
+	}
+	
+	// 6. Restore Hierarchy (Parenting)
+	const findParent = (idOrName) => {
+		if (!idOrName) return null;
+		const mappedId = idMap.get(idOrName) || idOrName;
+		
+		return scene.getMeshByName(mappedId) ||
+			scene.getMeshByID(mappedId) ||
+			scene.getTransformNodeByName(mappedId) ||
+			scene.getTransformNodeByID(mappedId) ||
+			scene.getLightByName(mappedId) ||
+			scene.getLightByID(mappedId);
+	};
+	
+	if (data.transformNodes) {
+		data.transformNodes.forEach(d => {
+			if (d.parentId) {
+				const childId = idMap.get(d.id) || d.id;
+				const child = scene.getTransformNodeByID(childId);
+				const parent = findParent(d.parentId);
+				if (child && parent) child.parent = parent;
+			}
+		});
+	}
+	if (data.lights) {
+		data.lights.forEach(d => {
+			if (d.parentId) {
+				const childId = idMap.get(d.id) || d.id;
+				const child = scene.getLightByID(childId);
+				const parent = findParent(d.parentId);
+				if (child && parent) child.parent = parent;
+			}
+		});
+	}
+	if (data.meshes) {
+		data.meshes.forEach(d => {
+			if (d.parentId) {
+				const childId = idMap.get(d.id) || d.id;
+				const child = scene.getMeshByID(childId);
+				const parent = findParent(d.parentId);
+				if (child && parent) child.parent = parent;
+			}
+		});
+	}
+	
+	setupGizmos(scene);
+	resetAxisIndicator();
+	refreshSceneGraph();
+}
+
 async function loadSceneInternal(filename) {
 	try {
 		const response = await fetch(`/api/scenes?file=${filename}`);
@@ -196,142 +338,11 @@ async function loadSceneInternal(filename) {
 			return;
 		}
 		
-		const data = result.data;
+		await loadSceneData(result.data);
 		
-		// 1. Clear Scene
-		disposeGizmos();
-		updatePropertyEditor(null);
-		clearShadowManagers();
-		
-		const toDispose = [];
-		scene.meshes.forEach(m => {
-			if (m.name === "previewSphere") return;
-			if (m.metadata && (m.metadata.isPrimitive || m.metadata.isLightProxy || m.metadata.isTransformNodeProxy)) toDispose.push(m);
-		});
-		scene.transformNodes.forEach(t => {
-			if (t.name === "axisRoot") return;
-			if (t.metadata && t.metadata.isTransformNode) toDispose.push(t);
-		});
-		scene.lights.forEach(l => {
-			if (l.name !== "hemiLight" && l.name !== "light") toDispose.push(l);
-		});
-		
-		toDispose.forEach(n => n.dispose());
-		
-		const matsToDispose = scene.materials.filter(m => m.name !== "default material" && m.name !== "lightMat" && m.name !== "previewMat" && m.name !== "transformNodeMat");
-		matsToDispose.forEach(m => m.dispose());
-		
-		// Map to store original ID -> new Unique ID (in case of conflict in file or with system)
-		const idMap = new Map();
-		
-		// 2. Reconstruct Materials
-		if (data.materials) {
-			data.materials.forEach(matData => {
-				const mat = new PBRMaterial(matData.name, scene);
-				mat.id = matData.id; // Materials usually don't have hierarchy parents, so ID conflict is less critical for parenting, but good to be safe.
-				mat.albedoColor = new Color3(...matData.albedo);
-				mat.emissiveColor = new Color3(...matData.emissive);
-				mat.metallic = matData.metallic;
-				mat.roughness = matData.roughness;
-				mat.alpha = matData.alpha;
-			});
-		}
-		
-		// 3. Reconstruct TransformNodes
-		if (data.transformNodes) {
-			data.transformNodes.forEach(nodeData => {
-				const node = createTransformNode(nodeData, scene);
-				if (node) {
-					// Store mapping if ID changed (createTransformNode uses getUniqueId internally)
-					idMap.set(nodeData.id, node.id);
-				}
-			});
-		}
-		
-		// 4. Reconstruct Lights
-		if (data.lights) {
-			data.lights.forEach(lightData => {
-				const proxy = createLight(lightData.type, lightData, scene);
-				if (proxy) {
-					// The proxy metadata holds the light ID
-					const light = scene.getLightByID(proxy.metadata.lightId);
-					if (light) {
-						idMap.set(lightData.id, light.id);
-					}
-				}
-			});
-		}
-		
-		// 5. Reconstruct Meshes
-		if (data.meshes) {
-			data.meshes.forEach(meshData => {
-				const mesh = createPrimitive(meshData.type, meshData);
-				if (mesh) {
-					idMap.set(meshData.id, mesh.id);
-					
-					if (meshData.materialId) {
-						const mat = scene.getMaterialByID(meshData.materialId);
-						if (mat) mesh.material = mat;
-					}
-					mesh.receiveShadows = !!meshData.receiveShadows;
-				}
-			});
-		}
-		
-		// 6. Restore Hierarchy (Parenting)
-		// Helper to find parent by name or ID, checking the ID map first
-		const findParent = (idOrName) => {
-			if (!idOrName) return null;
-			
-			// Check if we have a mapped ID for this parent
-			const mappedId = idMap.get(idOrName) || idOrName;
-			
-			return scene.getMeshByName(mappedId) ||
-				scene.getMeshByID(mappedId) ||
-				scene.getTransformNodeByName(mappedId) ||
-				scene.getTransformNodeByID(mappedId) ||
-				scene.getLightByName(mappedId) ||
-				scene.getLightByID(mappedId);
-		};
-		
-		// Apply parenting for all types
-		if (data.transformNodes) {
-			data.transformNodes.forEach(d => {
-				if (d.parentId) {
-					const childId = idMap.get(d.id) || d.id;
-					const child = scene.getTransformNodeByID(childId);
-					const parent = findParent(d.parentId);
-					if (child && parent) child.parent = parent;
-				}
-			});
-		}
-		if (data.lights) {
-			data.lights.forEach(d => {
-				if (d.parentId) {
-					const childId = idMap.get(d.id) || d.id;
-					const child = scene.getLightByID(childId);
-					const parent = findParent(d.parentId);
-					if (child && parent) child.parent = parent;
-				}
-			});
-		}
-		if (data.meshes) {
-			data.meshes.forEach(d => {
-				if (d.parentId) {
-					const childId = idMap.get(d.id) || d.id;
-					const child = scene.getMeshByID(childId);
-					const parent = findParent(d.parentId);
-					if (child && parent) child.parent = parent;
-				}
-			});
-		}
-		
-		setupGizmos(scene);
-		resetAxisIndicator();
 		currentFileName = filename;
 		isModified = false;
 		updateStatus();
-		refreshSceneGraph();
 		saveLoadModal.close();
 		
 	} catch (e) {
