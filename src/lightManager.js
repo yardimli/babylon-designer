@@ -24,7 +24,7 @@ export function createLight(type, savedData = null, scene) {
 			}
 		} else {
 			// Defaults
-			light.intensity = 1.0;
+			light.intensity = 0.5;
 			light.diffuse = new Color3(1, 1, 1);
 			light.position = new Vector3(0, 5, 0);
 		}
@@ -38,6 +38,12 @@ export function createLight(type, savedData = null, scene) {
 		proxy.material = new StandardMaterial("lightMat", scene);
 		proxy.material.emissiveColor = Color3.Yellow();
 		proxy.position = light.position; // Sync initial position
+		
+		// Fix: Align proxy rotation to light direction to prevent sync logic from resetting direction
+		if (type === "directional") {
+			const target = proxy.position.add(light.direction);
+			proxy.lookAt(target);
+		}
 		
 		// Metadata for Save/Load
 		proxy.metadata = {

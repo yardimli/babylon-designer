@@ -16,10 +16,21 @@ export function createShadowGenerator(light) {
 	sg.useBlurExponentialShadowMap = true;
 	sg.blurKernel = 32;
 	
-	// For PointLights, we might need specific depth settings,
-	// but defaults usually work for basic scenes.
-	if (light.getTypeID() === 0) { // 0 is PointLight
-		// Point light specific tweaks if necessary
+	// 0 is PointLight
+	if (light.getTypeID() === 0) {
+		// Fix: Point lights need a smaller minZ to cast shadows from close objects
+		// and a defined maxZ to ensure the depth map resolution is utilized correctly.
+		light.shadowMinZ = 0.1;
+		light.shadowMaxZ = 100;
+	}
+	
+	// 1 is DirectionalLight
+	if (light.getTypeID() === 1) {
+		// Fix: Automatically calculate the shadow projection bounds.
+		// This ensures that when the directional light (and its proxy) is moved,
+		// the shadow frustum updates to include the meshes in the scene.
+		// Without this, moving the light might cause meshes to fall out of the shadow projection.
+		light.autoCalcShadowZBounds = true;
 	}
 	
 	// Store reference on the light for easy disposal later

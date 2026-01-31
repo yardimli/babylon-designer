@@ -160,8 +160,14 @@ export function createPrimitive(type, savedData = null) {
 		} else {
 			// New Object Defaults
 			mesh.position.y = 0.5;
-			// Optional: Default new objects to cast shadows?
-			// setShadowCaster(mesh, true);
+			
+			// Enable shadows by default
+			setShadowCaster(mesh, true);
+			
+			// Enable receive shadows for floor-like objects
+			if (type === "Ground" || type === "Plane") {
+				mesh.receiveShadows = true;
+			}
 		}
 		
 		// Fix: Check if gizmoManager exists before attaching.
