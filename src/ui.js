@@ -4,6 +4,7 @@ import { gizmoManager, setGizmoMode } from "./gizmoControl.js";
 import { createLight } from "./lightManager.js";
 import { markModified } from "./sceneManager.js";
 import { refreshSceneGraph } from "./propertyEditor.js";
+import { setShadowCaster } from "./shadowManager.js"; // Import
 
 const primitives = ["Cube", "Sphere", "Cylinder", "Plane", "Ground", "Cone", "Pyramid"];
 const lights = ["Point", "Directional"];
@@ -109,10 +110,10 @@ export function createPrimitive(type, savedData = null) {
 			mesh = MeshBuilder.CreateCylinder(id, { height: 1, diameter: 1 }, scene);
 			break;
 		case "Plane":
-			mesh = MeshBuilder.CreatePlane(id, {size: 1}, scene);
+			mesh = MeshBuilder.CreatePlane(id, { size: 1 }, scene);
 			break;
 		case "Ground":
-			mesh = MeshBuilder.CreateGround(id, { width: 1, height: 1}, scene);
+			mesh = MeshBuilder.CreateGround(id, { width: 1, height: 1 }, scene);
 			mesh.backFaceCulling = false;
 			break;
 		case "Cone":
@@ -132,9 +133,6 @@ export function createPrimitive(type, savedData = null) {
 			mesh.position.set(savedData.position.x, savedData.position.y, savedData.position.z);
 			mesh.scaling.set(savedData.scaling.x, savedData.scaling.y, savedData.scaling.z);
 			
-			// Fix: The saver saves rotation as a Quaternion {x, y, z, w}.
-			// We must apply it to rotationQuaternion, otherwise applying x,y,z to .rotation (Euler)
-			// interprets the quaternion components as radians, causing incorrect angles (e.g. 90 -> 40.51).
 			if (!mesh.rotationQuaternion) {
 				mesh.rotationQuaternion = new Quaternion();
 			}
@@ -154,13 +152,19 @@ export function createPrimitive(type, savedData = null) {
 					savedData.rotation.z
 				);
 			}
+			
+			// --- NEW: Restore Shadow Casting ---
+			if (savedData.castShadows) {
+				setShadowCaster(mesh, true);
+			}
 		} else {
 			// New Object Defaults
 			mesh.position.y = 0.5;
+			// Optional: Default new objects to cast shadows?
+			// setShadowCaster(mesh, true);
 		}
 		
 		// Fix: Check if gizmoManager exists before attaching.
-		// During scene load, gizmoManager is disposed (null) to prevent attaching to every loaded mesh.
 		if (gizmoManager) {
 			gizmoManager.attachToMesh(mesh);
 		}

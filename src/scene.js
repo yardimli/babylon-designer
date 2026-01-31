@@ -20,6 +20,18 @@ export let camera;
 
 let axisObserver = null;
 
+export function getSkipMaterialNames() {
+	
+	const skipMaterialNames = [
+		"default material", "lightMat",
+		"gizmo_axisX_mat", "gizmo_axisY_mat", "gizmo_axisZ_mat",
+		"centerMat", "labelMat_X", "labelMat_Y", "labelMat_Z"
+	];
+	
+	return skipMaterialNames;
+}
+
+
 export function createScene(canvas) {
 	engine = new Engine(canvas, true);
 	scene = new Scene(engine);
@@ -108,11 +120,11 @@ function createAxisIndicator(scene) {
 	// Helper to create arrows
 	const makeArrow = (name, color, rotation) => {
 		// Cylinder (Line)
-		const tube = MeshBuilder.CreateCylinder(name + "_tube", { height: 2, diameter: 0.15 }, scene);
+		const tube = MeshBuilder.CreateCylinder(name + "_tube", {height: 2, diameter: 0.15}, scene);
 		tube.position.y = 1;
 		
 		// Cone (Tip)
-		const cone = MeshBuilder.CreateCylinder(name + "_cone", { diameterTop: 0, diameterBottom: 0.4, height: 0.5 }, scene);
+		const cone = MeshBuilder.CreateCylinder(name + "_cone", {diameterTop: 0, diameterBottom: 0.4, height: 0.5}, scene);
 		cone.position.y = 1.25;
 		
 		// Merge
@@ -137,7 +149,7 @@ function createAxisIndicator(scene) {
 		wrapper.parent = axisRoot;
 		
 		wrapper.rotation = rotation;
-		return { wrapper, tip: cone };
+		return {wrapper, tip: cone};
 	};
 	
 	// X Axis (Red)
@@ -153,7 +165,7 @@ function createAxisIndicator(scene) {
 	addLabel(scene, "Z", zArrow.tip, "#3388ff", axisRoot);
 	
 	// Center
-	const center = MeshBuilder.CreateSphere("gizmo_center", { diameter: 0.6 }, scene);
+	const center = MeshBuilder.CreateSphere("gizmo_center", {diameter: 0.6}, scene);
 	const cMat = new StandardMaterial("centerMat", scene);
 	cMat.emissiveColor = new Color3(0.5, 0.5, 0.5);
 	cMat.disableLighting = true;
@@ -173,7 +185,7 @@ function createAxisIndicator(scene) {
 		
 		// Create a ray from screen coordinate (padding, padding)
 		// Note: createPickingRay uses the camera's current transform
-		const ray = scene.createPickingRay(padding, padding*2, Matrix.Identity(), camera);
+		const ray = scene.createPickingRay(padding, padding * 2, Matrix.Identity(), camera);
 		
 		// Place axisRoot along the ray
 		axisRoot.position = ray.origin.add(ray.direction.scale(distance));
@@ -186,14 +198,14 @@ function createAxisIndicator(scene) {
 }
 
 function addLabel(scene, text, parent, colorName) {
-	const plane = MeshBuilder.CreatePlane("gizmo_label_" + text, { size: 1.2 }, scene);
+	const plane = MeshBuilder.CreatePlane("gizmo_label_" + text, {size: 1.2}, scene);
 	plane.parent = parent;
 	plane.position.y += 0.8;
 	plane.billboardMode = 7; // BILLBOARDMODE_ALL
 	plane.renderingGroupId = 1;
 	plane.isPickable = false;
 	
-	const dt = new DynamicTexture("dt_" + text, { width: 64, height: 64 }, scene);
+	const dt = new DynamicTexture("dt_" + text, {width: 64, height: 64}, scene);
 	dt.hasAlpha = true;
 	const ctx = dt.getContext();
 	ctx.clearRect(0, 0, 64, 64);

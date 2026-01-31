@@ -1,4 +1,5 @@
 import { PointLight, DirectionalLight, Vector3, Color3, MeshBuilder, StandardMaterial } from "@babylonjs/core";
+import { createShadowGenerator } from "./shadowManager.js"; // Import new manager
 
 export function createLight(type, savedData = null, scene) {
 	let light;
@@ -28,8 +29,12 @@ export function createLight(type, savedData = null, scene) {
 			light.position = new Vector3(0, 5, 0);
 		}
 		
+		// --- NEW: Initialize Shadows ---
+		createShadowGenerator(light);
+		// -------------------------------
+		
 		// 3. Create Proxy Mesh for Gizmo Selection
-		const proxy = MeshBuilder.CreateSphere(id + "_proxy", {diameter: 0.5}, scene);
+		const proxy = MeshBuilder.CreateSphere(id + "_proxy", { diameter: 0.5 }, scene);
 		proxy.material = new StandardMaterial("lightMat", scene);
 		proxy.material.emissiveColor = Color3.Yellow();
 		proxy.position = light.position; // Sync initial position

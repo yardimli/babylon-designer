@@ -2,6 +2,8 @@ import { Vector3, Quaternion } from "@babylonjs/core";
 import { scene } from "./scene.js";
 import { markModified } from "./sceneManager.js";
 import { selectMesh } from "./gizmoControl.js";
+import { createLight } from "./lightManager.js";
+import { setShadowCaster, disposeShadowGenerator } from "./shadowManager.js"; // Import new manager
 
 let currentMesh = null;
 let observer = null;
@@ -59,6 +61,7 @@ export function updatePropertyEditor(mesh) {
 	updateParentDropdown(mesh);
 	updateMaterialDropdown(mesh);
 	bindInputs(mesh);
+	bindDuplicateButton(mesh); // Bind duplicate button
 	bindDeleteButton(mesh); // Bind the delete button logic
 	
 	observer = scene.onBeforeRenderObservable.add(() => {
@@ -110,7 +113,7 @@ function updateMaterialDropdown(mesh) {
 }
 
 function syncUIFromMesh(mesh) {
-	if (document.activeElement.tagName === "INPUT") return;
+	if (document.activeElement.tagName === "INPUT" && document.activeElement.type !== "checkbox") return;
 	
 	document.getElementById("pos-x").value = mesh.position.x.toFixed(2);
 	document.getElementById("pos-y").value = mesh.position.y.toFixed(2);
@@ -135,6 +138,11 @@ function syncUIFromMesh(mesh) {
 	document.getElementById("piv-x").value = pivot.x.toFixed(2);
 	document.getElementById("piv-y").value = pivot.y.toFixed(2);
 	document.getElementById("piv-z").value = pivot.z.toFixed(2);
+	
+	// Sync Shadow Checkboxes
+	document.getElementById("prop-receive-shadows").checked = !!mesh.receiveShadows;
+	// Use metadata to check state
+	document.getElementById("prop-cast-shadows").checked = !!(mesh.metadata && mesh.metadata.castShadows);
 }
 
 function bindInputs(mesh) {
@@ -161,7 +169,7 @@ function bindInputs(mesh) {
 		markModified();
 	};
 	
-	document.querySelectorAll("#property-editor input").forEach(input => {
+	document.querySelectorAll("#property-editor input[type='number']").forEach(input => {
 		input.oninput = updateMesh;
 	});
 	
@@ -170,6 +178,82 @@ function bindInputs(mesh) {
 		markModified();
 		refreshSceneGraph(); // Name changed, update tree
 	};
+	
+	// Bind Shadow Checkboxes
+	document.getElementById("prop-receive-shadows").onchange = (e) => {
+		mesh.receiveShadows = e.target.checked;
+		markModified();
+	};
+	
+	document.getElementById("prop-cast-shadows").onchange = (e) => {
+		// --- NEW: Use Shadow Manager ---
+		setShadowCaster(mesh, e.target.checked);
+		markModified();
+	};
+}
+
+// Logic for the Duplicate Button
+function bindDuplicateButton(mesh) {
+	const btn = document.getElementById("btn-duplicate-asset");
+	if (!btn) return;
+	
+	btn.onclick = () => {
+		const newMesh = duplicateHierarchy(mesh, mesh.parent);
+		if (newMesh) {
+			selectMesh(newMesh);
+			markModified();
+			refreshSceneGraph();
+		}
+	};
+}
+
+function duplicateHierarchy(node, parent) {
+	let newNode = null;
+	
+	if (node.metadata && node.metadata.isLightProxy) {
+		// Handle Light Duplication
+		const oldLight = scene.getLightByID(node.metadata.lightId);
+		if (oldLight) {
+			const savedData = {
+				id: null, // generate new
+				position: node.position, // use proxy position
+				intensity: oldLight.intensity,
+				diffuse: oldLight.diffuse,
+				direction: oldLight.direction ? { x: oldLight.direction.x, y: oldLight.direction.y, z: oldLight.direction.z } : null
+			};
+			newNode = createLight(node.metadata.lightType, savedData, scene);
+			if (newNode && parent) newNode.parent = parent;
+		}
+	} else if (node.metadata && node.metadata.isPrimitive) {
+		// Handle Primitive Duplication
+		const name = node.name + "_dup";
+		newNode = node.clone(name, parent);
+		newNode.id = name + "_" + Date.now();
+		
+		// Deep copy metadata
+		if (node.metadata) {
+			newNode.metadata = JSON.parse(JSON.stringify(node.metadata));
+		}
+		
+		// Copy shadow props
+		newNode.receiveShadows = node.receiveShadows;
+		
+		// --- NEW: Register Shadow Caster if needed ---
+		if (newNode.metadata && newNode.metadata.castShadows) {
+			setShadowCaster(newNode, true);
+		}
+	}
+	
+	if (newNode) {
+		// Recursively duplicate children
+		node.getChildren().forEach(child => {
+			if (isUserMesh(child)) {
+				duplicateHierarchy(child, newNode);
+			}
+		});
+	}
+	
+	return newNode;
 }
 
 // Logic for the Delete Button
@@ -182,11 +266,18 @@ function bindDeleteButton(mesh) {
 			// 1. Handle Light Proxy cleanup
 			if (mesh.metadata && mesh.metadata.isLightProxy) {
 				const light = scene.getLightByID(mesh.metadata.lightId);
-				if (light) light.dispose();
+				if (light) {
+					// --- NEW: Dispose Shadow Generator ---
+					disposeShadowGenerator(light);
+					light.dispose();
+				}
 			}
 			
 			// 2. Deselect first to clear gizmos and UI
 			selectMesh(null);
+			
+			// --- NEW: Unregister from shadows before disposal ---
+			setShadowCaster(mesh, false);
 			
 			// 3. Dispose the mesh (and its children by default)
 			mesh.dispose();
@@ -299,9 +390,6 @@ function highlightInTree(mesh) {
 		const el = container.querySelector(`[data-mesh-id="${mesh.id}"]`);
 		if (el) {
 			el.classList.add("bg-primary/20", "text-primary");
-			// Ensure parent nodes are expanded?
-			// That would require traversing up and removing from collapsedNodes, then refreshing.
-			// For now, simple highlight.
 		}
 	}
 }

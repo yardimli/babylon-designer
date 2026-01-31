@@ -1,5 +1,5 @@
 import { Engine, Scene, Vector3, Color3, PBRMaterial, MeshBuilder, HemisphericLight } from "@babylonjs/core";
-import { scene } from "./scene.js";
+import {getSkipMaterialNames, scene} from "./scene.js";
 import { updatePropertyEditor } from "./propertyEditor.js";
 
 let previewEngine, previewScene, previewSphere, previewMaterial;
@@ -63,20 +63,25 @@ function refreshMaterialList() {
 	
 	listContainer.innerHTML = "";
 	
+	const skipNames = getSkipMaterialNames();
+	
 	// Filter out internal materials
 	const materials = scene.materials.filter(m =>
 		m.name !== "default material" &&
 		m.name !== "lightMat" &&
 		!m.name.startsWith("preview") &&
-		!m.name.startsWith("gizmo")
+		!m.name.startsWith("gizmo") &&
+		!skipNames.includes(m.name)
 	);
 	
 	if (materials.length === 0) {
 		listContainer.innerHTML = "<div class='text-xs opacity-50 p-2'>No custom materials</div>";
 		return;
 	}
+	console.log(getSkipMaterialNames());
 	
 	materials.forEach(mat => {
+		console.log(mat.name);
 		const btn = document.createElement("button");
 		btn.className = "btn btn-sm btn-ghost justify-start font-normal normal-case text-left w-full truncate";
 		btn.innerHTML = `<span class="w-3 h-3 rounded-full mr-2 inline-block border border-base-content/20" style="background-color: ${mat.albedoColor.toHexString()}"></span>${mat.name}`;

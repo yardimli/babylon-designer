@@ -1,9 +1,10 @@
 import { Vector3, Color3, Quaternion, PBRMaterial } from "@babylonjs/core";
-import { scene, resetAxisIndicator } from "./scene.js";
+import { scene, resetAxisIndicator, getSkipMaterialNames } from "./scene.js";
 import { setupGizmos, disposeGizmos } from "./gizmoControl.js";
 import { updatePropertyEditor, refreshSceneGraph } from "./propertyEditor.js";
 import { createPrimitive } from "./ui.js";
 import { createLight } from "./lightManager.js";
+import { clearShadowManagers } from "./shadowManager.js"; // Import
 
 let currentFileName = null;
 let isModified = false;
@@ -69,10 +70,12 @@ async function saveSceneInternal(name) {
 		meshes: []
 	};
 	
+	const skipNames = getSkipMaterialNames();
+	
 	// -- Save Materials --
 	scene.materials.forEach(mat => {
 		// Skip default or gizmo materials
-		if (mat.name === "default material" || mat.name === "lightMat" || mat.name.startsWith("preview")) return;
+		if (skipNames.includes(mat.name) || mat.name.startsWith("preview")) return;
 		
 		const matData = {
 			id: mat.id,
@@ -87,8 +90,6 @@ async function saveSceneInternal(name) {
 	});
 	
 	// -- Save Lights --
-	// We iterate Meshes to find Light Proxies, then get the linked light
-	// (Or iterate lights directly, but we want to ensure we only save user lights)
 	scene.meshes.forEach(mesh => {
 		if (mesh.metadata && mesh.metadata.isLightProxy) {
 			const light = scene.getLightByID(mesh.metadata.lightId);
@@ -126,7 +127,9 @@ async function saveSceneInternal(name) {
 				rotation: rot,
 				scaling: { x: mesh.scaling.x, y: mesh.scaling.y, z: mesh.scaling.z },
 				materialId: mesh.material ? mesh.material.id : null,
-				parentId: mesh.parent ? mesh.parent.name : null // Simple parent by name/id
+				parentId: mesh.parent ? mesh.parent.name : null, // Simple parent by name/id
+				receiveShadows: mesh.receiveShadows,
+				castShadows: mesh.metadata.castShadows || false
 			});
 		}
 	});
@@ -173,10 +176,9 @@ async function loadSceneInternal(filename) {
 		// 1. Clear Scene
 		disposeGizmos();
 		updatePropertyEditor(null);
+		clearShadowManagers(); // Reset shadow manager state
 		
 		// Dispose all user meshes and lights.
-		// Keep camera and hemispheric light (if you want base lighting).
-		// We filter by checking if they are our created objects.
 		const toDispose = [];
 		scene.meshes.forEach(m => {
 			if (m.name === "previewSphere") return; // Keep material editor preview
@@ -206,7 +208,7 @@ async function loadSceneInternal(filename) {
 			});
 		}
 		
-		// 3. Reconstruct Lights
+		// 3. Reconstruct Lights (Shadow generators created inside createLight)
 		if (data.lights) {
 			data.lights.forEach(lightData => {
 				createLight(lightData.type, lightData, scene);
@@ -216,12 +218,19 @@ async function loadSceneInternal(filename) {
 		// 4. Reconstruct Meshes
 		if (data.meshes) {
 			data.meshes.forEach(meshData => {
+				// createPrimitive handles shadow casting registration via savedData
 				const mesh = createPrimitive(meshData.type, meshData);
 				
 				// Re-link Material
 				if (meshData.materialId) {
 					const mat = scene.getMaterialByID(meshData.materialId);
 					if (mat) mesh.material = mat;
+				}
+				
+				// Restore Shadow Properties
+				if (mesh) {
+					mesh.receiveShadows = !!meshData.receiveShadows;
+					// castShadows handled in createPrimitive
 				}
 			});
 			
@@ -230,9 +239,6 @@ async function loadSceneInternal(filename) {
 				if (meshData.parentId) {
 					const child = scene.getMeshByID(meshData.id);
 					const parent = scene.getMeshByName(meshData.parentId) || scene.getMeshByID(meshData.parentId);
-					// Use direct assignment (child.parent =) instead of setParent().
-					// setParent() preserves absolute world position (recalculating local),
-					// but our saved data already contains local coordinates relative to the parent.
 					if (child && parent) child.parent = parent;
 				}
 			});
@@ -240,7 +246,7 @@ async function loadSceneInternal(filename) {
 		
 		// Finish
 		setupGizmos(scene);
-		resetAxisIndicator(); // Recreate axis indicator to fix gray material issue
+		resetAxisIndicator();
 		currentFileName = filename;
 		isModified = false;
 		updateStatus();
@@ -260,6 +266,7 @@ function createNewScene() {
 	isModified = false;
 	
 	disposeGizmos();
+	clearShadowManagers(); // Reset shadow manager state
 	
 	// Quick Clear
 	scene.meshes.forEach(m => {
