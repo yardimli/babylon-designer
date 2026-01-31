@@ -1,8 +1,12 @@
 import { TransformNode, MeshBuilder, StandardMaterial, Color3, Quaternion } from "@babylonjs/core";
 import { gizmoManager } from "./gizmoControl.js";
+import { getUniqueId } from "./scene.js";
 
 export function createTransformNode(savedData = null, scene) {
-	const id = savedData ? savedData.id : `node_${Date.now()}`;
+	const baseId = savedData ? savedData.id : `node_${Date.now()}`;
+	// Ensure ID is unique
+	const id = getUniqueId(scene, baseId);
+	
 	const node = new TransformNode(id, scene);
 	
 	if (savedData) {
@@ -22,7 +26,7 @@ export function createTransformNode(savedData = null, scene) {
 	}
 	
 	// Create Proxy Mesh for selection
-	const proxy = MeshBuilder.CreateBox(id + "_proxy", { size: 0.5 }, scene);
+	const proxy = MeshBuilder.CreateSphere(id + "_proxy", { diameter: 0.5 }, scene);
 	proxy.parent = node;
 	proxy.isPickable = true;
 	

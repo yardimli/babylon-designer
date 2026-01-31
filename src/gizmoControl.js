@@ -1,4 +1,4 @@
-import { GizmoManager, TransformNode } from "@babylonjs/core";
+import { GizmoManager } from "@babylonjs/core";
 import { updatePropertyEditor } from "./propertyEditor.js";
 import { markModified } from "./sceneManager.js";
 
@@ -25,37 +25,12 @@ export function setupGizmos(scene) {
 	gizmoManager.usePointerToAttachGizmos = true;
 	gizmoManager.clearGizmoOnEmptyPointerEvent = true;
 	
-	// Handle Mesh Attachment
 	gizmoManager.onAttachedToMeshObservable.add((mesh) => {
+		console.log("Gizmo attached to mesh:", mesh ? mesh.name : "none");
+		updatePropertyEditor(mesh);
+		// Attach drag listeners to gizmos when they become active
 		if (mesh) {
-			// Check if it's a TransformNode Proxy
-			if (mesh.metadata && mesh.metadata.isTransformNodeProxy) {
-				// Redirect attachment to the parent Node
-				// This will cause onAttachedToMeshObservable to fire again with null,
-				// and then onAttachedToNodeObservable to fire with the node.
-				gizmoManager.attachToNode(mesh.parent);
-				return;
-			}
-			updatePropertyEditor(mesh);
 			attachDragObservers();
-		} else {
-			// If we detached from mesh, check if we are attached to a node
-			// If not, clear editor
-			if (!gizmoManager.attachedNode) {
-				updatePropertyEditor(null);
-			}
-		}
-	});
-	
-	// Handle Node Attachment (for TransformNodes)
-	gizmoManager.onAttachedToNodeObservable.add((node) => {
-		if (node) {
-			updatePropertyEditor(node);
-			attachDragObservers();
-		} else {
-			if (!gizmoManager.attachedMesh) {
-				updatePropertyEditor(null);
-			}
 		}
 	});
 }
@@ -90,13 +65,9 @@ function attachDragObservers() {
 	});
 }
 
-// Helper to manually select a mesh or node (used by TreeView)
-export function selectMesh(target) {
-	if (!gizmoManager) return;
-	
-	if (target instanceof TransformNode && target.getClassName() === "TransformNode") {
-		gizmoManager.attachToNode(target);
-	} else {
-		gizmoManager.attachToMesh(target);
+// Helper to manually select a mesh (used by TreeView)
+export function selectMesh(mesh) {
+	if (gizmoManager) {
+		gizmoManager.attachToMesh(mesh);
 	}
 }

@@ -1,5 +1,5 @@
 import { MeshBuilder, Vector3, Quaternion } from "@babylonjs/core";
-import { scene } from "./scene.js";
+import { scene, getUniqueId } from "./scene.js";
 import { gizmoManager, setGizmoMode } from "./gizmoControl.js";
 import { createLight } from "./lightManager.js";
 import { createTransformNode } from "./transformNodeManager.js";
@@ -101,7 +101,9 @@ function createDraggableItem(name, category) {
 // Exported so the Loader can use it too
 export function createPrimitive(type, savedData = null) {
 	let mesh;
-	const id = savedData ? savedData.id : `${type}_${Date.now()}`;
+	const baseId = savedData ? savedData.id : `${type}_${Date.now()}`;
+	// Ensure ID is unique
+	const id = getUniqueId(scene, baseId);
 	
 	switch (type) {
 		case "Cube":

@@ -1,5 +1,5 @@
 import { Vector3, Color3, Quaternion, PBRMaterial } from "@babylonjs/core";
-import { scene, resetAxisIndicator, getSkipMaterialNames } from "./scene.js";
+import { scene, resetAxisIndicator, getSkipMaterialNames, getUniqueId } from "./scene.js";
 import { setupGizmos, disposeGizmos } from "./gizmoControl.js";
 import { updatePropertyEditor, refreshSceneGraph } from "./propertyEditor.js";
 import { createPrimitive } from "./ui.js";
@@ -221,11 +221,14 @@ async function loadSceneInternal(filename) {
 		const matsToDispose = scene.materials.filter(m => m.name !== "default material" && m.name !== "lightMat" && m.name !== "previewMat" && m.name !== "transformNodeMat");
 		matsToDispose.forEach(m => m.dispose());
 		
+		// Map to store original ID -> new Unique ID (in case of conflict in file or with system)
+		const idMap = new Map();
+		
 		// 2. Reconstruct Materials
 		if (data.materials) {
 			data.materials.forEach(matData => {
 				const mat = new PBRMaterial(matData.name, scene);
-				mat.id = matData.id;
+				mat.id = matData.id; // Materials usually don't have hierarchy parents, so ID conflict is less critical for parenting, but good to be safe.
 				mat.albedoColor = new Color3(...matData.albedo);
 				mat.emissiveColor = new Color3(...matData.emissive);
 				mat.metallic = matData.metallic;
@@ -237,14 +240,25 @@ async function loadSceneInternal(filename) {
 		// 3. Reconstruct TransformNodes
 		if (data.transformNodes) {
 			data.transformNodes.forEach(nodeData => {
-				createTransformNode(nodeData, scene);
+				const node = createTransformNode(nodeData, scene);
+				if (node) {
+					// Store mapping if ID changed (createTransformNode uses getUniqueId internally)
+					idMap.set(nodeData.id, node.id);
+				}
 			});
 		}
 		
 		// 4. Reconstruct Lights
 		if (data.lights) {
 			data.lights.forEach(lightData => {
-				createLight(lightData.type, lightData, scene);
+				const proxy = createLight(lightData.type, lightData, scene);
+				if (proxy) {
+					// The proxy metadata holds the light ID
+					const light = scene.getLightByID(proxy.metadata.lightId);
+					if (light) {
+						idMap.set(lightData.id, light.id);
+					}
+				}
 			});
 		}
 		
@@ -252,33 +266,40 @@ async function loadSceneInternal(filename) {
 		if (data.meshes) {
 			data.meshes.forEach(meshData => {
 				const mesh = createPrimitive(meshData.type, meshData);
-				if (meshData.materialId) {
-					const mat = scene.getMaterialByID(meshData.materialId);
-					if (mat) mesh.material = mat;
-				}
 				if (mesh) {
+					idMap.set(meshData.id, mesh.id);
+					
+					if (meshData.materialId) {
+						const mat = scene.getMaterialByID(meshData.materialId);
+						if (mat) mesh.material = mat;
+					}
 					mesh.receiveShadows = !!meshData.receiveShadows;
 				}
 			});
 		}
 		
 		// 6. Restore Hierarchy (Parenting)
-		// Helper to find parent by name or ID
+		// Helper to find parent by name or ID, checking the ID map first
 		const findParent = (idOrName) => {
 			if (!idOrName) return null;
-			return scene.getMeshByName(idOrName) ||
-				scene.getMeshByID(idOrName) ||
-				scene.getTransformNodeByName(idOrName) ||
-				scene.getTransformNodeByID(idOrName) ||
-				scene.getLightByName(idOrName) ||
-				scene.getLightByID(idOrName);
+			
+			// Check if we have a mapped ID for this parent
+			const mappedId = idMap.get(idOrName) || idOrName;
+			
+			return scene.getMeshByName(mappedId) ||
+				scene.getMeshByID(mappedId) ||
+				scene.getTransformNodeByName(mappedId) ||
+				scene.getTransformNodeByID(mappedId) ||
+				scene.getLightByName(mappedId) ||
+				scene.getLightByID(mappedId);
 		};
 		
 		// Apply parenting for all types
 		if (data.transformNodes) {
 			data.transformNodes.forEach(d => {
 				if (d.parentId) {
-					const child = scene.getTransformNodeByID(d.id);
+					const childId = idMap.get(d.id) || d.id;
+					const child = scene.getTransformNodeByID(childId);
 					const parent = findParent(d.parentId);
 					if (child && parent) child.parent = parent;
 				}
@@ -287,7 +308,8 @@ async function loadSceneInternal(filename) {
 		if (data.lights) {
 			data.lights.forEach(d => {
 				if (d.parentId) {
-					const child = scene.getLightByID(d.id);
+					const childId = idMap.get(d.id) || d.id;
+					const child = scene.getLightByID(childId);
 					const parent = findParent(d.parentId);
 					if (child && parent) child.parent = parent;
 				}
@@ -296,7 +318,8 @@ async function loadSceneInternal(filename) {
 		if (data.meshes) {
 			data.meshes.forEach(d => {
 				if (d.parentId) {
-					const child = scene.getMeshByID(d.id);
+					const childId = idMap.get(d.id) || d.id;
+					const child = scene.getMeshByID(childId);
 					const parent = findParent(d.parentId);
 					if (child && parent) child.parent = parent;
 				}

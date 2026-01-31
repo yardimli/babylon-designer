@@ -1,9 +1,12 @@
 import { PointLight, DirectionalLight, Vector3, Color3, MeshBuilder, StandardMaterial } from "@babylonjs/core";
 import { createShadowGenerator } from "./shadowManager.js";
+import { getUniqueId } from "./scene.js";
 
 export function createLight(type, savedData = null, scene) {
 	let light;
-	const id = savedData ? savedData.id : `light_${Date.now()}`;
+	const baseId = savedData ? savedData.id : `light_${Date.now()}`;
+	// Ensure ID is unique
+	const id = getUniqueId(scene, baseId);
 	
 	if (type === "point") {
 		light = new PointLight(id, new Vector3(0, 5, 0), scene);

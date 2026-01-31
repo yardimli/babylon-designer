@@ -31,6 +31,24 @@ export function getSkipMaterialNames() {
 	return skipMaterialNames;
 }
 
+// Helper to ensure unique IDs across the scene
+export function getUniqueId(scene, baseId) {
+	let id = baseId;
+	let counter = 1;
+	
+	// Check Meshes, Lights, TransformNodes, and Materials
+	const exists = (i) =>
+		scene.getMeshByID(i) ||
+		scene.getTransformNodeByID(i) ||
+		scene.getLightByID(i) ||
+		scene.getMaterialByID(i);
+	
+	while (exists(id)) {
+		id = `${baseId}_${counter}`;
+		counter++;
+	}
+	return id;
+}
 
 export function createScene(canvas) {
 	engine = new Engine(canvas, true);

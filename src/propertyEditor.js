@@ -1,5 +1,5 @@
 import { Vector3, Quaternion, Color3, AbstractMesh, TransformNode } from "@babylonjs/core";
-import { scene } from "./scene.js";
+import { scene, getUniqueId } from "./scene.js";
 import { markModified } from "./sceneManager.js";
 import { selectMesh } from "./gizmoControl.js";
 import { createLight } from "./lightManager.js";
@@ -261,8 +261,20 @@ function bindInputs(mesh) {
 		input.oninput = updateMesh;
 	});
 	
+	// Handle Renaming with ID Uniqueness Check
 	document.getElementById("prop-id").onchange = (e) => {
-		mesh.name = e.target.value;
+		const newName = e.target.value;
+		// Ensure the new name/id is unique
+		const uniqueId = getUniqueId(scene, newName);
+		
+		mesh.name = uniqueId;
+		mesh.id = uniqueId; // Sync ID with Name for consistency
+		
+		// Update UI if the name was modified to be unique
+		if (uniqueId !== newName) {
+			e.target.value = uniqueId;
+		}
+		
 		markModified();
 		refreshSceneGraph();
 	};
@@ -298,12 +310,16 @@ function bindDuplicateButton(node) {
 function duplicateHierarchy(node, parent) {
 	let newNode = null;
 	
+	// Generate a unique ID for the duplicate
+	const baseId = node.name + "_dup";
+	const newId = getUniqueId(scene, baseId);
+	
 	if (node.metadata && node.metadata.isLightProxy) {
 		// Light Duplication
 		const oldLight = scene.getLightByID(node.metadata.lightId);
 		if (oldLight) {
 			const savedData = {
-				id: null,
+				id: newId, // Use the unique ID
 				position: node.position,
 				intensity: oldLight.intensity,
 				diffuse: oldLight.diffuse,
@@ -315,20 +331,19 @@ function duplicateHierarchy(node, parent) {
 	} else if (node.metadata && node.metadata.isTransformNode) {
 		// TransformNode Duplication
 		const savedData = {
-			id: null,
+			id: newId, // Use the unique ID
 			position: node.position,
 			rotation: node.rotationQuaternion || Quaternion.FromEulerVector(node.rotation),
 			scaling: node.scaling,
-			name: node.name + "_dup"
+			name: newId
 		};
 		newNode = createTransformNode(savedData, scene);
 		if (newNode && parent) newNode.parent = parent;
 		
 	} else if (node.metadata && node.metadata.isPrimitive) {
 		// Mesh Duplication
-		const name = node.name + "_dup";
-		newNode = node.clone(name, parent);
-		newNode.id = name + "_" + Date.now();
+		newNode = node.clone(newId, parent);
+		newNode.id = newId; // Ensure ID matches
 		
 		if (node.metadata) {
 			newNode.metadata = JSON.parse(JSON.stringify(node.metadata));
