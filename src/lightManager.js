@@ -1,12 +1,10 @@
 import { PointLight, DirectionalLight, Vector3, Color3, MeshBuilder, StandardMaterial } from "@babylonjs/core";
-import { createShadowGenerator } from "./shadowManager.js"; // Import new manager
+import { createShadowGenerator } from "./shadowManager.js";
 
 export function createLight(type, savedData = null, scene) {
 	let light;
-	// Use saved ID or generate new
 	const id = savedData ? savedData.id : `light_${Date.now()}`;
 	
-	// 1. Create the Babylon Light
 	if (type === "point") {
 		light = new PointLight(id, new Vector3(0, 5, 0), scene);
 	} else if (type === "directional") {
@@ -14,7 +12,6 @@ export function createLight(type, savedData = null, scene) {
 	}
 	
 	if (light) {
-		// 2. Apply Properties
 		if (savedData) {
 			light.position = new Vector3(savedData.position.x, savedData.position.y, savedData.position.z);
 			light.intensity = savedData.intensity;
@@ -23,36 +20,30 @@ export function createLight(type, savedData = null, scene) {
 				light.direction = new Vector3(savedData.direction.x, savedData.direction.y, savedData.direction.z);
 			}
 		} else {
-			// Defaults
 			light.intensity = 0.5;
 			light.diffuse = new Color3(1, 1, 1);
 			light.position = new Vector3(0, 5, 0);
 		}
 		
-		// --- NEW: Initialize Shadows ---
 		createShadowGenerator(light);
-		// -------------------------------
 		
-		// 3. Create Proxy Mesh for Gizmo Selection
+		// Create Proxy Mesh for Gizmo Selection
 		const proxy = MeshBuilder.CreateSphere(id + "_proxy", { diameter: 0.5 }, scene);
 		proxy.material = new StandardMaterial("lightMat", scene);
 		proxy.material.emissiveColor = Color3.Yellow();
 		proxy.position = light.position; // Sync initial position
 		
-		// Fix: Align proxy rotation to light direction to prevent sync logic from resetting direction
 		if (type === "directional") {
 			const target = proxy.position.add(light.direction);
 			proxy.lookAt(target);
 		}
 		
-		// Metadata for Save/Load
 		proxy.metadata = {
 			isLightProxy: true,
 			lightId: light.id,
 			lightType: type
 		};
 		
-		// 4. Sync Logic
 		setupLightSync(proxy, light, scene);
 		
 		return proxy;
@@ -64,15 +55,32 @@ function setupLightSync(proxy, light, scene) {
 	if (proxy._lightObserver) scene.onBeforeRenderObservable.remove(proxy._lightObserver);
 	
 	proxy._lightObserver = scene.onBeforeRenderObservable.add(() => {
+		// Sync Position
+		// If light and proxy share the same parent, local sync is sufficient.
+		// If proxy is parented but light is not (should not happen with updated propertyEditor),
+		// we might want to sync absolute position, but BabylonJS handles hierarchy best if structure matches.
 		light.position = proxy.position;
+		
 		if (light instanceof DirectionalLight) {
-			light.direction = proxy.forward;
+			// Directional Light direction is defined in World Space usually,
+			// but if parented, it becomes relative to parent.
+			// Proxy forward is World Space direction.
+			
+			if (light.parent) {
+				// Transform World Forward to Local Space
+				const parentWorldMatrix = light.parent.getWorldMatrix();
+				const invertParentWorld = parentWorldMatrix.clone().invert();
+				
+				// TransformNormal ignores translation, which is what we want for direction
+				const localDir = Vector3.TransformNormal(proxy.forward, invertParentWorld);
+				light.direction = localDir;
+			} else {
+				light.direction = proxy.forward;
+			}
 		}
 	});
 }
 
-// Helper to reconnect after load if needed (though createLight handles it now)
 export function restoreLightProxies(scene) {
-	// Not strictly needed if we use createLight during load,
-	// but good for safety if logic changes.
+	// Not strictly needed if we use createLight during load
 }

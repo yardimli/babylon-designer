@@ -86,10 +86,6 @@ export function updatePropertyEditor(target) {
 	
 	// --- Shadow Properties ---
 	// Hide for TransformNodes
-	const shadowContainer = document.getElementById("prop-receive-shadows").closest(".form-control").parentElement;
-	// We need to target the container of shadow checkboxes.
-	// The HTML structure has checkboxes in separate form-controls.
-	// Let's just toggle visibility of the specific inputs.
 	const receiveShadowsInput = document.getElementById("prop-receive-shadows");
 	const castShadowsInput = document.getElementById("prop-cast-shadows");
 	
@@ -136,6 +132,15 @@ function updateParentDropdown(mesh) {
 		if (!parent) parent = scene.getTransformNodeByName(parentName);
 		
 		mesh.setParent(parent);
+		
+		// If this is a light proxy, we must also parent the actual light
+		if (mesh.metadata && mesh.metadata.isLightProxy) {
+			const light = scene.getLightByID(mesh.metadata.lightId);
+			if (light) {
+				light.parent = parent;
+			}
+		}
+		
 		markModified();
 		refreshSceneGraph();
 	};
