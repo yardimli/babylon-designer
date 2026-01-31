@@ -4,7 +4,7 @@ import { gizmoManager, setGizmoMode } from "./gizmoControl.js";
 import { createLight } from "./lightManager.js";
 import { markModified } from "./sceneManager.js";
 import { refreshSceneGraph } from "./propertyEditor.js";
-import { setShadowCaster } from "./shadowManager.js"; // Import
+import { setShadowCaster } from "./shadowManager.js";
 
 const primitives = ["Cube", "Sphere", "Cylinder", "Plane", "Ground", "Cone", "Pyramid"];
 const lights = ["Point", "Directional"];
@@ -153,7 +153,12 @@ export function createPrimitive(type, savedData = null) {
 				);
 			}
 			
-			// --- NEW: Restore Shadow Casting ---
+			// --- NEW: Restore Pivot Point ---
+			if (savedData.pivot) {
+				mesh.setPivotPoint(new Vector3(savedData.pivot.x, savedData.pivot.y, savedData.pivot.z));
+			}
+			
+			// Restore Shadow Casting
 			if (savedData.castShadows) {
 				setShadowCaster(mesh, true);
 			}

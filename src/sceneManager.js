@@ -4,7 +4,7 @@ import { setupGizmos, disposeGizmos } from "./gizmoControl.js";
 import { updatePropertyEditor, refreshSceneGraph } from "./propertyEditor.js";
 import { createPrimitive } from "./ui.js";
 import { createLight } from "./lightManager.js";
-import { clearShadowManagers } from "./shadowManager.js"; // Import
+import { clearShadowManagers } from "./shadowManager.js";
 
 let currentFileName = null;
 let isModified = false;
@@ -120,12 +120,16 @@ async function saveSceneInternal(name) {
 				rot = { x: q.x, y: q.y, z: q.z, w: q.w };
 			}
 			
+			// --- NEW: Get Pivot Point ---
+			const pivot = mesh.getPivotPoint();
+			
 			data.meshes.push({
 				id: mesh.id,
 				type: mesh.metadata.type, // "Cube", "Sphere", etc.
 				position: { x: mesh.position.x, y: mesh.position.y, z: mesh.position.z },
 				rotation: rot,
 				scaling: { x: mesh.scaling.x, y: mesh.scaling.y, z: mesh.scaling.z },
+				pivot: { x: pivot.x, y: pivot.y, z: pivot.z }, // Save pivot data
 				materialId: mesh.material ? mesh.material.id : null,
 				parentId: mesh.parent ? mesh.parent.name : null, // Simple parent by name/id
 				receiveShadows: mesh.receiveShadows,
@@ -176,7 +180,7 @@ async function loadSceneInternal(filename) {
 		// 1. Clear Scene
 		disposeGizmos();
 		updatePropertyEditor(null);
-		clearShadowManagers(); // Reset shadow manager state
+		clearShadowManagers();
 		
 		// Dispose all user meshes and lights.
 		const toDispose = [];
@@ -208,7 +212,7 @@ async function loadSceneInternal(filename) {
 			});
 		}
 		
-		// 3. Reconstruct Lights (Shadow generators created inside createLight)
+		// 3. Reconstruct Lights
 		if (data.lights) {
 			data.lights.forEach(lightData => {
 				createLight(lightData.type, lightData, scene);
@@ -218,7 +222,7 @@ async function loadSceneInternal(filename) {
 		// 4. Reconstruct Meshes
 		if (data.meshes) {
 			data.meshes.forEach(meshData => {
-				// createPrimitive handles shadow casting registration via savedData
+				// createPrimitive handles shadow casting and pivot registration via savedData
 				const mesh = createPrimitive(meshData.type, meshData);
 				
 				// Re-link Material
@@ -266,7 +270,7 @@ function createNewScene() {
 	isModified = false;
 	
 	disposeGizmos();
-	clearShadowManagers(); // Reset shadow manager state
+	clearShadowManagers();
 	
 	// Quick Clear
 	scene.meshes.forEach(m => {
