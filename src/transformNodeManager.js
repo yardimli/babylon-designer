@@ -26,7 +26,7 @@ export function createTransformNode(savedData = null, scene) {
 	}
 	
 	// Create Proxy Mesh for selection
-	const proxy = MeshBuilder.CreateSphere(id + "_proxy", { diameter: 0.5 }, scene);
+	const proxy = MeshBuilder.CreateBox(id + "_proxy", { size: 0.5 }, scene);
 	proxy.parent = node;
 	proxy.isPickable = true;
 	
