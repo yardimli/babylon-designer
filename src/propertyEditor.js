@@ -1,4 +1,4 @@
-import { Vector3, Quaternion } from "@babylonjs/core";
+import { Vector3, Quaternion, Color3 } from "@babylonjs/core";
 import { scene } from "./scene.js";
 import { markModified } from "./sceneManager.js";
 import { selectMesh } from "./gizmoControl.js";
@@ -52,6 +52,8 @@ export function updatePropertyEditor(mesh) {
 	if (!mesh) {
 		editor.classList.add("opacity-50", "pointer-events-none");
 		document.getElementById("prop-id").value = "";
+		// Hide light properties when nothing is selected
+		document.getElementById("light-properties").classList.add("hidden");
 		return;
 	}
 	
@@ -63,6 +65,16 @@ export function updatePropertyEditor(mesh) {
 	bindInputs(mesh);
 	bindDuplicateButton(mesh); // Bind duplicate button
 	bindDeleteButton(mesh); // Bind the delete button logic
+	
+	// --- NEW: Handle Light Properties ---
+	const lightProps = document.getElementById("light-properties");
+	if (mesh.metadata && mesh.metadata.isLightProxy) {
+		lightProps.classList.remove("hidden");
+		bindLightInputs(mesh);
+	} else {
+		lightProps.classList.add("hidden");
+	}
+	// ------------------------------------
 	
 	observer = scene.onBeforeRenderObservable.add(() => {
 		if (!currentMesh) return;
@@ -112,8 +124,33 @@ function updateMaterialDropdown(mesh) {
 	};
 }
 
+// --- NEW: Bind Light Inputs ---
+function bindLightInputs(mesh) {
+	const light = scene.getLightByID(mesh.metadata.lightId);
+	if (!light) return;
+	
+	const iInput = document.getElementById("prop-light-intensity");
+	const cInput = document.getElementById("prop-light-diffuse");
+	
+	// Initial Values
+	iInput.value = light.intensity;
+	cInput.value = light.diffuse.toHexString();
+	
+	// Bind Events
+	iInput.oninput = () => {
+		light.intensity = parseFloat(iInput.value) || 0;
+		markModified();
+	};
+	
+	cInput.oninput = () => {
+		light.diffuse = Color3.FromHexString(cInput.value);
+		markModified();
+	};
+}
+// ------------------------------
+
 function syncUIFromMesh(mesh) {
-	if (document.activeElement.tagName === "INPUT" && document.activeElement.type !== "checkbox") return;
+	if (document.activeElement.tagName === "INPUT" && document.activeElement.type !== "checkbox" && document.activeElement.type !== "color") return;
 	
 	document.getElementById("pos-x").value = mesh.position.x.toFixed(2);
 	document.getElementById("pos-y").value = mesh.position.y.toFixed(2);
@@ -143,6 +180,23 @@ function syncUIFromMesh(mesh) {
 	document.getElementById("prop-receive-shadows").checked = !!mesh.receiveShadows;
 	// Use metadata to check state
 	document.getElementById("prop-cast-shadows").checked = !!(mesh.metadata && mesh.metadata.castShadows);
+	
+	// --- NEW: Sync Light Properties ---
+	if (mesh.metadata && mesh.metadata.isLightProxy) {
+		const light = scene.getLightByID(mesh.metadata.lightId);
+		if (light) {
+			const iInput = document.getElementById("prop-light-intensity");
+			const cInput = document.getElementById("prop-light-diffuse");
+			
+			if (document.activeElement !== iInput) {
+				iInput.value = light.intensity;
+			}
+			if (document.activeElement !== cInput) {
+				cInput.value = light.diffuse.toHexString();
+			}
+		}
+	}
+	// ----------------------------------
 }
 
 function bindInputs(mesh) {
@@ -170,6 +224,8 @@ function bindInputs(mesh) {
 	};
 	
 	document.querySelectorAll("#property-editor input[type='number']").forEach(input => {
+		// Skip light inputs here, they are bound separately
+		if (input.id.startsWith("prop-light")) return;
 		input.oninput = updateMesh;
 	});
 	
