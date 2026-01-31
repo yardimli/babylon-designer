@@ -125,6 +125,7 @@ async function saveSceneInternal(name) {
 			
 			data.meshes.push({
 				id: mesh.id,
+				name: mesh.name, // --- NEW: Save the name explicitly ---
 				type: mesh.metadata.type, // "Cube", "Sphere", etc.
 				position: { x: mesh.position.x, y: mesh.position.y, z: mesh.position.z },
 				rotation: rot,

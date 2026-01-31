@@ -129,6 +129,11 @@ export function createPrimitive(type, savedData = null) {
 		mesh.metadata = { type: type, isPrimitive: true };
 		
 		if (savedData) {
+			// --- NEW: Restore Name if available ---
+			if (savedData.name) {
+				mesh.name = savedData.name;
+			}
+			
 			// Restore Transforms
 			mesh.position.set(savedData.position.x, savedData.position.y, savedData.position.z);
 			mesh.scaling.set(savedData.scaling.x, savedData.scaling.y, savedData.scaling.z);
