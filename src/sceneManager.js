@@ -109,7 +109,6 @@ async function saveSceneInternal(name) {
 	scene.meshes.forEach(mesh => {
 		// Only save meshes we marked as primitives
 		if (mesh.metadata && mesh.metadata.isPrimitive) {
-			
 			// Get Rotation (Prefer Quaternion)
 			let rot = { x: 0, y: 0, z: 0, w: 1 };
 			if (mesh.rotationQuaternion) {
@@ -231,7 +230,10 @@ async function loadSceneInternal(filename) {
 				if (meshData.parentId) {
 					const child = scene.getMeshByID(meshData.id);
 					const parent = scene.getMeshByName(meshData.parentId) || scene.getMeshByID(meshData.parentId);
-					if (child && parent) child.setParent(parent);
+					// Use direct assignment (child.parent =) instead of setParent().
+					// setParent() preserves absolute world position (recalculating local),
+					// but our saved data already contains local coordinates relative to the parent.
+					if (child && parent) child.parent = parent;
 				}
 			});
 		}
@@ -296,7 +298,7 @@ async function populateSceneList(mode) {
 			btnDelete.innerText = "X";
 			btnDelete.onclick = async (e) => {
 				e.stopPropagation();
-				if(confirm(`Delete "${file}"?`)) {
+				if (confirm(`Delete "${file}"?`)) {
 					await fetch(`/api/scenes?file=${file}`, { method: 'DELETE' });
 					populateSceneList(mode);
 				}

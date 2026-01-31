@@ -1,11 +1,11 @@
-import { MeshBuilder, Vector3 } from "@babylonjs/core";
+import { MeshBuilder, Vector3, Quaternion } from "@babylonjs/core";
 import { scene } from "./scene.js";
 import { gizmoManager, setGizmoMode } from "./gizmoControl.js";
 import { createLight } from "./lightManager.js";
 import { markModified } from "./sceneManager.js";
 import { refreshSceneGraph } from "./propertyEditor.js";
 
-const primitives = ["Cube", "Sphere", "Cylinder", "Plane", "Cone", "Pyramid"];
+const primitives = ["Cube", "Sphere", "Cylinder", "Plane", "Ground", "Cone", "Pyramid"];
 const lights = ["Point", "Directional"];
 
 export function setupUI() {
@@ -39,7 +39,7 @@ export function setupUI() {
 			created = true;
 		} else if (category === "light") {
 			const proxy = createLight(type.toLowerCase(), null, scene);
-			if(proxy) {
+			if (proxy) {
 				// gizmoManager is guaranteed to exist during runtime interactions
 				if (gizmoManager) gizmoManager.attachToMesh(proxy);
 				created = true;
@@ -98,13 +98,29 @@ export function createPrimitive(type, savedData = null) {
 	let mesh;
 	const id = savedData ? savedData.id : `${type}_${Date.now()}`;
 	
-	switch(type) {
-		case "Cube": mesh = MeshBuilder.CreateBox(id, {size: 1}, scene); break;
-		case "Sphere": mesh = MeshBuilder.CreateSphere(id, {diameter: 1}, scene); break;
-		case "Cylinder": mesh = MeshBuilder.CreateCylinder(id, {height: 1, diameter: 1}, scene); break;
-		case "Plane": mesh = MeshBuilder.CreatePlane(id, {size: 1}, scene); break;
-		case "Cone": mesh = MeshBuilder.CreateCylinder(id, {diameterTop: 0, height: 1}, scene); break;
-		case "Pyramid": mesh = MeshBuilder.CreateCylinder(id, {diameterTop: 0, tessellation: 4, height: 1}, scene); break;
+	switch (type) {
+		case "Cube":
+			mesh = MeshBuilder.CreateBox(id, { size: 1 }, scene);
+			break;
+		case "Sphere":
+			mesh = MeshBuilder.CreateSphere(id, { diameter: 1 }, scene);
+			break;
+		case "Cylinder":
+			mesh = MeshBuilder.CreateCylinder(id, { height: 1, diameter: 1 }, scene);
+			break;
+		case "Plane":
+			mesh = MeshBuilder.CreatePlane(id, {size: 1}, scene);
+			break;
+		case "Ground":
+			mesh = MeshBuilder.CreateGround(id, { width: 1, height: 1}, scene);
+			mesh.backFaceCulling = false;
+			break;
+		case "Cone":
+			mesh = MeshBuilder.CreateCylinder(id, { diameterTop: 0, height: 1 }, scene);
+			break;
+		case "Pyramid":
+			mesh = MeshBuilder.CreateCylinder(id, { diameterTop: 0, tessellation: 4, height: 1 }, scene);
+			break;
 	}
 	
 	if (mesh) {
@@ -115,11 +131,28 @@ export function createPrimitive(type, savedData = null) {
 			// Restore Transforms
 			mesh.position.set(savedData.position.x, savedData.position.y, savedData.position.z);
 			mesh.scaling.set(savedData.scaling.x, savedData.scaling.y, savedData.scaling.z);
-			if (mesh.rotationQuaternion) {
-				mesh.rotationQuaternion.set(savedData.rotation.x, savedData.rotation.y, savedData.rotation.z, savedData.rotation.w);
+			
+			// Fix: The saver saves rotation as a Quaternion {x, y, z, w}.
+			// We must apply it to rotationQuaternion, otherwise applying x,y,z to .rotation (Euler)
+			// interprets the quaternion components as radians, causing incorrect angles (e.g. 90 -> 40.51).
+			if (!mesh.rotationQuaternion) {
+				mesh.rotationQuaternion = new Quaternion();
+			}
+			
+			if (savedData.rotation.w !== undefined) {
+				mesh.rotationQuaternion.set(
+					savedData.rotation.x,
+					savedData.rotation.y,
+					savedData.rotation.z,
+					savedData.rotation.w
+				);
 			} else {
-				// If saved as Euler (though we prefer Quaternion)
-				mesh.rotation.set(savedData.rotation.x, savedData.rotation.y, savedData.rotation.z);
+				// Fallback if data happens to be Euler (legacy support)
+				mesh.rotationQuaternion = Quaternion.FromEulerAngles(
+					savedData.rotation.x,
+					savedData.rotation.y,
+					savedData.rotation.z
+				);
 			}
 		} else {
 			// New Object Defaults

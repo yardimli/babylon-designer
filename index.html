@@ -48,9 +48,6 @@
 	<!-- Center: Scene -->
 	<div class="flex-1 relative bg-black">
 		<canvas id="renderCanvas" class="w-full h-full touch-none"></canvas>
-		<div class="absolute top-4 left-4 bg-base-100/80 p-2 rounded backdrop-blur pointer-events-none">
-			<p class="text-xs">Drag items from left. Click to select.</p>
-		</div>
 	</div>
 	
 	<!-- Right Sidebar: Properties -->
@@ -90,6 +87,11 @@
 				
 				<!-- Transforms Helper -->
 				<div id="transform-container"></div>
+				
+				<div class="divider my-1"></div>
+				
+				<!-- Delete Button -->
+				<button id="btn-delete-asset" class="btn btn-error btn-sm btn-outline w-full">Delete Asset</button>
 			
 			</div>
 		</div>

@@ -59,9 +59,10 @@ export function updatePropertyEditor(mesh) {
 	updateParentDropdown(mesh);
 	updateMaterialDropdown(mesh);
 	bindInputs(mesh);
+	bindDeleteButton(mesh); // Bind the delete button logic
 	
 	observer = scene.onBeforeRenderObservable.add(() => {
-		if(!currentMesh) return;
+		if (!currentMesh) return;
 		syncUIFromMesh(currentMesh);
 	});
 }
@@ -109,13 +110,13 @@ function updateMaterialDropdown(mesh) {
 }
 
 function syncUIFromMesh(mesh) {
-	if(document.activeElement.tagName === "INPUT") return;
+	if (document.activeElement.tagName === "INPUT") return;
 	
 	document.getElementById("pos-x").value = mesh.position.x.toFixed(2);
 	document.getElementById("pos-y").value = mesh.position.y.toFixed(2);
 	document.getElementById("pos-z").value = mesh.position.z.toFixed(2);
 	
-	if(mesh.rotationQuaternion) {
+	if (mesh.rotationQuaternion) {
 		const euler = mesh.rotationQuaternion.toEulerAngles();
 		document.getElementById("rot-x").value = (euler.x * 180 / Math.PI).toFixed(2);
 		document.getElementById("rot-y").value = (euler.y * 180 / Math.PI).toFixed(2);
@@ -148,7 +149,7 @@ function bindInputs(mesh) {
 		const radY = getVal("rot-y") * Math.PI / 180;
 		const radZ = getVal("rot-z") * Math.PI / 180;
 		
-		if(!mesh.rotationQuaternion) mesh.rotationQuaternion = Quaternion.Identity();
+		if (!mesh.rotationQuaternion) mesh.rotationQuaternion = Quaternion.Identity();
 		Quaternion.FromEulerAnglesToRef(radX, radY, radZ, mesh.rotationQuaternion);
 		
 		mesh.scaling.x = getVal("scl-x");
@@ -168,6 +169,32 @@ function bindInputs(mesh) {
 		mesh.name = e.target.value;
 		markModified();
 		refreshSceneGraph(); // Name changed, update tree
+	};
+}
+
+// Logic for the Delete Button
+function bindDeleteButton(mesh) {
+	const btn = document.getElementById("btn-delete-asset");
+	if (!btn) return;
+	
+	btn.onclick = () => {
+		if (confirm(`Are you sure you want to delete "${mesh.name}"?`)) {
+			// 1. Handle Light Proxy cleanup
+			if (mesh.metadata && mesh.metadata.isLightProxy) {
+				const light = scene.getLightByID(mesh.metadata.lightId);
+				if (light) light.dispose();
+			}
+			
+			// 2. Deselect first to clear gizmos and UI
+			selectMesh(null);
+			
+			// 3. Dispose the mesh (and its children by default)
+			mesh.dispose();
+			
+			// 4. Update State
+			markModified();
+			refreshSceneGraph();
+		}
 	};
 }
 
