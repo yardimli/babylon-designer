@@ -1,5 +1,5 @@
 import { Vector3, Color3, Quaternion, PBRMaterial } from "@babylonjs/core";
-import { scene } from "./scene.js";
+import { scene, resetAxisIndicator } from "./scene.js";
 import { setupGizmos, disposeGizmos } from "./gizmoControl.js";
 import { updatePropertyEditor, refreshSceneGraph } from "./propertyEditor.js";
 import { createPrimitive } from "./ui.js";
@@ -240,6 +240,7 @@ async function loadSceneInternal(filename) {
 		
 		// Finish
 		setupGizmos(scene);
+		resetAxisIndicator(); // Recreate axis indicator to fix gray material issue
 		currentFileName = filename;
 		isModified = false;
 		updateStatus();

@@ -18,6 +18,8 @@ export let engine;
 export let scene;
 export let camera;
 
+let axisObserver = null;
+
 export function createScene(canvas) {
 	engine = new Engine(canvas, true);
 	scene = new Scene(engine);
@@ -53,7 +55,50 @@ export function createScene(canvas) {
 	return scene;
 }
 
+// Exported function to reset the axis indicator (used when loading scenes)
+export function resetAxisIndicator() {
+	if (!scene) return;
+	
+	// 1. Cleanup Observer
+	if (axisObserver) {
+		scene.onBeforeRenderObservable.remove(axisObserver);
+		axisObserver = null;
+	}
+	
+	// 2. Dispose Mesh Hierarchy
+	const oldRoot = scene.getTransformNodeByName("axisRoot");
+	if (oldRoot) {
+		oldRoot.dispose();
+	}
+	
+	// 3. Dispose Materials
+	const matNames = [
+		"gizmo_axisX_mat", "gizmo_axisY_mat", "gizmo_axisZ_mat",
+		"centerMat", "labelMat_X", "labelMat_Y", "labelMat_Z"
+	];
+	matNames.forEach(name => {
+		const m = scene.getMaterialByName(name);
+		if (m) m.dispose();
+	});
+	
+	// 4. Dispose Textures (DynamicTextures for labels)
+	const texNames = ["dt_X", "dt_Y", "dt_Z"];
+	texNames.forEach(name => {
+		const t = scene.textures.find(tex => tex.name === name);
+		if (t) t.dispose();
+	});
+	
+	// 5. Recreate
+	createAxisIndicator(scene);
+}
+
 function createAxisIndicator(scene) {
+	// Ensure no duplicate observer if called directly
+	if (axisObserver) {
+		scene.onBeforeRenderObservable.remove(axisObserver);
+		axisObserver = null;
+	}
+	
 	// Create a root node for the axis
 	const axisRoot = new TransformNode("axisRoot", scene);
 	
@@ -118,7 +163,7 @@ function createAxisIndicator(scene) {
 	center.isPickable = false;
 	
 	// Update Position Loop
-	scene.onBeforeRenderObservable.add(() => {
+	axisObserver = scene.onBeforeRenderObservable.add(() => {
 		if (!camera) return;
 		
 		// Position the axis in the top-left corner relative to the camera
