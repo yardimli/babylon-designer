@@ -1,15 +1,30 @@
-import { Engine, Scene, Vector3, HemisphericLight, ArcRotateCamera, Color4, MeshBuilder, StandardMaterial, Color3, DynamicTexture, Viewport } from "@babylonjs/core";
+import {
+	Engine,
+	Scene,
+	Vector3,
+	HemisphericLight,
+	ArcRotateCamera,
+	Color4,
+	MeshBuilder,
+	StandardMaterial,
+	Color3,
+	DynamicTexture,
+	TransformNode,
+	Matrix,
+	Quaternion
+} from "@babylonjs/core";
 
 export let engine;
 export let scene;
 export let camera;
-export let axisScene;
-export let axisCamera;
 
 export function createScene(canvas) {
 	engine = new Engine(canvas, true);
 	scene = new Scene(engine);
 	scene.clearColor = new Color4(0.1, 0.1, 0.1, 1);
+	
+	// Ensure rendering group 1 clears depth so the axis draws on top of the scene
+	scene.setRenderingAutoClearDepthStencil(1, true, false, false);
 	
 	// Camera
 	camera = new ArcRotateCamera("Camera", -Math.PI / 2, Math.PI / 2.5, 10, Vector3.Zero(), scene);
@@ -24,12 +39,12 @@ export function createScene(canvas) {
 	const light = new HemisphericLight("hemiLight", new Vector3(0, 1, 0), scene);
 	light.intensity = 0.7;
 	
+	// --- Axis Indicator Setup (In-Scene) ---
+	createAxisIndicator(scene);
+	
 	engine.runRenderLoop(() => {
 		scene.render();
 	});
-	
-	// --- Axis Indicator Setup ---
-	// createAxisScene();
 	
 	window.addEventListener("resize", () => {
 		engine.resize();
@@ -38,19 +53,14 @@ export function createScene(canvas) {
 	return scene;
 }
 
-function createAxisScene() {
-	axisScene = new Scene(engine);
-	axisScene.autoClear = false;
+function createAxisIndicator(scene) {
+	// Create a root node for the axis
+	const axisRoot = new TransformNode("axisRoot", scene);
 	
-	// Axis Camera (Syncs with main camera)
-	axisCamera = new ArcRotateCamera("axisCam", -Math.PI / 2, Math.PI / 2.5, 10, Vector3.Zero(), axisScene);
-	axisCamera.viewport = new Viewport(0, 0.85, 0.15, 0.15); // Top Left
+	// Scale it down to look like a UI element
+	axisRoot.scaling = new Vector3(0.15, 0.15, 0.15);
 	
-	// Create Axes
-	createAxisGizmo(axisScene);
-}
-
-function createAxisGizmo(scene) {
+	// Helper to create arrows
 	const makeArrow = (name, color, rotation) => {
 		// Cylinder (Line)
 		const tube = MeshBuilder.CreateCylinder(name + "_tube", { height: 2, diameter: 0.15 }, scene);
@@ -58,7 +68,7 @@ function createAxisGizmo(scene) {
 		
 		// Cone (Tip)
 		const cone = MeshBuilder.CreateCylinder(name + "_cone", { diameterTop: 0, diameterBottom: 0.4, height: 0.5 }, scene);
-		cone.position.y = 2.25;
+		cone.position.y = 1.25;
 		
 		// Merge
 		cone.parent = tube;
@@ -70,40 +80,73 @@ function createAxisGizmo(scene) {
 		tube.material = mat;
 		cone.material = mat;
 		
+		// Settings for Overlay
+		tube.renderingGroupId = 1;
+		cone.renderingGroupId = 1;
+		tube.isPickable = false;
+		cone.isPickable = false;
+		
 		// Rotation wrapper
-		const wrapper = MeshBuilder.CreateBox(name + "_wrapper", { size: 0.01 }, scene);
-		wrapper.isVisible = false;
+		const wrapper = new TransformNode(name + "_wrapper", scene);
 		tube.parent = wrapper;
+		wrapper.parent = axisRoot;
 		
 		wrapper.rotation = rotation;
 		return { wrapper, tip: cone };
 	};
 	
 	// X Axis (Red)
-	const xArrow = makeArrow("axisX", new Color3(1, 0, 0), new Vector3(0, 0, -Math.PI / 2));
-	addLabel(scene, "X", xArrow.tip, "red");
+	const xArrow = makeArrow("gizmo_axisX", new Color3(1, 0, 0), new Vector3(0, 0, -Math.PI / 2));
+	addLabel(scene, "X", xArrow.tip, "red", axisRoot);
 	
 	// Y Axis (Green)
-	const yArrow = makeArrow("axisY", new Color3(0, 1, 0), new Vector3(0, 0, 0));
-	addLabel(scene, "Y", yArrow.tip, "green");
+	const yArrow = makeArrow("gizmo_axisY", new Color3(0, 1, 0), new Vector3(0, 0, 0));
+	addLabel(scene, "Y", yArrow.tip, "green", axisRoot);
 	
 	// Z Axis (Blue)
-	const zArrow = makeArrow("axisZ", new Color3(0, 0.5, 1), new Vector3(Math.PI / 2, 0, 0));
-	addLabel(scene, "Z", zArrow.tip, "#3388ff");
+	const zArrow = makeArrow("gizmo_axisZ", new Color3(0, 0.5, 1), new Vector3(Math.PI / 2, 0, 0));
+	addLabel(scene, "Z", zArrow.tip, "#3388ff", axisRoot);
 	
 	// Center
-	const center = MeshBuilder.CreateSphere("center", { diameter: 0.3 }, scene);
+	const center = MeshBuilder.CreateSphere("gizmo_center", { diameter: 0.6 }, scene);
 	const cMat = new StandardMaterial("centerMat", scene);
 	cMat.emissiveColor = new Color3(0.5, 0.5, 0.5);
 	cMat.disableLighting = true;
 	center.material = cMat;
+	center.parent = axisRoot;
+	center.renderingGroupId = 1;
+	center.isPickable = false;
+	
+	// Update Position Loop
+	scene.onBeforeRenderObservable.add(() => {
+		if (!camera) return;
+		
+		// Position the axis in the top-left corner relative to the camera
+		// We use createPickingRay to find a world position corresponding to screen coordinates
+		const padding = 60; // Pixels from top-left
+		const distance = 6; // Distance from camera (must be within clip planes)
+		
+		// Create a ray from screen coordinate (padding, padding)
+		// Note: createPickingRay uses the camera's current transform
+		const ray = scene.createPickingRay(padding, padding*2, Matrix.Identity(), camera);
+		
+		// Place axisRoot along the ray
+		axisRoot.position = ray.origin.add(ray.direction.scale(distance));
+		
+		// Force rotation to Identity (World Aligned)
+		// Since the position is locked to the camera's screen-space,
+		// keeping rotation as Identity makes it appear to rotate opposite to camera.
+		axisRoot.rotationQuaternion = Quaternion.Identity();
+	});
 }
 
 function addLabel(scene, text, parent, colorName) {
-	const plane = MeshBuilder.CreatePlane("label_" + text, { size: 1.2 }, scene);
+	const plane = MeshBuilder.CreatePlane("gizmo_label_" + text, { size: 1.2 }, scene);
 	plane.parent = parent;
 	plane.position.y += 0.8;
 	plane.billboardMode = 7; // BILLBOARDMODE_ALL
+	plane.renderingGroupId = 1;
+	plane.isPickable = false;
 	
 	const dt = new DynamicTexture("dt_" + text, { width: 64, height: 64 }, scene);
 	dt.hasAlpha = true;
@@ -122,11 +165,4 @@ function addLabel(scene, text, parent, colorName) {
 	mat.disableLighting = true;
 	mat.useAlphaFromDiffuseTexture = true;
 	plane.material = mat;
-}
-
-export function updateAxisScene() {
-	if (axisCamera && camera) {
-		axisCamera.alpha = camera.alpha;
-		axisCamera.beta = camera.beta;
-	}
 }

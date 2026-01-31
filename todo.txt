@@ -1,0 +1,4 @@
+
+BUGS:
+
+try using babylons own axis helper to show axis in the 3d view for easier orientation https://www.babylonjs-playground.com/#ZPAJ7X#1
