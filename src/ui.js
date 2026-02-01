@@ -1,14 +1,12 @@
-/* src/ui.js */
-
 import { MeshBuilder, Vector3, Quaternion } from "@babylonjs/core";
 import { scene, getUniqueId } from "./scene.js";
 import { gizmoManager, setGizmoMode } from "./gizmoControl.js";
 import { createLight } from "./lightManager.js";
 import { createTransformNode } from "./transformNodeManager.js";
 import { markModified } from "./sceneManager.js";
-import { refreshSceneGraph } from "./propertyEditor.js";
+// NEW: Import refreshSceneGraph from treeViewManager
+import { refreshSceneGraph } from "./treeViewManager.js";
 import { setShadowCaster } from "./shadowManager.js";
-// NEW: Import History
 import { recordState } from "./historyManager.js";
 
 const primitives = ["Cube", "Sphere", "Cylinder", "Plane", "Ground", "Cone", "Pyramid", "Empty"];

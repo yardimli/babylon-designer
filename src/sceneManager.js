@@ -1,7 +1,9 @@
-import { Vector3, Color3, Quaternion, PBRMaterial } from "@babylonjs/core";
-import { scene, resetAxisIndicator, getSkipMaterialNames, getUniqueId } from "./scene.js";
+import { Quaternion, PBRMaterial, Color3 } from "@babylonjs/core";
+import { scene, resetAxisIndicator, getSkipMaterialNames } from "./scene.js";
 import { setupGizmos, disposeGizmos } from "./gizmoControl.js";
-import { updatePropertyEditor, refreshSceneGraph } from "./propertyEditor.js";
+import { updatePropertyEditor } from "./propertyEditor.js";
+// NEW: Import refreshSceneGraph from treeViewManager
+import { refreshSceneGraph } from "./treeViewManager.js";
 import { createPrimitive } from "./ui.js";
 import { createLight } from "./lightManager.js";
 import { createTransformNode } from "./transformNodeManager.js";
@@ -204,7 +206,7 @@ async function saveSceneInternal(name) {
 // LOADING (Refactored for History)
 // ==========================================
 
-export async function loadSceneData(data) {
+export function loadSceneData(data) {
 	// 1. Clear Scene
 	disposeGizmos();
 	updatePropertyEditor(null);
@@ -354,7 +356,6 @@ async function loadSceneInternal(filename) {
 		isModified = false;
 		updateStatus();
 		saveLoadModal.close();
-		
 	} catch (e) {
 		console.error(e);
 		alert("Error parsing custom JSON.");

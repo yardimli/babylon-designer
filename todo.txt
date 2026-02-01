@@ -1,4 +1,8 @@
 
+- allow user to select multiple objects from scene with shift or treeview with shift
+- when multiple objects are selected the gizmo should allow moving/scaling/rotating all selected objects together
+- when multiple objects are selected in the property editor show number of selected objects and allow changing common properties like position/rotation/scale/material
+
 BUGS:
 
 try using babylons own axis helper to show axis in the 3d view for easier orientation https://www.babylonjs-playground.com/#ZPAJ7X#1
