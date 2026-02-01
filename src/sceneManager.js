@@ -1,5 +1,3 @@
-/* src/sceneManager.js */
-
 import { Vector3, Color3, Quaternion, PBRMaterial } from "@babylonjs/core";
 import { scene, resetAxisIndicator, getSkipMaterialNames, getUniqueId } from "./scene.js";
 import { setupGizmos, disposeGizmos } from "./gizmoControl.js";
@@ -109,7 +107,9 @@ export function serializeScene() {
 					direction: light.direction ? { x: light.direction.x, y: light.direction.y, z: light.direction.z } : null,
 					intensity: light.intensity,
 					diffuse: { r: light.diffuse.r, g: light.diffuse.g, b: light.diffuse.b },
-					parentId: light.parent ? (light.parent.name || light.parent.id) : null
+					parentId: light.parent ? (light.parent.name || light.parent.id) : null,
+					// NEW: Save Sort Index
+					sortIndex: mesh.metadata.sortIndex || 0
 				});
 			}
 		}
@@ -132,7 +132,9 @@ export function serializeScene() {
 				position: { x: node.position.x, y: node.position.y, z: node.position.z },
 				rotation: rot,
 				scaling: { x: node.scaling.x, y: node.scaling.y, z: node.scaling.z },
-				parentId: node.parent ? (node.parent.name || node.parent.id) : null
+				parentId: node.parent ? (node.parent.name || node.parent.id) : null,
+				// NEW: Save Sort Index
+				sortIndex: node.metadata.sortIndex || 0
 			});
 		}
 	});
@@ -161,7 +163,9 @@ export function serializeScene() {
 				materialId: mesh.material ? mesh.material.id : null,
 				parentId: mesh.parent ? (mesh.parent.name || mesh.parent.id) : null,
 				receiveShadows: mesh.receiveShadows,
-				castShadows: mesh.metadata.castShadows || false
+				castShadows: mesh.metadata.castShadows || false,
+				// NEW: Save Sort Index
+				sortIndex: mesh.metadata.sortIndex || 0
 			});
 		}
 	});
@@ -246,6 +250,8 @@ export async function loadSceneData(data) {
 			const node = createTransformNode(nodeData, scene);
 			if (node) {
 				idMap.set(nodeData.id, node.id);
+				// Restore Sort Index
+				if (node.metadata) node.metadata.sortIndex = nodeData.sortIndex || 0;
 			}
 		});
 	}
@@ -259,6 +265,8 @@ export async function loadSceneData(data) {
 				if (light) {
 					idMap.set(lightData.id, light.id);
 				}
+				// Restore Sort Index on Proxy
+				if (proxy.metadata) proxy.metadata.sortIndex = lightData.sortIndex || 0;
 			}
 		});
 	}
@@ -275,6 +283,8 @@ export async function loadSceneData(data) {
 					if (mat) mesh.material = mat;
 				}
 				mesh.receiveShadows = !!meshData.receiveShadows;
+				// Restore Sort Index
+				if (mesh.metadata) mesh.metadata.sortIndex = meshData.sortIndex || 0;
 			}
 		});
 	}
