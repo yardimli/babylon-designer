@@ -301,16 +301,46 @@ function bindInputs(mesh) {
 	
 	// Handle Renaming with ID Uniqueness Check
 	document.getElementById("prop-id").onchange = (e) => {
-		const newName = e.target.value;
-		// Ensure the new name/id is unique
-		const uniqueId = getUniqueId(scene, newName);
+		let newName = e.target.value;
 		
-		mesh.name = uniqueId;
-		mesh.id = uniqueId; // Sync ID with Name for consistency
-		
-		// Update UI if the name was modified to be unique
-		if (uniqueId !== newName) {
-			e.target.value = uniqueId;
+		// Special Handling for Lights
+		// We want to rename the underlying Light ID, and keep the Proxy as ID_proxy
+		if (mesh.metadata && mesh.metadata.isLightProxy) {
+			const light = scene.getLightByID(mesh.metadata.lightId);
+			if (light) {
+				// 1. Strip _proxy if user typed it, to get the base name
+				const baseName = newName.replace(/_proxy$/, "");
+				
+				// 2. Ensure base name is unique for the LIGHT
+				// We temporarily rename the light to something random to free up its current ID if we are just changing casing
+				// But getUniqueId checks everything.
+				// Let's just get a unique ID based on the baseName.
+				const uniqueLightId = getUniqueId(scene, baseName);
+				
+				// 3. Rename Light
+				light.id = uniqueLightId;
+				light.name = uniqueLightId;
+				
+				// 4. Rename Proxy to match convention
+				const proxyId = uniqueLightId + "_proxy";
+				mesh.id = proxyId;
+				mesh.name = proxyId;
+				
+				// 5. Update Metadata link
+				mesh.metadata.lightId = uniqueLightId;
+				
+				// 6. Update Input to show the actual proxy name
+				e.target.value = proxyId;
+			}
+		} else {
+			// Standard Mesh/Node Renaming
+			const uniqueId = getUniqueId(scene, newName);
+			mesh.name = uniqueId;
+			mesh.id = uniqueId;
+			
+			if (uniqueId !== newName) {
+				e.target.value = uniqueId;
+			}
 		}
 		
 		markModified();
