@@ -41,6 +41,7 @@ createVec3Input("Pivot Point", "piv", transformContainer);
 
 export function updatePropertyEditor(target) {
 	const editor = document.getElementById("property-editor");
+	const header = document.getElementById("properties-header");
 	
 	if (observer) {
 		scene.onBeforeRenderObservable.remove(observer);
@@ -56,10 +57,30 @@ export function updatePropertyEditor(target) {
 		editor.classList.add("opacity-50", "pointer-events-none");
 		document.getElementById("prop-id").value = "";
 		document.getElementById("light-properties").classList.add("hidden");
+		if (header) header.innerText = "Properties";
 		return;
 	}
 	
 	editor.classList.remove("opacity-50", "pointer-events-none");
+	
+	// Update Header with Type
+	if (header) {
+		let typeLabel = "Unknown";
+		if (target.metadata) {
+			if (target.metadata.isPrimitive) {
+				typeLabel = target.metadata.type || "Mesh";
+			} else if (target.metadata.isLightProxy) {
+				const lType = target.metadata.lightType || "light";
+				typeLabel = lType.charAt(0).toUpperCase() + lType.slice(1) + " Light";
+			} else if (target.metadata.isTransformNode) {
+				typeLabel = "Empty Node";
+			}
+		} else {
+			typeLabel = target.getClassName();
+		}
+		
+		header.innerHTML = `Properties <span class="ml-2 text-sm font-normal opacity-50 border border-base-content/20 px-2 rounded align-middle">${typeLabel}</span>`;
+	}
 	
 	document.getElementById("prop-id").value = target.name;
 	updateParentDropdown(target);
