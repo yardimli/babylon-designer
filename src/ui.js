@@ -7,7 +7,7 @@ import { markModified } from "./sceneManager.js";
 import { refreshSceneGraph } from "./treeViewManager.js";
 import { setShadowCaster } from "./shadowManager.js";
 import { recordState } from "./historyManager.js";
-import { selectNode } from "./selectionManager.js"; // Updated
+import { selectNode } from "./selectionManager.js";
 
 const primitives = ["Cube", "Sphere", "Cylinder", "Plane", "Ground", "Cone", "Pyramid", "Empty"];
 const lights = ["Point", "Directional"];
@@ -48,7 +48,7 @@ export function setupUI() {
 		}
 		
 		if (createdNode) {
-			selectNode(createdNode, false); // Select the new item
+			selectNode(createdNode, false);
 			markModified();
 			refreshSceneGraph();
 			recordState();
@@ -148,8 +148,6 @@ export function createPrimitive(type, savedData = null) {
 			setShadowCaster(mesh, true);
 			if (type === "Ground" || type === "Plane") mesh.receiveShadows = true;
 		}
-		
-		// Gizmo attachment is now handled by selectionManager calls in ui.js or load logic
 	}
 	return mesh;
 }

@@ -1,0 +1,119 @@
+<!doctype html>
+<html lang="en" data-theme="dark">
+<head>
+	<meta charset="UTF-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+	<title>BabylonJS Material Editor</title>
+	<link rel="stylesheet" href="./src/style.css">
+</head>
+<body class="flex flex-col h-screen w-screen bg-base-300 text-base-content font-sans overflow-hidden">
+
+<!-- Top Bar -->
+<nav class="h-12 bg-base-100 border-b border-base-content/10 flex items-center px-4 gap-2 flex-none z-10 justify-between">
+	<div class="font-bold text-lg text-secondary">Material Editor</div>
+	<div class="flex gap-2">
+		<a href="/" class="btn btn-sm btn-ghost">Back to Designer</a>
+	</div>
+</nav>
+
+<div class="flex flex-1 overflow-hidden">
+	<!-- Left: Libraries & Materials List -->
+	<div class="w-72 bg-base-200 border-r border-base-content/10 flex flex-col">
+		
+		<!-- Libraries (Files) -->
+		<div class="flex-1 flex flex-col p-4 border-b border-base-content/10 min-h-0 h-1/2">
+			<h2 class="font-bold mb-2 flex justify-between items-center text-sm uppercase opacity-70">
+				Libraries
+				<button id="btn-refresh-files" class="btn btn-xs btn-ghost btn-square" title="Refresh">↻</button>
+			</h2>
+			<div id="file-list" class="flex-1 overflow-y-auto flex flex-col gap-1 bg-base-100/50 rounded p-2 mb-2">
+				<span class="loading loading-spinner"></span>
+			</div>
+			
+			<!-- New Library Input -->
+			<div class="join w-full">
+				<input type="text" id="inp-filename" class="input input-xs input-bordered join-item w-full" placeholder="New Library Name" />
+				<button id="btn-new-lib" class="btn btn-xs btn-primary join-item">+</button>
+			</div>
+		</div>
+		
+		<!-- Materials in selected Library -->
+		<div class="flex-1 flex flex-col p-4 min-h-0 h-1/2 bg-base-200">
+			<h2 class="font-bold mb-2 flex justify-between items-center text-sm uppercase opacity-70">
+				Materials
+				<button id="btn-add-mat" class="btn btn-xs btn-success btn-outline" disabled>+ Add</button>
+			</h2>
+			<div id="mat-list" class="flex-1 overflow-y-auto flex flex-col gap-1 bg-base-100/50 rounded p-2">
+				<div class="text-xs opacity-50 p-2 text-center">Select a library</div>
+			</div>
+			
+			<div class="mt-4 pt-2 border-t border-base-content/10">
+				<button id="btn-save-lib" class="btn btn-primary btn-sm w-full" disabled>Save Library</button>
+				<div id="status-msg" class="text-center text-xs h-4 text-success mt-1 truncate"></div>
+			</div>
+		</div>
+	</div>
+	
+	<!-- Center: Preview -->
+	<div class="flex-1 bg-black relative">
+		<canvas id="previewCanvas" class="w-full h-full outline-none"></canvas>
+		<div class="absolute bottom-4 left-4 text-xs opacity-50 pointer-events-none select-none">
+			Drag to rotate • Scroll to zoom
+		</div>
+	</div>
+	
+	<!-- Right: Editor Controls -->
+	<div class="w-80 bg-base-200 border-l border-base-content/10 p-4 flex flex-col gap-4 overflow-y-auto">
+		
+		<div id="editor-overlay" class="hidden absolute inset-0 bg-base-200/50 z-10 cursor-not-allowed"></div>
+		
+		<div class="form-control w-full">
+			<label class="label"><span class="label-text">Material Name</span></label>
+			<input type="text" id="mat-name" class="input input-bordered w-full" placeholder="Material Name" />
+		</div>
+		
+		<div class="divider my-0">Properties</div>
+		
+		<label class="label cursor-pointer justify-start gap-2">
+			<span class="label-text w-24">Albedo</span>
+			<input type="color" id="mat-albedo" class="h-8 w-full" value="#ffffff" />
+		</label>
+		
+		<label class="label cursor-pointer justify-start gap-2">
+			<span class="label-text w-24">Emissive</span>
+			<input type="color" id="mat-emissive" class="h-8 w-full" value="#000000" />
+		</label>
+		
+		<div class="flex flex-col">
+			<div class="flex justify-between">
+				<span class="label-text text-xs">Metallic</span>
+				<span id="val-metallic" class="text-xs opacity-70">0.00</span>
+			</div>
+			<input type="range" id="mat-metallic" min="0" max="1" step="0.01" value="0" class="range range-xs" />
+		</div>
+		
+		<div class="flex flex-col">
+			<div class="flex justify-between">
+				<span class="label-text text-xs">Roughness</span>
+				<span id="val-roughness" class="text-xs opacity-70">1.00</span>
+			</div>
+			<input type="range" id="mat-roughness" min="0" max="1" step="0.01" value="1" class="range range-xs" />
+		</div>
+		
+		<div class="flex flex-col">
+			<div class="flex justify-between">
+				<span class="label-text text-xs">Alpha</span>
+				<span id="val-alpha" class="text-xs opacity-70">1.00</span>
+			</div>
+			<input type="range" id="mat-alpha" min="0" max="1" step="0.01" value="1" class="range range-xs" />
+		</div>
+		
+		<div class="divider my-0">Actions</div>
+		
+		<button id="btn-delete-mat" class="btn btn-error btn-outline btn-sm w-full">Delete Material</button>
+	</div>
+</div>
+
+<script type="module" src="/src/materialStandalone.js"></script>
+</body>
+</html>

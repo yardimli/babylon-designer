@@ -1,0 +1,66 @@
+[
+  {
+    "name": "white",
+    "albedo": [
+      1,
+      1,
+      1
+    ],
+    "emissive": [
+      0,
+      0,
+      0
+    ],
+    "metallic": 0.47,
+    "roughness": 1,
+    "alpha": 1
+  },
+  {
+    "name": "blue",
+    "albedo": [
+      0,
+      0.1568627450980392,
+      0.9411764705882353
+    ],
+    "emissive": [
+      0,
+      0,
+      0
+    ],
+    "metallic": 0.35,
+    "roughness": 1,
+    "alpha": 1
+  },
+  {
+    "name": "grass",
+    "albedo": [
+      0.26666666666666666,
+      0.7764705882352941,
+      0.08235294117647059
+    ],
+    "emissive": [
+      0,
+      0,
+      0
+    ],
+    "metallic": 0,
+    "roughness": 1,
+    "alpha": 1
+  },
+  {
+    "name": "red",
+    "albedo": [
+      1,
+      0,
+      0
+    ],
+    "emissive": [
+      0,
+      0,
+      0
+    ],
+    "metallic": 0.54,
+    "roughness": 1,
+    "alpha": 1
+  }
+]

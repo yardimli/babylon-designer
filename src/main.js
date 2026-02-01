@@ -1,7 +1,7 @@
 import { createScene } from "./scene.js";
 import { setupUI } from "./ui.js";
 import { setupGizmos } from "./gizmoControl.js";
-import { setupMaterialEditor } from "./materialEditor.js";
+import { setupMaterialManager } from "./materialManager.js"; // Changed
 import { setupSceneManager } from "./sceneManager.js";
 
 // Initialize
@@ -10,11 +10,10 @@ const scene = createScene(canvas);
 
 setupGizmos(scene);
 setupUI();
-setupMaterialEditor();
+setupMaterialManager(); // Changed
 setupSceneManager();
 
 // Start loop
 scene.getEngine().runRenderLoop(() => {
 	scene.render();
-	// Axis is now handled internally within the main scene
 });
