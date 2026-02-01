@@ -4,10 +4,10 @@ import { gizmoManager, setGizmoMode } from "./gizmoControl.js";
 import { createLight } from "./lightManager.js";
 import { createTransformNode } from "./transformNodeManager.js";
 import { markModified } from "./sceneManager.js";
-// NEW: Import refreshSceneGraph from treeViewManager
 import { refreshSceneGraph } from "./treeViewManager.js";
 import { setShadowCaster } from "./shadowManager.js";
 import { recordState } from "./historyManager.js";
+import { selectNode } from "./selectionManager.js"; // Updated
 
 const primitives = ["Cube", "Sphere", "Cylinder", "Plane", "Ground", "Cone", "Pyramid", "Empty"];
 const lights = ["Point", "Directional"];
@@ -17,7 +17,6 @@ export function setupUI() {
 	const lList = document.getElementById("lights-list");
 	const canvas = document.getElementById("renderCanvas");
 	
-	// Setup Gizmo Buttons
 	setupGizmoButtons();
 	
 	primitives.forEach(type => {
@@ -36,27 +35,22 @@ export function setupUI() {
 		const type = e.dataTransfer.getData("type");
 		const category = e.dataTransfer.getData("category");
 		
-		let created = false;
+		let createdNode = null;
 		
 		if (category === "primitive") {
 			if (type === "Empty") {
-				createTransformNode(null, scene);
+				createdNode = createTransformNode(null, scene);
 			} else {
-				createPrimitive(type);
+				createdNode = createPrimitive(type);
 			}
-			created = true;
 		} else if (category === "light") {
-			const proxy = createLight(type.toLowerCase(), null, scene);
-			if (proxy) {
-				if (gizmoManager) gizmoManager.attachToMesh(proxy);
-				created = true;
-			}
+			createdNode = createLight(type.toLowerCase(), null, scene);
 		}
 		
-		if (created) {
+		if (createdNode) {
+			selectNode(createdNode, false); // Select the new item
 			markModified();
 			refreshSceneGraph();
-			// NEW: Record History
 			recordState();
 		}
 	});
@@ -102,11 +96,9 @@ function createDraggableItem(name, category) {
 	return div;
 }
 
-// Exported so the Loader can use it too
 export function createPrimitive(type, savedData = null) {
 	let mesh;
 	const baseId = savedData ? savedData.id : `${type}_${Date.now()}`;
-	// Ensure ID is unique
 	const id = getUniqueId(scene, baseId);
 	
 	switch (type) {
@@ -135,54 +127,29 @@ export function createPrimitive(type, savedData = null) {
 	}
 	
 	if (mesh) {
-		// IMPORTANT: Store type in metadata for saving later
 		mesh.metadata = { type: type, isPrimitive: true };
 		
 		if (savedData) {
-			if (savedData.name) {
-				mesh.name = savedData.name;
-			}
-			
+			if (savedData.name) mesh.name = savedData.name;
 			mesh.position.set(savedData.position.x, savedData.position.y, savedData.position.z);
 			mesh.scaling.set(savedData.scaling.x, savedData.scaling.y, savedData.scaling.z);
 			
-			if (!mesh.rotationQuaternion) {
-				mesh.rotationQuaternion = new Quaternion();
-			}
-			
+			if (!mesh.rotationQuaternion) mesh.rotationQuaternion = new Quaternion();
 			if (savedData.rotation.w !== undefined) {
-				mesh.rotationQuaternion.set(
-					savedData.rotation.x,
-					savedData.rotation.y,
-					savedData.rotation.z,
-					savedData.rotation.w
-				);
+				mesh.rotationQuaternion.set(savedData.rotation.x, savedData.rotation.y, savedData.rotation.z, savedData.rotation.w);
 			} else {
-				mesh.rotationQuaternion = Quaternion.FromEulerAngles(
-					savedData.rotation.x,
-					savedData.rotation.y,
-					savedData.rotation.z
-				);
+				mesh.rotationQuaternion = Quaternion.FromEulerAngles(savedData.rotation.x, savedData.rotation.y, savedData.rotation.z);
 			}
 			
-			if (savedData.pivot) {
-				mesh.setPivotPoint(new Vector3(savedData.pivot.x, savedData.pivot.y, savedData.pivot.z));
-			}
-			
-			if (savedData.castShadows) {
-				setShadowCaster(mesh, true);
-			}
+			if (savedData.pivot) mesh.setPivotPoint(new Vector3(savedData.pivot.x, savedData.pivot.y, savedData.pivot.z));
+			if (savedData.castShadows) setShadowCaster(mesh, true);
 		} else {
 			mesh.position.y = 0.5;
 			setShadowCaster(mesh, true);
-			if (type === "Ground" || type === "Plane") {
-				mesh.receiveShadows = true;
-			}
+			if (type === "Ground" || type === "Plane") mesh.receiveShadows = true;
 		}
 		
-		if (gizmoManager) {
-			gizmoManager.attachToMesh(mesh);
-		}
+		// Gizmo attachment is now handled by selectionManager calls in ui.js or load logic
 	}
 	return mesh;
 }

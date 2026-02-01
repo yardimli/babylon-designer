@@ -1,8 +1,15 @@
+DONE:
 
 - allow user to select multiple objects from scene with shift or treeview with shift
 - when multiple objects are selected the gizmo should allow moving/scaling/rotating all selected objects together
 - when multiple objects are selected in the property editor show number of selected objects and allow changing common properties like position/rotation/scale/material
 
+TODO:
+
+- allow user to load a json file into an existing scene, it should be readonly and show as a single node only allow to change position. Add button to sidebar which shows file dialog. The materials for the json should be created with a unique suffix and not saved to the project file, on load the materials should be recreated with unique suffixes to avoid name conflicts. the meshes in the loaded json should be renamed to the new unique names as well to avoid name conflicts. In the material editor dont show the materials from the loaded json.
+
 BUGS:
 
 try using babylons own axis helper to show axis in the 3d view for easier orientation https://www.babylonjs-playground.com/#ZPAJ7X#1
+
+when selecting multiple objects add a glow to the selected objects to indicate selection, when editing properties in the property editor it should work like the gizmo and update all selected objects relative to their current values not set them all to the same value.

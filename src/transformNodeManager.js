@@ -1,10 +1,9 @@
 import { TransformNode, MeshBuilder, StandardMaterial, Color3, Quaternion } from "@babylonjs/core";
-import { gizmoManager } from "./gizmoControl.js";
+import { selectNode } from "./selectionManager.js"; // Updated
 import { getUniqueId } from "./scene.js";
 
 export function createTransformNode(savedData = null, scene) {
 	const baseId = savedData ? savedData.id : `node_${Date.now()}`;
-	// Ensure ID is unique
 	const id = getUniqueId(scene, baseId);
 	
 	const node = new TransformNode(id, scene);
@@ -25,12 +24,10 @@ export function createTransformNode(savedData = null, scene) {
 		node.position.y = 1;
 	}
 	
-	// Create Proxy Mesh for selection
 	const proxy = MeshBuilder.CreateBox(id + "_proxy", { size: 0.5 }, scene);
 	proxy.parent = node;
 	proxy.isPickable = true;
 	
-	// Proxy Material (Wireframe/Transparent)
 	const mat = new StandardMaterial("transformNodeMat", scene);
 	mat.emissiveColor = Color3.Purple();
 	mat.alpha = 0.5;
@@ -38,7 +35,6 @@ export function createTransformNode(savedData = null, scene) {
 	mat.disableLighting = true;
 	proxy.material = mat;
 	
-	// Metadata
 	proxy.metadata = {
 		isTransformNodeProxy: true,
 		nodeId: node.id
@@ -49,9 +45,9 @@ export function createTransformNode(savedData = null, scene) {
 		proxyId: proxy.id
 	};
 	
-	// Auto-select if created new (not loading)
-	if (!savedData && gizmoManager) {
-		gizmoManager.attachToNode(node);
+	// Auto-select if created new
+	if (!savedData) {
+		selectNode(node, false);
 	}
 	
 	return node;

@@ -1,22 +1,26 @@
-/* src/gizmoControl.js */
-
-import { GizmoManager, PointerEventTypes } from "@babylonjs/core";
-import { updatePropertyEditor } from "./propertyEditor.js";
+import { GizmoManager, PointerEventTypes, TransformNode, Vector3, Quaternion, Space } from "@babylonjs/core";
 import { markModified } from "./sceneManager.js";
-// NEW: Import History
 import { recordState } from "./historyManager.js";
+import { selectNode, getSelectedNodes } from "./selectionManager.js";
+import { scene } from "./scene.js";
 
 export let gizmoManager;
+let selectionAnchor = null;
+let originalParents = new Map(); // Stores { nodeId: parentNode } during drag
 
 export function disposeGizmos() {
 	if (gizmoManager) {
 		gizmoManager.dispose();
 		gizmoManager = null;
 	}
+	if (selectionAnchor) {
+		selectionAnchor.dispose();
+		selectionAnchor = null;
+	}
 }
 
 export function setupGizmos(scene) {
-	disposeGizmos(); // Ensure we don't have duplicates
+	disposeGizmos();
 	
 	gizmoManager = new GizmoManager(scene);
 	
@@ -26,11 +30,15 @@ export function setupGizmos(scene) {
 	gizmoManager.scaleGizmoEnabled = false;
 	gizmoManager.boundingBoxGizmoEnabled = false;
 	
-	// --- FIX START ---
-	// Disable default pointer attachment. We will handle picking manually
-	// so we can redirect clicks on "Proxies" to their parent "Nodes".
+	// Disable default pointer attachment. We handle picking manually.
 	gizmoManager.usePointerToAttachGizmos = false;
-	gizmoManager.clearGizmoOnEmptyPointerEvent = false; // We handle this manually too
+	gizmoManager.clearGizmoOnEmptyPointerEvent = false;
+	
+	// Create the Multi-Selection Anchor (hidden node)
+	selectionAnchor = new TransformNode("selectionAnchor", scene);
+	selectionAnchor.rotationQuaternion = Quaternion.Identity();
+	// Ensure it doesn't get saved or shown in tree
+	selectionAnchor.metadata = { isInternal: true };
 	
 	// Custom Selection Logic
 	scene.onPointerObservable.add((pointerInfo) => {
@@ -39,51 +47,74 @@ export function setupGizmos(scene) {
 			if (pointerInfo.event.button !== 0) return;
 			
 			const pick = pointerInfo.pickInfo;
+			const isMulti = pointerInfo.event.shiftKey;
 			
 			if (pick.hit && pick.pickedMesh) {
 				const mesh = pick.pickedMesh;
 				
+				// Don't select the gizmos themselves
+				if (mesh.isGizmoMesh || mesh.name.startsWith("gizmo_")) return;
+				
+				let target = null;
+				
 				// 1. Check if we clicked a TransformNode Proxy
 				if (mesh.metadata && mesh.metadata.isTransformNodeProxy) {
-					// Select the PARENT Node, not the proxy sphere
-					const node = mesh.parent;
-					if (node) {
-						gizmoManager.attachToNode(node);
-					}
+					target = mesh.parent;
 				}
 				// 2. Standard Mesh or Light Proxy
 				else {
-					// Light Proxies are actual meshes that control the light, so we select them directly.
-					// Standard meshes are selected directly.
-					gizmoManager.attachToMesh(mesh);
+					target = mesh;
+				}
+				
+				if (target) {
+					selectNode(target, isMulti);
 				}
 			} else {
 				// Clicked on empty space - Deselect
-				gizmoManager.attachToMesh(null);
-				gizmoManager.attachToNode(null);
-				updatePropertyEditor(null);
+				selectNode(null);
 			}
 		}
 	});
-	// --- FIX END ---
 	
-	// Listener for Meshes (Lights, Primitives)
-	gizmoManager.onAttachedToMeshObservable.add((mesh) => {
-		if (mesh) {
-			console.log("Gizmo attached to mesh:", mesh.name);
-			updatePropertyEditor(mesh);
-			attachDragObservers();
-		}
-	});
+	attachDragObservers();
+}
+
+// Called by selectionManager when selection changes
+export function updateGizmoAttachment(nodes) {
+	if (!gizmoManager) return;
 	
-	// Listener for Nodes (TransformNodes)
-	gizmoManager.onAttachedToNodeObservable.add((node) => {
-		if (node) {
-			console.log("Gizmo attached to node:", node.name);
-			updatePropertyEditor(node);
-			attachDragObservers();
+	if (nodes.length === 0) {
+		gizmoManager.attachToMesh(null);
+		gizmoManager.attachToNode(null);
+		return;
+	}
+	
+	if (nodes.length === 1) {
+		// Single Select: Attach directly
+		const target = nodes[0];
+		if (target.getClassName() === "TransformNode" || (target.metadata && target.metadata.isTransformNode)) {
+			gizmoManager.attachToNode(target);
+		} else {
+			gizmoManager.attachToMesh(target);
 		}
-	});
+	} else {
+		// Multi Select: Attach to Anchor
+		updateAnchorPosition(nodes);
+		gizmoManager.attachToNode(selectionAnchor);
+	}
+}
+
+function updateAnchorPosition(nodes) {
+	if (!selectionAnchor || nodes.length === 0) return;
+	
+	// Calculate center
+	let center = Vector3.Zero();
+	nodes.forEach(n => center.addInPlace(n.absolutePosition));
+	center.scaleInPlace(1.0 / nodes.length);
+	
+	selectionAnchor.position.copyFrom(center);
+	selectionAnchor.rotationQuaternion = Quaternion.Identity();
+	selectionAnchor.scaling.setAll(1);
 }
 
 // Function to switch gizmo modes
@@ -94,7 +125,6 @@ export function setGizmoMode(mode) {
 	gizmoManager.rotationGizmoEnabled = (mode === "rotation");
 	gizmoManager.scaleGizmoEnabled = (mode === "scale");
 	
-	// Re-attach observers because new gizmos might have been created
 	attachDragObservers();
 }
 
@@ -110,24 +140,50 @@ function attachDragObservers() {
 	
 	gizmos.forEach(g => {
 		if (g && !g._hasObserver) {
+			
+			// --- Drag Start: Parent nodes to Anchor ---
+			g.onDragStartObservable.add(() => {
+				const nodes = getSelectedNodes();
+				if (nodes.length > 1 && selectionAnchor) {
+					originalParents.clear();
+					
+					nodes.forEach(node => {
+						// Store original parent
+						originalParents.set(node.id, node.parent);
+						
+						// Parent to anchor, maintaining world position
+						node.setParent(selectionAnchor);
+					});
+				}
+			});
+			
+			// --- Drag End: Restore parents & Record ---
 			g.onDragEndObservable.add(() => {
+				const nodes = getSelectedNodes();
+				
+				if (nodes.length > 1 && selectionAnchor) {
+					nodes.forEach(node => {
+						const originalParent = originalParents.get(node.id);
+						// Restore parent, maintaining world position (which is now modified)
+						node.setParent(originalParent);
+					});
+					originalParents.clear();
+					
+					// Reset anchor rotation/scale for next time, but keep position at center
+					// Actually, simpler to just re-calculate anchor from new centers
+					updateAnchorPosition(nodes);
+				}
+				
 				markModified();
-				// NEW: Record history on drag end
 				recordState();
 			});
+			
 			g._hasObserver = true;
 		}
 	});
 }
 
-// Helper to manually select a mesh (used by TreeView)
+// Deprecated export kept for compatibility if needed, but redirects to manager
 export function selectMesh(target) {
-	if (!gizmoManager) return;
-	
-	// Check if it's a Node or a Mesh
-	if (target.getClassName() === "TransformNode" || (target.metadata && target.metadata.isTransformNode)) {
-		gizmoManager.attachToNode(target);
-	} else {
-		gizmoManager.attachToMesh(target);
-	}
+	selectNode(target, false);
 }

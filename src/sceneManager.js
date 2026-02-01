@@ -2,14 +2,13 @@ import { Quaternion, PBRMaterial, Color3 } from "@babylonjs/core";
 import { scene, resetAxisIndicator, getSkipMaterialNames } from "./scene.js";
 import { setupGizmos, disposeGizmos } from "./gizmoControl.js";
 import { updatePropertyEditor } from "./propertyEditor.js";
-// NEW: Import refreshSceneGraph from treeViewManager
 import { refreshSceneGraph } from "./treeViewManager.js";
 import { createPrimitive } from "./ui.js";
 import { createLight } from "./lightManager.js";
 import { createTransformNode } from "./transformNodeManager.js";
 import { clearShadowManagers } from "./shadowManager.js";
-// NEW: Import History Manager
 import { setupHistory } from "./historyManager.js";
+import { selectNode } from "./selectionManager.js"; // Updated
 
 let currentFileName = null;
 let isModified = false;
@@ -29,7 +28,6 @@ export function setupSceneManager() {
 		if (name) saveSceneInternal(name);
 	};
 	
-	// NEW: Initialize History
 	setupHistory(serializeScene, loadSceneData);
 }
 
@@ -66,10 +64,6 @@ function openLoadModal() {
 	saveLoadModal.showModal();
 }
 
-// ==========================================
-// SERIALIZATION (Refactored for History)
-// ==========================================
-
 export function serializeScene() {
 	const data = {
 		version: 1.1,
@@ -81,7 +75,6 @@ export function serializeScene() {
 	
 	const skipNames = getSkipMaterialNames();
 	
-	// -- Save Materials --
 	scene.materials.forEach(mat => {
 		if (skipNames.includes(mat.name) || mat.name.startsWith("preview")) return;
 		
@@ -97,7 +90,6 @@ export function serializeScene() {
 		data.materials.push(matData);
 	});
 	
-	// -- Save Lights --
 	scene.meshes.forEach(mesh => {
 		if (mesh.metadata && mesh.metadata.isLightProxy) {
 			const light = scene.getLightByID(mesh.metadata.lightId);
@@ -110,15 +102,16 @@ export function serializeScene() {
 					intensity: light.intensity,
 					diffuse: { r: light.diffuse.r, g: light.diffuse.g, b: light.diffuse.b },
 					parentId: light.parent ? (light.parent.name || light.parent.id) : null,
-					// NEW: Save Sort Index
 					sortIndex: mesh.metadata.sortIndex || 0
 				});
 			}
 		}
 	});
 	
-	// -- Save TransformNodes --
 	scene.transformNodes.forEach(node => {
+		// Skip internal nodes like the selection anchor
+		if (node.metadata && node.metadata.isInternal) return;
+		
 		if (node.metadata && node.metadata.isTransformNode) {
 			let rot = { x: 0, y: 0, z: 0, w: 1 };
 			if (node.rotationQuaternion) {
@@ -135,13 +128,11 @@ export function serializeScene() {
 				rotation: rot,
 				scaling: { x: node.scaling.x, y: node.scaling.y, z: node.scaling.z },
 				parentId: node.parent ? (node.parent.name || node.parent.id) : null,
-				// NEW: Save Sort Index
 				sortIndex: node.metadata.sortIndex || 0
 			});
 		}
 	});
 	
-	// -- Save Primitives --
 	scene.meshes.forEach(mesh => {
 		if (mesh.metadata && mesh.metadata.isPrimitive) {
 			let rot = { x: 0, y: 0, z: 0, w: 1 };
@@ -166,7 +157,6 @@ export function serializeScene() {
 				parentId: mesh.parent ? (mesh.parent.name || mesh.parent.id) : null,
 				receiveShadows: mesh.receiveShadows,
 				castShadows: mesh.metadata.castShadows || false,
-				// NEW: Save Sort Index
 				sortIndex: mesh.metadata.sortIndex || 0
 			});
 		}
@@ -177,8 +167,6 @@ export function serializeScene() {
 
 async function saveSceneInternal(name) {
 	const data = serializeScene();
-	
-	// 2. Send to Backend
 	try {
 		const response = await fetch('/api/scenes', {
 			method: 'POST',
@@ -202,14 +190,9 @@ async function saveSceneInternal(name) {
 	}
 }
 
-// ==========================================
-// LOADING (Refactored for History)
-// ==========================================
-
 export function loadSceneData(data) {
-	// 1. Clear Scene
 	disposeGizmos();
-	updatePropertyEditor(null);
+	selectNode(null); // Clear selection
 	clearShadowManagers();
 	
 	const toDispose = [];
@@ -230,10 +213,8 @@ export function loadSceneData(data) {
 	const matsToDispose = scene.materials.filter(m => m.name !== "default material" && m.name !== "lightMat" && m.name !== "previewMat" && m.name !== "transformNodeMat");
 	matsToDispose.forEach(m => m.dispose());
 	
-	// Map to store original ID -> new Unique ID (in case of conflict in file or with system)
 	const idMap = new Map();
 	
-	// 2. Reconstruct Materials
 	if (data.materials) {
 		data.materials.forEach(matData => {
 			const mat = new PBRMaterial(matData.name, scene);
@@ -246,19 +227,16 @@ export function loadSceneData(data) {
 		});
 	}
 	
-	// 3. Reconstruct TransformNodes
 	if (data.transformNodes) {
 		data.transformNodes.forEach(nodeData => {
 			const node = createTransformNode(nodeData, scene);
 			if (node) {
 				idMap.set(nodeData.id, node.id);
-				// Restore Sort Index
 				if (node.metadata) node.metadata.sortIndex = nodeData.sortIndex || 0;
 			}
 		});
 	}
 	
-	// 4. Reconstruct Lights
 	if (data.lights) {
 		data.lights.forEach(lightData => {
 			const proxy = createLight(lightData.type, lightData, scene);
@@ -267,31 +245,26 @@ export function loadSceneData(data) {
 				if (light) {
 					idMap.set(lightData.id, light.id);
 				}
-				// Restore Sort Index on Proxy
 				if (proxy.metadata) proxy.metadata.sortIndex = lightData.sortIndex || 0;
 			}
 		});
 	}
 	
-	// 5. Reconstruct Meshes
 	if (data.meshes) {
 		data.meshes.forEach(meshData => {
 			const mesh = createPrimitive(meshData.type, meshData);
 			if (mesh) {
 				idMap.set(meshData.id, mesh.id);
-				
 				if (meshData.materialId) {
 					const mat = scene.getMaterialByID(meshData.materialId);
 					if (mat) mesh.material = mat;
 				}
 				mesh.receiveShadows = !!meshData.receiveShadows;
-				// Restore Sort Index
 				if (mesh.metadata) mesh.metadata.sortIndex = meshData.sortIndex || 0;
 			}
 		});
 	}
 	
-	// 6. Restore Hierarchy (Parenting)
 	const findParent = (idOrName) => {
 		if (!idOrName) return null;
 		const mappedId = idMap.get(idOrName) || idOrName;
@@ -370,6 +343,7 @@ function createNewScene() {
 	
 	disposeGizmos();
 	clearShadowManagers();
+	selectNode(null);
 	
 	scene.meshes.forEach(m => {
 		if (m.metadata && (m.metadata.isPrimitive || m.metadata.isLightProxy || m.metadata.isTransformNodeProxy)) m.dispose();
@@ -383,7 +357,7 @@ function createNewScene() {
 	
 	setupGizmos(scene);
 	updateStatus();
-	updatePropertyEditor(null);
+	updatePropertyEditor([]);
 	refreshSceneGraph();
 }
 
