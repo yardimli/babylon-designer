@@ -9,7 +9,7 @@ import { createTransformNode } from "./transformNodeManager.js";
 import { clearShadowManagers } from "./shadowManager.js";
 import { setupHistory } from "./historyManager.js";
 import { selectNode } from "./selectionManager.js";
-import { getLoadedMaterialFiles, loadMaterialFile, clearMaterialManager } from "./materialManager.js"; // Updated
+import { getLoadedMaterialFiles, loadMaterialFile, clearMaterialManager } from "./materialManager.js";
 
 let currentFileName = null;
 let isModified = false;
@@ -67,15 +67,12 @@ function openLoadModal() {
 
 export function serializeScene() {
 	const data = {
-		version: 1.2, // Bumped version
-		materialFiles: getLoadedMaterialFiles(), // Save filenames only
+		version: 1.4, // Bumped version
+		materialFiles: getLoadedMaterialFiles(),
 		lights: [],
 		meshes: [],
 		transformNodes: []
 	};
-	
-	// We no longer serialize full material data here.
-	// The materialFiles array handles the definitions.
 	
 	scene.meshes.forEach(mesh => {
 		if (mesh.metadata && mesh.metadata.isLightProxy) {
@@ -88,8 +85,10 @@ export function serializeScene() {
 					direction: light.direction ? { x: light.direction.x, y: light.direction.y, z: light.direction.z } : null,
 					intensity: light.intensity,
 					diffuse: { r: light.diffuse.r, g: light.diffuse.g, b: light.diffuse.b },
-					parentId: light.parent ? (light.parent.name || light.parent.id) : null,
-					sortIndex: mesh.metadata.sortIndex || 0
+					parentId: light.parent ? light.parent.id : null,
+					sortIndex: mesh.metadata.sortIndex || 0,
+					// NEW: Save visibility
+					visible: mesh.isEnabled()
 				});
 			}
 		}
@@ -113,8 +112,10 @@ export function serializeScene() {
 				position: { x: node.position.x, y: node.position.y, z: node.position.z },
 				rotation: rot,
 				scaling: { x: node.scaling.x, y: node.scaling.y, z: node.scaling.z },
-				parentId: node.parent ? (node.parent.name || node.parent.id) : null,
-				sortIndex: node.metadata.sortIndex || 0
+				parentId: node.parent ? node.parent.id : null,
+				sortIndex: node.metadata.sortIndex || 0,
+				// NEW: Save visibility
+				visible: node.isEnabled()
 			});
 		}
 	});
@@ -139,12 +140,13 @@ export function serializeScene() {
 				rotation: rot,
 				scaling: { x: mesh.scaling.x, y: mesh.scaling.y, z: mesh.scaling.z },
 				pivot: { x: pivot.x, y: pivot.y, z: pivot.z },
-				// Save the material ID (which is the filename for external mats)
 				materialId: mesh.material ? mesh.material.id : null,
-				parentId: mesh.parent ? (mesh.parent.name || mesh.parent.id) : null,
+				parentId: mesh.parent ? mesh.parent.id : null,
 				receiveShadows: mesh.receiveShadows,
 				castShadows: mesh.metadata.castShadows || false,
-				sortIndex: mesh.metadata.sortIndex || 0
+				sortIndex: mesh.metadata.sortIndex || 0,
+				// NEW: Save visibility
+				visible: mesh.isEnabled()
 			});
 		}
 	});
@@ -181,9 +183,8 @@ export async function loadSceneData(data) {
 	disposeGizmos();
 	selectNode(null);
 	clearShadowManagers();
-	clearMaterialManager(); // Reset loaded files list
+	clearMaterialManager();
 	
-	// Cleanup existing scene
 	const toDispose = [];
 	scene.meshes.forEach(m => {
 		if (m.name === "previewSphere") return;
@@ -198,21 +199,17 @@ export async function loadSceneData(data) {
 	
 	toDispose.forEach(n => n.dispose());
 	
-	// Cleanup Materials (except defaults)
 	const matsToDispose = scene.materials.filter(m => m.name !== "default material" && m.name !== "lightMat" && m.name !== "previewMat" && m.name !== "transformNodeMat");
 	matsToDispose.forEach(m => m.dispose());
 	
 	const idMap = new Map();
 	
-	// 1. Load External Materials First
 	if (data.materialFiles) {
-		// We need to await these so materials exist before meshes try to bind them
 		for (const filename of data.materialFiles) {
 			await loadMaterialFile(filename);
 		}
 	}
 	
-	// 2. Legacy Support (if scene has embedded materials, load them)
 	if (data.materials) {
 		data.materials.forEach(matData => {
 			const mat = new PBRMaterial(matData.name, scene);
@@ -225,13 +222,14 @@ export async function loadSceneData(data) {
 		});
 	}
 	
-	// 3. Reconstruct Nodes
 	if (data.transformNodes) {
 		data.transformNodes.forEach(nodeData => {
 			const node = createTransformNode(nodeData, scene);
 			if (node) {
 				idMap.set(nodeData.id, node.id);
 				if (node.metadata) node.metadata.sortIndex = nodeData.sortIndex || 0;
+				// NEW: Restore visibility
+				if (nodeData.visible !== undefined) node.setEnabled(nodeData.visible);
 			}
 		});
 	}
@@ -245,6 +243,8 @@ export async function loadSceneData(data) {
 					idMap.set(lightData.id, light.id);
 				}
 				if (proxy.metadata) proxy.metadata.sortIndex = lightData.sortIndex || 0;
+				// NEW: Restore visibility (on proxy, which propagates to light via logic if needed, but setEnabled works on nodes)
+				if (lightData.visible !== undefined) proxy.setEnabled(lightData.visible);
 			}
 		});
 	}
@@ -260,6 +260,8 @@ export async function loadSceneData(data) {
 				}
 				mesh.receiveShadows = !!meshData.receiveShadows;
 				if (mesh.metadata) mesh.metadata.sortIndex = meshData.sortIndex || 0;
+				// NEW: Restore visibility
+				if (meshData.visible !== undefined) mesh.setEnabled(meshData.visible);
 			}
 		});
 	}
@@ -269,12 +271,12 @@ export async function loadSceneData(data) {
 		if (!idOrName) return null;
 		const mappedId = idMap.get(idOrName) || idOrName;
 		
-		return scene.getMeshByName(mappedId) ||
-			scene.getMeshByID(mappedId) ||
-			scene.getTransformNodeByName(mappedId) ||
+		return scene.getMeshByID(mappedId) ||
 			scene.getTransformNodeByID(mappedId) ||
-			scene.getLightByName(mappedId) ||
-			scene.getLightByID(mappedId);
+			scene.getLightByID(mappedId) ||
+			scene.getMeshByName(mappedId) ||
+			scene.getTransformNodeByName(mappedId) ||
+			scene.getLightByName(mappedId);
 	};
 	
 	const restoreParents = (list) => {
@@ -282,7 +284,6 @@ export async function loadSceneData(data) {
 		list.forEach(d => {
 			if (d.parentId) {
 				const childId = idMap.get(d.id) || d.id;
-				// Try mesh, node, or light
 				let child = scene.getMeshByID(childId) || scene.getTransformNodeByID(childId) || scene.getLightByID(childId);
 				const parent = findParent(d.parentId);
 				if (child && parent) child.parent = parent;
@@ -342,7 +343,6 @@ function createNewScene() {
 		if (l.name !== "hemiLight") l.dispose();
 	});
 	
-	// Dispose user materials
 	scene.materials.forEach(m => {
 		if (m.metadata && m.metadata.isExternal) m.dispose();
 	});

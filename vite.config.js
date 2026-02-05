@@ -92,6 +92,9 @@ const fileSystemMiddleware = () => {
 			};
 			
 			server.middlewares.use((req, res, next) => {
+				if (req.url.startsWith('/api/scenesets')) {
+					if (handleEndpoint(req, res, 'scenesets')) return;
+				}
 				if (req.url.startsWith('/api/scenes')) {
 					if (handleEndpoint(req, res, 'scenes')) return;
 				}

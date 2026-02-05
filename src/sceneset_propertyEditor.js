@@ -1,16 +1,15 @@
 import { Vector3, Quaternion, Color3, AbstractMesh } from "@babylonjs/core";
-import { scene, getUniqueId } from "./scene.js";
-import { markModified } from "./sceneManager.js";
-import { selectNode, getSelectedNodes } from "./selectionManager.js";
-import { createLight } from "./lightManager.js";
-import { setShadowCaster, disposeShadowGenerator } from "./shadowManager.js";
-import { createTransformNode } from "./transformNodeManager.js";
-import { recordState } from "./historyManager.js";
-import { refreshSceneGraph, setNodeParent } from "./treeViewManager.js";
+import { scene, getUniqueId } from "./sceneset_scene.js";
+import { markModified } from "./sceneSetManager.js";
+import { selectNode, getSelectedNodes } from "./sceneset_selectionManager.js";
+import { createLight } from "./sceneset_lightManager.js";
+import { setShadowCaster, disposeShadowGenerator } from "./sceneset_shadowManager.js";
+import { createTransformNode } from "./sceneset_transformNodeManager.js";
+import { recordState } from "./sceneset_historyManager.js";
+import { refreshSceneGraph, setNodeParent } from "./sceneset_treeViewManager.js";
 
 let observer = null;
 
-// ... existing createVec3Input function ...
 function createVec3Input(label, idPrefix, container) {
 	const wrapper = document.createElement("div");
 	wrapper.className = "flex flex-col gap-1 mb-2";
@@ -73,6 +72,8 @@ export function updatePropertyEditor(targets) {
 				if (target.metadata.isPrimitive) typeLabel = target.metadata.type || "Mesh";
 				else if (target.metadata.isLightProxy) typeLabel = "Light";
 				else if (target.metadata.isTransformNode) typeLabel = "Node";
+				// NEW: Scene Set Root
+				else if (target.metadata.isSceneSetRoot) typeLabel = "Scene";
 			} else {
 				typeLabel = target.getClassName();
 			}
@@ -109,7 +110,7 @@ export function updatePropertyEditor(targets) {
 	const receiveShadowsInput = document.getElementById("prop-receive-shadows");
 	const castShadowsInput = document.getElementById("prop-cast-shadows");
 	
-	if (allMeshes) {
+	if (allMeshes && receiveShadowsInput && castShadowsInput) {
 		receiveShadowsInput.closest(".form-control").classList.remove("hidden");
 		castShadowsInput.closest(".form-control").classList.remove("hidden");
 		
@@ -123,7 +124,7 @@ export function updatePropertyEditor(targets) {
 		castShadowsInput.checked = allCast;
 		castShadowsInput.indeterminate = someCast && !allCast;
 		
-	} else {
+	} else if (receiveShadowsInput && castShadowsInput) {
 		receiveShadowsInput.closest(".form-control").classList.add("hidden");
 		castShadowsInput.closest(".form-control").classList.add("hidden");
 	}
@@ -138,7 +139,6 @@ export function updatePropertyEditor(targets) {
 	syncUIFromTargets(targets);
 }
 
-// ... existing getCommonValue function ...
 function getCommonValue(targets, getter) {
 	if (targets.length === 0) return null;
 	const first = getter(targets[0]);
@@ -153,7 +153,6 @@ function syncUIFromTargets(targets) {
 	// NEW: Visibility Sync
 	const visInput = document.getElementById("prop-visible");
 	if (visInput) {
-		// Use isEnabled() to check if the node is active in the hierarchy
 		const allEnabled = targets.every(t => t.isEnabled());
 		const someEnabled = targets.some(t => t.isEnabled());
 		visInput.checked = allEnabled;
@@ -196,7 +195,6 @@ function syncUIFromTargets(targets) {
 }
 
 function bindInputs(targets) {
-	// ... existing getVal function ...
 	const getVal = (id) => {
 		const val = document.getElementById(id).value;
 		return val === "" ? null : parseFloat(val);
@@ -216,12 +214,10 @@ function bindInputs(targets) {
 		const sz = getVal("scl-z");
 		
 		targets.forEach(mesh => {
-			// Position
 			if (px !== null) mesh.position.x = px;
 			if (py !== null) mesh.position.y = py;
 			if (pz !== null) mesh.position.z = pz;
 			
-			// Rotation
 			if (rx !== null || ry !== null || rz !== null) {
 				let currentEuler;
 				if (mesh.rotationQuaternion) {
@@ -238,7 +234,6 @@ function bindInputs(targets) {
 				Quaternion.FromEulerAnglesToRef(radX, radY, radZ, mesh.rotationQuaternion);
 			}
 			
-			// Scale
 			if (sx !== null) mesh.scaling.x = sx;
 			if (sy !== null) mesh.scaling.y = sy;
 			if (sz !== null) mesh.scaling.z = sz;
@@ -261,7 +256,6 @@ function bindInputs(targets) {
 			});
 			markModified();
 			recordState();
-			// Refresh graph to potentially update visual indications if we add them later
 			refreshSceneGraph();
 		};
 	}
@@ -298,21 +292,27 @@ function bindInputs(targets) {
 	}
 	
 	// Shadow Checkboxes
-	document.getElementById("prop-receive-shadows").onchange = (e) => {
-		targets.forEach(t => {
-			if (t instanceof AbstractMesh) t.receiveShadows = e.target.checked;
-		});
-		markModified();
-		recordState();
-	};
+	const receiveShadowsInput = document.getElementById("prop-receive-shadows");
+	if (receiveShadowsInput) {
+		receiveShadowsInput.onchange = (e) => {
+			targets.forEach(t => {
+				if (t instanceof AbstractMesh) t.receiveShadows = e.target.checked;
+			});
+			markModified();
+			recordState();
+		};
+	}
 	
-	document.getElementById("prop-cast-shadows").onchange = (e) => {
-		targets.forEach(t => {
-			if (t instanceof AbstractMesh) setShadowCaster(t, e.target.checked);
-		});
-		markModified();
-		recordState();
-	};
+	const castShadowsInput = document.getElementById("prop-cast-shadows");
+	if (castShadowsInput) {
+		castShadowsInput.onchange = (e) => {
+			targets.forEach(t => {
+				if (t instanceof AbstractMesh) setShadowCaster(t, e.target.checked);
+			});
+			markModified();
+			recordState();
+		};
+	}
 }
 
 // ... rest of the file (updateParentDropdown, updateMaterialDropdown, etc) ...
@@ -492,7 +492,7 @@ function duplicateHierarchy(node, parent) {
 	}
 	
 	if (newNode) {
-		// Sync visibility on duplicate
+		// Sync visibility
 		newNode.setEnabled(node.isEnabled());
 		
 		node.getChildren().forEach(child => {
