@@ -1,7 +1,7 @@
 import { createScene } from "./scene.js";
-import { setupUI } from "./ui.js";
-import { setupGizmos } from "./gizmoControl.js";
-import { setupMaterialManager } from "./materialManager.js"; // Changed
+import { setupUI } from "./scene_ui.js";
+import { setupGizmos } from "./scene_gizmoControl.js";
+import { setupMaterialManager } from "./scene_materialManager.js"; // Changed
 import { setupSceneManager } from "./sceneManager.js";
 
 // Initialize

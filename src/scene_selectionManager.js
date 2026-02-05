@@ -1,6 +1,6 @@
-import { updateGizmoAttachment } from "./gizmoControl.js";
-import { updatePropertyEditor } from "./propertyEditor.js";
-import { highlightInTree } from "./treeViewManager.js";
+import { updateGizmoAttachment } from "./scene_gizmoControl.js";
+import { updatePropertyEditor } from "./scene_propertyEditor.js";
+import { highlightInTree } from "./scene_treeViewManager.js";
 
 let selectedNodes = [];
 

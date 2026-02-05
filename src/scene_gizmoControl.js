@@ -1,7 +1,7 @@
 import { GizmoManager, PointerEventTypes, TransformNode, Vector3, Quaternion, Space } from "@babylonjs/core";
 import { markModified } from "./sceneManager.js";
-import { recordState } from "./historyManager.js";
-import { selectNode, getSelectedNodes } from "./selectionManager.js";
+import { recordState } from "./scene_historyManager.js";
+import { selectNode, getSelectedNodes } from "./scene_selectionManager.js";
 import { scene } from "./scene.js";
 
 export let gizmoManager;

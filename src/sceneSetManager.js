@@ -78,19 +78,6 @@ export async function importSceneAsAsset(filename, position = Vector3.Zero(), sa
 				await loadMaterialFile(matFile);
 			}
 		}
-		if (data.materials) {
-			data.materials.forEach(matData => {
-				if (!scene.getMaterialByID(matData.id)) {
-					const mat = new PBRMaterial(matData.name, scene);
-					mat.id = matData.id;
-					mat.albedoColor = new Color3(...matData.albedo);
-					mat.emissiveColor = new Color3(...matData.emissive);
-					mat.metallic = matData.metallic;
-					mat.roughness = matData.roughness;
-					mat.alpha = matData.alpha;
-				}
-			});
-		}
 		
 		// 3. Reconstruct Hierarchy with Prefixing
 		const idMap = new Map();

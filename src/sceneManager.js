@@ -1,15 +1,15 @@
 import { Quaternion, PBRMaterial, Color3 } from "@babylonjs/core";
 import { scene, resetAxisIndicator, getSkipMaterialNames } from "./scene.js";
-import { setupGizmos, disposeGizmos } from "./gizmoControl.js";
-import { updatePropertyEditor } from "./propertyEditor.js";
-import { refreshSceneGraph } from "./treeViewManager.js";
-import { createPrimitive } from "./ui.js";
-import { createLight } from "./lightManager.js";
-import { createTransformNode } from "./transformNodeManager.js";
-import { clearShadowManagers } from "./shadowManager.js";
-import { setupHistory } from "./historyManager.js";
-import { selectNode } from "./selectionManager.js";
-import { getLoadedMaterialFiles, loadMaterialFile, clearMaterialManager } from "./materialManager.js";
+import { setupGizmos, disposeGizmos } from "./scene_gizmoControl.js";
+import { updatePropertyEditor } from "./scene_propertyEditor.js";
+import { refreshSceneGraph } from "./scene_treeViewManager.js";
+import { createPrimitive } from "./scene_ui.js";
+import { createLight } from "./scene_lightManager.js";
+import { createTransformNode } from "./scene_transformNodeManager.js";
+import { clearShadowManagers } from "./scene_shadowManager.js";
+import { setupHistory } from "./scene_historyManager.js";
+import { selectNode } from "./scene_selectionManager.js";
+import { getLoadedMaterialFiles, loadMaterialFile, clearMaterialManager } from "./scene_materialManager.js";
 
 let currentFileName = null;
 let isModified = false;
@@ -208,18 +208,6 @@ export async function loadSceneData(data) {
 		for (const filename of data.materialFiles) {
 			await loadMaterialFile(filename);
 		}
-	}
-	
-	if (data.materials) {
-		data.materials.forEach(matData => {
-			const mat = new PBRMaterial(matData.name, scene);
-			mat.id = matData.id;
-			mat.albedoColor = new Color3(...matData.albedo);
-			mat.emissiveColor = new Color3(...matData.emissive);
-			mat.metallic = matData.metallic;
-			mat.roughness = matData.roughness;
-			mat.alpha = matData.alpha;
-		});
 	}
 	
 	if (data.transformNodes) {

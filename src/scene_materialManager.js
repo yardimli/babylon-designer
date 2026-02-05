@@ -1,6 +1,6 @@
 import { PBRMaterial, Color3 } from "@babylonjs/core";
 import { scene } from "./scene.js";
-import { updatePropertyEditor } from "./propertyEditor.js";
+import { updatePropertyEditor } from "./scene_propertyEditor.js";
 
 // Tracks which external files have been loaded into the scene
 // Set<string> (filenames)

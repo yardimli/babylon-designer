@@ -1,5 +1,5 @@
 import { TransformNode, MeshBuilder, StandardMaterial, Color3, Quaternion } from "@babylonjs/core";
-import { selectNode } from "./selectionManager.js"; // Updated
+import { selectNode } from "./scene_selectionManager.js"; // Updated
 import { getUniqueId } from "./scene.js";
 
 export function createTransformNode(savedData = null, scene) {

@@ -1,13 +1,13 @@
 import { MeshBuilder, Vector3, Quaternion } from "@babylonjs/core";
 import { scene, getUniqueId } from "./scene.js";
-import { gizmoManager, setGizmoMode } from "./gizmoControl.js";
-import { createLight } from "./lightManager.js";
-import { createTransformNode } from "./transformNodeManager.js";
+import { gizmoManager, setGizmoMode } from "./scene_gizmoControl.js";
+import { createLight } from "./scene_lightManager.js";
+import { createTransformNode } from "./scene_transformNodeManager.js";
 import { markModified } from "./sceneManager.js";
-import { refreshSceneGraph } from "./treeViewManager.js";
-import { setShadowCaster } from "./shadowManager.js";
-import { recordState } from "./historyManager.js";
-import { selectNode } from "./selectionManager.js";
+import { refreshSceneGraph } from "./scene_treeViewManager.js";
+import { setShadowCaster } from "./scene_shadowManager.js";
+import { recordState } from "./scene_historyManager.js";
+import { selectNode } from "./scene_selectionManager.js";
 
 const primitives = ["Cube", "Sphere", "Cylinder", "Plane", "Ground", "Cone", "Pyramid", "Empty"];
 const lights = ["Point", "Directional"];

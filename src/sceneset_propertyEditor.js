@@ -70,7 +70,11 @@ export function updatePropertyEditor(targets) {
 			let typeLabel = "Unknown";
 			if (target.metadata) {
 				if (target.metadata.isPrimitive) typeLabel = target.metadata.type || "Mesh";
-				else if (target.metadata.isLightProxy) typeLabel = "Light";
+				else if (target.metadata.isLightProxy) {
+					// MODIFIED: Show specific light type (Point/Directional) instead of generic "Light"
+					const t = target.metadata.lightType;
+					typeLabel = t ? (t.charAt(0).toUpperCase() + t.slice(1)) : "Light";
+				}
 				else if (target.metadata.isTransformNode) typeLabel = "Node";
 				// NEW: Scene Set Root
 				else if (target.metadata.isSceneSetRoot) typeLabel = "Scene";

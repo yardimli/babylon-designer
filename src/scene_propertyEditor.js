@@ -1,12 +1,12 @@
 import { Vector3, Quaternion, Color3, AbstractMesh } from "@babylonjs/core";
 import { scene, getUniqueId } from "./scene.js";
 import { markModified } from "./sceneManager.js";
-import { selectNode, getSelectedNodes } from "./selectionManager.js";
-import { createLight } from "./lightManager.js";
-import { setShadowCaster, disposeShadowGenerator } from "./shadowManager.js";
-import { createTransformNode } from "./transformNodeManager.js";
-import { recordState } from "./historyManager.js";
-import { refreshSceneGraph, setNodeParent } from "./treeViewManager.js";
+import { selectNode, getSelectedNodes } from "./scene_selectionManager.js";
+import { createLight } from "./scene_lightManager.js";
+import { setShadowCaster, disposeShadowGenerator } from "./scene_shadowManager.js";
+import { createTransformNode } from "./scene_transformNodeManager.js";
+import { recordState } from "./scene_historyManager.js";
+import { refreshSceneGraph, setNodeParent } from "./scene_treeViewManager.js";
 
 let observer = null;
 
@@ -71,7 +71,11 @@ export function updatePropertyEditor(targets) {
 			let typeLabel = "Unknown";
 			if (target.metadata) {
 				if (target.metadata.isPrimitive) typeLabel = target.metadata.type || "Mesh";
-				else if (target.metadata.isLightProxy) typeLabel = "Light";
+				else if (target.metadata.isLightProxy) {
+					// MODIFIED: Show specific light type (Point/Directional) instead of generic "Light"
+					const t = target.metadata.lightType;
+					typeLabel = t ? (t.charAt(0).toUpperCase() + t.slice(1)) : "Light";
+				}
 				else if (target.metadata.isTransformNode) typeLabel = "Node";
 			} else {
 				typeLabel = target.getClassName();
