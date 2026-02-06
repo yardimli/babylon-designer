@@ -23,16 +23,14 @@ export function createShadowGenerator(light) {
 		light.shadowMinZ = 0.1;
 		light.shadowMaxZ = 100;
 	}
-	
+
 	// 1 is DirectionalLight
 	if (light.getTypeID() === 1) {
-		// Fix: Automatically calculate the shadow projection bounds.
-		// This ensures that when the directional light (and its proxy) is moved,
-		// the shadow frustum updates to include the meshes in the scene.
-		// Without this, moving the light might cause meshes to fall out of the shadow projection.
-		light.autoCalcShadowZBounds = true;
+		// light.autoCalcShadowZBounds = true; this makes shadows not work so we use MinZ MaxZ instead
+        light.shadowMinZ = 0.1;
+        light.shadowMaxZ = 100;
 	}
-	
+
 	// Store reference on the light for easy disposal later
 	light._shadowGenerator = sg;
 	shadowGenerators.push(sg);
