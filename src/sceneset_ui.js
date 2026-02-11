@@ -1,13 +1,13 @@
-import { MeshBuilder, Vector3, Quaternion } from "@babylonjs/core";
-import { scene, getUniqueId } from "./sceneset_scene.js"; // Updated
-import { setGizmoMode } from "./sceneset_gizmoControl.js"; // Updated
-import { createLight } from "./sceneset_lightManager.js"; // Updated
-import { createTransformNode } from "./sceneset_transformNodeManager.js"; // Updated
-import { markModified } from "./sceneSetManager.js"; // Updated to sceneSetManager
-import { refreshSceneGraph } from "./sceneset_treeViewManager.js"; // Updated
-import { setShadowCaster } from "./sceneset_shadowManager.js"; // Updated
-import { recordState } from "./sceneset_historyManager.js"; // Updated
-import { selectNode } from "./sceneset_selectionManager.js"; // Updated
+import {MeshBuilder, Vector3, Quaternion} from "@babylonjs/core";
+import {scene, getUniqueId} from "./sceneset_scene.js"; // Updated
+import {setGizmoMode} from "./sceneset_gizmoControl.js"; // Updated
+import {createLight} from "./sceneset_lightManager.js"; // Updated
+import {createTransformNode} from "./sceneset_transformNodeManager.js"; // Updated
+import {markModified} from "./sceneSetManager.js"; // Updated to sceneSetManager
+import {refreshSceneGraph} from "./sceneset_treeViewManager.js"; // Updated
+import {setShadowCaster} from "./sceneset_shadowManager.js"; // Updated
+import {recordState} from "./sceneset_historyManager.js"; // Updated
+import {selectNode} from "./sceneset_selectionManager.js"; // Updated
 
 const primitives = ["Cube", "Sphere", "Cylinder", "Plane", "Ground", "Cone", "Pyramid", "Empty"];
 const lights = ["Point", "Directional"];
@@ -16,31 +16,31 @@ export function setupUI() {
 	const pList = document.getElementById("primitives-list");
 	const lList = document.getElementById("lights-list");
 	const canvas = document.getElementById("renderCanvas");
-	
+
 	setupGizmoButtons();
-	
+
 	if (pList) {
 		primitives.forEach(type => {
 			const div = createDraggableItem(type, "primitive");
 			pList.appendChild(div);
 		});
 	}
-	
+
 	if (lList) {
 		lights.forEach(type => {
 			const div = createDraggableItem(type, "light");
 			lList.appendChild(div);
 		});
 	}
-	
+
 	canvas.addEventListener("dragover", (e) => e.preventDefault());
 	canvas.addEventListener("drop", (e) => {
 		e.preventDefault();
 		const type = e.dataTransfer.getData("type");
 		const category = e.dataTransfer.getData("category");
-		
+
 		let createdNode = null;
-		
+
 		if (category === "primitive") {
 			if (type === "Empty") {
 				createdNode = createTransformNode(null, scene);
@@ -50,7 +50,7 @@ export function setupUI() {
 		} else if (category === "light") {
 			createdNode = createLight(type.toLowerCase(), null, scene);
 		}
-		
+
 		if (createdNode) {
 			selectNode(createdNode, false);
 			markModified();
@@ -64,26 +64,26 @@ function setupGizmoButtons() {
 	const btnPos = document.getElementById("btn-gizmo-pos");
 	const btnRot = document.getElementById("btn-gizmo-rot");
 	const btnScl = document.getElementById("btn-gizmo-scl");
-	
+
 	if (!btnPos) return;
-	
+
 	const setActive = (activeBtn) => {
 		[btnPos, btnRot, btnScl].forEach(btn => {
 			if (btn === activeBtn) btn.classList.add("btn-active");
 			else btn.classList.remove("btn-active");
 		});
 	};
-	
+
 	btnPos.onclick = () => {
 		setGizmoMode("position");
 		setActive(btnPos);
 	};
-	
+
 	btnRot.onclick = () => {
 		setGizmoMode("rotation");
 		setActive(btnRot);
 	};
-	
+
 	btnScl.onclick = () => {
 		setGizmoMode("scale");
 		setActive(btnScl);
@@ -106,49 +106,54 @@ export function createPrimitive(type, savedData = null) {
 	let mesh;
 	const baseId = savedData ? savedData.id : `${type}_${Date.now()}`;
 	const id = getUniqueId(scene, baseId);
-	
+
 	switch (type) {
 		case "Cube":
-			mesh = MeshBuilder.CreateBox(id, { size: 1 }, scene);
+			mesh = MeshBuilder.CreateBox(id, {size: 1}, scene);
 			break;
 		case "Sphere":
-			mesh = MeshBuilder.CreateSphere(id, { diameter: 1 }, scene);
+			mesh = MeshBuilder.CreateSphere(id, {diameter: 1}, scene);
 			break;
 		case "Cylinder":
-			mesh = MeshBuilder.CreateCylinder(id, { height: 1, diameter: 1 }, scene);
+			mesh = MeshBuilder.CreateCylinder(id, {height: 1, diameter: 1}, scene);
 			break;
 		case "Plane":
-			mesh = MeshBuilder.CreatePlane(id, { size: 1 }, scene);
+			mesh = MeshBuilder.CreatePlane(id, {size: 1}, scene);
 			break;
 		case "Ground":
-			mesh = MeshBuilder.CreateGround(id, { width: 1, height: 1 }, scene);
+			mesh = MeshBuilder.CreateGround(id, {width: 1, height: 1}, scene);
 			mesh.backFaceCulling = false;
 			break;
 		case "Cone":
-			mesh = MeshBuilder.CreateCylinder(id, { diameterTop: 0, height: 1 }, scene);
+			mesh = MeshBuilder.CreateCylinder(id, {diameterTop: 0, height: 1}, scene);
 			break;
 		case "Pyramid":
-			mesh = MeshBuilder.CreateCylinder(id, { diameterTop: 0, tessellation: 4, height: 1 }, scene);
+			mesh = MeshBuilder.CreateCylinder(id, {diameterTop: 0, tessellation: 4, height: 1}, scene);
 			break;
 	}
-	
+
 	if (mesh) {
-		mesh.metadata = { type: type, isPrimitive: true };
-		
+		mesh.metadata = {type: type, isPrimitive: true};
+
 		if (savedData) {
 			if (savedData.name) mesh.name = savedData.name;
 			mesh.position.set(savedData.position.x, savedData.position.y, savedData.position.z);
 			mesh.scaling.set(savedData.scaling.x, savedData.scaling.y, savedData.scaling.z);
-			
+
 			if (!mesh.rotationQuaternion) mesh.rotationQuaternion = new Quaternion();
 			if (savedData.rotation.w !== undefined) {
 				mesh.rotationQuaternion.set(savedData.rotation.x, savedData.rotation.y, savedData.rotation.z, savedData.rotation.w);
 			} else {
 				mesh.rotationQuaternion = Quaternion.FromEulerAngles(savedData.rotation.x, savedData.rotation.y, savedData.rotation.z);
 			}
-			
+
 			if (savedData.pivot) mesh.setPivotPoint(new Vector3(savedData.pivot.x, savedData.pivot.y, savedData.pivot.z));
 			if (savedData.castShadows) setShadowCaster(mesh, true);
+
+			// Fix: Restore receiveShadows
+			if (savedData.receiveShadows !== undefined) {
+				mesh.receiveShadows = savedData.receiveShadows;
+			}
 		} else {
 			mesh.position.y = 0.5;
 			setShadowCaster(mesh, true);

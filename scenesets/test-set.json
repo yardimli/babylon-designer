@@ -3,55 +3,11 @@
   "type": "sceneset",
   "scenes": [
     {
-      "id": "test_inst",
-      "sourceFile": "test.json",
-      "position": {
-        "x": 0,
-        "y": 0,
-        "z": 0
-      },
-      "rotation": {
-        "x": 0,
-        "y": -0.4961636682980479,
-        "z": 0,
-        "w": 0.8682290102622836
-      },
-      "scaling": {
-        "x": 0.9999996980994357,
-        "y": 1,
-        "z": 0.9999996980994357
-      },
-      "name": "test_inst",
-      "visible": true
-    },
-    {
-      "id": "test_inst_1",
-      "sourceFile": "test.json",
-      "position": {
-        "x": 10.29346752166748,
-        "y": 0,
-        "z": 0
-      },
-      "rotation": {
-        "x": 0,
-        "y": -0.7370806128059073,
-        "z": 0,
-        "w": 0.6758048314607319
-      },
-      "scaling": {
-        "x": 0.9999998674664449,
-        "y": 1,
-        "z": 0.9999998674664449
-      },
-      "name": "test_inst_1",
-      "visible": true
-    },
-    {
       "id": "ground_inst",
       "sourceFile": "ground.json",
       "position": {
         "x": 0,
-        "y": 0,
+        "y": -0.010637360624969006,
         "z": 0
       },
       "rotation": {
@@ -66,51 +22,76 @@
         "z": 1
       },
       "name": "ground_inst",
-      "visible": false
+      "visible": true
+    },
+    {
+      "id": "test_inst",
+      "sourceFile": "test.json",
+      "position": {
+        "x": -11.202574729919434,
+        "y": 0,
+        "z": 0
+      },
+      "rotation": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 1
+      },
+      "scaling": {
+        "x": 1,
+        "y": 1,
+        "z": 1
+      },
+      "name": "test_inst",
+      "visible": true
+    },
+    {
+      "id": "test_inst_1",
+      "sourceFile": "test.json",
+      "position": {
+        "x": 11.69453239440918,
+        "y": 0,
+        "z": 0
+      },
+      "rotation": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 1
+      },
+      "scaling": {
+        "x": 1,
+        "y": 1,
+        "z": 1
+      },
+      "name": "test_inst_1",
+      "visible": true
     }
   ],
   "lights": [
     {
-      "id": "light_1770284405455",
-      "type": "point",
-      "position": {
-        "x": 5.243552207946777,
-        "y": 9.34355640411377,
-        "z": -1.052100419998169
-      },
-      "direction": null,
-      "intensity": 44,
-      "diffuse": {
-        "r": 1,
-        "g": 1,
-        "b": 1
-      },
-      "name": "light_1770284405455_proxy",
-      "parentId": null,
-      "visible": false
-    },
-    {
-      "id": "light_1770284441029",
+      "id": "light_1770380945395",
       "type": "directional",
       "position": {
         "x": 0,
-        "y": 12,
-        "z": 0
+        "y": 5,
+        "z": -20
       },
       "direction": {
         "x": 0,
-        "y": -0.8943885638540195,
-        "z": 0.447290841452342
+        "y": -0.7071067811865476,
+        "z": 0.7071067811865476
       },
-      "intensity": 2,
+      "intensity": 0.5,
       "diffuse": {
         "r": 1,
         "g": 1,
         "b": 1
       },
-      "name": "light_1770284441029_proxy",
+      "name": "light_1770380945395_proxy",
       "parentId": null,
-      "visible": false
+      "visible": true
     }
   ]
 }
