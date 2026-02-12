@@ -32,10 +32,10 @@ export function setupSceneSetManager() {
 
 	setupHistory(serializeSceneSet, loadSceneSetData);
 
-	// Auto-load last scene set
+	// Auto-load last part set
 	const lastFile = localStorage.getItem(STORAGE_KEY_LAST_SCENESET);
 	if (lastFile) {
-		console.log("Restoring last scene set:", lastFile);
+		console.log("Restoring last part set:", lastFile);
 		loadSceneSetInternal(lastFile);
 	}
 }
@@ -61,7 +61,7 @@ export async function importSceneAsAsset(filename, position = Vector3.Zero(), sa
 		const result = await res.json();
 
 		if (!result.success) {
-			console.error("Failed to load scene file:", filename);
+			console.error("Failed to load part file:", filename);
 			return;
 		}
 
@@ -182,7 +182,7 @@ export async function importSceneAsAsset(filename, position = Vector3.Zero(), sa
 		return rootNode;
 
 	} catch (e) {
-		console.error("Error importing scene:", e);
+		console.error("Error importing part:", e);
 	}
 }
 
@@ -216,7 +216,7 @@ function serializeSceneSet() {
 				rotation: rot,
 				scaling: { x: node.scaling.x, y: node.scaling.y, z: node.scaling.z },
 				name: node.name,
-				// NEW: Save visibility of the whole scene set root
+				// NEW: Save visibility of the whole part set root
 				visible: node.isEnabled()
 			});
 		}
@@ -284,7 +284,7 @@ export async function loadSceneSetData(data) {
 				root.position.set(s.position.x, s.position.y, s.position.z);
 				root.rotationQuaternion = new Quaternion(s.rotation.x, s.rotation.y, s.rotation.z, s.rotation.w);
 				root.scaling.set(s.scaling.x, s.scaling.y, s.scaling.z);
-				// NEW: Restore visibility of the whole scene set root
+				// NEW: Restore visibility of the whole part set root
 				if (s.visible !== undefined) root.setEnabled(s.visible);
 			}
 		}
@@ -400,7 +400,7 @@ async function populateSceneSetList(mode) {
 		const data = await res.json();
 		sceneSetListContainer.innerHTML = "";
 		if (!data.files || data.files.length === 0) {
-			sceneSetListContainer.innerHTML = "<p class='text-sm opacity-50'>No scene sets found.</p>";
+			sceneSetListContainer.innerHTML = "<p class='text-sm opacity-50'>No part sets found.</p>";
 			return;
 		}
 		data.files.forEach(file => {
@@ -427,6 +427,6 @@ async function populateSceneSetList(mode) {
 			sceneSetListContainer.appendChild(row);
 		});
 	} catch (e) {
-		sceneSetListContainer.innerHTML = "<p class='text-error'>Failed to fetch scene sets.</p>";
+		sceneSetListContainer.innerHTML = "<p class='text-error'>Failed to fetch part sets.</p>";
 	}
 }

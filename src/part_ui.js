@@ -1,13 +1,13 @@
 import { MeshBuilder, Vector3, Quaternion } from "@babylonjs/core";
-import { scene, getUniqueId } from "./scene.js";
-import { gizmoManager, setGizmoMode } from "./scene_gizmoControl.js";
-import { createLight } from "./scene_lightManager.js";
-import { createTransformNode } from "./scene_transformNodeManager.js";
-import { markModified } from "./scene_manager.js";
-import { refreshSceneGraph } from "./scene_treeViewManager.js";
-import { setShadowCaster } from "./scene_shadowManager.js";
-import { recordState } from "./scene_historyManager.js";
-import { selectNode } from "./scene_selectionManager.js";
+import { part, getUniqueId } from "./part.js";
+import { gizmoManager, setGizmoMode } from "./part_gizmoControl.js";
+import { createLight } from "./part_lightManager.js";
+import { createTransformNode } from "./part_transformNodeManager.js";
+import { markModified } from "./part_manager.js";
+import { refreshSceneGraph } from "./part_treeViewManager.js";
+import { setShadowCaster } from "./part_shadowManager.js";
+import { recordState } from "./part_historyManager.js";
+import { selectNode } from "./part_selectionManager.js";
 
 const primitives = ["Cube", "Sphere", "Cylinder", "Plane", "Ground", "Cone", "Pyramid", "Empty"];
 const lights = ["Point", "Directional"];
@@ -39,12 +39,12 @@ export function setupUI() {
 		
 		if (category === "primitive") {
 			if (type === "Empty") {
-				createdNode = createTransformNode(null, scene);
+				createdNode = createTransformNode(null, part);
 			} else {
 				createdNode = createPrimitive(type);
 			}
 		} else if (category === "light") {
-			createdNode = createLight(type.toLowerCase(), null, scene);
+			createdNode = createLight(type.toLowerCase(), null, part);
 		}
 		
 		if (createdNode) {
@@ -99,30 +99,30 @@ function createDraggableItem(name, category) {
 export function createPrimitive(type, savedData = null) {
 	let mesh;
 	const baseId = savedData ? savedData.id : `${type}_${Date.now()}`;
-	const id = getUniqueId(scene, baseId);
+	const id = getUniqueId(part, baseId);
 	
 	switch (type) {
 		case "Cube":
-			mesh = MeshBuilder.CreateBox(id, { size: 1 }, scene);
+			mesh = MeshBuilder.CreateBox(id, { size: 1 }, part);
 			break;
 		case "Sphere":
-			mesh = MeshBuilder.CreateSphere(id, { diameter: 1 }, scene);
+			mesh = MeshBuilder.CreateSphere(id, { diameter: 1 }, part);
 			break;
 		case "Cylinder":
-			mesh = MeshBuilder.CreateCylinder(id, { height: 1, diameter: 1 }, scene);
+			mesh = MeshBuilder.CreateCylinder(id, { height: 1, diameter: 1 }, part);
 			break;
 		case "Plane":
-			mesh = MeshBuilder.CreatePlane(id, { size: 1 }, scene);
+			mesh = MeshBuilder.CreatePlane(id, { size: 1 }, part);
 			break;
 		case "Ground":
-			mesh = MeshBuilder.CreateGround(id, { width: 1, height: 1 }, scene);
+			mesh = MeshBuilder.CreateGround(id, { width: 1, height: 1 }, part);
 			mesh.backFaceCulling = false;
 			break;
 		case "Cone":
-			mesh = MeshBuilder.CreateCylinder(id, { diameterTop: 0, height: 1 }, scene);
+			mesh = MeshBuilder.CreateCylinder(id, { diameterTop: 0, height: 1 }, part);
 			break;
 		case "Pyramid":
-			mesh = MeshBuilder.CreateCylinder(id, { diameterTop: 0, tessellation: 4, height: 1 }, scene);
+			mesh = MeshBuilder.CreateCylinder(id, { diameterTop: 0, tessellation: 4, height: 1 }, part);
 			break;
 	}
 	

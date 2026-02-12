@@ -34,8 +34,10 @@
 		<button id="btn-menu-save" class="btn btn-sm join-item">Save Set</button>
 		<button id="btn-menu-load" class="btn btn-sm join-item">Load Set</button>
 	</div>
-	
-	<a href="/" class="btn btn-sm btn-ghost">Back to Designer</a>
+
+    <a href="/index.html" target="_blank" class="btn btn-sm btn-outline btn-secondary">
+        Part Designer ↗
+    </a>
 </nav>
 
 <!-- Main Workspace -->
@@ -43,8 +45,8 @@
 	<!-- Left Sidebar: Assets -->
 	<div class="w-64 flex-none bg-base-200 p-4 border-r border-base-content/10 flex flex-col gap-4 overflow-y-auto">
 		
-		<h2 class="text-xl font-bold mb-2">Available Scenes</h2>
-		<div id="scenes-list" class="flex flex-col gap-2">
+		<h2 class="text-xl font-bold mb-2">Available Parts</h2>
+		<div id="parts-list" class="flex flex-col gap-2">
 			<span class="loading loading-spinner"></span>
 		</div>
 		
@@ -64,7 +66,7 @@
 		<!-- Hierarchy / Tree View -->
 		<div class="flex-none h-1/3 flex flex-col border-b border-base-content/10">
 			<h2 class="text-sm font-bold p-2 bg-base-300">Set Hierarchy</h2>
-			<div id="scene-explorer" class="flex-1 overflow-y-auto p-2 text-sm select-none">
+			<div id="part-explorer" class="flex-1 overflow-y-auto p-2 text-sm select-none">
 				<!-- Tree populated by JS -->
 			</div>
 		</div>

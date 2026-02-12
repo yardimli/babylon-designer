@@ -1,6 +1,6 @@
 import { PointLight, DirectionalLight, Vector3, Color3, MeshBuilder, StandardMaterial } from "@babylonjs/core";
-import { createShadowGenerator } from "./scene_shadowManager.js";
-import { getUniqueId } from "./scene.js";
+import { createShadowGenerator } from "./part_shadowManager.js";
+import { getUniqueId } from "./part.js";
 
 export function createLight(type, savedData = null, scene) {
 	let light;

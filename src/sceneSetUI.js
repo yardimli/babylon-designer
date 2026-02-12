@@ -10,7 +10,7 @@ import { importSceneAsAsset } from "./sceneset_manager.js";
 const lights = ["Point", "Directional"];
 
 export function setupSceneSetUI() {
-	const sList = document.getElementById("scenes-list");
+	const sList = document.getElementById("parts-list");
 	const lList = document.getElementById("lights-list");
 	const canvas = document.getElementById("renderCanvas");
 	

@@ -8,7 +8,7 @@ const collapsedNodes = new Set();
 
 function isGraphNode(node) {
 	// --- Modification: Hide internal nodes (children of imported scenes) ---
-	// This ensures only the root of the imported scene is shown in the tree.
+	// This ensures only the root of the imported part is shown in the tree.
 	if (node.metadata && node.metadata.isInternal) return false;
 	// ---------------------------------------------------------------------
 	
@@ -51,7 +51,7 @@ export function setNodeParent(node, parent) {
 }
 
 export function refreshSceneGraph() {
-	const container = document.getElementById("scene-explorer");
+	const container = document.getElementById("part-explorer");
 	if (!container) return;
 	
 	container.innerHTML = "";
@@ -233,7 +233,7 @@ function handleNodeDrop(draggedNode, targetNode, action) {
 }
 
 export function highlightInTree(nodes) {
-	const container = document.getElementById("scene-explorer");
+	const container = document.getElementById("part-explorer");
 	if (!container) return;
 	
 	// Clear all highlights

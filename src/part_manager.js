@@ -1,15 +1,15 @@
 import { Quaternion, PBRMaterial, Color3 } from "@babylonjs/core";
-import { scene, resetAxisIndicator, getSkipMaterialNames } from "./scene.js";
-import { setupGizmos, disposeGizmos } from "./scene_gizmoControl.js";
-import { updatePropertyEditor } from "./scene_propertyEditor.js";
-import { refreshSceneGraph } from "./scene_treeViewManager.js";
-import { createPrimitive } from "./scene_ui.js";
-import { createLight } from "./scene_lightManager.js";
-import { createTransformNode } from "./scene_transformNodeManager.js";
-import { clearShadowManagers } from "./scene_shadowManager.js";
-import { setupHistory } from "./scene_historyManager.js";
-import { selectNode } from "./scene_selectionManager.js";
-import { getLoadedMaterialFiles, loadMaterialFile, clearMaterialManager } from "./scene_materialManager.js";
+import { part, resetAxisIndicator, getSkipMaterialNames } from "./part.js";
+import { setupGizmos, disposeGizmos } from "./part_gizmoControl.js";
+import { updatePropertyEditor } from "./part_propertyEditor.js";
+import { refreshSceneGraph } from "./part_treeViewManager.js";
+import { createPrimitive } from "./part_ui.js";
+import { createLight } from "./part_lightManager.js";
+import { createTransformNode } from "./part_transformNodeManager.js";
+import { clearShadowManagers } from "./part_shadowManager.js";
+import { setupHistory } from "./part_historyManager.js";
+import { selectNode } from "./part_selectionManager.js";
+import { getLoadedMaterialFiles, loadMaterialFile, clearMaterialManager } from "./part_materialManager.js";
 
 let currentFileName = null;
 let isModified = false;
@@ -17,8 +17,8 @@ const STORAGE_KEY_LAST_SCENE = "bd_last_scene";
 
 const statusBarText = document.getElementById("status-text");
 const saveLoadModal = document.getElementById("save_load_modal");
-const sceneListContainer = document.getElementById("scene-list");
-const saveNameInput = document.getElementById("save-scene-name");
+const sceneListContainer = document.getElementById("part-list");
+const saveNameInput = document.getElementById("save-part-name");
 
 export function setupSceneManager() {
 	updateStatus();
@@ -32,10 +32,10 @@ export function setupSceneManager() {
 
 	setupHistory(serializeScene, loadSceneData);
 
-	// Auto-load last scene
+	// Auto-load last part
 	const lastFile = localStorage.getItem(STORAGE_KEY_LAST_SCENE);
 	if (lastFile) {
-		console.log("Restoring last scene:", lastFile);
+		console.log("Restoring last part:", lastFile);
 		loadSceneInternal(lastFile);
 	}
 }
@@ -82,9 +82,9 @@ export function serializeScene() {
 		transformNodes: []
 	};
 
-	scene.meshes.forEach(mesh => {
+	part.meshes.forEach(mesh => {
 		if (mesh.metadata && mesh.metadata.isLightProxy) {
-			const light = scene.getLightByID(mesh.metadata.lightId);
+			const light = part.getLightByID(mesh.metadata.lightId);
 			if (light) {
 				data.lights.push({
 					id: light.id,
@@ -102,7 +102,7 @@ export function serializeScene() {
 		}
 	});
 
-	scene.transformNodes.forEach(node => {
+	part.transformNodes.forEach(node => {
 		if (node.metadata && node.metadata.isInternal) return;
 
 		if (node.metadata && node.metadata.isTransformNode) {
@@ -128,7 +128,7 @@ export function serializeScene() {
 		}
 	});
 
-	scene.meshes.forEach(mesh => {
+	part.meshes.forEach(mesh => {
 		if (mesh.metadata && mesh.metadata.isPrimitive) {
 			let rot = { x: 0, y: 0, z: 0, w: 1 };
 			if (mesh.rotationQuaternion) {
@@ -195,20 +195,20 @@ export async function loadSceneData(data) {
 	clearMaterialManager();
 
 	const toDispose = [];
-	scene.meshes.forEach(m => {
+	part.meshes.forEach(m => {
 		if (m.name === "previewSphere") return;
 		if (m.metadata && (m.metadata.isPrimitive || m.metadata.isLightProxy || m.metadata.isTransformNodeProxy)) toDispose.push(m);
 	});
-	scene.transformNodes.forEach(t => {
+	part.transformNodes.forEach(t => {
 		if (t.name !== "axisRoot" && t.metadata && t.metadata.isTransformNode) toDispose.push(t);
 	});
-	scene.lights.forEach(l => {
+	part.lights.forEach(l => {
 		if (l.name !== "hemiLight" && l.name !== "light") toDispose.push(l);
 	});
 
 	toDispose.forEach(n => n.dispose());
 
-	const matsToDispose = scene.materials.filter(m => m.name !== "default material" && m.name !== "lightMat" && m.name !== "previewMat" && m.name !== "transformNodeMat");
+	const matsToDispose = part.materials.filter(m => m.name !== "default material" && m.name !== "lightMat" && m.name !== "previewMat" && m.name !== "transformNodeMat");
 	matsToDispose.forEach(m => m.dispose());
 
 	const idMap = new Map();
@@ -221,7 +221,7 @@ export async function loadSceneData(data) {
 
 	if (data.transformNodes) {
 		data.transformNodes.forEach(nodeData => {
-			const node = createTransformNode(nodeData, scene);
+			const node = createTransformNode(nodeData, part);
 			if (node) {
 				idMap.set(nodeData.id, node.id);
 				if (node.metadata) node.metadata.sortIndex = nodeData.sortIndex || 0;
@@ -233,9 +233,9 @@ export async function loadSceneData(data) {
 
 	if (data.lights) {
 		data.lights.forEach(lightData => {
-			const proxy = createLight(lightData.type, lightData, scene);
+			const proxy = createLight(lightData.type, lightData, part);
 			if (proxy) {
-				const light = scene.getLightByID(proxy.metadata.lightId);
+				const light = part.getLightByID(proxy.metadata.lightId);
 				if (light) {
 					idMap.set(lightData.id, light.id);
 				}
@@ -252,7 +252,7 @@ export async function loadSceneData(data) {
 			if (mesh) {
 				idMap.set(meshData.id, mesh.id);
 				if (meshData.materialId) {
-					const mat = scene.getMaterialByID(meshData.materialId);
+					const mat = part.getMaterialByID(meshData.materialId);
 					if (mat) mesh.material = mat;
 				}
 				mesh.receiveShadows = !!meshData.receiveShadows;
@@ -268,12 +268,12 @@ export async function loadSceneData(data) {
 		if (!idOrName) return null;
 		const mappedId = idMap.get(idOrName) || idOrName;
 
-		return scene.getMeshByID(mappedId) ||
-			scene.getTransformNodeByID(mappedId) ||
-			scene.getLightByID(mappedId) ||
-			scene.getMeshByName(mappedId) ||
-			scene.getTransformNodeByName(mappedId) ||
-			scene.getLightByName(mappedId);
+		return part.getMeshByID(mappedId) ||
+			part.getTransformNodeByID(mappedId) ||
+			part.getLightByID(mappedId) ||
+			part.getMeshByName(mappedId) ||
+			part.getTransformNodeByName(mappedId) ||
+			part.getLightByName(mappedId);
 	};
 
 	const restoreParents = (list) => {
@@ -281,7 +281,7 @@ export async function loadSceneData(data) {
 		list.forEach(d => {
 			if (d.parentId) {
 				const childId = idMap.get(d.id) || d.id;
-				let child = scene.getMeshByID(childId) || scene.getTransformNodeByID(childId) || scene.getLightByID(childId);
+				let child = part.getMeshByID(childId) || part.getTransformNodeByID(childId) || part.getLightByID(childId);
 				const parent = findParent(d.parentId);
 				if (child && parent) child.parent = parent;
 			}
@@ -292,7 +292,7 @@ export async function loadSceneData(data) {
 	restoreParents(data.lights);
 	restoreParents(data.meshes);
 
-	setupGizmos(scene);
+	setupGizmos(part);
 	resetAxisIndicator();
 	refreshSceneGraph();
 }
@@ -320,7 +320,7 @@ async function loadSceneInternal(filename) {
 		saveLoadModal.close();
 	} catch (e) {
 		console.error(e);
-		alert("Error parsing scene JSON.");
+		alert("Error parsing part JSON.");
 	}
 }
 
@@ -336,21 +336,21 @@ function createNewScene() {
 	clearMaterialManager();
 	selectNode(null);
 
-	scene.meshes.forEach(m => {
+	part.meshes.forEach(m => {
 		if (m.metadata && (m.metadata.isPrimitive || m.metadata.isLightProxy || m.metadata.isTransformNodeProxy)) m.dispose();
 	});
-	scene.transformNodes.forEach(t => {
+	part.transformNodes.forEach(t => {
 		if (t.name !== "axisRoot" && t.metadata && t.metadata.isTransformNode) t.dispose();
 	});
-	scene.lights.forEach(l => {
+	part.lights.forEach(l => {
 		if (l.name !== "hemiLight") l.dispose();
 	});
 
-	scene.materials.forEach(m => {
+	part.materials.forEach(m => {
 		if (m.metadata && m.metadata.isExternal) m.dispose();
 	});
 
-	setupGizmos(scene);
+	setupGizmos(part);
 	updateStatus();
 	updatePropertyEditor([]);
 	refreshSceneGraph();

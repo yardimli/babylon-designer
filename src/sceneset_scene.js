@@ -34,7 +34,7 @@ export function getSkipMaterialNames() {
 	return skipMaterialNames;
 }
 
-// Helper to ensure unique IDs across the scene
+// Helper to ensure unique IDs across the part
 export function getUniqueId(scene, baseId) {
 	let id = baseId;
 	let counter = 1;
@@ -56,10 +56,10 @@ export function getUniqueId(scene, baseId) {
 export function createScene(canvas) {
 	engine = new Engine(canvas, true);
 	scene = new Scene(engine);
-    //scene.debugLayer.show();
+    //part.debugLayer.show();
 	scene.clearColor = new Color4(0.1, 0.1, 0.1, 1);
 	
-	// Ensure rendering group 1 clears depth so the axis draws on top of the scene
+	// Ensure rendering group 1 clears depth so the axis draws on top of the part
 	scene.setRenderingAutoClearDepthStencil(1, true, false, false);
 	
 	// Camera

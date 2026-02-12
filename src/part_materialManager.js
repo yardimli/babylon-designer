@@ -1,8 +1,8 @@
 import { PBRMaterial, Color3, DynamicTexture, Texture } from "@babylonjs/core";
-import { scene } from "./scene.js";
-import { updatePropertyEditor } from "./scene_propertyEditor.js";
+import { part } from "./part.js";
+import { updatePropertyEditor } from "./part_propertyEditor.js";
 
-// Tracks which external files have been loaded into the scene
+// Tracks which external files have been loaded into the part
 // Set<string> (filenames)
 const loadedMaterialFiles = new Set();
 
@@ -27,7 +27,7 @@ export function clearMaterialManager() {
 	loadedMaterialFiles.clear();
 }
 
-// Called by sceneManager when loading a scene
+// Called by sceneManager when loading a part
 export async function loadMaterialFile(filename) {
 	if (loadedMaterialFiles.has(filename)) return; // Already loaded
 
@@ -58,9 +58,9 @@ function createMaterialFromData(data, filename) {
 	// If a material with this name exists, we assume it's the same one or user wants to overwrite/use it.
 	const matId = data.name;
 
-	let mat = scene.getMaterialByID(matId);
+	let mat = part.getMaterialByID(matId);
 	if (!mat) {
-		mat = new PBRMaterial(data.name, scene);
+		mat = new PBRMaterial(data.name, part);
 		mat.id = matId;
 	}
 
@@ -75,7 +75,7 @@ function createMaterialFromData(data, filename) {
 
 	if (type === 'gradient') {
 		// Generate Gradient Texture
-		const dt = new DynamicTexture("gradTex_" + matId, { width: 256, height: 256 }, scene, false);
+		const dt = new DynamicTexture("gradTex_" + matId, { width: 256, height: 256 }, part, false);
 		const ctx = dt.getContext();
 		const grad = ctx.createLinearGradient(0, 0, 0, 256);
 
@@ -93,7 +93,7 @@ function createMaterialFromData(data, filename) {
 		mat.albedoColor = new Color3(1, 1, 1);
 	} else if (type === 'image' && data.texturePath) {
 		// Load Image Texture
-		mat.albedoTexture = new Texture(data.texturePath, scene);
+		mat.albedoTexture = new Texture(data.texturePath, part);
 		mat.albedoColor = new Color3(1, 1, 1);
 	} else {
 		// Solid Color
@@ -139,7 +139,7 @@ async function refreshServerMaterialList(container, modal) {
 					await loadMaterialFile(file);
 					modal.close();
 					// Refresh property editor if something is selected to show new materials in dropdown
-					const selected = scene.meshes.find(m => m.showBoundingBox);
+					const selected = part.meshes.find(m => m.showBoundingBox);
 					if (selected) updatePropertyEditor(selected);
 				};
 			}

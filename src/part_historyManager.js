@@ -1,4 +1,4 @@
-/* src/scene_historyManager.js */
+/* src/part_historyManager.js */
 
 let undoStack = [];
 let redoStack = [];

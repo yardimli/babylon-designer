@@ -1,12 +1,12 @@
 import { Vector3, Quaternion, Color3, AbstractMesh } from "@babylonjs/core";
-import { scene, getUniqueId } from "./scene.js";
-import { markModified } from "./scene_manager.js";
-import { selectNode, getSelectedNodes } from "./scene_selectionManager.js";
-import { createLight } from "./scene_lightManager.js";
-import { setShadowCaster, disposeShadowGenerator } from "./scene_shadowManager.js";
-import { createTransformNode } from "./scene_transformNodeManager.js";
-import { recordState } from "./scene_historyManager.js";
-import { refreshSceneGraph, setNodeParent } from "./scene_treeViewManager.js";
+import { part, getUniqueId } from "./part.js";
+import { markModified } from "./part_manager.js";
+import { selectNode, getSelectedNodes } from "./part_selectionManager.js";
+import { createLight } from "./part_lightManager.js";
+import { setShadowCaster, disposeShadowGenerator } from "./part_shadowManager.js";
+import { createTransformNode } from "./part_transformNodeManager.js";
+import { recordState } from "./part_historyManager.js";
+import { refreshSceneGraph, setNodeParent } from "./part_treeViewManager.js";
 
 let observer = null;
 
@@ -46,7 +46,7 @@ export function updatePropertyEditor(targets) {
 	const header = document.getElementById("properties-header");
 	
 	if (observer) {
-		scene.onBeforeRenderObservable.remove(observer);
+		part.onBeforeRenderObservable.remove(observer);
 		observer = null;
 	}
 	
@@ -133,7 +133,7 @@ export function updatePropertyEditor(targets) {
 	}
 	
 	// --- Live Update Loop ---
-	observer = scene.onBeforeRenderObservable.add(() => {
+	observer = part.onBeforeRenderObservable.add(() => {
 		if (document.activeElement.tagName === "INPUT" && document.activeElement.type !== "checkbox" && document.activeElement.type !== "color") return;
 		syncUIFromTargets(targets);
 	});
@@ -277,10 +277,10 @@ function bindInputs(targets) {
 			let newName = e.target.value;
 			
 			if (mesh.metadata && mesh.metadata.isLightProxy) {
-				const light = scene.getLightByID(mesh.metadata.lightId);
+				const light = part.getLightByID(mesh.metadata.lightId);
 				if (light) {
 					const baseName = newName.replace(/_proxy$/, "");
-					const uniqueLightId = getUniqueId(scene, baseName);
+					const uniqueLightId = getUniqueId(part, baseName);
 					light.id = uniqueLightId;
 					light.name = uniqueLightId;
 					const proxyId = uniqueLightId + "_proxy";
@@ -290,7 +290,7 @@ function bindInputs(targets) {
 					e.target.value = proxyId;
 				}
 			} else {
-				const uniqueId = getUniqueId(scene, newName);
+				const uniqueId = getUniqueId(part, newName);
 				mesh.name = uniqueId;
 				mesh.id = uniqueId;
 				if (uniqueId !== newName) e.target.value = uniqueId;
@@ -325,10 +325,10 @@ function updateParentDropdown(targets) {
 	select.innerHTML = '<option value="">None</option>';
 	
 	const potentialParents = [];
-	scene.meshes.forEach(m => {
+	part.meshes.forEach(m => {
 		if (isUserMesh(m) && !targets.includes(m)) potentialParents.push(m);
 	});
-	scene.transformNodes.forEach(t => {
+	part.transformNodes.forEach(t => {
 		if (t.metadata && t.metadata.isTransformNode && !targets.includes(t)) potentialParents.push(t);
 	});
 	
@@ -351,8 +351,8 @@ function updateParentDropdown(targets) {
 	
 	select.onchange = () => {
 		const parentName = select.value;
-		let parent = scene.getMeshByName(parentName);
-		if (!parent) parent = scene.getTransformNodeByName(parentName);
+		let parent = part.getMeshByName(parentName);
+		if (!parent) parent = part.getTransformNodeByName(parentName);
 		
 		targets.forEach(t => {
 			if (parent) {
@@ -381,7 +381,7 @@ function updateMaterialDropdown(targets) {
 	}
 	select.closest(".form-control").classList.remove("hidden");
 	
-	scene.materials.forEach(mat => {
+	part.materials.forEach(mat => {
 		const option = document.createElement("option");
 		option.value = mat.id;
 		option.text = mat.name;
@@ -395,7 +395,7 @@ function updateMaterialDropdown(targets) {
 	}
 	
 	select.onchange = () => {
-		const mat = scene.getMaterialByID(select.value);
+		const mat = part.getMaterialByID(select.value);
 		targets.forEach(t => {
 			t.material = mat;
 		});
@@ -405,7 +405,7 @@ function updateMaterialDropdown(targets) {
 }
 
 function bindLightInputs(targets) {
-	const lights = targets.map(t => scene.getLightByID(t.metadata.lightId)).filter(l => l);
+	const lights = targets.map(t => part.getLightByID(t.metadata.lightId)).filter(l => l);
 	if (lights.length === 0) return;
 	
 	const iInput = document.getElementById("prop-light-intensity");
@@ -462,10 +462,10 @@ function bindDuplicateButton(targets) {
 function duplicateHierarchy(node, parent) {
 	let newNode = null;
 	const baseId = node.name + "_dup";
-	const newId = getUniqueId(scene, baseId);
+	const newId = getUniqueId(part, baseId);
 	
 	if (node.metadata && node.metadata.isLightProxy) {
-		const oldLight = scene.getLightByID(node.metadata.lightId);
+		const oldLight = part.getLightByID(node.metadata.lightId);
 		if (oldLight) {
 			const savedData = {
 				id: newId,
@@ -474,7 +474,7 @@ function duplicateHierarchy(node, parent) {
 				diffuse: oldLight.diffuse,
 				direction: oldLight.direction ? { x: oldLight.direction.x, y: oldLight.direction.y, z: oldLight.direction.z } : null
 			};
-			newNode = createLight(node.metadata.lightType, savedData, scene);
+			newNode = createLight(node.metadata.lightType, savedData, part);
 			if (newNode && parent) newNode.parent = parent;
 		}
 	} else if (node.metadata && node.metadata.isTransformNode) {
@@ -485,7 +485,7 @@ function duplicateHierarchy(node, parent) {
 			scaling: node.scaling,
 			name: newId
 		};
-		newNode = createTransformNode(savedData, scene);
+		newNode = createTransformNode(savedData, part);
 		if (newNode && parent) newNode.parent = parent;
 	} else if (node.metadata && node.metadata.isPrimitive) {
 		newNode = node.clone(newId, parent);
@@ -517,7 +517,7 @@ function bindDeleteButton(targets) {
 		if (confirm(`Delete ${count} item(s)?`)) {
 			targets.forEach(node => {
 				if (node.metadata && node.metadata.isLightProxy) {
-					const light = scene.getLightByID(node.metadata.lightId);
+					const light = part.getLightByID(node.metadata.lightId);
 					if (light) {
 						disposeShadowGenerator(light);
 						light.dispose();

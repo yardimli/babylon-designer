@@ -1,5 +1,5 @@
 import { ShadowGenerator } from "@babylonjs/core";
-import { scene } from "./scene.js";
+import { part } from "./part.js";
 
 // Store active generators to easily add meshes to all lights
 const shadowGenerators = [];
@@ -36,7 +36,7 @@ export function createShadowGenerator(light) {
 	shadowGenerators.push(sg);
 	
 	// Add existing meshes that are marked as shadow casters
-	scene.meshes.forEach(mesh => {
+	part.meshes.forEach(mesh => {
 		if (mesh.metadata && mesh.metadata.castShadows) {
 			sg.addShadowCaster(mesh, true);
 		}
@@ -81,7 +81,7 @@ export function setShadowCaster(mesh, shouldCast) {
 }
 
 /**
- * Clears all internal references (used when clearing scene).
+ * Clears all internal references (used when clearing part).
  */
 export function clearShadowManagers() {
 	shadowGenerators.length = 0;

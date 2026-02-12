@@ -2,7 +2,7 @@ import { PBRMaterial, Color3, DynamicTexture, Texture } from "@babylonjs/core";
 import { scene } from "./sceneset_scene.js"; // Updated
 import { updatePropertyEditor } from "./sceneset_propertyEditor.js"; // Updated
 
-// Tracks which external files have been loaded into the scene
+// Tracks which external files have been loaded into the part
 // Set<string> (filenames)
 const loadedMaterialFiles = new Set();
 
@@ -27,7 +27,7 @@ export function clearMaterialManager() {
 	loadedMaterialFiles.clear();
 }
 
-// Called by sceneManager when loading a scene
+// Called by sceneManager when loading a part
 export async function loadMaterialFile(filename) {
 	if (loadedMaterialFiles.has(filename)) return; // Already loaded
 

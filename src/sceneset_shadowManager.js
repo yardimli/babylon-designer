@@ -81,7 +81,7 @@ export function setShadowCaster(mesh, shouldCast) {
 }
 
 /**
- * Clears all internal references (used when clearing scene).
+ * Clears all internal references (used when clearing part).
  */
 export function clearShadowManagers() {
 	shadowGenerators.length = 0;

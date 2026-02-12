@@ -1,8 +1,8 @@
 import { AbstractMesh } from "@babylonjs/core";
-import { scene } from "./scene.js";
-import { markModified } from "./scene_manager.js";
-import { selectNode, isSelected } from "./scene_selectionManager.js"; // Updated
-import { recordState } from "./scene_historyManager.js";
+import { part } from "./part.js";
+import { markModified } from "./part_manager.js";
+import { selectNode, isSelected } from "./part_selectionManager.js"; // Updated
+import { recordState } from "./part_historyManager.js";
 
 const collapsedNodes = new Set();
 
@@ -24,7 +24,7 @@ function isUserMesh(mesh) {
 }
 
 function getSortedRoots() {
-	return scene.rootNodes
+	return part.rootNodes
 		.filter(n => !n.parent && isGraphNode(n))
 		.sort((a, b) => (a.metadata?.sortIndex || 0) - (b.metadata?.sortIndex || 0));
 }
@@ -38,7 +38,7 @@ function getSortedChildren(node) {
 export function setNodeParent(node, parent) {
 	node.setParent(parent);
 	if (node.metadata && node.metadata.isLightProxy) {
-		const light = scene.getLightByID(node.metadata.lightId);
+		const light = part.getLightByID(node.metadata.lightId);
 		if (light) {
 			light.parent = parent;
 		}
@@ -46,7 +46,7 @@ export function setNodeParent(node, parent) {
 }
 
 export function refreshSceneGraph() {
-	const container = document.getElementById("scene-explorer");
+	const container = document.getElementById("part-explorer");
 	if (!container) return;
 	
 	container.innerHTML = "";
@@ -64,7 +64,7 @@ export function refreshSceneGraph() {
 		if (e.target === container) {
 			const draggedId = e.dataTransfer.getData("nodeId");
 			if (draggedId) {
-				const draggedNode = scene.getMeshByID(draggedId) || scene.getTransformNodeByID(draggedId);
+				const draggedNode = part.getMeshByID(draggedId) || part.getTransformNodeByID(draggedId);
 				if (draggedNode && draggedNode.parent) {
 					setNodeParent(draggedNode, null);
 					const roots = getSortedRoots();
@@ -150,7 +150,7 @@ function createTreeNode(node, level) {
 		row.style.borderColor = "transparent";
 		const draggedId = e.dataTransfer.getData("nodeId");
 		if (!draggedId || draggedId === node.id) return;
-		const draggedNode = scene.getMeshByID(draggedId) || scene.getTransformNodeByID(draggedId);
+		const draggedNode = part.getMeshByID(draggedId) || part.getTransformNodeByID(draggedId);
 		if (!draggedNode) return;
 		let check = node;
 		while (check) {
@@ -236,7 +236,7 @@ function handleNodeDrop(draggedNode, targetNode, action) {
 }
 
 export function highlightInTree(nodes) {
-	const container = document.getElementById("scene-explorer");
+	const container = document.getElementById("part-explorer");
 	if (!container) return;
 	
 	// Clear all highlights

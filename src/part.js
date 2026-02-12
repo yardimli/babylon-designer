@@ -17,7 +17,7 @@ import "@babylonjs/core/Debug/debugLayer";
 import "@babylonjs/inspector";
 
 export let engine;
-export let scene;
+export let part;
 export let camera;
 
 let axisObserver = null;
@@ -33,7 +33,7 @@ export function getSkipMaterialNames() {
 	return skipMaterialNames;
 }
 
-// Helper to ensure unique IDs across the scene
+// Helper to ensure unique IDs across the part
 export function getUniqueId(scene, baseId) {
 	let id = baseId;
 	let counter = 1;
@@ -54,15 +54,15 @@ export function getUniqueId(scene, baseId) {
 
 export function createScene(canvas) {
 	engine = new Engine(canvas, true);
-	scene = new Scene(engine);
-    //scene.debugLayer.show();
-	scene.clearColor = new Color4(0.1, 0.1, 0.1, 1);
+	part = new Scene(engine);
+    //part.debugLayer.show();
+	part.clearColor = new Color4(0.1, 0.1, 0.1, 1);
 	
-	// Ensure rendering group 1 clears depth so the axis draws on top of the scene
-	scene.setRenderingAutoClearDepthStencil(1, true, false, false);
+	// Ensure rendering group 1 clears depth so the axis draws on top of the part
+	part.setRenderingAutoClearDepthStencil(1, true, false, false);
 	
 	// Camera
-	camera = new ArcRotateCamera("Camera", -Math.PI / 2, Math.PI / 2.5, 10, Vector3.Zero(), scene);
+	camera = new ArcRotateCamera("Camera", -Math.PI / 2, Math.PI / 2.5, 10, Vector3.Zero(), part);
 	camera.attachControl(canvas, true);
 	camera.wheelPrecision = 50;
 	
@@ -71,35 +71,35 @@ export function createScene(canvas) {
 	camera.upperBetaLimit = null;
 	
 	// Base Light
-	const light = new HemisphericLight("hemiLight", new Vector3(0, 1, 0), scene);
+	const light = new HemisphericLight("hemiLight", new Vector3(0, 1, 0), part);
 	light.intensity = 0.7;
 	
 	// --- Axis Indicator Setup (In-Scene) ---
-	createAxisIndicator(scene);
+	createAxisIndicator(part);
 	
 	engine.runRenderLoop(() => {
-		scene.render();
+		part.render();
 	});
 	
 	window.addEventListener("resize", () => {
 		engine.resize();
 	});
 	
-	return scene;
+	return part;
 }
 
 // Exported function to reset the axis indicator (used when loading scenes)
 export function resetAxisIndicator() {
-	if (!scene) return;
+	if (!part) return;
 	
 	// 1. Cleanup Observer
 	if (axisObserver) {
-		scene.onBeforeRenderObservable.remove(axisObserver);
+		part.onBeforeRenderObservable.remove(axisObserver);
 		axisObserver = null;
 	}
 	
 	// 2. Dispose Mesh Hierarchy
-	const oldRoot = scene.getTransformNodeByName("axisRoot");
+	const oldRoot = part.getTransformNodeByName("axisRoot");
 	if (oldRoot) {
 		oldRoot.dispose();
 	}
@@ -110,19 +110,19 @@ export function resetAxisIndicator() {
 		"centerMat", "labelMat_X", "labelMat_Y", "labelMat_Z"
 	];
 	matNames.forEach(name => {
-		const m = scene.getMaterialByName(name);
+		const m = part.getMaterialByName(name);
 		if (m) m.dispose();
 	});
 	
 	// 4. Dispose Textures (DynamicTextures for labels)
 	const texNames = ["dt_X", "dt_Y", "dt_Z"];
 	texNames.forEach(name => {
-		const t = scene.textures.find(tex => tex.name === name);
+		const t = part.textures.find(tex => tex.name === name);
 		if (t) t.dispose();
 	});
 	
 	// 5. Recreate
-	createAxisIndicator(scene);
+	createAxisIndicator(part);
 }
 
 function createAxisIndicator(scene) {
