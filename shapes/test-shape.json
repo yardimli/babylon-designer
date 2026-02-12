@@ -9,9 +9,10 @@
     },
     {
       "type": "circle",
-      "x": 0.05000000000000003,
-      "y": -1.9499999999999993,
-      "diameter": 4
+      "x": 1,
+      "y": 0,
+      "diameter": 3,
+      "isHole": true
     }
   ],
   "extrusionHeight": 1.3

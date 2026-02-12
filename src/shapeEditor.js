@@ -2,12 +2,12 @@ import {
 	Engine, Scene, Vector3, Color3, MeshBuilder,
 	HemisphericLight, ArcRotateCamera, StandardMaterial, Vector2
 } from '@babylonjs/core';
-import earcut from 'earcut'; // Import earcut separately
+import earcut from 'earcut';
 
 // --- State ---
 const state = {
 	filename: null,
-	shapes: [], // Array of objects: { type: 'rect'|'circle'|'poly', ...props }
+	shapes: [], // Array of objects: { type: 'rect'|'circle'|'poly', isHole: boolean, ...props }
 	extrusionHeight: 1,
 
 	// UI State
@@ -62,7 +62,7 @@ light.intensity = 0.8;
 const shapeMat = new StandardMaterial('shapeMat', scene);
 shapeMat.diffuseColor = new Color3(0.4, 0.6, 0.9);
 shapeMat.specularColor = new Color3(0.1, 0.1, 0.1);
-shapeMat.backFaceCulling = false; // Important for open shapes or single planes
+shapeMat.backFaceCulling = false;
 
 engine.runRenderLoop(() => scene.render());
 window.addEventListener('resize', () => {
@@ -116,9 +116,18 @@ function draw2D() {
 	// Draw Shapes
 	state.shapes.forEach((shape, index) => {
 		const isSelected = state.selectedShapeIndex === index;
-		ctx.strokeStyle = isSelected ? '#00ccff' : '#ffffff';
-		ctx.lineWidth = isSelected ? 2 : 1;
-		ctx.fillStyle = isSelected ? 'rgba(0, 204, 255, 0.1)' : 'rgba(255, 255, 255, 0.05)';
+		// NEW: Visual distinction for holes
+		const isHole = shape.isHole;
+
+		if (isSelected) {
+			ctx.strokeStyle = isHole ? '#ff4444' : '#00ccff';
+			ctx.fillStyle = isHole ? 'rgba(255, 68, 68, 0.2)' : 'rgba(0, 204, 255, 0.2)';
+			ctx.lineWidth = 2;
+		} else {
+			ctx.strokeStyle = isHole ? '#aa4444' : '#ffffff';
+			ctx.fillStyle = isHole ? 'rgba(170, 68, 68, 0.1)' : 'rgba(255, 255, 255, 0.05)';
+			ctx.lineWidth = 1;
+		}
 
 		if (shape.type === 'rect') {
 			const p1 = worldToScreen(shape.x, shape.y);
@@ -154,7 +163,7 @@ function draw2D() {
 				const sA = worldToScreen(pA.x, pA.y);
 				const sB = worldToScreen(pB.x, pB.y);
 
-				ctx.strokeStyle = '#ff0000';
+				ctx.strokeStyle = '#ffff00';
 				ctx.lineWidth = 3;
 				ctx.beginPath();
 				ctx.moveTo(sA.x, sA.y);
@@ -190,54 +199,96 @@ function draw2D() {
 
 // --- 3D Generation ---
 
+// Helper to convert shape object to Vector3 array
+function getPointsFromShape(shape) {
+	const points = [];
+	if (shape.type === 'rect') {
+		points.push(
+			new Vector3(shape.x, 0, shape.y),
+			new Vector3(shape.x + shape.w, 0, shape.y),
+			new Vector3(shape.x + shape.w, 0, shape.y + shape.h),
+			new Vector3(shape.x, 0, shape.y + shape.h)
+		);
+	} else if (shape.type === 'circle') {
+		const segments = 32;
+		const r = shape.diameter / 2;
+		for (let j = 0; j < segments; j++) {
+			const theta = (j / segments) * Math.PI * 2;
+			points.push(new Vector3(
+				shape.x + Math.cos(theta) * r,
+				0,
+				shape.y + Math.sin(theta) * r
+			));
+		}
+	} else if (shape.type === 'poly') {
+		shape.points.forEach(p => points.push(new Vector3(p.x, 0, p.y)));
+	}
+	return points;
+}
+
+// Helper: Check if point is inside polygon (Ray casting)
+function isPointInPoly(pt, poly) {
+	let inside = false;
+	for (let i = 0, j = poly.length - 1; i < poly.length; j = i++) {
+		const xi = poly[i].x; const yi = poly[i].z;
+		const xj = poly[j].x; const yj = poly[j].z;
+		const intersect = ((yi > pt.z) !== (yj > pt.z)) &&
+			(pt.x < (xj - xi) * (pt.z - yi) / (yj - yi) + xi);
+		if (intersect) inside = !inside;
+	}
+	return inside;
+}
+
 function update3D() {
 	// Dispose old meshes
 	scene.meshes.forEach(m => {
 		if (m.name.startsWith('shape_')) m.dispose();
 	});
 
+	const solids = [];
+	const holes = [];
+
+	// 1. Convert all shapes to points and separate
 	state.shapes.forEach((shape, i) => {
-		let points = [];
+		const points = getPointsFromShape(shape);
+		if (points.length < 3) return;
 
-		if (shape.type === 'rect') {
-			points = [
-				new Vector3(shape.x, 0, shape.y),
-				new Vector3(shape.x + shape.w, 0, shape.y),
-				new Vector3(shape.x + shape.w, 0, shape.y + shape.h),
-				new Vector3(shape.x, 0, shape.y + shape.h)
-			];
-		} else if (shape.type === 'circle') {
-			const segments = 32;
-			const r = shape.diameter / 2;
-			for (let j = 0; j < segments; j++) {
-				const theta = (j / segments) * Math.PI * 2;
-				points.push(new Vector3(
-					shape.x + Math.cos(theta) * r,
-					0,
-					shape.y + Math.sin(theta) * r
-				));
-			}
-		} else if (shape.type === 'poly') {
-			// Babylon expects Vector3(x, 0, z) for ExtrudePolygon inputs usually mapped to X/Z
-			// But ExtrudePolygon actually takes Vector3 array where Y is ignored or treated as 2D plane
-			points = shape.points.map(p => new Vector3(p.x, 0, p.y));
+		if (shape.isHole) {
+			holes.push({ points, originalIndex: i });
+		} else {
+			solids.push({ points, originalIndex: i, myHoles: [] });
 		}
+	});
 
-		if (points.length >= 3) {
-			try {
-				const mesh = MeshBuilder.ExtrudePolygon(`shape_${i}`, {
-					shape: points,
-					depth: state.extrusionHeight,
-					sideOrientation: MeshBuilder.DOUBLESIDE,
-					wrap: true
-				}, scene, earcut);
-
-				// ExtrudePolygon creates mesh growing downwards in Y usually, let's flip or adjust
-				mesh.position.y = state.extrusionHeight;
-				mesh.material = shapeMat;
-			} catch (e) {
-				console.warn("Failed to extrude shape", e);
+	// 2. Assign holes to solids
+	// Simple logic: If the first point of the hole is inside the solid, it belongs to it.
+	holes.forEach(hole => {
+		// Find a solid that contains this hole
+		// Reverse iterate to find the "top-most" or most recently added solid that contains it (layering)
+		// Or just find the first one.
+		for (const solid of solids) {
+			if (isPointInPoly(hole.points[0], solid.points)) {
+				solid.myHoles.push(hole.points);
+				break; // Assign to one solid only
 			}
+		}
+	});
+
+	// 3. Extrude Solids
+	solids.forEach((solid, i) => {
+		try {
+			const mesh = MeshBuilder.ExtrudePolygon(`shape_${solid.originalIndex}`, {
+				shape: solid.points,
+				holes: solid.myHoles,
+				depth: state.extrusionHeight,
+				sideOrientation: MeshBuilder.DOUBLESIDE,
+				wrap: true
+			}, scene, earcut);
+
+			mesh.position.y = state.extrusionHeight;
+			mesh.material = shapeMat;
+		} catch (e) {
+			console.warn('Failed to extrude shape', e);
 		}
 	});
 }
@@ -261,17 +312,13 @@ function hitTest(wx, wy) {
 		} else if (s.type === 'circle') {
 			const dx = wx - s.x;
 			const dy = wy - s.y;
-			if (Math.sqrt(dx*dx + dy*dy) <= s.diameter / 2) return { index: i };
+			if (Math.sqrt(dx * dx + dy * dy) <= s.diameter / 2) return { index: i };
 		} else if (s.type === 'poly') {
-			// Simple bounding box check first
-			// Then ray casting or distance check. For editor, distance to edge is useful.
-			// Let's check distance to edges for edge selection, and point-in-poly for shape selection.
-
 			// Point in poly (Ray casting)
 			let inside = false;
 			for (let j = 0, k = s.points.length - 1; j < s.points.length; k = j++) {
-				const xi = s.points[j].x, yi = s.points[j].y;
-				const xj = s.points[k].x, yj = s.points[k].y;
+				const xi = s.points[j].x; const yi = s.points[j].y;
+				const xj = s.points[k].x; const yj = s.points[k].y;
 				const intersect = ((yi > wy) !== (yj > wy)) && (wx < (xj - xi) * (wy - yi) / (yj - yi) + xi);
 				if (intersect) inside = !inside;
 			}
@@ -283,7 +330,7 @@ function hitTest(wx, wy) {
 			for (let j = 0; j < s.points.length; j++) {
 				const p1 = s.points[j];
 				const p2 = s.points[(j + 1) % s.points.length];
-				const d = distToSegment({x: wx, y: wy}, p1, p2);
+				const d = distToSegment({ x: wx, y: wy }, p1, p2);
 				if (d < minDist) {
 					minDist = d;
 					bestEdge = j;
@@ -298,7 +345,7 @@ function hitTest(wx, wy) {
 }
 
 function distToSegment(p, v, w) {
-	const l2 = (w.x - v.x)**2 + (w.y - v.y)**2;
+	const l2 = (w.x - v.x) ** 2 + (w.y - v.y) ** 2;
 	if (l2 === 0) return Math.hypot(p.x - v.x, p.y - v.y);
 	let t = ((p.x - v.x) * (w.x - v.x) + (p.y - v.y) * (w.y - v.y)) / l2;
 	t = Math.max(0, Math.min(1, t));
@@ -390,6 +437,22 @@ function renderProperties() {
 	typeLabel.innerText = shape.type;
 	container.appendChild(typeLabel);
 
+	// NEW: Hole Toggle
+	const holeDiv = document.createElement('div');
+	holeDiv.className = 'form-control w-full mb-2';
+	holeDiv.innerHTML = `
+    <label class="label cursor-pointer justify-start gap-2">
+        <span class="label-text text-xs font-bold">Is Hole?</span>
+        <input type="checkbox" class="checkbox checkbox-xs checkbox-error" ${shape.isHole ? 'checked' : ''}>
+    </label>
+  `;
+	holeDiv.querySelector('input').onchange = (e) => {
+		shape.isHole = e.target.checked;
+		draw2D();
+		update3D();
+	};
+	container.appendChild(holeDiv);
+
 	if (shape.type === 'rect') {
 		addInput(container, 'X', shape.x, v => { shape.x = v; draw2D(); update3D(); });
 		addInput(container, 'Y', shape.y, v => { shape.y = v; draw2D(); update3D(); });
@@ -411,7 +474,7 @@ function renderProperties() {
 			// Calculate Line Props
 			const dx = pB.x - pA.x;
 			const dy = pB.y - pA.y;
-			const len = Math.sqrt(dx*dx + dy*dy);
+			const len = Math.sqrt(dx * dx + dy * dy);
 			const angleDeg = Math.atan2(dy, dx) * 180 / Math.PI;
 
 			const updatePointB = (newLen, newAngleDeg) => {
@@ -473,7 +536,7 @@ function setMode(m) {
 ui.tools.select.onclick = () => setMode('select');
 
 ui.tools.rect.onclick = () => {
-	state.shapes.push({ type: 'rect', x: -2, y: -2, w: 4, h: 4 });
+	state.shapes.push({ type: 'rect', x: -2, y: -2, w: 4, h: 4, isHole: false });
 	state.selectedShapeIndex = state.shapes.length - 1;
 	setMode('select');
 	draw2D();
@@ -482,7 +545,7 @@ ui.tools.rect.onclick = () => {
 };
 
 ui.tools.circle.onclick = () => {
-	state.shapes.push({ type: 'circle', x: 0, y: 0, diameter: 4 });
+	state.shapes.push({ type: 'circle', x: 0, y: 0, diameter: 4, isHole: false });
 	state.selectedShapeIndex = state.shapes.length - 1;
 	setMode('select');
 	draw2D();
@@ -494,7 +557,7 @@ ui.tools.poly.onclick = () => {
 	if (state.mode === 'draw_poly') {
 		// Finish drawing
 		if (state.polyPoints.length >= 3) {
-			state.shapes.push({ type: 'poly', points: [...state.polyPoints] });
+			state.shapes.push({ type: 'poly', points: [...state.polyPoints], isHole: false });
 			state.selectedShapeIndex = state.shapes.length - 1;
 			update3D();
 			renderProperties();
@@ -505,7 +568,7 @@ ui.tools.poly.onclick = () => {
 	} else {
 		state.polyPoints = [];
 		setMode('draw_poly');
-		ui.tools.poly.innerText = "Finish Polygon";
+		ui.tools.poly.innerText = 'Finish Polygon';
 	}
 };
 
@@ -545,7 +608,7 @@ async function fetchFiles() {
 			data.files.forEach(file => {
 				const div = document.createElement('div');
 				div.className = 'flex justify-between items-center hover:bg-base-content/10 p-1 rounded cursor-pointer';
-				div.innerHTML = `<span class="truncate">${file.replace('.json','')}</span>`;
+				div.innerHTML = `<span class="truncate">${file.replace('.json', '')}</span>`;
 				div.onclick = () => loadFile(file);
 
 				const btnDel = document.createElement('button');
@@ -553,7 +616,7 @@ async function fetchFiles() {
 				btnDel.className = 'btn btn-ghost btn-xs text-error';
 				btnDel.onclick = (e) => {
 					e.stopPropagation();
-					if(confirm(`Delete ${file}?`)) deleteFile(file);
+					if (confirm(`Delete ${file}?`)) deleteFile(file);
 				};
 				div.appendChild(btnDel);
 				ui.fileList.appendChild(div);
@@ -592,7 +655,7 @@ async function saveFile() {
 	try {
 		const res = await fetch('/api/shapes', {
 			method: 'POST',
-			headers: {'Content-Type': 'application/json'},
+			headers: { 'Content-Type': 'application/json' },
 			body: JSON.stringify({ name, data })
 		});
 		const json = await res.json();

@@ -3,7 +3,7 @@ import { part, resetAxisIndicator, getSkipMaterialNames } from "./part.js";
 import { setupGizmos, disposeGizmos } from "./part_gizmoControl.js";
 import { updatePropertyEditor } from "./part_propertyEditor.js";
 import { refreshPartGraph } from "./part_treeViewManager.js";
-import { createPrimitive } from "./part_ui.js";
+import { createPrimitive, createShapeMesh } from "./part_ui.js"; // Updated import
 import { createLight } from "./part_lightManager.js";
 import { createTransformNode } from "./part_transformNodeManager.js";
 import { clearShadowManagers } from "./part_shadowManager.js";
@@ -75,7 +75,7 @@ function openLoadModal() {
 
 export function serializeScene() {
 	const data = {
-		version: 1.4, // Bumped version
+		version: 1.5, // Bumped version
 		materialFiles: getLoadedMaterialFiles(),
 		lights: [],
 		meshes: [],
@@ -95,7 +95,6 @@ export function serializeScene() {
 					diffuse: { r: light.diffuse.r, g: light.diffuse.g, b: light.diffuse.b },
 					parentId: light.parent ? light.parent.id : null,
 					sortIndex: mesh.metadata.sortIndex || 0,
-					// NEW: Save visibility
 					visible: mesh.isEnabled()
 				});
 			}
@@ -122,14 +121,14 @@ export function serializeScene() {
 				scaling: { x: node.scaling.x, y: node.scaling.y, z: node.scaling.z },
 				parentId: node.parent ? node.parent.id : null,
 				sortIndex: node.metadata.sortIndex || 0,
-				// NEW: Save visibility
 				visible: node.isEnabled()
 			});
 		}
 	});
 
 	part.meshes.forEach(mesh => {
-		if (mesh.metadata && mesh.metadata.isPrimitive) {
+		// Handle Primitives OR Custom Shapes
+		if (mesh.metadata && (mesh.metadata.isPrimitive || mesh.metadata.isShape)) {
 			let rot = { x: 0, y: 0, z: 0, w: 1 };
 			if (mesh.rotationQuaternion) {
 				rot = { x: mesh.rotationQuaternion.x, y: mesh.rotationQuaternion.y, z: mesh.rotationQuaternion.z, w: mesh.rotationQuaternion.w };
@@ -140,10 +139,9 @@ export function serializeScene() {
 
 			const pivot = mesh.getPivotPoint();
 
-			data.meshes.push({
+			const meshData = {
 				id: mesh.id,
 				name: mesh.name,
-				type: mesh.metadata.type,
 				position: { x: mesh.position.x, y: mesh.position.y, z: mesh.position.z },
 				rotation: rot,
 				scaling: { x: mesh.scaling.x, y: mesh.scaling.y, z: mesh.scaling.z },
@@ -153,9 +151,19 @@ export function serializeScene() {
 				receiveShadows: mesh.receiveShadows,
 				castShadows: mesh.metadata.castShadows || false,
 				sortIndex: mesh.metadata.sortIndex || 0,
-				// NEW: Save visibility
 				visible: mesh.isEnabled()
-			});
+			};
+
+			if (mesh.metadata.isPrimitive) {
+				meshData.isPrimitive = true;
+				meshData.type = mesh.metadata.type;
+			} else if (mesh.metadata.isShape) {
+				meshData.isShape = true;
+				meshData.shapeData = mesh.metadata.shapeData;
+				meshData.shapeName = mesh.metadata.shapeName;
+			}
+
+			data.meshes.push(meshData);
 		}
 	});
 
@@ -197,7 +205,7 @@ export async function loadSceneData(data) {
 	const toDispose = [];
 	part.meshes.forEach(m => {
 		if (m.name === "previewSphere") return;
-		if (m.metadata && (m.metadata.isPrimitive || m.metadata.isLightProxy || m.metadata.isTransformNodeProxy)) toDispose.push(m);
+		if (m.metadata && (m.metadata.isPrimitive || m.metadata.isShape || m.metadata.isLightProxy || m.metadata.isTransformNodeProxy)) toDispose.push(m);
 	});
 	part.transformNodes.forEach(t => {
 		if (t.name !== "axisRoot" && t.metadata && t.metadata.isTransformNode) toDispose.push(t);
@@ -225,7 +233,6 @@ export async function loadSceneData(data) {
 			if (node) {
 				idMap.set(nodeData.id, node.id);
 				if (node.metadata) node.metadata.sortIndex = nodeData.sortIndex || 0;
-				// NEW: Restore visibility
 				if (nodeData.visible !== undefined) node.setEnabled(nodeData.visible);
 			}
 		});
@@ -240,7 +247,6 @@ export async function loadSceneData(data) {
 					idMap.set(lightData.id, light.id);
 				}
 				if (proxy.metadata) proxy.metadata.sortIndex = lightData.sortIndex || 0;
-				// NEW: Restore visibility (on proxy, which propagates to light via logic if needed, but setEnabled works on nodes)
 				if (lightData.visible !== undefined) proxy.setEnabled(lightData.visible);
 			}
 		});
@@ -248,7 +254,13 @@ export async function loadSceneData(data) {
 
 	if (data.meshes) {
 		data.meshes.forEach(meshData => {
-			const mesh = createPrimitive(meshData.type, meshData);
+			let mesh;
+			if (meshData.isPrimitive) {
+				mesh = createPrimitive(meshData.type, meshData);
+			} else if (meshData.isShape) {
+				mesh = createShapeMesh(meshData.shapeData, meshData.shapeName, meshData);
+			}
+
 			if (mesh) {
 				idMap.set(meshData.id, mesh.id);
 				if (meshData.materialId) {
@@ -257,7 +269,6 @@ export async function loadSceneData(data) {
 				}
 				mesh.receiveShadows = !!meshData.receiveShadows;
 				if (mesh.metadata) mesh.metadata.sortIndex = meshData.sortIndex || 0;
-				// NEW: Restore visibility
 				if (meshData.visible !== undefined) mesh.setEnabled(meshData.visible);
 			}
 		});
@@ -303,7 +314,6 @@ async function loadSceneInternal(filename) {
 		const result = await response.json();
 
 		if (!result.success) {
-			// If auto-load fails (e.g. file deleted), clear storage
 			if (filename === localStorage.getItem(STORAGE_KEY_LAST_SCENE)) {
 				localStorage.removeItem(STORAGE_KEY_LAST_SCENE);
 			}
@@ -337,7 +347,7 @@ function createNewScene() {
 	selectNode(null);
 
 	part.meshes.forEach(m => {
-		if (m.metadata && (m.metadata.isPrimitive || m.metadata.isLightProxy || m.metadata.isTransformNodeProxy)) m.dispose();
+		if (m.metadata && (m.metadata.isPrimitive || m.metadata.isShape || m.metadata.isLightProxy || m.metadata.isTransformNodeProxy)) m.dispose();
 	});
 	part.transformNodes.forEach(t => {
 		if (t.name !== "axisRoot" && t.metadata && t.metadata.isTransformNode) t.dispose();
