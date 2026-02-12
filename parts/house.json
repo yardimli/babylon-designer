@@ -1,0 +1,76 @@
+{
+  "version": 1.4,
+  "materialFiles": [
+    "generic.json"
+  ],
+  "lights": [],
+  "meshes": [
+    {
+      "id": "Cube_1770877790170",
+      "name": "Cube_1770877790170",
+      "type": "Cube",
+      "isPrimitive": true,
+      "position": {
+        "x": 0,
+        "y": 0.5,
+        "z": 0
+      },
+      "rotation": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 1
+      },
+      "scaling": {
+        "x": 5,
+        "y": 5,
+        "z": 5
+      },
+      "pivot": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "materialId": "floor",
+      "parentId": null,
+      "receiveShadows": true,
+      "castShadows": true,
+      "sortIndex": 0,
+      "visible": true
+    },
+    {
+      "id": "Pyramid_1770877810794",
+      "name": "Pyramid_1770877810794",
+      "type": "Pyramid",
+      "isPrimitive": true,
+      "position": {
+        "x": 0,
+        "y": 4.49,
+        "z": 0
+      },
+      "rotation": {
+        "x": 0,
+        "y": 0.3826834323650898,
+        "z": 0,
+        "w": 0.9238795325112867
+      },
+      "scaling": {
+        "x": 8,
+        "y": 3,
+        "z": 8
+      },
+      "pivot": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "materialId": "roof",
+      "parentId": null,
+      "receiveShadows": false,
+      "castShadows": true,
+      "sortIndex": 0,
+      "visible": true
+    }
+  ],
+  "transformNodes": []
+}

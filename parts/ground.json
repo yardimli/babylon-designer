@@ -1,0 +1,232 @@
+{
+  "version": 1.4,
+  "materialFiles": [
+    "generic.json"
+  ],
+  "lights": [
+    {
+      "id": "light_1770284781106",
+      "type": "directional",
+      "position": {
+        "x": 10.491148948669434,
+        "y": 13.580554008483887,
+        "z": -15.909402847290039
+      },
+      "direction": {
+        "x": 0.11235309336399087,
+        "y": -0.8082602579972089,
+        "z": 0.578007039536568
+      },
+      "intensity": 1,
+      "diffuse": {
+        "r": 1,
+        "g": 1,
+        "b": 1
+      },
+      "parentId": null,
+      "sortIndex": 0,
+      "visible": false
+    }
+  ],
+  "meshes": [
+    {
+      "id": "Ground_1770284501663",
+      "name": "Ground_1770284501663",
+      "type": "Ground",
+      "isPrimitive": true,
+      "position": {
+        "x": 0,
+        "y": 0.5,
+        "z": 0.6115180850028992
+      },
+      "rotation": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 1
+      },
+      "scaling": {
+        "x": 40,
+        "y": 1,
+        "z": 40
+      },
+      "pivot": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "materialId": "floor",
+      "parentId": null,
+      "receiveShadows": true,
+      "castShadows": false,
+      "sortIndex": 0,
+      "visible": true
+    },
+    {
+      "id": "Cylinder_1770284546097",
+      "name": "Cylinder_1770284546097",
+      "type": "Cylinder",
+      "isPrimitive": true,
+      "position": {
+        "x": 18,
+        "y": 0.8799999952316284,
+        "z": 17.35641860961914
+      },
+      "rotation": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 1
+      },
+      "scaling": {
+        "x": 1,
+        "y": 1,
+        "z": 1
+      },
+      "pivot": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "materialId": "white",
+      "parentId": null,
+      "receiveShadows": true,
+      "castShadows": true,
+      "sortIndex": 0,
+      "visible": true
+    },
+    {
+      "id": "Cylinder_1770284546097_dup",
+      "name": "Cylinder_1770284546097_dup",
+      "type": "Cylinder",
+      "isPrimitive": true,
+      "position": {
+        "x": -18,
+        "y": 0.88,
+        "z": 18
+      },
+      "rotation": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 1
+      },
+      "scaling": {
+        "x": 1,
+        "y": 1,
+        "z": 1
+      },
+      "pivot": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "materialId": "white",
+      "parentId": null,
+      "receiveShadows": true,
+      "castShadows": true,
+      "sortIndex": 0,
+      "visible": true
+    },
+    {
+      "id": "Cylinder_1770284546097_dup_dup",
+      "name": "Cylinder_1770284546097_dup_dup",
+      "type": "Cylinder",
+      "isPrimitive": true,
+      "position": {
+        "x": -18,
+        "y": 0.88,
+        "z": -18
+      },
+      "rotation": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 1
+      },
+      "scaling": {
+        "x": 1,
+        "y": 1,
+        "z": 1
+      },
+      "pivot": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "materialId": "white",
+      "parentId": null,
+      "receiveShadows": true,
+      "castShadows": true,
+      "sortIndex": 0,
+      "visible": true
+    },
+    {
+      "id": "Cylinder_1770284546097_dup_dup_dup",
+      "name": "Cylinder_1770284546097_dup_dup_dup",
+      "type": "Cylinder",
+      "isPrimitive": true,
+      "position": {
+        "x": 18,
+        "y": 0.88,
+        "z": -18
+      },
+      "rotation": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 1
+      },
+      "scaling": {
+        "x": 1,
+        "y": 1,
+        "z": 1
+      },
+      "pivot": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "materialId": "white",
+      "parentId": null,
+      "receiveShadows": true,
+      "castShadows": true,
+      "sortIndex": 0,
+      "visible": true
+    },
+    {
+      "id": "Pyramid_1770285443439",
+      "name": "Pyramid_1770285443439",
+      "type": "Pyramid",
+      "isPrimitive": true,
+      "position": {
+        "x": 17.330625534057617,
+        "y": 2.0965421199798584,
+        "z": -9.341595649719238
+      },
+      "rotation": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 1
+      },
+      "scaling": {
+        "x": 3,
+        "y": 3,
+        "z": 3
+      },
+      "pivot": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "materialId": "red",
+      "parentId": null,
+      "receiveShadows": true,
+      "castShadows": true,
+      "sortIndex": 0,
+      "visible": true
+    }
+  ],
+  "transformNodes": []
+}

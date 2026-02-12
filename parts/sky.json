@@ -1,0 +1,63 @@
+{
+  "version": 1.4,
+  "materialFiles": [
+    "generic.json"
+  ],
+  "lights": [
+    {
+      "id": "light_1770877099997",
+      "type": "point",
+      "position": {
+        "x": 0,
+        "y": 5,
+        "z": 0
+      },
+      "direction": null,
+      "intensity": 0.5,
+      "diffuse": {
+        "r": 1,
+        "g": 1,
+        "b": 1
+      },
+      "parentId": null,
+      "sortIndex": 0,
+      "visible": false
+    }
+  ],
+  "meshes": [
+    {
+      "id": "Plane_1770876990561",
+      "name": "Plane_1770876990561",
+      "type": "Plane",
+      "isPrimitive": true,
+      "position": {
+        "x": 0,
+        "y": 0.5,
+        "z": 0
+      },
+      "rotation": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 1
+      },
+      "scaling": {
+        "x": 40,
+        "y": 40,
+        "z": 1
+      },
+      "pivot": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "materialId": "sky",
+      "parentId": null,
+      "receiveShadows": false,
+      "castShadows": false,
+      "sortIndex": 0,
+      "visible": true
+    }
+  ],
+  "transformNodes": []
+}
