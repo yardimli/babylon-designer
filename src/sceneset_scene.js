@@ -56,7 +56,7 @@ export function getUniqueId(scene, baseId) {
 export function createScene(canvas) {
 	engine = new Engine(canvas, true);
 	scene = new Scene(engine);
-    scene.debugLayer.show();
+    //scene.debugLayer.show();
 	scene.clearColor = new Color4(0.1, 0.1, 0.1, 1);
 	
 	// Ensure rendering group 1 clears depth so the axis draws on top of the scene

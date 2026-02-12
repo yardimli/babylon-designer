@@ -9,9 +9,16 @@ export function createLight(type, savedData = null, scene) {
 	const id = getUniqueId(scene, baseId);
 	
 	if (type === "point") {
-		light = new PointLight(id, new Vector3(0, 5, 0), scene);
+		light = new PointLight(id, new Vector3(0, 5, -25), scene);
+		light.intensity = 0.5;
+		light.diffuse = new Color3(1, 1, 1);
+		light.position = new Vector3(0,5,-25);
+
 	} else if (type === "directional") {
-		light = new DirectionalLight(id, new Vector3(0, -1, 0.5), scene);
+		light = new DirectionalLight(id, new Vector3(0, -1, 1), scene);
+		light.intensity = 0.5;
+		light.diffuse = new Color3(1, 1, 1);
+		light.position = new Vector3(0,5,-25);
 	}
 	
 	if (light) {
@@ -26,10 +33,6 @@ export function createLight(type, savedData = null, scene) {
 			if (savedData.visible !== undefined) {
 				light.setEnabled(savedData.visible);
 			}
-		} else {
-			light.intensity = 0.5;
-			light.diffuse = new Color3(1, 1, 1);
-			light.position = new Vector3(0, 5, 0);
 		}
 		
 		createShadowGenerator(light);
