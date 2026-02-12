@@ -152,5 +152,35 @@
     "metallic": 0,
     "roughness": 1,
     "alpha": 1
+  },
+  {
+    "name": "red stone",
+    "albedoType": "image",
+    "albedo": [
+      1,
+      1,
+      1
+    ],
+    "gradient": {
+      "top": [
+        1,
+        1,
+        1
+      ],
+      "bottom": [
+        0,
+        0,
+        0
+      ]
+    },
+    "texturePath": "/materials/textures/1770896116367_23263317_6764559.jpg",
+    "emissive": [
+      0,
+      0,
+      0
+    ],
+    "metallic": 0,
+    "roughness": 1,
+    "alpha": 1
   }
 ]

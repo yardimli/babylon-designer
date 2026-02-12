@@ -7,7 +7,7 @@
       "sourceFile": "ground.json",
       "position": {
         "x": 0,
-        "y": -0.010637360624969006,
+        "y": -0.01,
         "z": 0
       },
       "rotation": {
@@ -17,9 +17,9 @@
         "w": 1
       },
       "scaling": {
-        "x": 1,
+        "x": 2,
         "y": 1,
-        "z": 1
+        "z": 2
       },
       "name": "ground_inst",
       "visible": true
@@ -50,9 +50,9 @@
       "id": "test_inst_1",
       "sourceFile": "test.json",
       "position": {
-        "x": 11.69453239440918,
+        "x": 27.290035247802734,
         "y": 0,
-        "z": 0
+        "z": 6.509204387664795
       },
       "rotation": {
         "x": 0,
@@ -111,6 +111,116 @@
       },
       "name": "house_inst",
       "visible": true
+    },
+    {
+      "id": "brick-wall_inst",
+      "sourceFile": "brick-wall.json",
+      "position": {
+        "x": 26.26616668701172,
+        "y": 0.5191182494163513,
+        "z": -1.880047082901001
+      },
+      "rotation": {
+        "x": 0,
+        "y": 1,
+        "z": 0,
+        "w": 6.123234262925839e-17
+      },
+      "scaling": {
+        "x": 1,
+        "y": 1,
+        "z": 1
+      },
+      "name": "brick-wall_inst",
+      "visible": true
+    },
+    {
+      "id": "brick-wall_inst_1",
+      "sourceFile": "brick-wall.json",
+      "position": {
+        "x": 29.54912757873535,
+        "y": 0.5022748112678528,
+        "z": 15.221498489379883
+      },
+      "rotation": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 1
+      },
+      "scaling": {
+        "x": 1,
+        "y": 1,
+        "z": 1
+      },
+      "name": "brick-wall_inst_1",
+      "visible": true
+    },
+    {
+      "id": "brick-wall_inst_2",
+      "sourceFile": "brick-wall.json",
+      "position": {
+        "x": 19.492469787597656,
+        "y": 6.9899678230285645,
+        "z": 5.105061054229736
+      },
+      "rotation": {
+        "x": 0.7071067811865476,
+        "y": 4.3297804701086715e-17,
+        "z": -0.7071067811865475,
+        "w": 4.329780470108673e-17
+      },
+      "scaling": {
+        "x": 1,
+        "y": 1,
+        "z": 1
+      },
+      "name": "brick-wall_inst_2",
+      "visible": true
+    },
+    {
+      "id": "brick-wall_inst_3",
+      "sourceFile": "brick-wall.json",
+      "position": {
+        "x": 36.199466705322266,
+        "y": 0.4333556890487671,
+        "z": 5.096832275390625
+      },
+      "rotation": {
+        "x": 0,
+        "y": 0.7071067811865475,
+        "z": 0,
+        "w": 0.7071067811865476
+      },
+      "scaling": {
+        "x": 1,
+        "y": 1,
+        "z": 1
+      },
+      "name": "brick-wall_inst_3",
+      "visible": true
+    },
+    {
+      "id": "shape-test_inst",
+      "sourceFile": "shape-test.json",
+      "position": {
+        "x": -9.626365661621094,
+        "y": 16.33271026611328,
+        "z": 15.188879013061523
+      },
+      "rotation": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 1
+      },
+      "scaling": {
+        "x": 1,
+        "y": 1,
+        "z": 1
+      },
+      "name": "shape-test_inst",
+      "visible": true
     }
   ],
   "lights": [
@@ -119,15 +229,15 @@
       "type": "directional",
       "position": {
         "x": 0,
-        "y": 5,
-        "z": -20
+        "y": 25,
+        "z": -50
       },
       "direction": {
         "x": 0,
         "y": -0.7071067811865476,
         "z": 0.7071067811865476
       },
-      "intensity": 0.5,
+      "intensity": 2,
       "diffuse": {
         "r": 1,
         "g": 1,

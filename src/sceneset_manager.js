@@ -5,7 +5,7 @@ import { updatePropertyEditor } from "./sceneset_propertyEditor.js";
 import { refreshSceneGraph } from "./sceneset_treeViewManager.js";
 import { createLight } from "./sceneset_lightManager.js";
 import { createTransformNode } from "./sceneset_transformNodeManager.js";
-import { createPrimitive } from "./sceneset_ui.js";
+import { createPrimitive, createShapeMesh } from "./sceneset_ui.js"; // Updated import
 import { clearShadowManagers } from "./sceneset_shadowManager.js";
 import { setupHistory, recordState } from "./sceneset_historyManager.js";
 import { selectNode } from "./sceneset_selectionManager.js";
@@ -136,13 +136,24 @@ export async function importSceneAsAsset(filename, position = Vector3.Zero(), sa
 		if (data.meshes) {
 			data.meshes.forEach(meshData => {
 				const meshDataClone = { ...meshData, id: p(meshData.id) };
-				const mesh = createPrimitive(meshData.type, meshDataClone);
+				let mesh;
+
+				// NEW: Check for Shape vs Primitive
+				if (meshData.isShape) {
+					mesh = createShapeMesh(meshData.shapeData, meshData.shapeName || meshData.name, meshDataClone);
+				} else {
+					mesh = createPrimitive(meshData.type, meshDataClone);
+				}
+
 				if (mesh) {
 					if (meshData.materialId) {
 						const mat = scene.getMaterialByID(meshData.materialId);
 						if (mat) mesh.material = mat;
 					}
+					// Ensure metadata exists and mark as internal
+					if (!mesh.metadata) mesh.metadata = {};
 					mesh.metadata.isInternal = true;
+
 					idMap.set(meshData.id, mesh);
 					if (meshData.name) nameMap.set(meshData.name, mesh);
 

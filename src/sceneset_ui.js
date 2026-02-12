@@ -1,13 +1,14 @@
-import {MeshBuilder, Vector3, Quaternion} from "@babylonjs/core";
-import {scene, getUniqueId} from "./sceneset_scene.js"; // Updated
-import {setGizmoMode} from "./sceneset_gizmoControl.js"; // Updated
-import {createLight} from "./sceneset_lightManager.js"; // Updated
-import {createTransformNode} from "./sceneset_transformNodeManager.js"; // Updated
-import {markModified} from "./sceneset_manager.js"; // Updated to sceneSetManager
-import {refreshSceneGraph} from "./sceneset_treeViewManager.js"; // Updated
-import {setShadowCaster} from "./sceneset_shadowManager.js"; // Updated
-import {recordState} from "./sceneset_historyManager.js"; // Updated
-import {selectNode} from "./sceneset_selectionManager.js"; // Updated
+import { MeshBuilder, Vector3, Quaternion } from "@babylonjs/core";
+import earcut from 'earcut'; // Added for shape extrusion
+import { scene, getUniqueId } from "./sceneset_scene.js";
+import { setGizmoMode } from "./sceneset_gizmoControl.js";
+import { createLight } from "./sceneset_lightManager.js";
+import { createTransformNode } from "./sceneset_transformNodeManager.js";
+import { markModified } from "./sceneset_manager.js";
+import { refreshSceneGraph } from "./sceneset_treeViewManager.js";
+import { setShadowCaster } from "./sceneset_shadowManager.js";
+import { recordState } from "./sceneset_historyManager.js";
+import { selectNode } from "./sceneset_selectionManager.js";
 
 const primitives = ["Cube", "Sphere", "Cylinder", "Plane", "Ground", "Cone", "Pyramid", "Empty"];
 const lights = ["Point", "Directional"];
@@ -100,6 +101,138 @@ function createDraggableItem(name, category) {
 		e.dataTransfer.setData("category", category);
 	});
 	return div;
+}
+
+// NEW: Function to build mesh from shape data (Adapted from part_ui.js)
+export function createShapeMesh(shapeData, name, savedState = null) {
+	const baseId = savedState ? savedState.id : `${name}_${Date.now()}`;
+	const id = getUniqueId(scene, baseId);
+
+	// Reconstruct geometry
+	const solids = [];
+	const holes = [];
+
+	// Helper to convert shape object to Vector3 array
+	const getPoints = (shape) => {
+		const points = [];
+		if (shape.type === 'rect') {
+			points.push(
+				new Vector3(shape.x, 0, shape.y),
+				new Vector3(shape.x + shape.w, 0, shape.y),
+				new Vector3(shape.x + shape.w, 0, shape.y + shape.h),
+				new Vector3(shape.x, 0, shape.y + shape.h)
+			);
+		} else if (shape.type === 'circle') {
+			const segments = 32;
+			const r = shape.diameter / 2;
+			for (let j = 0; j < segments; j++) {
+				const theta = (j / segments) * Math.PI * 2;
+				points.push(new Vector3(
+					shape.x + Math.cos(theta) * r,
+					0,
+					shape.y + Math.sin(theta) * r
+				));
+			}
+		} else if (shape.type === 'poly') {
+			shape.points.forEach(p => points.push(new Vector3(p.x, 0, p.y)));
+		}
+		return points;
+	};
+
+	// Helper: Check if point is inside polygon
+	const isPointInPoly = (pt, poly) => {
+		let inside = false;
+		for (let i = 0, j = poly.length - 1; i < poly.length; j = i++) {
+			const xi = poly[i].x; const yi = poly[i].z;
+			const xj = poly[j].x; const yj = poly[j].z;
+			const intersect = ((yi > pt.z) !== (yj > pt.z)) &&
+				(pt.x < (xj - xi) * (pt.z - yi) / (yj - yi) + xi);
+			if (intersect) inside = !inside;
+		}
+		return inside;
+	};
+
+	// Process shapes
+	shapeData.shapes.forEach((shape, i) => {
+		const points = getPoints(shape);
+		if (points.length < 3) return;
+		if (shape.isHole) {
+			holes.push({ points });
+		} else {
+			solids.push({ points, myHoles: [] });
+		}
+	});
+
+	// Assign holes
+	holes.forEach(hole => {
+		for (const solid of solids) {
+			if (isPointInPoly(hole.points[0], solid.points)) {
+				solid.myHoles.push(hole.points);
+				break;
+			}
+		}
+	});
+
+	let rootMesh = null;
+
+	// Create Meshes
+	solids.forEach((solid, i) => {
+		try {
+			const mesh = MeshBuilder.ExtrudePolygon(i === 0 ? id : `${id}_part_${i}`, {
+				shape: solid.points,
+				holes: solid.myHoles,
+				depth: shapeData.extrusionHeight,
+				sideOrientation: MeshBuilder.DOUBLESIDE,
+				wrap: true
+			}, scene, earcut);
+
+			if (i === 0) {
+				rootMesh = mesh;
+			} else {
+				mesh.parent = rootMesh;
+			}
+		} catch (e) {
+			console.warn("Failed to extrude shape part", e);
+		}
+	});
+
+	if (rootMesh) {
+		// Store data for save/load
+		rootMesh.metadata = {
+			isShape: true,
+			shapeData: shapeData,
+			shapeName: name,
+			castShadows: true
+		};
+
+		if (savedState) {
+			if (savedState.name) rootMesh.name = savedState.name;
+			rootMesh.position.set(savedState.position.x, savedState.position.y, savedState.position.z);
+			rootMesh.scaling.set(savedState.scaling.x, savedState.scaling.y, savedState.scaling.z);
+
+			if (!rootMesh.rotationQuaternion) rootMesh.rotationQuaternion = new Quaternion();
+			if (savedState.rotation.w !== undefined) {
+				rootMesh.rotationQuaternion.set(savedState.rotation.x, savedState.rotation.y, savedState.rotation.z, savedState.rotation.w);
+			} else {
+				rootMesh.rotationQuaternion = Quaternion.FromEulerAngles(savedState.rotation.x, savedState.rotation.y, savedState.rotation.z);
+			}
+
+			if (savedState.pivot) rootMesh.setPivotPoint(new Vector3(savedState.pivot.x, savedState.pivot.y, savedState.pivot.z));
+			if (savedState.castShadows) setShadowCaster(rootMesh, true);
+			if (savedState.receiveShadows) rootMesh.receiveShadows = true;
+			if (savedState.materialId) {
+				const mat = scene.getMaterialByID(savedState.materialId);
+				if (mat) rootMesh.material = mat;
+			}
+			if (savedState.visible !== undefined) rootMesh.setEnabled(savedState.visible);
+		} else {
+			// Default placement
+			rootMesh.position.y = shapeData.extrusionHeight;
+			setShadowCaster(rootMesh, true);
+		}
+	}
+
+	return rootMesh;
 }
 
 export function createPrimitive(type, savedData = null) {
