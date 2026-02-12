@@ -62,5 +62,35 @@
     "metallic": 0.54,
     "roughness": 1,
     "alpha": 1
+  },
+  {
+    "name": "sky",
+    "albedoType": "gradient",
+    "albedo": [
+      1,
+      1,
+      1
+    ],
+    "gradient": {
+      "top": [
+        0.8352941176470589,
+        0.8235294117647058,
+        0.9764705882352941
+      ],
+      "bottom": [
+        0.2980392156862745,
+        0,
+        1
+      ]
+    },
+    "texturePath": null,
+    "emissive": [
+      0,
+      0,
+      0
+    ],
+    "metallic": 0.04,
+    "roughness": 1,
+    "alpha": 1
   }
 ]

@@ -67,6 +67,28 @@
       },
       "name": "test_inst_1",
       "visible": true
+    },
+    {
+      "id": "sky_inst",
+      "sourceFile": "sky.json",
+      "position": {
+        "x": 0,
+        "y": 0,
+        "z": 40
+      },
+      "rotation": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 1
+      },
+      "scaling": {
+        "x": 1,
+        "y": 1,
+        "z": 1
+      },
+      "name": "sky_inst",
+      "visible": true
     }
   ],
   "lights": [
