@@ -4,7 +4,7 @@ import { gizmoManager, setGizmoMode } from "./part_gizmoControl.js";
 import { createLight } from "./part_lightManager.js";
 import { createTransformNode } from "./part_transformNodeManager.js";
 import { markModified } from "./part_manager.js";
-import { refreshSceneGraph } from "./part_treeViewManager.js";
+import { refreshPartGraph } from "./part_treeViewManager.js";
 import { setShadowCaster } from "./part_shadowManager.js";
 import { recordState } from "./part_historyManager.js";
 import { selectNode } from "./part_selectionManager.js";
@@ -50,7 +50,7 @@ export function setupUI() {
 		if (createdNode) {
 			selectNode(createdNode, false);
 			markModified();
-			refreshSceneGraph();
+			refreshPartGraph();
 			recordState();
 		}
 	});

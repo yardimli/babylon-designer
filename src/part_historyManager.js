@@ -5,7 +5,7 @@ let redoStack = [];
 let currentState = null;
 let maxHistory = 20;
 
-// Callbacks provided by sceneManager
+// Callbacks provided by partManager
 let serializeFunction = null;
 let loadFunction = null;
 

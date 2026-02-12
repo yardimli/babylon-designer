@@ -45,7 +45,7 @@ export function setNodeParent(node, parent) {
 	}
 }
 
-export function refreshSceneGraph() {
+export function refreshPartGraph() {
 	const container = document.getElementById("part-explorer");
 	if (!container) return;
 	
@@ -72,7 +72,7 @@ export function refreshSceneGraph() {
 					if (!draggedNode.metadata) draggedNode.metadata = {};
 					draggedNode.metadata.sortIndex = maxIndex + 100;
 					markModified();
-					refreshSceneGraph();
+					refreshPartGraph();
 					recordState();
 				}
 			}
@@ -81,7 +81,7 @@ export function refreshSceneGraph() {
 	
 	const roots = getSortedRoots();
 	if (roots.length === 0) {
-		container.innerHTML = "<div class='opacity-50 italic p-2'>Empty Scene</div>";
+		container.innerHTML = "<div class='opacity-50 italic p-2'>Empty Part</div>";
 		return;
 	}
 	
@@ -92,7 +92,7 @@ export function refreshSceneGraph() {
 	// Re-apply highlights after rebuild
 	// We need to get current selection. Since we can't import getSelectedNodes due to circular dep risk if not careful,
 	// we rely on the fact that highlightInTree is called by selectionManager.
-	// But refreshSceneGraph is called by others. So we should trigger a highlight update.
+	// But refreshPartGraph is called by others. So we should trigger a highlight update.
 	// Actually, we can import getSelectedNodes here safely if selectionManager doesn't import treeViewManager immediately at top level for execution.
 	// But simpler: just let the next selection update handle it, or pass it.
 	// For now, let's rely on the caller to update selection or add a small timeout.
@@ -178,7 +178,7 @@ function createTreeNode(node, level) {
 			e.stopPropagation();
 			if (isCollapsed) collapsedNodes.delete(node.id);
 			else collapsedNodes.add(node.id);
-			refreshSceneGraph();
+			refreshPartGraph();
 		};
 	} else {
 		icon.innerText = "•";
@@ -231,7 +231,7 @@ function handleNodeDrop(draggedNode, targetNode, action) {
 		});
 	}
 	markModified();
-	refreshSceneGraph();
+	refreshPartGraph();
 	recordState();
 }
 

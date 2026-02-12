@@ -2,7 +2,7 @@ import { Quaternion, PBRMaterial, Color3 } from "@babylonjs/core";
 import { part, resetAxisIndicator, getSkipMaterialNames } from "./part.js";
 import { setupGizmos, disposeGizmos } from "./part_gizmoControl.js";
 import { updatePropertyEditor } from "./part_propertyEditor.js";
-import { refreshSceneGraph } from "./part_treeViewManager.js";
+import { refreshPartGraph } from "./part_treeViewManager.js";
 import { createPrimitive } from "./part_ui.js";
 import { createLight } from "./part_lightManager.js";
 import { createTransformNode } from "./part_transformNodeManager.js";
@@ -61,14 +61,14 @@ function handleSaveAction() {
 function openSaveModal() {
 	populateSceneList("save");
 	saveNameInput.value = "";
-	document.getElementById("modal-title").innerText = "Save Scene";
+	document.getElementById("modal-title").innerText = "Save Part";
 	document.getElementById("btn-modal-save").classList.remove("hidden");
 	saveLoadModal.showModal();
 }
 
 function openLoadModal() {
 	populateSceneList("load");
-	document.getElementById("modal-title").innerText = "Load Scene";
+	document.getElementById("modal-title").innerText = "Load Part";
 	document.getElementById("btn-modal-save").classList.add("hidden");
 	saveLoadModal.showModal();
 }
@@ -165,7 +165,7 @@ export function serializeScene() {
 async function saveSceneInternal(name) {
 	const data = serializeScene();
 	try {
-		const response = await fetch('/api/scenes', {
+		const response = await fetch('/api/parts', {
 			method: 'POST',
 			headers: { 'Content-Type': 'application/json' },
 			body: JSON.stringify({ name: name, data: data })
@@ -294,12 +294,12 @@ export async function loadSceneData(data) {
 
 	setupGizmos(part);
 	resetAxisIndicator();
-	refreshSceneGraph();
+	refreshPartGraph();
 }
 
 async function loadSceneInternal(filename) {
 	try {
-		const response = await fetch(`/api/scenes?file=${filename}`);
+		const response = await fetch(`/api/parts?file=${filename}`);
 		const result = await response.json();
 
 		if (!result.success) {
@@ -353,13 +353,13 @@ function createNewScene() {
 	setupGizmos(part);
 	updateStatus();
 	updatePropertyEditor([]);
-	refreshSceneGraph();
+	refreshPartGraph();
 }
 
 async function populateSceneList(mode) {
 	sceneListContainer.innerHTML = "<span class='loading loading-spinner'></span>";
 	try {
-		const res = await fetch('/api/scenes');
+		const res = await fetch('/api/parts');
 		const data = await res.json();
 		sceneListContainer.innerHTML = "";
 		if (!data.files || data.files.length === 0) {
@@ -381,7 +381,7 @@ async function populateSceneList(mode) {
 			btnDelete.onclick = async (e) => {
 				e.stopPropagation();
 				if (confirm(`Delete "${file}"?`)) {
-					await fetch(`/api/scenes?file=${file}`, { method: 'DELETE' });
+					await fetch(`/api/parts?file=${file}`, { method: 'DELETE' });
 					populateSceneList(mode);
 				}
 			};

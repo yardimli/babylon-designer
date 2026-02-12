@@ -64,7 +64,7 @@
 		</div>
 	</div>
 	
-	<!-- Center: Scene -->
+	<!-- Center: Part -->
 	<div class="flex-1 relative bg-black">
 		<canvas id="renderCanvas" class="w-full h-full touch-none"></canvas>
 	</div>
@@ -73,8 +73,8 @@
 	<div class="w-80 flex-none bg-base-200 flex flex-col border-l border-base-content/10 overflow-hidden">
 		<!-- Hierarchy / Tree View -->
 		<div class="flex-none h-1/3 flex flex-col border-b border-base-content/10">
-			<h2 class="text-sm font-bold p-2 bg-base-300">Scene Hierarchy</h2>
-			<div id="scene-explorer" class="flex-1 overflow-y-auto p-2 text-sm select-none">
+			<h2 class="text-sm font-bold p-2 bg-base-300">Part Hierarchy</h2>
+			<div id="part-explorer" class="flex-1 overflow-y-auto p-2 text-sm select-none">
 				<!-- Tree populated by JS -->
 			</div>
 		</div>
@@ -179,20 +179,20 @@
 	</div>
 </dialog>
 
-<!-- Save/Load Scene Modal -->
+<!-- Save/Load Part Modal -->
 <dialog id="save_load_modal" class="modal">
 	<div class="modal-box">
-		<h3 id="modal-title" class="font-bold text-lg mb-4">Manage Scenes</h3>
+		<h3 id="modal-title" class="font-bold text-lg mb-4">Manage Parts</h3>
 		
 		<!-- File List -->
-		<div class="border border-base-content/20 rounded p-2 h-48 overflow-y-auto flex flex-col gap-1 mb-4" id="scene-list">
+		<div class="border border-base-content/20 rounded p-2 h-48 overflow-y-auto flex flex-col gap-1 mb-4" id="part-list">
 			<!-- Populated by JS -->
 		</div>
 		
 		<!-- Save Input -->
 		<label class="input input-bordered flex items-center gap-2 mb-4">
 			Filename
-			<input type="text" id="save-scene-name" class="grow" placeholder="my_scene" />
+			<input type="text" id="save-part-name" class="grow" placeholder="my_part" />
 			<span class="badge badge-info">.json</span>
 		</label>
 		

@@ -27,7 +27,7 @@ export function clearMaterialManager() {
 	loadedMaterialFiles.clear();
 }
 
-// Called by sceneManager when loading a part
+// Called by partManager when loading a part
 export async function loadMaterialFile(filename) {
 	if (loadedMaterialFiles.has(filename)) return; // Already loaded
 

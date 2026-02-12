@@ -89,7 +89,7 @@ function createDraggableItem(name, category) {
 async function loadAvailableScenes(container) {
 	container.innerHTML = "<span class='loading loading-spinner'></span>";
 	try {
-		const res = await fetch('/api/scenes');
+		const res = await fetch('/api/parts');
 		const data = await res.json();
 		container.innerHTML = "";
 		
@@ -105,6 +105,6 @@ async function loadAvailableScenes(container) {
 		});
 		
 	} catch (e) {
-		container.innerHTML = "<p class='text-error'>Failed to load scenes.</p>";
+		container.innerHTML = "<p class='text-error'>Failed to load parts.</p>";
 	}
 }

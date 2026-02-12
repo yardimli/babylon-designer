@@ -57,7 +57,7 @@ function updateStatus() {
 
 export async function importSceneAsAsset(filename, position = Vector3.Zero(), savedId = null) {
 	try {
-		const res = await fetch(`/api/scenes?file=${filename}`);
+		const res = await fetch(`/api/parts?file=${filename}`);
 		const result = await res.json();
 
 		if (!result.success) {

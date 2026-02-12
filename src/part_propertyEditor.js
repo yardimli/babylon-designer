@@ -6,7 +6,7 @@ import { createLight } from "./part_lightManager.js";
 import { setShadowCaster, disposeShadowGenerator } from "./part_shadowManager.js";
 import { createTransformNode } from "./part_transformNodeManager.js";
 import { recordState } from "./part_historyManager.js";
-import { refreshSceneGraph, setNodeParent } from "./part_treeViewManager.js";
+import { refreshPartGraph, setNodeParent } from "./part_treeViewManager.js";
 
 let observer = null;
 
@@ -266,7 +266,7 @@ function bindInputs(targets) {
 			markModified();
 			recordState();
 			// Refresh graph to potentially update visual indications if we add them later
-			refreshSceneGraph();
+			refreshPartGraph();
 		};
 	}
 	
@@ -296,7 +296,7 @@ function bindInputs(targets) {
 				if (uniqueId !== newName) e.target.value = uniqueId;
 			}
 			markModified();
-			refreshSceneGraph();
+			refreshPartGraph();
 			recordState();
 		};
 	}
@@ -366,7 +366,7 @@ function updateParentDropdown(targets) {
 		});
 		
 		markModified();
-		refreshSceneGraph();
+		refreshPartGraph();
 		recordState();
 	};
 }
@@ -453,7 +453,7 @@ function bindDuplicateButton(targets) {
 			for(let i=1; i<newSelection.length; i++) selectNode(newSelection[i], true);
 			
 			markModified();
-			refreshSceneGraph();
+			refreshPartGraph();
 			recordState();
 		}
 	};
@@ -531,7 +531,7 @@ function bindDeleteButton(targets) {
 			
 			selectNode(null);
 			markModified();
-			refreshSceneGraph();
+			refreshPartGraph();
 			recordState();
 		}
 	};

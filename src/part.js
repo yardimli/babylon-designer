@@ -52,7 +52,7 @@ export function getUniqueId(scene, baseId) {
 	return id;
 }
 
-export function createScene(canvas) {
+export function createPart(canvas) {
 	engine = new Engine(canvas, true);
 	part = new Scene(engine);
     //part.debugLayer.show();
@@ -88,7 +88,7 @@ export function createScene(canvas) {
 	return part;
 }
 
-// Exported function to reset the axis indicator (used when loading scenes)
+// Exported function to reset the axis indicator (used when loading parts)
 export function resetAxisIndicator() {
 	if (!part) return;
 	
