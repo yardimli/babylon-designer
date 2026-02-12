@@ -83,11 +83,33 @@
         "w": 1
       },
       "scaling": {
-        "x": 1,
-        "y": 1,
+        "x": 5,
+        "y": 5,
         "z": 1
       },
       "name": "sky_inst",
+      "visible": true
+    },
+    {
+      "id": "house_inst",
+      "sourceFile": "house.json",
+      "position": {
+        "x": -8.418556213378906,
+        "y": 4.354471683502197,
+        "z": 15.39016056060791
+      },
+      "rotation": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 1
+      },
+      "scaling": {
+        "x": 2,
+        "y": 2,
+        "z": 2
+      },
+      "name": "house_inst",
       "visible": true
     }
   ],

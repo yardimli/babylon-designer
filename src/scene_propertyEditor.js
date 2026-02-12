@@ -1,6 +1,6 @@
 import { Vector3, Quaternion, Color3, AbstractMesh } from "@babylonjs/core";
 import { scene, getUniqueId } from "./scene.js";
-import { markModified } from "./sceneManager.js";
+import { markModified } from "./scene_manager.js";
 import { selectNode, getSelectedNodes } from "./scene_selectionManager.js";
 import { createLight } from "./scene_lightManager.js";
 import { setShadowCaster, disposeShadowGenerator } from "./scene_shadowManager.js";

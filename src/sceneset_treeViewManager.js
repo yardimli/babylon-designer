@@ -1,6 +1,6 @@
 import { AbstractMesh } from "@babylonjs/core";
 import { scene } from "./sceneset_scene.js"; // Updated
-import { markModified } from "./sceneSetManager.js"; // Updated to sceneSetManager
+import { markModified } from "./sceneset_manager.js"; // Updated to sceneSetManager
 import { selectNode, isSelected } from "./sceneset_selectionManager.js"; // Updated
 import { recordState } from "./sceneset_historyManager.js"; // Updated
 

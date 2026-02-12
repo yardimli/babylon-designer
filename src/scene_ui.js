@@ -3,7 +3,7 @@ import { scene, getUniqueId } from "./scene.js";
 import { gizmoManager, setGizmoMode } from "./scene_gizmoControl.js";
 import { createLight } from "./scene_lightManager.js";
 import { createTransformNode } from "./scene_transformNodeManager.js";
-import { markModified } from "./sceneManager.js";
+import { markModified } from "./scene_manager.js";
 import { refreshSceneGraph } from "./scene_treeViewManager.js";
 import { setShadowCaster } from "./scene_shadowManager.js";
 import { recordState } from "./scene_historyManager.js";

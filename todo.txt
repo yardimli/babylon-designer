@@ -3,11 +3,14 @@ DONE:
 - allow user to select multiple objects from scene with shift or treeview with shift
 - when multiple objects are selected the gizmo should allow moving/scaling/rotating all selected objects together
 - when multiple objects are selected in the property editor show number of selected objects and allow changing common properties like position/rotation/scale/material
+- add checkbox to property editor to toggle visibility of selected object(s)
+- allow user to load a json file into an existing scene, it should be readonly and show as a single node only allow to change position. Add button to sidebar which shows file dialog. The materials for the json should be created with a unique suffix and not saved to the project file, on load the materials should be recreated with unique suffixes to avoid name conflicts. the meshes in the loaded json should be renamed to the new unique names as well to avoid name conflicts. In the material editor dont show the materials from the loaded json. the visibilty settings of the meshes in the loaded json should be preserved.
 
 TODO:
 
-- add checkbox to property editor to toggle visibility of selected object(s)
-- allow user to load a json file into an existing scene, it should be readonly and show as a single node only allow to change position. Add button to sidebar which shows file dialog. The materials for the json should be created with a unique suffix and not saved to the project file, on load the materials should be recreated with unique suffixes to avoid name conflicts. the meshes in the loaded json should be renamed to the new unique names as well to avoid name conflicts. In the material editor dont show the materials from the loaded json. the visibilty settings of the meshes in the loaded json should be preserved.
+add new shape editor for drawing 2d shape then extrude 2d shape with ExtrudePolygon and ExtrudeShape
+in scene editor
+add cutout to the scene editor using Constructive Solid Geometry (CSG) to allow for cutting out one shape from another
 
 BUGS:
 

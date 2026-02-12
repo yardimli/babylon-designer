@@ -13,6 +13,7 @@ import { getLoadedMaterialFiles, loadMaterialFile, clearMaterialManager } from "
 
 let currentFileName = null;
 let isModified = false;
+const STORAGE_KEY_LAST_SCENE = "bd_last_scene";
 
 const statusBarText = document.getElementById("status-text");
 const saveLoadModal = document.getElementById("save_load_modal");
@@ -28,8 +29,15 @@ export function setupSceneManager() {
 		const name = saveNameInput.value.trim();
 		if (name) saveSceneInternal(name);
 	};
-	
+
 	setupHistory(serializeScene, loadSceneData);
+
+	// Auto-load last scene
+	const lastFile = localStorage.getItem(STORAGE_KEY_LAST_SCENE);
+	if (lastFile) {
+		console.log("Restoring last scene:", lastFile);
+		loadSceneInternal(lastFile);
+	}
 }
 
 export function markModified() {
@@ -73,7 +81,7 @@ export function serializeScene() {
 		meshes: [],
 		transformNodes: []
 	};
-	
+
 	scene.meshes.forEach(mesh => {
 		if (mesh.metadata && mesh.metadata.isLightProxy) {
 			const light = scene.getLightByID(mesh.metadata.lightId);
@@ -93,10 +101,10 @@ export function serializeScene() {
 			}
 		}
 	});
-	
+
 	scene.transformNodes.forEach(node => {
 		if (node.metadata && node.metadata.isInternal) return;
-		
+
 		if (node.metadata && node.metadata.isTransformNode) {
 			let rot = { x: 0, y: 0, z: 0, w: 1 };
 			if (node.rotationQuaternion) {
@@ -105,7 +113,7 @@ export function serializeScene() {
 				const q = Quaternion.FromEulerVector(node.rotation);
 				rot = { x: q.x, y: q.y, z: q.z, w: q.w };
 			}
-			
+
 			data.transformNodes.push({
 				id: node.id,
 				name: node.name,
@@ -119,7 +127,7 @@ export function serializeScene() {
 			});
 		}
 	});
-	
+
 	scene.meshes.forEach(mesh => {
 		if (mesh.metadata && mesh.metadata.isPrimitive) {
 			let rot = { x: 0, y: 0, z: 0, w: 1 };
@@ -129,9 +137,9 @@ export function serializeScene() {
 				const q = Quaternion.FromEulerVector(mesh.rotation);
 				rot = { x: q.x, y: q.y, z: q.z, w: q.w };
 			}
-			
+
 			const pivot = mesh.getPivotPoint();
-			
+
 			data.meshes.push({
 				id: mesh.id,
 				name: mesh.name,
@@ -150,7 +158,7 @@ export function serializeScene() {
 			});
 		}
 	});
-	
+
 	return data;
 }
 
@@ -162,10 +170,11 @@ async function saveSceneInternal(name) {
 			headers: { 'Content-Type': 'application/json' },
 			body: JSON.stringify({ name: name, data: data })
 		});
-		
+
 		const result = await response.json();
 		if (result.success) {
 			currentFileName = result.filename;
+			localStorage.setItem(STORAGE_KEY_LAST_SCENE, currentFileName);
 			isModified = false;
 			updateStatus();
 			saveLoadModal.close();
@@ -184,7 +193,7 @@ export async function loadSceneData(data) {
 	selectNode(null);
 	clearShadowManagers();
 	clearMaterialManager();
-	
+
 	const toDispose = [];
 	scene.meshes.forEach(m => {
 		if (m.name === "previewSphere") return;
@@ -196,20 +205,20 @@ export async function loadSceneData(data) {
 	scene.lights.forEach(l => {
 		if (l.name !== "hemiLight" && l.name !== "light") toDispose.push(l);
 	});
-	
+
 	toDispose.forEach(n => n.dispose());
-	
+
 	const matsToDispose = scene.materials.filter(m => m.name !== "default material" && m.name !== "lightMat" && m.name !== "previewMat" && m.name !== "transformNodeMat");
 	matsToDispose.forEach(m => m.dispose());
-	
+
 	const idMap = new Map();
-	
+
 	if (data.materialFiles) {
 		for (const filename of data.materialFiles) {
 			await loadMaterialFile(filename);
 		}
 	}
-	
+
 	if (data.transformNodes) {
 		data.transformNodes.forEach(nodeData => {
 			const node = createTransformNode(nodeData, scene);
@@ -221,7 +230,7 @@ export async function loadSceneData(data) {
 			}
 		});
 	}
-	
+
 	if (data.lights) {
 		data.lights.forEach(lightData => {
 			const proxy = createLight(lightData.type, lightData, scene);
@@ -236,7 +245,7 @@ export async function loadSceneData(data) {
 			}
 		});
 	}
-	
+
 	if (data.meshes) {
 		data.meshes.forEach(meshData => {
 			const mesh = createPrimitive(meshData.type, meshData);
@@ -253,12 +262,12 @@ export async function loadSceneData(data) {
 			}
 		});
 	}
-	
+
 	// 4. Restore Hierarchy
 	const findParent = (idOrName) => {
 		if (!idOrName) return null;
 		const mappedId = idMap.get(idOrName) || idOrName;
-		
+
 		return scene.getMeshByID(mappedId) ||
 			scene.getTransformNodeByID(mappedId) ||
 			scene.getLightByID(mappedId) ||
@@ -266,7 +275,7 @@ export async function loadSceneData(data) {
 			scene.getTransformNodeByName(mappedId) ||
 			scene.getLightByName(mappedId);
 	};
-	
+
 	const restoreParents = (list) => {
 		if (!list) return;
 		list.forEach(d => {
@@ -278,11 +287,11 @@ export async function loadSceneData(data) {
 			}
 		});
 	};
-	
+
 	restoreParents(data.transformNodes);
 	restoreParents(data.lights);
 	restoreParents(data.meshes);
-	
+
 	setupGizmos(scene);
 	resetAxisIndicator();
 	refreshSceneGraph();
@@ -292,15 +301,20 @@ async function loadSceneInternal(filename) {
 	try {
 		const response = await fetch(`/api/scenes?file=${filename}`);
 		const result = await response.json();
-		
+
 		if (!result.success) {
+			// If auto-load fails (e.g. file deleted), clear storage
+			if (filename === localStorage.getItem(STORAGE_KEY_LAST_SCENE)) {
+				localStorage.removeItem(STORAGE_KEY_LAST_SCENE);
+			}
 			alert("Could not load file.");
 			return;
 		}
-		
+
 		await loadSceneData(result.data);
-		
+
 		currentFileName = filename;
+		localStorage.setItem(STORAGE_KEY_LAST_SCENE, currentFileName);
 		isModified = false;
 		updateStatus();
 		saveLoadModal.close();
@@ -312,15 +326,16 @@ async function loadSceneInternal(filename) {
 
 function createNewScene() {
 	if (isModified && !confirm("Unsaved changes will be lost. Continue?")) return;
-	
+
 	currentFileName = null;
+	localStorage.removeItem(STORAGE_KEY_LAST_SCENE);
 	isModified = false;
-	
+
 	disposeGizmos();
 	clearShadowManagers();
 	clearMaterialManager();
 	selectNode(null);
-	
+
 	scene.meshes.forEach(m => {
 		if (m.metadata && (m.metadata.isPrimitive || m.metadata.isLightProxy || m.metadata.isTransformNodeProxy)) m.dispose();
 	});
@@ -330,11 +345,11 @@ function createNewScene() {
 	scene.lights.forEach(l => {
 		if (l.name !== "hemiLight") l.dispose();
 	});
-	
+
 	scene.materials.forEach(m => {
 		if (m.metadata && m.metadata.isExternal) m.dispose();
 	});
-	
+
 	setupGizmos(scene);
 	updateStatus();
 	updatePropertyEditor([]);

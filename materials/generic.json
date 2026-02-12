@@ -85,11 +85,71 @@
     },
     "texturePath": null,
     "emissive": [
+      0.16862745098039217,
+      0.16862745098039217,
+      0.16862745098039217
+    ],
+    "metallic": 0.04,
+    "roughness": 1,
+    "alpha": 1
+  },
+  {
+    "name": "floor",
+    "albedoType": "image",
+    "albedo": [
+      1,
+      1,
+      1
+    ],
+    "gradient": {
+      "top": [
+        1,
+        1,
+        1
+      ],
+      "bottom": [
+        0,
+        0,
+        0
+      ]
+    },
+    "texturePath": "/materials/textures/1770877673666_floor.png",
+    "emissive": [
       0,
       0,
       0
     ],
-    "metallic": 0.04,
+    "metallic": 0,
+    "roughness": 1,
+    "alpha": 1
+  },
+  {
+    "name": "roof",
+    "albedoType": "image",
+    "albedo": [
+      1,
+      1,
+      1
+    ],
+    "gradient": {
+      "top": [
+        1,
+        1,
+        1
+      ],
+      "bottom": [
+        0,
+        0,
+        0
+      ]
+    },
+    "texturePath": "/materials/textures/1770877892028_roof.jpg",
+    "emissive": [
+      0,
+      0,
+      0
+    ],
+    "metallic": 0,
     "roughness": 1,
     "alpha": 1
   }

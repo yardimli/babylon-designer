@@ -13,6 +13,7 @@ import { getLoadedMaterialFiles, loadMaterialFile, clearMaterialManager } from "
 
 let currentFileName = null;
 let isModified = false;
+const STORAGE_KEY_LAST_SCENESET = "bd_last_sceneset";
 
 const statusBarText = document.getElementById("status-text");
 const saveLoadModal = document.getElementById("save_load_modal");
@@ -28,8 +29,15 @@ export function setupSceneSetManager() {
 		const name = saveNameInput.value.trim();
 		if (name) saveSceneSetInternal(name);
 	};
-	
+
 	setupHistory(serializeSceneSet, loadSceneSetData);
+
+	// Auto-load last scene set
+	const lastFile = localStorage.getItem(STORAGE_KEY_LAST_SCENESET);
+	if (lastFile) {
+		console.log("Restoring last scene set:", lastFile);
+		loadSceneSetInternal(lastFile);
+	}
 }
 
 export function markModified() {
@@ -51,18 +59,18 @@ export async function importSceneAsAsset(filename, position = Vector3.Zero(), sa
 	try {
 		const res = await fetch(`/api/scenes?file=${filename}`);
 		const result = await res.json();
-		
+
 		if (!result.success) {
 			console.error("Failed to load scene file:", filename);
 			return;
 		}
-		
+
 		const data = result.data;
-		
+
 		// 1. Create Root Node for this Scene Instance
 		const baseId = savedId || filename.replace(".json", "_inst");
 		const instanceId = getUniqueId(scene, baseId);
-		
+
 		const rootNode = new TransformNode(instanceId, scene);
 		rootNode.position = position;
 		rootNode.metadata = {
@@ -71,21 +79,21 @@ export async function importSceneAsAsset(filename, position = Vector3.Zero(), sa
 			sourceFile: filename,
 			sortIndex: 0
 		};
-		
+
 		// 2. Load Materials
 		if (data.materialFiles) {
 			for (const matFile of data.materialFiles) {
 				await loadMaterialFile(matFile);
 			}
 		}
-		
+
 		// 3. Reconstruct Hierarchy with Prefixing
 		const idMap = new Map();
 		const nameMap = new Map();
 		const prefix = instanceId + "_";
-		
+
 		const p = (id) => id ? prefix + id : null;
-		
+
 		// Transform Nodes
 		if (data.transformNodes) {
 			data.transformNodes.forEach(nodeData => {
@@ -95,16 +103,16 @@ export async function importSceneAsAsset(filename, position = Vector3.Zero(), sa
 				node.position.set(nodeData.position.x, nodeData.position.y, nodeData.position.z);
 				node.rotationQuaternion = new Quaternion(nodeData.rotation.x, nodeData.rotation.y, nodeData.rotation.z, nodeData.rotation.w);
 				node.scaling.set(nodeData.scaling.x, nodeData.scaling.y, nodeData.scaling.z);
-				
+
 				node.metadata = { isTransformNode: true, isInternal: true };
 				idMap.set(nodeData.id, node);
 				if (nodeData.name) nameMap.set(nodeData.name, node);
-				
+
 				// NEW: Apply visibility from source file
 				if (nodeData.visible !== undefined) node.setEnabled(nodeData.visible);
 			});
 		}
-		
+
 		// Lights
 		if (data.lights) {
 			data.lights.forEach(lightData => {
@@ -117,13 +125,13 @@ export async function importSceneAsAsset(filename, position = Vector3.Zero(), sa
 					proxy.isPickable = false;
 					idMap.set(lightData.id, proxy);
 					if (lightData.name) nameMap.set(lightData.name, proxy);
-					
+
 					// NEW: Apply visibility from source file
 					if (lightData.visible !== undefined) proxy.setEnabled(lightData.visible);
 				}
 			});
 		}
-		
+
 		// Meshes
 		if (data.meshes) {
 			data.meshes.forEach(meshData => {
@@ -137,13 +145,13 @@ export async function importSceneAsAsset(filename, position = Vector3.Zero(), sa
 					mesh.metadata.isInternal = true;
 					idMap.set(meshData.id, mesh);
 					if (meshData.name) nameMap.set(meshData.name, mesh);
-					
+
 					// NEW: Apply visibility from source file
 					if (meshData.visible !== undefined) mesh.setEnabled(meshData.visible);
 				}
 			});
 		}
-		
+
 		// 4. Restore Parenting
 		const restoreParents = (list) => {
 			if (!list) return;
@@ -153,7 +161,7 @@ export async function importSceneAsAsset(filename, position = Vector3.Zero(), sa
 					if (d.parentId) {
 						let parent = idMap.get(d.parentId);
 						if (!parent) parent = nameMap.get(d.parentId);
-						
+
 						if (parent) child.parent = parent;
 						else child.parent = rootNode;
 					} else {
@@ -162,17 +170,17 @@ export async function importSceneAsAsset(filename, position = Vector3.Zero(), sa
 				}
 			});
 		};
-		
+
 		restoreParents(data.transformNodes);
 		restoreParents(data.lights);
 		restoreParents(data.meshes);
-		
+
 		markModified();
 		refreshSceneGraph();
 		recordState();
-		
+
 		return rootNode;
-		
+
 	} catch (e) {
 		console.error("Error importing scene:", e);
 	}
@@ -188,11 +196,11 @@ function serializeSceneSet() {
 		scenes: [],
 		lights: []
 	};
-	
+
 	// 1. Serialize Imported Scenes (Roots)
 	scene.transformNodes.forEach(node => {
 		if (node.metadata && node.metadata.isSceneSetRoot) {
-			
+
 			let rot = { x: 0, y: 0, z: 0, w: 1 };
 			if (node.rotationQuaternion) {
 				rot = { x: node.rotationQuaternion.x, y: node.rotationQuaternion.y, z: node.rotationQuaternion.z, w: node.rotationQuaternion.w };
@@ -200,7 +208,7 @@ function serializeSceneSet() {
 				const q = Quaternion.FromEulerVector(node.rotation);
 				rot = { x: q.x, y: q.y, z: q.z, w: q.w };
 			}
-			
+
 			data.scenes.push({
 				id: node.id,
 				sourceFile: node.metadata.sourceFile,
@@ -213,7 +221,7 @@ function serializeSceneSet() {
 			});
 		}
 	});
-	
+
 	// 2. Serialize Local Lights
 	scene.meshes.forEach(mesh => {
 		if (mesh.metadata && mesh.metadata.isLightProxy && !mesh.metadata.isInternal) {
@@ -234,7 +242,7 @@ function serializeSceneSet() {
 			}
 		}
 	});
-	
+
 	return data;
 }
 
@@ -246,10 +254,11 @@ async function saveSceneSetInternal(name) {
 			headers: { 'Content-Type': 'application/json' },
 			body: JSON.stringify({ name: name, data: data })
 		});
-		
+
 		const result = await response.json();
 		if (result.success) {
 			currentFileName = result.filename;
+			localStorage.setItem(STORAGE_KEY_LAST_SCENESET, currentFileName);
 			isModified = false;
 			updateStatus();
 			saveLoadModal.close();
@@ -264,7 +273,7 @@ async function saveSceneSetInternal(name) {
 
 export async function loadSceneSetData(data) {
 	createNewSceneSet();
-	
+
 	// 1. Load Scenes
 	if (data.scenes) {
 		for (const s of data.scenes) {
@@ -280,7 +289,7 @@ export async function loadSceneSetData(data) {
 			}
 		}
 	}
-	
+
 	// 2. Load Lights
 	if (data.lights) {
 		data.lights.forEach(l => {
@@ -290,7 +299,7 @@ export async function loadSceneSetData(data) {
 					const parent = scene.getMeshByID(l.parentId) ||
 						scene.getTransformNodeByID(l.parentId) ||
 						scene.getLightByID(l.parentId);
-					
+
 					if (parent) {
 						proxy.parent = parent;
 						const light = scene.getLightByID(proxy.metadata.lightId);
@@ -302,7 +311,7 @@ export async function loadSceneSetData(data) {
 			}
 		});
 	}
-	
+
 	refreshSceneGraph();
 }
 
@@ -310,15 +319,19 @@ async function loadSceneSetInternal(filename) {
 	try {
 		const response = await fetch(`/api/scenesets?file=${filename}`);
 		const result = await response.json();
-		
+
 		if (!result.success) {
+			if (filename === localStorage.getItem(STORAGE_KEY_LAST_SCENESET)) {
+				localStorage.removeItem(STORAGE_KEY_LAST_SCENESET);
+			}
 			alert("Could not load file.");
 			return;
 		}
-		
+
 		await loadSceneSetData(result.data);
-		
+
 		currentFileName = filename;
+		localStorage.setItem(STORAGE_KEY_LAST_SCENESET, currentFileName);
 		isModified = false;
 		updateStatus();
 		saveLoadModal.close();
@@ -330,13 +343,14 @@ async function loadSceneSetInternal(filename) {
 
 function createNewSceneSet() {
 	currentFileName = null;
+	localStorage.removeItem(STORAGE_KEY_LAST_SCENESET);
 	isModified = false;
-	
+
 	disposeGizmos();
 	clearShadowManagers();
 	clearMaterialManager();
 	selectNode(null);
-	
+
 	const toDispose = [];
 	scene.meshes.forEach(m => {
 		if (m.name !== "previewSphere" && m.name !== "hdrSkyBox" && !m.name.startsWith("gizmo")) {
@@ -349,9 +363,9 @@ function createNewSceneSet() {
 	scene.lights.forEach(l => {
 		if (l.name !== "hemiLight") toDispose.push(l);
 	});
-	
+
 	toDispose.forEach(n => n.dispose());
-	
+
 	setupGizmos(scene);
 	updateStatus();
 	updatePropertyEditor([]);

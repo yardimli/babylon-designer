@@ -1,11 +1,11 @@
 import { scene } from "./sceneset_scene.js"; // Updated
 import { setGizmoMode } from "./sceneset_gizmoControl.js"; // Updated
 import { createLight } from "./sceneset_lightManager.js"; // Updated
-import { markModified } from "./sceneSetManager.js";
+import { markModified } from "./sceneset_manager.js";
 import { refreshSceneGraph } from "./sceneset_treeViewManager.js"; // Updated
 import { recordState } from "./sceneset_historyManager.js"; // Updated
 import { selectNode } from "./sceneset_selectionManager.js"; // Updated
-import { importSceneAsAsset } from "./sceneSetManager.js";
+import { importSceneAsAsset } from "./sceneset_manager.js";
 
 const lights = ["Point", "Directional"];
 

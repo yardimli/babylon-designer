@@ -2,7 +2,7 @@ import { createScene } from "./scene.js";
 import { setupUI } from "./scene_ui.js";
 import { setupGizmos } from "./scene_gizmoControl.js";
 import { setupMaterialManager } from "./scene_materialManager.js"; // Changed
-import { setupSceneManager } from "./sceneManager.js";
+import { setupSceneManager } from "./scene_manager.js";
 
 // Initialize
 const canvas = document.getElementById("renderCanvas");
