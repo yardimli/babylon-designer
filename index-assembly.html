@@ -3,14 +3,14 @@
 <head>
 	<meta charset="UTF-8" />
 	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-	<title>BabylonJS Scene Set Editor</title>
+	<title>BabylonJS Assembly Editor</title>
 	<link rel="stylesheet" href="./src/style.css">
 </head>
 <body class="flex flex-col h-screen w-screen bg-base-300 text-base-content font-sans overflow-hidden">
 
 <!-- Top Menubar -->
 <nav class="h-12 bg-base-100 border-b border-base-content/10 flex items-center px-4 gap-2 flex-none z-10">
-	<div class="font-bold text-lg mr-4 text-accent">Scene Set Editor</div>
+	<div class="font-bold text-lg mr-4 text-accent">Assembly Editor</div>
 	
 	<!-- Gizmo Controls -->
 	<div class="join mr-4">
@@ -90,13 +90,13 @@
 					</label>
 				</div>
 				
-				<!-- Parent (Hidden for Scene Sets usually, but kept for lights) -->
+				<!-- Parent (Hidden for Assembly usually, but kept for lights) -->
 				<label class="form-control w-full hidden">
 					<div class="label"><span class="label-text">Parent</span></div>
 					<select id="prop-parent" class="select select-bordered w-full select-sm"></select>
 				</label>
 				
-				<!-- Material (Hidden for Scene Sets) -->
+				<!-- Material (Hidden for Assemblies) -->
 				<label class="form-control w-full hidden">
 					<div class="label"><span class="label-text">Material</span></div>
 					<select id="prop-material" class="select select-bordered w-full select-sm"></select>
@@ -140,20 +140,20 @@
 	<span id="status-text" class="font-mono font-bold">Untitled Set</span>
 </footer>
 
-<!-- Save/Load Scene Set Modal -->
+<!-- Save/Load Assembly Modal -->
 <dialog id="save_load_modal" class="modal">
 	<div class="modal-box">
-		<h3 id="modal-title" class="font-bold text-lg mb-4">Manage Scene Sets</h3>
+		<h3 id="modal-title" class="font-bold text-lg mb-4">Manage Assemblies</h3>
 		
 		<!-- File List -->
-		<div class="border border-base-content/20 rounded p-2 h-48 overflow-y-auto flex flex-col gap-1 mb-4" id="sceneset-list">
+		<div class="border border-base-content/20 rounded p-2 h-48 overflow-y-auto flex flex-col gap-1 mb-4" id="assembly-list">
 			<!-- Populated by JS -->
 		</div>
 		
 		<!-- Save Input -->
 		<label class="input input-bordered flex items-center gap-2 mb-4">
 			Filename
-			<input type="text" id="save-sceneset-name" class="grow" placeholder="my_set" />
+			<input type="text" id="save-assembly-name" class="grow" placeholder="my_set" />
 			<span class="badge badge-info">.json</span>
 		</label>
 		
@@ -166,6 +166,6 @@
 	</div>
 </dialog>
 
-<script type="module" src="/src/main-sceneset.js"></script>
+<script type="module" src="/src/main-assembly.js"></script>
 </body>
 </html>

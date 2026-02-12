@@ -1,6 +1,6 @@
 import { TransformNode, MeshBuilder, StandardMaterial, Color3, Quaternion } from "@babylonjs/core";
-import { selectNode } from "./sceneset_selectionManager.js"; // Updated
-import { getUniqueId } from "./sceneset_scene.js"; // Updated
+import { selectNode } from "./assembly_selectionManager.js"; // Updated
+import { getUniqueId } from "./assembly_scene.js"; // Updated
 
 export function createTransformNode(savedData = null, scene) {
 	const baseId = savedData ? savedData.id : `node_${Date.now()}`;

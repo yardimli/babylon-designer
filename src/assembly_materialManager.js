@@ -1,6 +1,6 @@
 import { PBRMaterial, Color3, DynamicTexture, Texture } from "@babylonjs/core";
-import { scene } from "./sceneset_scene.js"; // Updated
-import { updatePropertyEditor } from "./sceneset_propertyEditor.js"; // Updated
+import { scene } from "./assembly_scene.js"; // Updated
+import { updatePropertyEditor } from "./assembly_propertyEditor.js"; // Updated
 
 // Tracks which external files have been loaded into the part
 // Set<string> (filenames)

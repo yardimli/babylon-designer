@@ -1,42 +1,42 @@
 import { TransformNode, Quaternion, Vector3, Color3, PBRMaterial } from "@babylonjs/core";
-import { scene, resetAxisIndicator, getUniqueId } from "./sceneset_scene.js";
-import { setupGizmos, disposeGizmos } from "./sceneset_gizmoControl.js";
-import { updatePropertyEditor } from "./sceneset_propertyEditor.js";
-import { refreshSceneGraph } from "./sceneset_treeViewManager.js";
-import { createLight } from "./sceneset_lightManager.js";
-import { createTransformNode } from "./sceneset_transformNodeManager.js";
-import { createPrimitive, createShapeMesh } from "./sceneset_ui.js"; // Updated import
-import { clearShadowManagers } from "./sceneset_shadowManager.js";
-import { setupHistory, recordState } from "./sceneset_historyManager.js";
-import { selectNode } from "./sceneset_selectionManager.js";
-import { getLoadedMaterialFiles, loadMaterialFile, clearMaterialManager } from "./sceneset_materialManager.js";
+import { scene, resetAxisIndicator, getUniqueId } from "./assembly_scene.js";
+import { setupGizmos, disposeGizmos } from "./assembly_gizmoControl.js";
+import { updatePropertyEditor } from "./assembly_propertyEditor.js";
+import { refreshSceneGraph } from "./assembly_treeViewManager.js";
+import { createLight } from "./assembly_lightManager.js";
+import { createTransformNode } from "./assembly_transformNodeManager.js";
+import { createPrimitive, createShapeMesh } from "./assembly_ui.js"; // Updated import
+import { clearShadowManagers } from "./assembly_shadowManager.js";
+import { setupHistory, recordState } from "./assembly_historyManager.js";
+import { selectNode } from "./assembly_selectionManager.js";
+import { getLoadedMaterialFiles, loadMaterialFile, clearMaterialManager } from "./assembly_materialManager.js";
 
 let currentFileName = null;
 let isModified = false;
-const STORAGE_KEY_LAST_SCENESET = "bd_last_sceneset";
+const STORAGE_KEY_LAST_ASSEMBLY = "bd_last_assembly";
 
 const statusBarText = document.getElementById("status-text");
 const saveLoadModal = document.getElementById("save_load_modal");
-const sceneSetListContainer = document.getElementById("sceneset-list");
-const saveNameInput = document.getElementById("save-sceneset-name");
+const assemblyListContainer = document.getElementById("assembly-list");
+const saveNameInput = document.getElementById("save-assembly-name");
 
-export function setupSceneSetManager() {
+export function setupAssemblyManager() {
 	updateStatus();
 	document.getElementById("btn-menu-save").onclick = () => handleSaveAction();
 	document.getElementById("btn-menu-load").onclick = () => openLoadModal();
-	document.getElementById("btn-menu-new").onclick = () => createNewSceneSet();
+	document.getElementById("btn-menu-new").onclick = () => createNewAssembly();
 	document.getElementById("btn-modal-save").onclick = () => {
 		const name = saveNameInput.value.trim();
-		if (name) saveSceneSetInternal(name);
+		if (name) saveAssemblyInternal(name);
 	};
 
-	setupHistory(serializeSceneSet, loadSceneSetData);
+	setupHistory(serializeAssembly, loadAssemblyData);
 
 	// Auto-load last part set
-	const lastFile = localStorage.getItem(STORAGE_KEY_LAST_SCENESET);
+	const lastFile = localStorage.getItem(STORAGE_KEY_LAST_ASSEMBLY);
 	if (lastFile) {
 		console.log("Restoring last part set:", lastFile);
-		loadSceneSetInternal(lastFile);
+		loadAssemblyInternal(lastFile);
 	}
 }
 
@@ -74,7 +74,7 @@ export async function importSceneAsAsset(filename, position = Vector3.Zero(), sa
 		const rootNode = new TransformNode(instanceId, scene);
 		rootNode.position = position;
 		rootNode.metadata = {
-			isSceneSetRoot: true,
+			isAssemblyRoot: true,
 			isTransformNode: true,
 			sourceFile: filename,
 			sortIndex: 0
@@ -198,19 +198,19 @@ export async function importSceneAsAsset(filename, position = Vector3.Zero(), sa
 }
 
 
-// --- Saving / Loading Scene Sets ---
+// --- Saving / Loading Assemblies ---
 
-function serializeSceneSet() {
+function serializeAssembly() {
 	const data = {
 		version: 1.1, // Bumped version
-		type: "sceneset",
+		type: "assembly",
 		scenes: [],
 		lights: []
 	};
 
 	// 1. Serialize Imported Scenes (Roots)
 	scene.transformNodes.forEach(node => {
-		if (node.metadata && node.metadata.isSceneSetRoot) {
+		if (node.metadata && node.metadata.isAssemblyRoot) {
 
 			let rot = { x: 0, y: 0, z: 0, w: 1 };
 			if (node.rotationQuaternion) {
@@ -257,10 +257,10 @@ function serializeSceneSet() {
 	return data;
 }
 
-async function saveSceneSetInternal(name) {
-	const data = serializeSceneSet();
+async function saveAssemblyInternal(name) {
+	const data = serializeAssembly();
 	try {
-		const response = await fetch('/api/scenesets', {
+		const response = await fetch('/api/assemblies', {
 			method: 'POST',
 			headers: { 'Content-Type': 'application/json' },
 			body: JSON.stringify({ name: name, data: data })
@@ -269,7 +269,7 @@ async function saveSceneSetInternal(name) {
 		const result = await response.json();
 		if (result.success) {
 			currentFileName = result.filename;
-			localStorage.setItem(STORAGE_KEY_LAST_SCENESET, currentFileName);
+			localStorage.setItem(STORAGE_KEY_LAST_ASSEMBLY, currentFileName);
 			isModified = false;
 			updateStatus();
 			saveLoadModal.close();
@@ -282,8 +282,8 @@ async function saveSceneSetInternal(name) {
 	}
 }
 
-export async function loadSceneSetData(data) {
-	createNewSceneSet();
+export async function loadAssemblyData(data) {
+	createNewAssembly();
 
 	// 1. Load Scenes
 	if (data.scenes) {
@@ -326,23 +326,23 @@ export async function loadSceneSetData(data) {
 	refreshSceneGraph();
 }
 
-async function loadSceneSetInternal(filename) {
+async function loadAssemblyInternal(filename) {
 	try {
-		const response = await fetch(`/api/scenesets?file=${filename}`);
+		const response = await fetch(`/api/assemblies?file=${filename}`);
 		const result = await response.json();
 
 		if (!result.success) {
-			if (filename === localStorage.getItem(STORAGE_KEY_LAST_SCENESET)) {
-				localStorage.removeItem(STORAGE_KEY_LAST_SCENESET);
+			if (filename === localStorage.getItem(STORAGE_KEY_LAST_ASSEMBLY)) {
+				localStorage.removeItem(STORAGE_KEY_LAST_ASSEMBLY);
 			}
 			alert("Could not load file.");
 			return;
 		}
 
-		await loadSceneSetData(result.data);
+		await loadAssemblyData(result.data);
 
 		currentFileName = filename;
-		localStorage.setItem(STORAGE_KEY_LAST_SCENESET, currentFileName);
+		localStorage.setItem(STORAGE_KEY_LAST_ASSEMBLY, currentFileName);
 		isModified = false;
 		updateStatus();
 		saveLoadModal.close();
@@ -352,9 +352,9 @@ async function loadSceneSetInternal(filename) {
 	}
 }
 
-function createNewSceneSet() {
+function createNewAssembly() {
 	currentFileName = null;
-	localStorage.removeItem(STORAGE_KEY_LAST_SCENESET);
+	localStorage.removeItem(STORAGE_KEY_LAST_ASSEMBLY);
 	isModified = false;
 
 	disposeGizmos();
@@ -385,33 +385,33 @@ function createNewSceneSet() {
 
 // ... UI Helpers (handleSaveAction, openSaveModal, etc) ...
 function handleSaveAction() {
-	if (currentFileName) saveSceneSetInternal(currentFileName.replace(".json", ""));
+	if (currentFileName) saveAssemblyInternal(currentFileName.replace(".json", ""));
 	else openSaveModal();
 }
 
 function openSaveModal() {
-	populateSceneSetList("save");
+	populateAssemblyList("save");
 	saveNameInput.value = "";
-	document.getElementById("modal-title").innerText = "Save Scene Set";
+	document.getElementById("modal-title").innerText = "Save Assembly";
 	document.getElementById("btn-modal-save").classList.remove("hidden");
 	saveLoadModal.showModal();
 }
 
 function openLoadModal() {
-	populateSceneSetList("load");
-	document.getElementById("modal-title").innerText = "Load Scene Set";
+	populateAssemblyList("load");
+	document.getElementById("modal-title").innerText = "Load Assembly";
 	document.getElementById("btn-modal-save").classList.add("hidden");
 	saveLoadModal.showModal();
 }
 
-async function populateSceneSetList(mode) {
-	sceneSetListContainer.innerHTML = "<span class='loading loading-spinner'></span>";
+async function populateAssemblyList(mode) {
+	assemblyListContainer.innerHTML = "<span class='loading loading-spinner'></span>";
 	try {
-		const res = await fetch('/api/scenesets');
+		const res = await fetch('/api/assemblies');
 		const data = await res.json();
-		sceneSetListContainer.innerHTML = "";
+		assemblyListContainer.innerHTML = "";
 		if (!data.files || data.files.length === 0) {
-			sceneSetListContainer.innerHTML = "<p class='text-sm opacity-50'>No part sets found.</p>";
+			assemblyListContainer.innerHTML = "<p class='text-sm opacity-50'>No part sets found.</p>";
 			return;
 		}
 		data.files.forEach(file => {
@@ -420,7 +420,7 @@ async function populateSceneSetList(mode) {
 			const span = document.createElement("span");
 			span.innerText = file;
 			span.onclick = () => {
-				if (mode === "load") loadSceneSetInternal(file);
+				if (mode === "load") loadAssemblyInternal(file);
 				else saveNameInput.value = file.replace(".json", "");
 			};
 			const btnDelete = document.createElement("button");
@@ -429,15 +429,15 @@ async function populateSceneSetList(mode) {
 			btnDelete.onclick = async (e) => {
 				e.stopPropagation();
 				if (confirm(`Delete "${file}"?`)) {
-					await fetch(`/api/scenesets?file=${file}`, { method: 'DELETE' });
-					populateSceneSetList(mode);
+					await fetch(`/api/assemblies?file=${file}`, { method: 'DELETE' });
+					populateAssemblyList(mode);
 				}
 			};
 			row.appendChild(span);
 			row.appendChild(btnDelete);
-			sceneSetListContainer.appendChild(row);
+			assemblyListContainer.appendChild(row);
 		});
 	} catch (e) {
-		sceneSetListContainer.innerHTML = "<p class='text-error'>Failed to fetch part sets.</p>";
+		assemblyListContainer.innerHTML = "<p class='text-error'>Failed to fetch part sets.</p>";
 	}
 }

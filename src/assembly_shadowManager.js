@@ -1,5 +1,5 @@
 import { ShadowGenerator } from "@babylonjs/core";
-import { scene } from "./sceneset_scene.js"; // Updated
+import { scene } from "./assembly_scene.js"; // Updated
 
 // Store active generators to easily add meshes to all lights
 const shadowGenerators = [];

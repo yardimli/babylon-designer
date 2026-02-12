@@ -1,8 +1,8 @@
 import { AbstractMesh } from "@babylonjs/core";
-import { scene } from "./sceneset_scene.js"; // Updated
-import { markModified } from "./sceneset_manager.js"; // Updated to sceneSetManager
-import { selectNode, isSelected } from "./sceneset_selectionManager.js"; // Updated
-import { recordState } from "./sceneset_historyManager.js"; // Updated
+import { scene } from "./assembly_scene.js"; // Updated
+import { markModified } from "./assembly_manager.js"; // Updated to assemblyManager
+import { selectNode, isSelected } from "./assembly_selectionManager.js"; // Updated
+import { recordState } from "./assembly_historyManager.js"; // Updated
 
 const collapsedNodes = new Set();
 

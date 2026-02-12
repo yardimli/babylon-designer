@@ -1,12 +1,12 @@
 import { Vector3, Quaternion, Color3, AbstractMesh } from "@babylonjs/core";
-import { scene, getUniqueId } from "./sceneset_scene.js";
-import { markModified } from "./sceneset_manager.js";
-import { selectNode, getSelectedNodes } from "./sceneset_selectionManager.js";
-import { createLight } from "./sceneset_lightManager.js";
-import { setShadowCaster, disposeShadowGenerator } from "./sceneset_shadowManager.js";
-import { createTransformNode } from "./sceneset_transformNodeManager.js";
-import { recordState } from "./sceneset_historyManager.js";
-import { refreshSceneGraph, setNodeParent } from "./sceneset_treeViewManager.js";
+import { scene, getUniqueId } from "./assembly_scene.js";
+import { markModified } from "./assembly_manager.js";
+import { selectNode, getSelectedNodes } from "./assembly_selectionManager.js";
+import { createLight } from "./assembly_lightManager.js";
+import { setShadowCaster, disposeShadowGenerator } from "./assembly_shadowManager.js";
+import { createTransformNode } from "./assembly_transformNodeManager.js";
+import { recordState } from "./assembly_historyManager.js";
+import { refreshSceneGraph, setNodeParent } from "./assembly_treeViewManager.js";
 
 let observer = null;
 
@@ -76,8 +76,8 @@ export function updatePropertyEditor(targets) {
 					typeLabel = t ? (t.charAt(0).toUpperCase() + t.slice(1)) : "Light";
 				}
 				else if (target.metadata.isTransformNode) typeLabel = "Node";
-				// NEW: Scene Set Root
-				else if (target.metadata.isSceneSetRoot) typeLabel = "Scene";
+				// NEW: Assembly Root
+				else if (target.metadata.isAssemblyRoot) typeLabel = "Scene";
 			} else {
 				typeLabel = target.getClassName();
 			}

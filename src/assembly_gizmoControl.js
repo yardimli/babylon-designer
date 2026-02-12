@@ -1,8 +1,8 @@
 import { GizmoManager, PointerEventTypes, TransformNode, Vector3, Quaternion, Space } from "@babylonjs/core";
-import { markModified } from "./sceneset_manager.js"; // Updated to sceneSetManager
-import { recordState } from "./sceneset_historyManager.js"; // Updated
-import { selectNode, getSelectedNodes } from "./sceneset_selectionManager.js"; // Updated
-import { scene } from "./sceneset_scene.js"; // Updated
+import { markModified } from "./assembly_manager.js"; // Updated to assemblyManager
+import { recordState } from "./assembly_historyManager.js"; // Updated
+import { selectNode, getSelectedNodes } from "./assembly_selectionManager.js"; // Updated
+import { scene } from "./assembly_scene.js"; // Updated
 
 export let gizmoManager;
 let selectionAnchor = null;
@@ -66,12 +66,12 @@ export function setupGizmos(scene) {
 					target = mesh;
 				}
 				
-				// --- Scene Set Logic: Select Root if part of a set ---
+				// --- Assembly Logic: Select Root if part of a set ---
 				if (target) {
 					let check = target;
 					let foundRoot = null;
 					while (check) {
-						if (check.metadata && check.metadata.isSceneSetRoot) {
+						if (check.metadata && check.metadata.isAssemblyRoot) {
 							foundRoot = check;
 							break;
 						}

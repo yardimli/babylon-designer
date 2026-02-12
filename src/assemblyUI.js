@@ -1,15 +1,15 @@
-import { scene } from "./sceneset_scene.js"; // Updated
-import { setGizmoMode } from "./sceneset_gizmoControl.js"; // Updated
-import { createLight } from "./sceneset_lightManager.js"; // Updated
-import { markModified } from "./sceneset_manager.js";
-import { refreshSceneGraph } from "./sceneset_treeViewManager.js"; // Updated
-import { recordState } from "./sceneset_historyManager.js"; // Updated
-import { selectNode } from "./sceneset_selectionManager.js"; // Updated
-import { importSceneAsAsset } from "./sceneset_manager.js";
+import { scene } from "./assembly_scene.js"; // Updated
+import { setGizmoMode } from "./assembly_gizmoControl.js"; // Updated
+import { createLight } from "./assembly_lightManager.js"; // Updated
+import { markModified } from "./assembly_manager.js";
+import { refreshSceneGraph } from "./assembly_treeViewManager.js"; // Updated
+import { recordState } from "./assembly_historyManager.js"; // Updated
+import { selectNode } from "./assembly_selectionManager.js"; // Updated
+import { importSceneAsAsset } from "./assembly_manager.js";
 
 const lights = ["Point", "Directional"];
 
-export function setupSceneSetUI() {
+export function setupAssemblyUI() {
 	const sList = document.getElementById("parts-list");
 	const lList = document.getElementById("lights-list");
 	const canvas = document.getElementById("renderCanvas");

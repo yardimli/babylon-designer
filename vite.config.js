@@ -132,8 +132,8 @@ const fileSystemMiddleware = () => {
 				}
 
 				// 3. Handle JSON Data Endpoints
-				if (req.url.startsWith('/api/scenesets')) {
-					if (handleEndpoint(req, res, 'scenesets')) return;
+				if (req.url.startsWith('/api/assemblies')) {
+					if (handleEndpoint(req, res, 'assemblies')) return;
 				}
 				if (req.url.startsWith('/api/parts')) {
 					if (handleEndpoint(req, res, 'parts')) return;

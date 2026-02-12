@@ -1,14 +1,14 @@
 import { MeshBuilder, Vector3, Quaternion } from "@babylonjs/core";
 import earcut from 'earcut'; // Added for shape extrusion
-import { scene, getUniqueId } from "./sceneset_scene.js";
-import { setGizmoMode } from "./sceneset_gizmoControl.js";
-import { createLight } from "./sceneset_lightManager.js";
-import { createTransformNode } from "./sceneset_transformNodeManager.js";
-import { markModified } from "./sceneset_manager.js";
-import { refreshSceneGraph } from "./sceneset_treeViewManager.js";
-import { setShadowCaster } from "./sceneset_shadowManager.js";
-import { recordState } from "./sceneset_historyManager.js";
-import { selectNode } from "./sceneset_selectionManager.js";
+import { scene, getUniqueId } from "./assembly_scene.js";
+import { setGizmoMode } from "./assembly_gizmoControl.js";
+import { createLight } from "./assembly_lightManager.js";
+import { createTransformNode } from "./assembly_transformNodeManager.js";
+import { markModified } from "./assembly_manager.js";
+import { refreshSceneGraph } from "./assembly_treeViewManager.js";
+import { setShadowCaster } from "./assembly_shadowManager.js";
+import { recordState } from "./assembly_historyManager.js";
+import { selectNode } from "./assembly_selectionManager.js";
 
 const primitives = ["Cube", "Sphere", "Cylinder", "Plane", "Ground", "Cone", "Pyramid", "Empty"];
 const lights = ["Point", "Directional"];
