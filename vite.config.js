@@ -95,10 +95,8 @@ const fileSystemMiddleware = () => {
 				// 1. Serve Static Textures from materials/textures
 				if (req.method === 'GET' && req.url.startsWith('/materials/textures/')) {
 					const relativePath = req.url.replace('/materials/textures/', '');
-					// Prevent directory traversal
 					const safePath = path.normalize(relativePath).replace(/^(\.\.[\/\\])+/, '');
 					const filePath = path.resolve(__dirname, 'materials/textures', safePath);
-
 					if (fs.existsSync(filePath)) {
 						const ext = path.extname(filePath).toLowerCase();
 						const mimeTypes = {
@@ -114,38 +112,21 @@ const fileSystemMiddleware = () => {
 					}
 				}
 
-				// 2. Handle Image Uploads
 				if (req.method === 'POST' && req.url.startsWith('/api/upload-texture')) {
 					const url = new URL(req.url, `http://${req.headers.host}`);
 					const filename = url.searchParams.get('name');
-
-					if (!filename) {
-						res.statusCode = 400;
-						res.end(JSON.stringify({ error: 'Filename required' }));
-						return;
-					}
-
+					if (!filename) { res.statusCode = 400; res.end(JSON.stringify({ error: 'Filename required' })); return; }
 					const textureDir = path.resolve(__dirname, 'materials/textures');
 					ensureDir(textureDir);
-
-					// Create a unique filename to prevent overwrites or caching issues
 					const timestamp = Date.now();
 					const safeName = `${timestamp}_${filename.replace(/[^a-z0-9_\-\.]/gi, '_')}`;
 					const filePath = path.join(textureDir, safeName);
 					const writeStream = fs.createWriteStream(filePath);
-
 					req.pipe(writeStream);
-
 					req.on('end', () => {
 						res.setHeader('Content-Type', 'application/json');
 						// Return the path relative to the server root that our GET handler above recognizes
 						res.end(JSON.stringify({ success: true, path: `/materials/textures/${safeName}` }));
-					});
-
-					req.on('error', (err) => {
-						console.error(err);
-						res.statusCode = 500;
-						res.end(JSON.stringify({ error: 'Upload failed' }));
 					});
 					return;
 				}
@@ -159,6 +140,10 @@ const fileSystemMiddleware = () => {
 				}
 				if (req.url.startsWith('/api/materials')) {
 					if (handleEndpoint(req, res, 'materials')) return;
+				}
+				// NEW: Shapes Endpoint
+				if (req.url.startsWith('/api/shapes')) {
+					if (handleEndpoint(req, res, 'shapes')) return;
 				}
 				next();
 			});
