@@ -1,5 +1,5 @@
 {
-  "version": 1.4,
+  "version": 1.5,
   "materialFiles": [
     "generic.json"
   ],
@@ -49,109 +49,8 @@
   ],
   "meshes": [
     {
-      "id": "Cube_1769771395077",
-      "name": "leg-bottom",
-      "type": "Cube",
-      "isPrimitive": true,
-      "position": {
-        "x": 0,
-        "y": -3,
-        "z": 0
-      },
-      "rotation": {
-        "x": 0,
-        "y": 0,
-        "z": 0,
-        "w": 1
-      },
-      "scaling": {
-        "x": 1,
-        "y": 1,
-        "z": 1
-      },
-      "pivot": {
-        "x": 0,
-        "y": 0,
-        "z": 0
-      },
-      "materialId": "blue",
-      "parentId": "node_1769857745513",
-      "receiveShadows": false,
-      "castShadows": true,
-      "sortIndex": 300,
-      "visible": true
-    },
-    {
-      "id": "Cube_1769771396532",
-      "name": "leg-top",
-      "type": "Cube",
-      "isPrimitive": true,
-      "position": {
-        "x": 0,
-        "y": -0.9999997615814209,
-        "z": -1.3766758399924584e-8
-      },
-      "rotation": {
-        "x": -9.100329378952665e-10,
-        "y": 0,
-        "z": 0,
-        "w": 1
-      },
-      "scaling": {
-        "x": 1,
-        "y": 1,
-        "z": 1
-      },
-      "pivot": {
-        "x": 0,
-        "y": 0,
-        "z": 0
-      },
-      "materialId": "blue",
-      "parentId": "node_1769857745513",
-      "receiveShadows": false,
-      "castShadows": true,
-      "sortIndex": 100,
-      "visible": true
-    },
-    {
-      "id": "Sphere_1769771453100",
-      "name": "leg-middle",
-      "type": "Sphere",
-      "isPrimitive": true,
-      "position": {
-        "x": 0,
-        "y": -1.9999998807907104,
-        "z": -6.23267126798055e-8
-      },
-      "rotation": {
-        "x": -9.100329378952665e-10,
-        "y": 0,
-        "z": 0,
-        "w": 1
-      },
-      "scaling": {
-        "x": 1,
-        "y": 1,
-        "z": 1
-      },
-      "pivot": {
-        "x": 0,
-        "y": 2,
-        "z": 0
-      },
-      "materialId": "red",
-      "parentId": "node_1769857745513",
-      "receiveShadows": false,
-      "castShadows": true,
-      "sortIndex": 200,
-      "visible": true
-    },
-    {
       "id": "Ground",
       "name": "Ground",
-      "type": "Ground",
-      "isPrimitive": true,
       "position": {
         "x": 0,
         "y": 0.5,
@@ -178,115 +77,16 @@
       "receiveShadows": true,
       "castShadows": false,
       "sortIndex": 600,
-      "visible": false
-    },
-    {
-      "id": "leg-right-middle",
-      "name": "leg-right-middle",
-      "type": "Sphere",
+      "visible": false,
       "isPrimitive": true,
-      "position": {
-        "x": 0,
-        "y": -2,
-        "z": 0
-      },
-      "rotation": {
-        "x": 0,
-        "y": 0,
-        "z": 0,
-        "w": 1
-      },
-      "scaling": {
-        "x": 1,
-        "y": 1,
-        "z": 1
-      },
-      "pivot": {
-        "x": 0,
-        "y": 2,
-        "z": 0
-      },
-      "materialId": "red",
-      "parentId": "leg-right",
-      "receiveShadows": false,
-      "castShadows": true,
-      "sortIndex": 200,
-      "visible": true
-    },
-    {
-      "id": "leg-right-bottom",
-      "name": "leg-right-bottom",
-      "type": "Cube",
-      "isPrimitive": true,
-      "position": {
-        "x": 0,
-        "y": -3,
-        "z": 0
-      },
-      "rotation": {
-        "x": 0,
-        "y": 0,
-        "z": 0,
-        "w": 1
-      },
-      "scaling": {
-        "x": 1,
-        "y": 1,
-        "z": 1
-      },
-      "pivot": {
-        "x": 0,
-        "y": 0,
-        "z": 0
-      },
-      "materialId": "blue",
-      "parentId": "leg-right",
-      "receiveShadows": false,
-      "castShadows": true,
-      "sortIndex": 300,
-      "visible": true
-    },
-    {
-      "id": "leg-right-top",
-      "name": "leg-right-top",
-      "type": "Cube",
-      "isPrimitive": true,
-      "position": {
-        "x": 0,
-        "y": -0.9999997615814209,
-        "z": 1.3766758399924584e-8
-      },
-      "rotation": {
-        "x": 9.100329378952665e-10,
-        "y": 0,
-        "z": 0,
-        "w": 1
-      },
-      "scaling": {
-        "x": 1,
-        "y": 1,
-        "z": 1
-      },
-      "pivot": {
-        "x": 0,
-        "y": 0,
-        "z": 0
-      },
-      "materialId": "blue",
-      "parentId": "leg-right",
-      "receiveShadows": false,
-      "castShadows": true,
-      "sortIndex": 100,
-      "visible": true
+      "type": "Ground"
     },
     {
       "id": "Cube_1769858046615",
       "name": "torso-cube",
-      "type": "Cube",
-      "isPrimitive": true,
       "position": {
         "x": 0,
-        "y": -2,
+        "y": 1.35,
         "z": 0
       },
       "rotation": {
@@ -297,7 +97,7 @@
       },
       "scaling": {
         "x": 3,
-        "y": 3,
+        "y": 2.5,
         "z": 1
       },
       "pivot": {
@@ -305,120 +105,21 @@
         "y": 0,
         "z": 0
       },
-      "materialId": "white",
-      "parentId": "node_1769858031561",
+      "materialId": "shirt-blue",
+      "parentId": "upper-body",
       "receiveShadows": false,
       "castShadows": true,
       "sortIndex": 200,
-      "visible": true
-    },
-    {
-      "id": "leg-bottom_dup_1769858391200",
-      "name": "arm-left-bottom",
-      "type": "Cube",
+      "visible": true,
       "isPrimitive": true,
-      "position": {
-        "x": 0,
-        "y": -3,
-        "z": 0
-      },
-      "rotation": {
-        "x": 0,
-        "y": 0,
-        "z": 0,
-        "w": 1
-      },
-      "scaling": {
-        "x": 1,
-        "y": 1,
-        "z": 1
-      },
-      "pivot": {
-        "x": 0,
-        "y": 0,
-        "z": 0
-      },
-      "materialId": "red",
-      "parentId": "null_2",
-      "receiveShadows": false,
-      "castShadows": true,
-      "sortIndex": 300,
-      "visible": true
-    },
-    {
-      "id": "leg-top_dup_1769858391200",
-      "name": "arm-left-top",
-      "type": "Cube",
-      "isPrimitive": true,
-      "position": {
-        "x": 0,
-        "y": -1,
-        "z": 1.619932419316683e-7
-      },
-      "rotation": {
-        "x": 1.4153805238947825e-8,
-        "y": 0,
-        "z": 0,
-        "w": 1
-      },
-      "scaling": {
-        "x": 1,
-        "y": 1.0000000000000004,
-        "z": 1.0000000000000004
-      },
-      "pivot": {
-        "x": 0,
-        "y": 0,
-        "z": 0
-      },
-      "materialId": "red",
-      "parentId": "null_2",
-      "receiveShadows": false,
-      "castShadows": true,
-      "sortIndex": 100,
-      "visible": true
-    },
-    {
-      "id": "leg-middle_dup_1769858391202",
-      "name": "arm-left-middle",
-      "type": "Sphere",
-      "isPrimitive": true,
-      "position": {
-        "x": 0,
-        "y": -2,
-        "z": 1.6815718595353246e-7
-      },
-      "rotation": {
-        "x": 1.4153805238947825e-8,
-        "y": 0,
-        "z": 0,
-        "w": 1
-      },
-      "scaling": {
-        "x": 1,
-        "y": 1.0000000000000004,
-        "z": 1.0000000000000004
-      },
-      "pivot": {
-        "x": 0,
-        "y": 2,
-        "z": 0
-      },
-      "materialId": "blue",
-      "parentId": "null_2",
-      "receiveShadows": false,
-      "castShadows": true,
-      "sortIndex": 200,
-      "visible": true
+      "type": "Cube"
     },
     {
       "id": "hed-Sphere",
       "name": "hed-Sphere",
-      "type": "Sphere",
-      "isPrimitive": true,
       "position": {
         "x": 0,
-        "y": -1.4033823013305664,
+        "y": 1,
         "z": 0
       },
       "rotation": {
@@ -442,16 +143,16 @@
       "receiveShadows": false,
       "castShadows": true,
       "sortIndex": 0,
-      "visible": true
+      "visible": true,
+      "isPrimitive": true,
+      "type": "Sphere"
     },
     {
-      "id": "arm-left-bottom_dup",
-      "name": "arm-left-bottom_dup",
-      "type": "Cube",
-      "isPrimitive": true,
+      "id": "upper-leg",
+      "name": "upper-leg",
       "position": {
         "x": 0,
-        "y": -3,
+        "y": -1,
         "z": 0
       },
       "rotation": {
@@ -462,92 +163,734 @@
       },
       "scaling": {
         "x": 1,
-        "y": 1,
-        "z": 1
-      },
-      "pivot": {
-        "x": 0,
-        "y": 0,
-        "z": 0
-      },
-      "materialId": "red",
-      "parentId": "arm-right",
-      "receiveShadows": false,
-      "castShadows": true,
-      "sortIndex": 300,
-      "visible": true
-    },
-    {
-      "id": "arm-left-top_dup",
-      "name": "arm-left-top_dup",
-      "type": "Cube",
-      "isPrimitive": true,
-      "position": {
-        "x": 0,
-        "y": -0.9999999403953552,
-        "z": 2.7565849336497195e-7
-      },
-      "rotation": {
-        "x": 0,
-        "y": 0,
-        "z": 0,
-        "w": 1
-      },
-      "scaling": {
-        "x": 1,
-        "y": 1,
-        "z": 1
-      },
-      "pivot": {
-        "x": 0,
-        "y": 0,
-        "z": 0
-      },
-      "materialId": "red",
-      "parentId": "arm-right",
-      "receiveShadows": false,
-      "castShadows": true,
-      "sortIndex": 100,
-      "visible": true
-    },
-    {
-      "id": "arm-left-middle_dup",
-      "name": "arm-left-middle_dup",
-      "type": "Sphere",
-      "isPrimitive": true,
-      "position": {
-        "x": 0,
-        "y": -1.969896912574768,
-        "z": 0.000013770944860880263
-      },
-      "rotation": {
-        "x": 0,
-        "y": 0,
-        "z": 0,
-        "w": 1
-      },
-      "scaling": {
-        "x": 1,
-        "y": 1,
-        "z": 1
-      },
-      "pivot": {
-        "x": 0,
         "y": 2,
+        "z": 1
+      },
+      "pivot": {
+        "x": 0,
+        "y": 0,
         "z": 0
       },
-      "materialId": "blue",
-      "parentId": "arm-right",
+      "materialId": "gray-pants",
+      "parentId": "node_1769857745513",
       "receiveShadows": false,
       "castShadows": true,
       "sortIndex": 200,
-      "visible": true
+      "visible": true,
+      "isPrimitive": true,
+      "type": "Cylinder"
+    },
+    {
+      "id": "leg-lower-joint",
+      "name": "leg-lower-joint",
+      "position": {
+        "x": 0,
+        "y": -0.2,
+        "z": 0
+      },
+      "rotation": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 1
+      },
+      "scaling": {
+        "x": 1,
+        "y": 1,
+        "z": 1
+      },
+      "pivot": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "materialId": "leg-joint",
+      "parentId": "leg-left-lower",
+      "receiveShadows": false,
+      "castShadows": true,
+      "sortIndex": 100,
+      "visible": true,
+      "isPrimitive": true,
+      "type": "Sphere"
+    },
+    {
+      "id": "lower-leg",
+      "name": "lower-leg",
+      "position": {
+        "x": 0,
+        "y": -1.4,
+        "z": 0
+      },
+      "rotation": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 1
+      },
+      "scaling": {
+        "x": 1,
+        "y": 2,
+        "z": 1
+      },
+      "pivot": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "materialId": "gray-pants",
+      "parentId": "leg-left-lower",
+      "receiveShadows": false,
+      "castShadows": true,
+      "sortIndex": 200,
+      "visible": true,
+      "isPrimitive": true,
+      "type": "Cylinder"
+    },
+    {
+      "id": "leg-upper-joint",
+      "name": "leg-upper-joint",
+      "position": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "rotation": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 1
+      },
+      "scaling": {
+        "x": 1,
+        "y": 1,
+        "z": 1
+      },
+      "pivot": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "materialId": "gray-pants",
+      "parentId": "node_1769857745513",
+      "receiveShadows": false,
+      "castShadows": true,
+      "sortIndex": 100,
+      "visible": true,
+      "isPrimitive": true,
+      "type": "Sphere"
+    },
+    {
+      "id": "shoe",
+      "name": "shoe",
+      "position": {
+        "x": 0,
+        "y": -2.5,
+        "z": -0.5
+      },
+      "rotation": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 1
+      },
+      "scaling": {
+        "x": 1,
+        "y": 0.4,
+        "z": 2
+      },
+      "pivot": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "materialId": "shoes",
+      "parentId": "leg-left-lower",
+      "receiveShadows": false,
+      "castShadows": true,
+      "sortIndex": 300,
+      "visible": true,
+      "isPrimitive": true,
+      "type": "Cube"
+    },
+    {
+      "id": "pants-top",
+      "name": "pants-top",
+      "position": {
+        "x": 0,
+        "y": -3.25,
+        "z": 0
+      },
+      "rotation": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 1
+      },
+      "scaling": {
+        "x": 3,
+        "y": 1,
+        "z": 1
+      },
+      "pivot": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "materialId": "gray-pants",
+      "parentId": "humanoid",
+      "receiveShadows": false,
+      "castShadows": true,
+      "sortIndex": 300,
+      "visible": true,
+      "isPrimitive": true,
+      "type": "Cube"
+    },
+    {
+      "id": "leg-right-lower-joint",
+      "name": "leg-right-lower-joint",
+      "position": {
+        "x": 0,
+        "y": -0.2,
+        "z": 0
+      },
+      "rotation": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 1
+      },
+      "scaling": {
+        "x": 1,
+        "y": 1,
+        "z": 1
+      },
+      "pivot": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "materialId": "leg-joint",
+      "parentId": "leg-right-lower",
+      "receiveShadows": false,
+      "castShadows": true,
+      "sortIndex": 100,
+      "visible": true,
+      "isPrimitive": true,
+      "type": "Sphere"
+    },
+    {
+      "id": "lower-leg-right",
+      "name": "lower-leg-right",
+      "position": {
+        "x": 0,
+        "y": -1.4,
+        "z": 0
+      },
+      "rotation": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 1
+      },
+      "scaling": {
+        "x": 1,
+        "y": 2,
+        "z": 1
+      },
+      "pivot": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "materialId": "gray-pants",
+      "parentId": "leg-right-lower",
+      "receiveShadows": false,
+      "castShadows": true,
+      "sortIndex": 200,
+      "visible": true,
+      "isPrimitive": true,
+      "type": "Cylinder"
+    },
+    {
+      "id": "right-shoe",
+      "name": "right-shoe",
+      "position": {
+        "x": 0,
+        "y": -2.5,
+        "z": -0.5
+      },
+      "rotation": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 1
+      },
+      "scaling": {
+        "x": 1,
+        "y": 0.4,
+        "z": 2
+      },
+      "pivot": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "materialId": "shoes",
+      "parentId": "leg-right-lower",
+      "receiveShadows": false,
+      "castShadows": true,
+      "sortIndex": 300,
+      "visible": true,
+      "isPrimitive": true,
+      "type": "Cube"
+    },
+    {
+      "id": "right-upper-leg",
+      "name": "right-upper-leg",
+      "position": {
+        "x": 0,
+        "y": -1,
+        "z": 0
+      },
+      "rotation": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 1
+      },
+      "scaling": {
+        "x": 1,
+        "y": 2,
+        "z": 1
+      },
+      "pivot": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "materialId": "gray-pants",
+      "parentId": "leg-right",
+      "receiveShadows": false,
+      "castShadows": true,
+      "sortIndex": 200,
+      "visible": true,
+      "isPrimitive": true,
+      "type": "Cylinder"
+    },
+    {
+      "id": "right-leg-upper-joint",
+      "name": "right-leg-upper-joint",
+      "position": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "rotation": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 1
+      },
+      "scaling": {
+        "x": 1,
+        "y": 1,
+        "z": 1
+      },
+      "pivot": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "materialId": "gray-pants",
+      "parentId": "leg-right",
+      "receiveShadows": false,
+      "castShadows": true,
+      "sortIndex": 100,
+      "visible": true,
+      "isPrimitive": true,
+      "type": "Sphere"
+    },
+    {
+      "id": "right-arm-lower-joint",
+      "name": "right-arm-lower-joint",
+      "position": {
+        "x": 0,
+        "y": -0.2,
+        "z": 0
+      },
+      "rotation": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 1
+      },
+      "scaling": {
+        "x": 1,
+        "y": 1,
+        "z": 1
+      },
+      "pivot": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "materialId": "leg-joint",
+      "parentId": "right-arm-lower",
+      "receiveShadows": false,
+      "castShadows": true,
+      "sortIndex": 100,
+      "visible": true,
+      "isPrimitive": true,
+      "type": "Sphere"
+    },
+    {
+      "id": "right-arm-elbow",
+      "name": "right-arm-elbow",
+      "position": {
+        "x": 0,
+        "y": -1.1,
+        "z": 0
+      },
+      "rotation": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 1
+      },
+      "scaling": {
+        "x": 1,
+        "y": 1.5,
+        "z": 1
+      },
+      "pivot": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "materialId": "shirt-blue",
+      "parentId": "right-arm-lower",
+      "receiveShadows": false,
+      "castShadows": true,
+      "sortIndex": 200,
+      "visible": true,
+      "isPrimitive": true,
+      "type": "Cylinder"
+    },
+    {
+      "id": "right-arm-upper",
+      "name": "right-arm-upper",
+      "position": {
+        "x": 0,
+        "y": -0.9,
+        "z": 0
+      },
+      "rotation": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 1
+      },
+      "scaling": {
+        "x": 1,
+        "y": 1.5,
+        "z": 1
+      },
+      "pivot": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "materialId": "shirt-blue",
+      "parentId": "right-arm",
+      "receiveShadows": false,
+      "castShadows": true,
+      "sortIndex": 200,
+      "visible": true,
+      "isPrimitive": true,
+      "type": "Cylinder"
+    },
+    {
+      "id": "right-arm-upper-joint",
+      "name": "right-arm-upper-joint",
+      "position": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "rotation": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 1
+      },
+      "scaling": {
+        "x": 1,
+        "y": 1,
+        "z": 1
+      },
+      "pivot": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "materialId": "leg-joint",
+      "parentId": "right-arm",
+      "receiveShadows": false,
+      "castShadows": true,
+      "sortIndex": 100,
+      "visible": true,
+      "isPrimitive": true,
+      "type": "Sphere"
+    },
+    {
+      "id": "right-arm-hand",
+      "name": "right-arm-hand",
+      "position": {
+        "x": 0,
+        "y": -2.1,
+        "z": 0
+      },
+      "rotation": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 1
+      },
+      "scaling": {
+        "x": 1,
+        "y": 1,
+        "z": 1
+      },
+      "pivot": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "materialId": "shoes",
+      "parentId": "right-arm-lower",
+      "receiveShadows": false,
+      "castShadows": true,
+      "sortIndex": 300,
+      "visible": true,
+      "isPrimitive": true,
+      "type": "Sphere"
+    },
+    {
+      "id": "right-arm-lower-joint_dup",
+      "name": "right-arm-lower-joint_dup",
+      "position": {
+        "x": 0,
+        "y": -0.2,
+        "z": 0
+      },
+      "rotation": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 1
+      },
+      "scaling": {
+        "x": 1,
+        "y": 1,
+        "z": 1
+      },
+      "pivot": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "materialId": "leg-joint",
+      "parentId": "left-arm-lower",
+      "receiveShadows": false,
+      "castShadows": true,
+      "sortIndex": 100,
+      "visible": true,
+      "isPrimitive": true,
+      "type": "Sphere"
+    },
+    {
+      "id": "right-arm-elbow_dup",
+      "name": "right-arm-elbow_dup",
+      "position": {
+        "x": 0,
+        "y": -1.1,
+        "z": 0
+      },
+      "rotation": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 1
+      },
+      "scaling": {
+        "x": 1,
+        "y": 1.5,
+        "z": 1
+      },
+      "pivot": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "materialId": "shirt-blue",
+      "parentId": "left-arm-lower",
+      "receiveShadows": false,
+      "castShadows": true,
+      "sortIndex": 200,
+      "visible": true,
+      "isPrimitive": true,
+      "type": "Cylinder"
+    },
+    {
+      "id": "right-arm-hand_dup",
+      "name": "right-arm-hand_dup",
+      "position": {
+        "x": 0,
+        "y": -2.1,
+        "z": 0
+      },
+      "rotation": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 1
+      },
+      "scaling": {
+        "x": 1,
+        "y": 1,
+        "z": 1
+      },
+      "pivot": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "materialId": "shoes",
+      "parentId": "left-arm-lower",
+      "receiveShadows": false,
+      "castShadows": true,
+      "sortIndex": 300,
+      "visible": true,
+      "isPrimitive": true,
+      "type": "Sphere"
+    },
+    {
+      "id": "left-arm-upper",
+      "name": "left-arm-upper",
+      "position": {
+        "x": 0,
+        "y": -0.9,
+        "z": 0
+      },
+      "rotation": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 1
+      },
+      "scaling": {
+        "x": 1,
+        "y": 1.5,
+        "z": 1
+      },
+      "pivot": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "materialId": "shirt-blue",
+      "parentId": "left-arm",
+      "receiveShadows": false,
+      "castShadows": true,
+      "sortIndex": 200,
+      "visible": true,
+      "isPrimitive": true,
+      "type": "Cylinder"
+    },
+    {
+      "id": "left-arm-upper-joint",
+      "name": "left-arm-upper-joint",
+      "position": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "rotation": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 1
+      },
+      "scaling": {
+        "x": 1,
+        "y": 1,
+        "z": 1
+      },
+      "pivot": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "materialId": "leg-joint",
+      "parentId": "left-arm",
+      "receiveShadows": false,
+      "castShadows": true,
+      "sortIndex": 100,
+      "visible": true,
+      "isPrimitive": true,
+      "type": "Sphere"
     }
   ],
   "transformNodes": [
     {
-      "id": "node_1769858031561",
-      "name": "torso",
+      "id": "upper-body",
+      "name": "upper-body",
+      "position": {
+        "x": 0,
+        "y": -2.8,
+        "z": 0
+      },
+      "rotation": {
+        "x": -0.08715574274765817,
+        "y": 0,
+        "z": 0,
+        "w": 0.9961946980917455
+      },
+      "scaling": {
+        "x": 1,
+        "y": 1,
+        "z": 1
+      },
+      "parentId": "humanoid",
+      "sortIndex": 100,
+      "visible": true
+    },
+    {
+      "id": "leg-left-lower",
+      "name": "leg-left-lower",
+      "position": {
+        "x": 0,
+        "y": -2,
+        "z": 0
+      },
+      "rotation": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 1
+      },
+      "scaling": {
+        "x": 1,
+        "y": 1,
+        "z": 1
+      },
+      "parentId": "node_1769857745513",
+      "sortIndex": 300,
+      "visible": true
+    },
+    {
+      "id": "humanoid",
+      "name": "humanoid",
       "position": {
         "x": -0.6085341572761536,
         "y": 8.025453567504883,
@@ -569,103 +912,126 @@
       "visible": true
     },
     {
-      "id": "null_2",
-      "name": "arm-left",
+      "id": "node_1769857745513",
+      "name": "leg-left",
       "position": {
-        "x": -2.200000047683716,
-        "y": -0.5,
+        "x": -1,
+        "y": -3.9,
         "z": 0
       },
       "rotation": {
-        "x": 0.30348133111524994,
+        "x": -0.08715574274765817,
         "y": 0,
         "z": 0,
-        "w": 0.9528373847131528
-      },
-      "scaling": {
-        "x": 1,
-        "y": 1.0000000831740579,
-        "z": 1.0000000831740579
-      },
-      "parentId": "node_1769858031561",
-      "sortIndex": 400,
-      "visible": true
-    },
-    {
-      "id": "arm-right",
-      "name": "arm-right",
-      "position": {
-        "x": 2.49,
-        "y": -0.5,
-        "z": 0
-      },
-      "rotation": {
-        "x": -0.25881904510252074,
-        "y": 0,
-        "z": 0,
-        "w": 0.9659258262890683
+        "w": 0.9961946980917455
       },
       "scaling": {
         "x": 1,
         "y": 1,
         "z": 1
       },
-      "parentId": "node_1769858031561",
-      "sortIndex": 300,
-      "visible": true
-    },
-    {
-      "id": "leg-right",
-      "name": "leg-right",
-      "position": {
-        "x": 1,
-        "y": -4,
-        "z": 0
-      },
-      "rotation": {
-        "x": 0.2164396164543038,
-        "y": 0,
-        "z": 0,
-        "w": 0.9762960146660008
-      },
-      "scaling": {
-        "x": 1,
-        "y": 1.000000030164656,
-        "z": 1.000000030164656
-      },
-      "parentId": "node_1769858031561",
+      "parentId": "humanoid",
       "sortIndex": 500,
       "visible": true
     },
     {
-      "id": "node_1769857745513",
-      "name": "leg-left",
+      "id": "left-arm",
+      "name": "left-arm",
       "position": {
-        "x": -0.9999999403953552,
-        "y": -4,
+        "x": -2.1,
+        "y": 2,
         "z": 0
       },
       "rotation": {
-        "x": -0.2164396164543038,
+        "x": 0.3826834323650898,
         "y": 0,
         "z": 0,
-        "w": 0.9762960146660008
+        "w": 0.9238795325112867
       },
       "scaling": {
         "x": 1,
-        "y": 1.000000030164656,
-        "z": 1.000000030164656
+        "y": 1,
+        "z": 1
       },
-      "parentId": "node_1769858031561",
-      "sortIndex": 600,
+      "parentId": "upper-body",
+      "sortIndex": 300,
+      "visible": true
+    },
+    {
+      "id": "left-arm-lower",
+      "name": "left-arm-lower",
+      "position": {
+        "x": 0,
+        "y": -1.55,
+        "z": 0
+      },
+      "rotation": {
+        "x": 0.3826834323650898,
+        "y": 0,
+        "z": 0,
+        "w": 0.9238795325112867
+      },
+      "scaling": {
+        "x": 1,
+        "y": 1,
+        "z": 1
+      },
+      "parentId": "left-arm",
+      "sortIndex": 300,
+      "visible": true
+    },
+    {
+      "id": "right-arm-lower",
+      "name": "right-arm-lower",
+      "position": {
+        "x": 0,
+        "y": -1.55,
+        "z": 0
+      },
+      "rotation": {
+        "x": 0.3826834323650898,
+        "y": 0,
+        "z": 0,
+        "w": 0.9238795325112867
+      },
+      "scaling": {
+        "x": 1,
+        "y": 1,
+        "z": 1
+      },
+      "parentId": "right-arm",
+      "sortIndex": 300,
+      "visible": true
+    },
+    {
+      "id": "right-arm",
+      "name": "right-arm",
+      "position": {
+        "x": 2.1,
+        "y": 2,
+        "z": 0
+      },
+      "rotation": {
+        "x": 0.3826834323650898,
+        "y": 0,
+        "z": 0,
+        "w": 0.9238795325112867
+      },
+      "scaling": {
+        "x": 1,
+        "y": 1,
+        "z": 1
+      },
+      "parentId": "upper-body",
+      "sortIndex": 400,
       "visible": true
     },
     {
       "id": "head",
       "name": "head",
       "position": {
-        "x": 0.02019113302230835,
-        "y": 2.1143112182617188,
+        "x": 0,
+        "y": 2.7,
         "z": 0
       },
       "rotation": {
@@ -679,8 +1045,54 @@
         "y": 1,
         "z": 1
       },
-      "parentId": "node_1769858031561",
+      "parentId": "upper-body",
       "sortIndex": 100,
+      "visible": true
+    },
+    {
+      "id": "leg-right-lower",
+      "name": "leg-right-lower",
+      "position": {
+        "x": 0,
+        "y": -2,
+        "z": 0
+      },
+      "rotation": {
+        "x": -0.08715574274765817,
+        "y": 0,
+        "z": 0,
+        "w": 0.9961946980917455
+      },
+      "scaling": {
+        "x": 1,
+        "y": 1,
+        "z": 1
+      },
+      "parentId": "leg-right",
+      "sortIndex": 300,
+      "visible": true
+    },
+    {
+      "id": "leg-right",
+      "name": "leg-right",
+      "position": {
+        "x": 1.05,
+        "y": -4,
+        "z": 0
+      },
+      "rotation": {
+        "x": 0.08715574274765817,
+        "y": 0,
+        "z": 0,
+        "w": 0.9961946980917455
+      },
+      "scaling": {
+        "x": 1,
+        "y": 1,
+        "z": 1
+      },
+      "parentId": "humanoid",
+      "sortIndex": 400,
       "visible": true
     }
   ]

@@ -1,0 +1,43 @@
+{
+  "version": 1.5,
+  "materialFiles": [
+    "generic.json"
+  ],
+  "lights": [],
+  "meshes": [
+    {
+      "id": "Cube_1771136776313",
+      "name": "Cube_1771136776313",
+      "position": {
+        "x": 0,
+        "y": 0.5,
+        "z": 0
+      },
+      "rotation": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 1
+      },
+      "scaling": {
+        "x": 10,
+        "y": 10,
+        "z": 0.1
+      },
+      "pivot": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "materialId": "wall-gray",
+      "parentId": null,
+      "receiveShadows": true,
+      "castShadows": true,
+      "sortIndex": 0,
+      "visible": true,
+      "isPrimitive": true,
+      "type": "Cube"
+    }
+  ],
+  "transformNodes": []
+}

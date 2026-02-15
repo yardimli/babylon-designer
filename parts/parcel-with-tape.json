@@ -1,0 +1,142 @@
+{
+  "version": 1.5,
+  "materialFiles": [
+    "generic.json"
+  ],
+  "lights": [],
+  "meshes": [
+    {
+      "id": "parcelbox",
+      "name": "parcelbox",
+      "position": {
+        "x": 0,
+        "y": 0.5,
+        "z": 0
+      },
+      "rotation": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 1
+      },
+      "scaling": {
+        "x": 3,
+        "y": 3,
+        "z": 3
+      },
+      "pivot": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "materialId": "parcel",
+      "parentId": null,
+      "receiveShadows": false,
+      "castShadows": true,
+      "sortIndex": 0,
+      "visible": true,
+      "isPrimitive": true,
+      "type": "Cube"
+    },
+    {
+      "id": "tape-top",
+      "name": "tape-top",
+      "position": {
+        "x": 0.2,
+        "y": 1.97,
+        "z": 0
+      },
+      "rotation": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 1
+      },
+      "scaling": {
+        "x": 0.4,
+        "y": 0.1,
+        "z": 3
+      },
+      "pivot": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "materialId": "tape",
+      "parentId": null,
+      "receiveShadows": false,
+      "castShadows": true,
+      "sortIndex": 0,
+      "visible": true,
+      "isPrimitive": true,
+      "type": "Cube"
+    },
+    {
+      "id": "tape-side-left",
+      "name": "tape-side-left",
+      "position": {
+        "x": 0.2,
+        "y": 1.65,
+        "z": -1.455
+      },
+      "rotation": {
+        "x": 0.7071067811865475,
+        "y": 0,
+        "z": 0,
+        "w": 0.7071067811865476
+      },
+      "scaling": {
+        "x": 0.4,
+        "y": 0.1,
+        "z": 0.7
+      },
+      "pivot": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "materialId": "tape",
+      "parentId": null,
+      "receiveShadows": false,
+      "castShadows": true,
+      "sortIndex": 0,
+      "visible": true,
+      "isPrimitive": true,
+      "type": "Cube"
+    },
+    {
+      "id": "tape-side-left_dup",
+      "name": "tape-side-left_dup",
+      "position": {
+        "x": 0.20000000298023224,
+        "y": 1.649999976158142,
+        "z": 1.454109787940979
+      },
+      "rotation": {
+        "x": 0.7071067811865475,
+        "y": 0,
+        "z": 0,
+        "w": 0.7071067811865476
+      },
+      "scaling": {
+        "x": 0.4000000059604645,
+        "y": 0.10000000149011612,
+        "z": 0.699999988079071
+      },
+      "pivot": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "materialId": "tape",
+      "parentId": null,
+      "receiveShadows": false,
+      "castShadows": true,
+      "sortIndex": 0,
+      "visible": true,
+      "isPrimitive": true,
+      "type": "Cube"
+    }
+  ],
+  "transformNodes": []
+}

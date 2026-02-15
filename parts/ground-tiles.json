@@ -1,0 +1,3221 @@
+{
+  "version": 1.5,
+  "materialFiles": [
+    "generic.json"
+  ],
+  "lights": [],
+  "meshes": [
+    {
+      "id": "grass-gound",
+      "name": "grass-gound",
+      "position": {
+        "x": -0.13823123276233673,
+        "y": 0.15000000596046448,
+        "z": 0
+      },
+      "rotation": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 1
+      },
+      "scaling": {
+        "x": 11.199999809265137,
+        "y": 1,
+        "z": 10.199999809265137
+      },
+      "pivot": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "materialId": "grass",
+      "parentId": null,
+      "receiveShadows": false,
+      "castShadows": false,
+      "sortIndex": 900,
+      "visible": true,
+      "isPrimitive": true,
+      "type": "Ground"
+    },
+    {
+      "id": "tile01",
+      "name": "tile01",
+      "position": {
+        "x": -9.5,
+        "y": -0.699999988079071,
+        "z": 0.5
+      },
+      "rotation": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 1
+      },
+      "scaling": {
+        "x": 1,
+        "y": 0.15,
+        "z": 1
+      },
+      "pivot": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "materialId": "gray-tiles",
+      "parentId": "tilerow1",
+      "receiveShadows": true,
+      "castShadows": false,
+      "sortIndex": 300,
+      "visible": true,
+      "isPrimitive": true,
+      "type": "Cube"
+    },
+    {
+      "id": "tile03",
+      "name": "tile03",
+      "position": {
+        "x": -7.296505451202393,
+        "y": -0.699999988079071,
+        "z": 0.5
+      },
+      "rotation": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 1
+      },
+      "scaling": {
+        "x": 1,
+        "y": 0.15,
+        "z": 1
+      },
+      "pivot": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "materialId": "gray-tiles",
+      "parentId": "tilerow1",
+      "receiveShadows": true,
+      "castShadows": false,
+      "sortIndex": 500,
+      "visible": true,
+      "isPrimitive": true,
+      "type": "Cube"
+    },
+    {
+      "id": "tile02",
+      "name": "tile02",
+      "position": {
+        "x": -8.399999618530273,
+        "y": -0.699999988079071,
+        "z": 0.5
+      },
+      "rotation": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 1
+      },
+      "scaling": {
+        "x": 1,
+        "y": 0.15,
+        "z": 1
+      },
+      "pivot": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "materialId": "gray-tiles",
+      "parentId": "tilerow1",
+      "receiveShadows": true,
+      "castShadows": false,
+      "sortIndex": 100,
+      "visible": true,
+      "isPrimitive": true,
+      "type": "Cube"
+    },
+    {
+      "id": "tile04",
+      "name": "tile04",
+      "position": {
+        "x": -6.202653408050537,
+        "y": -0.699999988079071,
+        "z": 0.5
+      },
+      "rotation": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 1
+      },
+      "scaling": {
+        "x": 1,
+        "y": 0.15,
+        "z": 1
+      },
+      "pivot": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "materialId": "gray-tiles",
+      "parentId": "tilerow1",
+      "receiveShadows": true,
+      "castShadows": false,
+      "sortIndex": 600,
+      "visible": true,
+      "isPrimitive": true,
+      "type": "Cube"
+    },
+    {
+      "id": "tile05",
+      "name": "tile05",
+      "position": {
+        "x": -5.1026530265808105,
+        "y": -0.699999988079071,
+        "z": 0.5
+      },
+      "rotation": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 1
+      },
+      "scaling": {
+        "x": 1,
+        "y": 0.15,
+        "z": 1
+      },
+      "pivot": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "materialId": "gray-tiles",
+      "parentId": "tilerow1",
+      "receiveShadows": true,
+      "castShadows": false,
+      "sortIndex": 700,
+      "visible": true,
+      "isPrimitive": true,
+      "type": "Cube"
+    },
+    {
+      "id": "tile06",
+      "name": "tile06",
+      "position": {
+        "x": -3.9991588592529297,
+        "y": -0.699999988079071,
+        "z": 0.5
+      },
+      "rotation": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 1
+      },
+      "scaling": {
+        "x": 1,
+        "y": 0.15,
+        "z": 1
+      },
+      "pivot": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "materialId": "gray-tiles",
+      "parentId": "tilerow1",
+      "receiveShadows": true,
+      "castShadows": false,
+      "sortIndex": 800,
+      "visible": true,
+      "isPrimitive": true,
+      "type": "Cube"
+    },
+    {
+      "id": "tile10",
+      "name": "tile10",
+      "position": {
+        "x": 0.4000000059604645,
+        "y": -0.699999988079071,
+        "z": 0.5
+      },
+      "rotation": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 1
+      },
+      "scaling": {
+        "x": 1,
+        "y": 0.15,
+        "z": 1
+      },
+      "pivot": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "materialId": "gray-tiles",
+      "parentId": "tilerow1",
+      "receiveShadows": true,
+      "castShadows": false,
+      "sortIndex": 1700,
+      "visible": true,
+      "isPrimitive": true,
+      "type": "Cube"
+    },
+    {
+      "id": "tile08",
+      "name": "tile08",
+      "position": {
+        "x": -1.7999999523162842,
+        "y": -0.699999988079071,
+        "z": 0.5
+      },
+      "rotation": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 1
+      },
+      "scaling": {
+        "x": 1,
+        "y": 0.15,
+        "z": 1
+      },
+      "pivot": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "materialId": "gray-tiles",
+      "parentId": "tilerow1",
+      "receiveShadows": true,
+      "castShadows": false,
+      "sortIndex": 1500,
+      "visible": true,
+      "isPrimitive": true,
+      "type": "Cube"
+    },
+    {
+      "id": "tile09",
+      "name": "tile09",
+      "position": {
+        "x": -0.7033326625823975,
+        "y": -0.699999988079071,
+        "z": 0.5
+      },
+      "rotation": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 1
+      },
+      "scaling": {
+        "x": 1,
+        "y": 0.15,
+        "z": 1
+      },
+      "pivot": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "materialId": "gray-tiles",
+      "parentId": "tilerow1",
+      "receiveShadows": true,
+      "castShadows": false,
+      "sortIndex": 1600,
+      "visible": true,
+      "isPrimitive": true,
+      "type": "Cube"
+    },
+    {
+      "id": "tile07",
+      "name": "tile07",
+      "position": {
+        "x": -2.9000000953674316,
+        "y": -0.699999988079071,
+        "z": 0.5
+      },
+      "rotation": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 1
+      },
+      "scaling": {
+        "x": 1,
+        "y": 0.15,
+        "z": 1
+      },
+      "pivot": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "materialId": "gray-tiles",
+      "parentId": "tilerow1",
+      "receiveShadows": true,
+      "castShadows": false,
+      "sortIndex": 900,
+      "visible": true,
+      "isPrimitive": true,
+      "type": "Cube"
+    },
+    {
+      "id": "tile02_dup",
+      "name": "tile02_dup",
+      "position": {
+        "x": -8.399999618530273,
+        "y": -0.699999988079071,
+        "z": 0.5
+      },
+      "rotation": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 1
+      },
+      "scaling": {
+        "x": 1,
+        "y": 0.15,
+        "z": 1
+      },
+      "pivot": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "materialId": "gray-tiles",
+      "parentId": "tilerow2",
+      "receiveShadows": true,
+      "castShadows": false,
+      "sortIndex": 100,
+      "visible": true,
+      "isPrimitive": true,
+      "type": "Cube"
+    },
+    {
+      "id": "tile01_dup",
+      "name": "tile01_dup",
+      "position": {
+        "x": -9.5,
+        "y": -0.699999988079071,
+        "z": 0.5
+      },
+      "rotation": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 1
+      },
+      "scaling": {
+        "x": 1,
+        "y": 0.15,
+        "z": 1
+      },
+      "pivot": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "materialId": "gray-tiles",
+      "parentId": "tilerow2",
+      "receiveShadows": true,
+      "castShadows": false,
+      "sortIndex": 300,
+      "visible": true,
+      "isPrimitive": true,
+      "type": "Cube"
+    },
+    {
+      "id": "tile03_dup",
+      "name": "tile03_dup",
+      "position": {
+        "x": -7.296505451202393,
+        "y": -0.699999988079071,
+        "z": 0.5
+      },
+      "rotation": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 1
+      },
+      "scaling": {
+        "x": 1,
+        "y": 0.15,
+        "z": 1
+      },
+      "pivot": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "materialId": "gray-tiles",
+      "parentId": "tilerow2",
+      "receiveShadows": true,
+      "castShadows": false,
+      "sortIndex": 500,
+      "visible": true,
+      "isPrimitive": true,
+      "type": "Cube"
+    },
+    {
+      "id": "tile04_dup",
+      "name": "tile04_dup",
+      "position": {
+        "x": -6.202653408050537,
+        "y": -0.699999988079071,
+        "z": 0.5
+      },
+      "rotation": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 1
+      },
+      "scaling": {
+        "x": 1,
+        "y": 0.15,
+        "z": 1
+      },
+      "pivot": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "materialId": "gray-tiles",
+      "parentId": "tilerow2",
+      "receiveShadows": true,
+      "castShadows": false,
+      "sortIndex": 600,
+      "visible": true,
+      "isPrimitive": true,
+      "type": "Cube"
+    },
+    {
+      "id": "tile05_dup",
+      "name": "tile05_dup",
+      "position": {
+        "x": -5.1026530265808105,
+        "y": -0.699999988079071,
+        "z": 0.5
+      },
+      "rotation": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 1
+      },
+      "scaling": {
+        "x": 1,
+        "y": 0.15,
+        "z": 1
+      },
+      "pivot": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "materialId": "gray-tiles",
+      "parentId": "tilerow2",
+      "receiveShadows": true,
+      "castShadows": false,
+      "sortIndex": 700,
+      "visible": true,
+      "isPrimitive": true,
+      "type": "Cube"
+    },
+    {
+      "id": "tile06_dup",
+      "name": "tile06_dup",
+      "position": {
+        "x": -3.9991588592529297,
+        "y": -0.699999988079071,
+        "z": 0.5
+      },
+      "rotation": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 1
+      },
+      "scaling": {
+        "x": 1,
+        "y": 0.15,
+        "z": 1
+      },
+      "pivot": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "materialId": "gray-tiles",
+      "parentId": "tilerow2",
+      "receiveShadows": true,
+      "castShadows": false,
+      "sortIndex": 800,
+      "visible": true,
+      "isPrimitive": true,
+      "type": "Cube"
+    },
+    {
+      "id": "tile07_dup",
+      "name": "tile07_dup",
+      "position": {
+        "x": -2.9000000953674316,
+        "y": -0.699999988079071,
+        "z": 0.5
+      },
+      "rotation": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 1
+      },
+      "scaling": {
+        "x": 1,
+        "y": 0.15,
+        "z": 1
+      },
+      "pivot": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "materialId": "gray-tiles",
+      "parentId": "tilerow2",
+      "receiveShadows": true,
+      "castShadows": false,
+      "sortIndex": 900,
+      "visible": true,
+      "isPrimitive": true,
+      "type": "Cube"
+    },
+    {
+      "id": "tile08_dup",
+      "name": "tile08_dup",
+      "position": {
+        "x": -1.7999999523162842,
+        "y": -0.699999988079071,
+        "z": 0.5
+      },
+      "rotation": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 1
+      },
+      "scaling": {
+        "x": 1,
+        "y": 0.15,
+        "z": 1
+      },
+      "pivot": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "materialId": "gray-tiles",
+      "parentId": "tilerow2",
+      "receiveShadows": true,
+      "castShadows": false,
+      "sortIndex": 1500,
+      "visible": true,
+      "isPrimitive": true,
+      "type": "Cube"
+    },
+    {
+      "id": "tile09_dup",
+      "name": "tile09_dup",
+      "position": {
+        "x": -0.7033326625823975,
+        "y": -0.699999988079071,
+        "z": 0.5
+      },
+      "rotation": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 1
+      },
+      "scaling": {
+        "x": 1,
+        "y": 0.15,
+        "z": 1
+      },
+      "pivot": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "materialId": "gray-tiles",
+      "parentId": "tilerow2",
+      "receiveShadows": true,
+      "castShadows": false,
+      "sortIndex": 1600,
+      "visible": true,
+      "isPrimitive": true,
+      "type": "Cube"
+    },
+    {
+      "id": "tile10_dup",
+      "name": "tile10_dup",
+      "position": {
+        "x": 0.4000000059604645,
+        "y": -0.699999988079071,
+        "z": 0.5
+      },
+      "rotation": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 1
+      },
+      "scaling": {
+        "x": 1,
+        "y": 0.15,
+        "z": 1
+      },
+      "pivot": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "materialId": "gray-tiles",
+      "parentId": "tilerow2",
+      "receiveShadows": true,
+      "castShadows": false,
+      "sortIndex": 1700,
+      "visible": true,
+      "isPrimitive": true,
+      "type": "Cube"
+    },
+    {
+      "id": "tile02_dup_dup",
+      "name": "tile02_dup_dup",
+      "position": {
+        "x": -8.399999618530273,
+        "y": -0.699999988079071,
+        "z": 0.5
+      },
+      "rotation": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 1
+      },
+      "scaling": {
+        "x": 1,
+        "y": 0.15,
+        "z": 1
+      },
+      "pivot": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "materialId": "gray-tiles",
+      "parentId": "tilerow3",
+      "receiveShadows": true,
+      "castShadows": false,
+      "sortIndex": 100,
+      "visible": true,
+      "isPrimitive": true,
+      "type": "Cube"
+    },
+    {
+      "id": "tile01_dup_dup",
+      "name": "tile01_dup_dup",
+      "position": {
+        "x": -9.5,
+        "y": -0.699999988079071,
+        "z": 0.5
+      },
+      "rotation": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 1
+      },
+      "scaling": {
+        "x": 1,
+        "y": 0.15,
+        "z": 1
+      },
+      "pivot": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "materialId": "gray-tiles",
+      "parentId": "tilerow3",
+      "receiveShadows": true,
+      "castShadows": false,
+      "sortIndex": 300,
+      "visible": true,
+      "isPrimitive": true,
+      "type": "Cube"
+    },
+    {
+      "id": "tile03_dup_dup",
+      "name": "tile03_dup_dup",
+      "position": {
+        "x": -7.296505451202393,
+        "y": -0.699999988079071,
+        "z": 0.5
+      },
+      "rotation": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 1
+      },
+      "scaling": {
+        "x": 1,
+        "y": 0.15,
+        "z": 1
+      },
+      "pivot": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "materialId": "gray-tiles",
+      "parentId": "tilerow3",
+      "receiveShadows": true,
+      "castShadows": false,
+      "sortIndex": 500,
+      "visible": true,
+      "isPrimitive": true,
+      "type": "Cube"
+    },
+    {
+      "id": "tile04_dup_dup",
+      "name": "tile04_dup_dup",
+      "position": {
+        "x": -6.202653408050537,
+        "y": -0.699999988079071,
+        "z": 0.5
+      },
+      "rotation": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 1
+      },
+      "scaling": {
+        "x": 1,
+        "y": 0.15,
+        "z": 1
+      },
+      "pivot": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "materialId": "gray-tiles",
+      "parentId": "tilerow3",
+      "receiveShadows": true,
+      "castShadows": false,
+      "sortIndex": 600,
+      "visible": true,
+      "isPrimitive": true,
+      "type": "Cube"
+    },
+    {
+      "id": "tile05_dup_dup",
+      "name": "tile05_dup_dup",
+      "position": {
+        "x": -5.1026530265808105,
+        "y": -0.699999988079071,
+        "z": 0.5
+      },
+      "rotation": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 1
+      },
+      "scaling": {
+        "x": 1,
+        "y": 0.15,
+        "z": 1
+      },
+      "pivot": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "materialId": "gray-tiles",
+      "parentId": "tilerow3",
+      "receiveShadows": true,
+      "castShadows": false,
+      "sortIndex": 700,
+      "visible": true,
+      "isPrimitive": true,
+      "type": "Cube"
+    },
+    {
+      "id": "tile06_dup_dup",
+      "name": "tile06_dup_dup",
+      "position": {
+        "x": -3.9991588592529297,
+        "y": -0.699999988079071,
+        "z": 0.5
+      },
+      "rotation": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 1
+      },
+      "scaling": {
+        "x": 1,
+        "y": 0.15,
+        "z": 1
+      },
+      "pivot": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "materialId": "gray-tiles",
+      "parentId": "tilerow3",
+      "receiveShadows": true,
+      "castShadows": false,
+      "sortIndex": 800,
+      "visible": true,
+      "isPrimitive": true,
+      "type": "Cube"
+    },
+    {
+      "id": "tile07_dup_dup",
+      "name": "tile07_dup_dup",
+      "position": {
+        "x": -2.9000000953674316,
+        "y": -0.699999988079071,
+        "z": 0.5
+      },
+      "rotation": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 1
+      },
+      "scaling": {
+        "x": 1,
+        "y": 0.15,
+        "z": 1
+      },
+      "pivot": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "materialId": "gray-tiles",
+      "parentId": "tilerow3",
+      "receiveShadows": true,
+      "castShadows": false,
+      "sortIndex": 900,
+      "visible": true,
+      "isPrimitive": true,
+      "type": "Cube"
+    },
+    {
+      "id": "tile08_dup_dup",
+      "name": "tile08_dup_dup",
+      "position": {
+        "x": -1.7999999523162842,
+        "y": -0.699999988079071,
+        "z": 0.5
+      },
+      "rotation": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 1
+      },
+      "scaling": {
+        "x": 1,
+        "y": 0.15,
+        "z": 1
+      },
+      "pivot": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "materialId": "gray-tiles",
+      "parentId": "tilerow3",
+      "receiveShadows": true,
+      "castShadows": false,
+      "sortIndex": 1500,
+      "visible": true,
+      "isPrimitive": true,
+      "type": "Cube"
+    },
+    {
+      "id": "tile09_dup_dup",
+      "name": "tile09_dup_dup",
+      "position": {
+        "x": -0.7033326625823975,
+        "y": -0.699999988079071,
+        "z": 0.5
+      },
+      "rotation": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 1
+      },
+      "scaling": {
+        "x": 1,
+        "y": 0.15,
+        "z": 1
+      },
+      "pivot": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "materialId": "gray-tiles",
+      "parentId": "tilerow3",
+      "receiveShadows": true,
+      "castShadows": false,
+      "sortIndex": 1600,
+      "visible": true,
+      "isPrimitive": true,
+      "type": "Cube"
+    },
+    {
+      "id": "tile10_dup_dup",
+      "name": "tile10_dup_dup",
+      "position": {
+        "x": 0.4000000059604645,
+        "y": -0.699999988079071,
+        "z": 0.5
+      },
+      "rotation": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 1
+      },
+      "scaling": {
+        "x": 1,
+        "y": 0.15,
+        "z": 1
+      },
+      "pivot": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "materialId": "gray-tiles",
+      "parentId": "tilerow3",
+      "receiveShadows": true,
+      "castShadows": false,
+      "sortIndex": 1700,
+      "visible": true,
+      "isPrimitive": true,
+      "type": "Cube"
+    },
+    {
+      "id": "tile02_dup_dup_dup",
+      "name": "tile02_dup_dup_dup",
+      "position": {
+        "x": -8.399999618530273,
+        "y": -0.699999988079071,
+        "z": 0.5
+      },
+      "rotation": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 1
+      },
+      "scaling": {
+        "x": 1,
+        "y": 0.15,
+        "z": 1
+      },
+      "pivot": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "materialId": "gray-tiles",
+      "parentId": "tilerow4",
+      "receiveShadows": true,
+      "castShadows": false,
+      "sortIndex": 100,
+      "visible": true,
+      "isPrimitive": true,
+      "type": "Cube"
+    },
+    {
+      "id": "tile01_dup_dup_dup",
+      "name": "tile01_dup_dup_dup",
+      "position": {
+        "x": -9.5,
+        "y": -0.699999988079071,
+        "z": 0.5
+      },
+      "rotation": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 1
+      },
+      "scaling": {
+        "x": 1,
+        "y": 0.15,
+        "z": 1
+      },
+      "pivot": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "materialId": "gray-tiles",
+      "parentId": "tilerow4",
+      "receiveShadows": true,
+      "castShadows": false,
+      "sortIndex": 300,
+      "visible": true,
+      "isPrimitive": true,
+      "type": "Cube"
+    },
+    {
+      "id": "tile03_dup_dup_dup",
+      "name": "tile03_dup_dup_dup",
+      "position": {
+        "x": -7.296505451202393,
+        "y": -0.699999988079071,
+        "z": 0.5
+      },
+      "rotation": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 1
+      },
+      "scaling": {
+        "x": 1,
+        "y": 0.15,
+        "z": 1
+      },
+      "pivot": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "materialId": "gray-tiles",
+      "parentId": "tilerow4",
+      "receiveShadows": true,
+      "castShadows": false,
+      "sortIndex": 500,
+      "visible": true,
+      "isPrimitive": true,
+      "type": "Cube"
+    },
+    {
+      "id": "tile04_dup_dup_dup",
+      "name": "tile04_dup_dup_dup",
+      "position": {
+        "x": -6.202653408050537,
+        "y": -0.699999988079071,
+        "z": 0.5
+      },
+      "rotation": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 1
+      },
+      "scaling": {
+        "x": 1,
+        "y": 0.15,
+        "z": 1
+      },
+      "pivot": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "materialId": "gray-tiles",
+      "parentId": "tilerow4",
+      "receiveShadows": true,
+      "castShadows": false,
+      "sortIndex": 600,
+      "visible": true,
+      "isPrimitive": true,
+      "type": "Cube"
+    },
+    {
+      "id": "tile05_dup_dup_dup",
+      "name": "tile05_dup_dup_dup",
+      "position": {
+        "x": -5.1026530265808105,
+        "y": -0.699999988079071,
+        "z": 0.5
+      },
+      "rotation": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 1
+      },
+      "scaling": {
+        "x": 1,
+        "y": 0.15,
+        "z": 1
+      },
+      "pivot": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "materialId": "gray-tiles",
+      "parentId": "tilerow4",
+      "receiveShadows": true,
+      "castShadows": false,
+      "sortIndex": 700,
+      "visible": true,
+      "isPrimitive": true,
+      "type": "Cube"
+    },
+    {
+      "id": "tile06_dup_dup_dup",
+      "name": "tile06_dup_dup_dup",
+      "position": {
+        "x": -3.9991588592529297,
+        "y": -0.699999988079071,
+        "z": 0.5
+      },
+      "rotation": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 1
+      },
+      "scaling": {
+        "x": 1,
+        "y": 0.15,
+        "z": 1
+      },
+      "pivot": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "materialId": "gray-tiles",
+      "parentId": "tilerow4",
+      "receiveShadows": true,
+      "castShadows": false,
+      "sortIndex": 800,
+      "visible": true,
+      "isPrimitive": true,
+      "type": "Cube"
+    },
+    {
+      "id": "tile07_dup_dup_dup",
+      "name": "tile07_dup_dup_dup",
+      "position": {
+        "x": -2.9000000953674316,
+        "y": -0.699999988079071,
+        "z": 0.5
+      },
+      "rotation": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 1
+      },
+      "scaling": {
+        "x": 1,
+        "y": 0.15,
+        "z": 1
+      },
+      "pivot": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "materialId": "gray-tiles",
+      "parentId": "tilerow4",
+      "receiveShadows": true,
+      "castShadows": false,
+      "sortIndex": 900,
+      "visible": true,
+      "isPrimitive": true,
+      "type": "Cube"
+    },
+    {
+      "id": "tile08_dup_dup_dup",
+      "name": "tile08_dup_dup_dup",
+      "position": {
+        "x": -1.7999999523162842,
+        "y": -0.699999988079071,
+        "z": 0.5
+      },
+      "rotation": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 1
+      },
+      "scaling": {
+        "x": 1,
+        "y": 0.15,
+        "z": 1
+      },
+      "pivot": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "materialId": "gray-tiles",
+      "parentId": "tilerow4",
+      "receiveShadows": true,
+      "castShadows": false,
+      "sortIndex": 1500,
+      "visible": true,
+      "isPrimitive": true,
+      "type": "Cube"
+    },
+    {
+      "id": "tile09_dup_dup_dup",
+      "name": "tile09_dup_dup_dup",
+      "position": {
+        "x": -0.7033326625823975,
+        "y": -0.699999988079071,
+        "z": 0.5
+      },
+      "rotation": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 1
+      },
+      "scaling": {
+        "x": 1,
+        "y": 0.15,
+        "z": 1
+      },
+      "pivot": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "materialId": "gray-tiles",
+      "parentId": "tilerow4",
+      "receiveShadows": true,
+      "castShadows": false,
+      "sortIndex": 1600,
+      "visible": true,
+      "isPrimitive": true,
+      "type": "Cube"
+    },
+    {
+      "id": "tile10_dup_dup_dup",
+      "name": "tile10_dup_dup_dup",
+      "position": {
+        "x": 0.4000000059604645,
+        "y": -0.699999988079071,
+        "z": 0.5
+      },
+      "rotation": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 1
+      },
+      "scaling": {
+        "x": 1,
+        "y": 0.15,
+        "z": 1
+      },
+      "pivot": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "materialId": "gray-tiles",
+      "parentId": "tilerow4",
+      "receiveShadows": true,
+      "castShadows": false,
+      "sortIndex": 1700,
+      "visible": true,
+      "isPrimitive": true,
+      "type": "Cube"
+    },
+    {
+      "id": "tile02_dup_1",
+      "name": "tile02_dup_1",
+      "position": {
+        "x": -8.399999618530273,
+        "y": -0.699999988079071,
+        "z": 0.5
+      },
+      "rotation": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 1
+      },
+      "scaling": {
+        "x": 1,
+        "y": 0.15,
+        "z": 1
+      },
+      "pivot": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "materialId": "gray-tiles",
+      "parentId": "tilerow5",
+      "receiveShadows": true,
+      "castShadows": false,
+      "sortIndex": 100,
+      "visible": true,
+      "isPrimitive": true,
+      "type": "Cube"
+    },
+    {
+      "id": "tile01_dup_1",
+      "name": "tile01_dup_1",
+      "position": {
+        "x": -9.5,
+        "y": -0.699999988079071,
+        "z": 0.5
+      },
+      "rotation": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 1
+      },
+      "scaling": {
+        "x": 1,
+        "y": 0.15,
+        "z": 1
+      },
+      "pivot": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "materialId": "gray-tiles",
+      "parentId": "tilerow5",
+      "receiveShadows": true,
+      "castShadows": false,
+      "sortIndex": 300,
+      "visible": true,
+      "isPrimitive": true,
+      "type": "Cube"
+    },
+    {
+      "id": "tile03_dup_1",
+      "name": "tile03_dup_1",
+      "position": {
+        "x": -7.296505451202393,
+        "y": -0.699999988079071,
+        "z": 0.5
+      },
+      "rotation": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 1
+      },
+      "scaling": {
+        "x": 1,
+        "y": 0.15,
+        "z": 1
+      },
+      "pivot": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "materialId": "gray-tiles",
+      "parentId": "tilerow5",
+      "receiveShadows": true,
+      "castShadows": false,
+      "sortIndex": 500,
+      "visible": true,
+      "isPrimitive": true,
+      "type": "Cube"
+    },
+    {
+      "id": "tile04_dup_1",
+      "name": "tile04_dup_1",
+      "position": {
+        "x": -6.202653408050537,
+        "y": -0.699999988079071,
+        "z": 0.5
+      },
+      "rotation": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 1
+      },
+      "scaling": {
+        "x": 1,
+        "y": 0.15,
+        "z": 1
+      },
+      "pivot": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "materialId": "gray-tiles",
+      "parentId": "tilerow5",
+      "receiveShadows": true,
+      "castShadows": false,
+      "sortIndex": 600,
+      "visible": true,
+      "isPrimitive": true,
+      "type": "Cube"
+    },
+    {
+      "id": "tile05_dup_1",
+      "name": "tile05_dup_1",
+      "position": {
+        "x": -5.1026530265808105,
+        "y": -0.699999988079071,
+        "z": 0.5
+      },
+      "rotation": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 1
+      },
+      "scaling": {
+        "x": 1,
+        "y": 0.15,
+        "z": 1
+      },
+      "pivot": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "materialId": "gray-tiles",
+      "parentId": "tilerow5",
+      "receiveShadows": true,
+      "castShadows": false,
+      "sortIndex": 700,
+      "visible": true,
+      "isPrimitive": true,
+      "type": "Cube"
+    },
+    {
+      "id": "tile06_dup_1",
+      "name": "tile06_dup_1",
+      "position": {
+        "x": -3.9991588592529297,
+        "y": -0.699999988079071,
+        "z": 0.5
+      },
+      "rotation": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 1
+      },
+      "scaling": {
+        "x": 1,
+        "y": 0.15,
+        "z": 1
+      },
+      "pivot": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "materialId": "gray-tiles",
+      "parentId": "tilerow5",
+      "receiveShadows": true,
+      "castShadows": false,
+      "sortIndex": 800,
+      "visible": true,
+      "isPrimitive": true,
+      "type": "Cube"
+    },
+    {
+      "id": "tile07_dup_1",
+      "name": "tile07_dup_1",
+      "position": {
+        "x": -2.9000000953674316,
+        "y": -0.699999988079071,
+        "z": 0.5
+      },
+      "rotation": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 1
+      },
+      "scaling": {
+        "x": 1,
+        "y": 0.15,
+        "z": 1
+      },
+      "pivot": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "materialId": "gray-tiles",
+      "parentId": "tilerow5",
+      "receiveShadows": true,
+      "castShadows": false,
+      "sortIndex": 900,
+      "visible": true,
+      "isPrimitive": true,
+      "type": "Cube"
+    },
+    {
+      "id": "tile08_dup_1",
+      "name": "tile08_dup_1",
+      "position": {
+        "x": -1.7999999523162842,
+        "y": -0.699999988079071,
+        "z": 0.5
+      },
+      "rotation": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 1
+      },
+      "scaling": {
+        "x": 1,
+        "y": 0.15,
+        "z": 1
+      },
+      "pivot": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "materialId": "gray-tiles",
+      "parentId": "tilerow5",
+      "receiveShadows": true,
+      "castShadows": false,
+      "sortIndex": 1500,
+      "visible": true,
+      "isPrimitive": true,
+      "type": "Cube"
+    },
+    {
+      "id": "tile09_dup_1",
+      "name": "tile09_dup_1",
+      "position": {
+        "x": -0.7033326625823975,
+        "y": -0.699999988079071,
+        "z": 0.5
+      },
+      "rotation": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 1
+      },
+      "scaling": {
+        "x": 1,
+        "y": 0.15,
+        "z": 1
+      },
+      "pivot": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "materialId": "gray-tiles",
+      "parentId": "tilerow5",
+      "receiveShadows": true,
+      "castShadows": false,
+      "sortIndex": 1600,
+      "visible": true,
+      "isPrimitive": true,
+      "type": "Cube"
+    },
+    {
+      "id": "tile10_dup_1",
+      "name": "tile10_dup_1",
+      "position": {
+        "x": 0.4000000059604645,
+        "y": -0.699999988079071,
+        "z": 0.5
+      },
+      "rotation": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 1
+      },
+      "scaling": {
+        "x": 1,
+        "y": 0.15,
+        "z": 1
+      },
+      "pivot": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "materialId": "gray-tiles",
+      "parentId": "tilerow5",
+      "receiveShadows": true,
+      "castShadows": false,
+      "sortIndex": 1700,
+      "visible": true,
+      "isPrimitive": true,
+      "type": "Cube"
+    },
+    {
+      "id": "tile02_dup_dup_1",
+      "name": "tile02_dup_dup_1",
+      "position": {
+        "x": -8.399999618530273,
+        "y": -0.699999988079071,
+        "z": 0.5
+      },
+      "rotation": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 1
+      },
+      "scaling": {
+        "x": 1,
+        "y": 0.15,
+        "z": 1
+      },
+      "pivot": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "materialId": "gray-tiles",
+      "parentId": "tilerow6",
+      "receiveShadows": true,
+      "castShadows": false,
+      "sortIndex": 100,
+      "visible": true,
+      "isPrimitive": true,
+      "type": "Cube"
+    },
+    {
+      "id": "tile01_dup_dup_1",
+      "name": "tile01_dup_dup_1",
+      "position": {
+        "x": -9.5,
+        "y": -0.699999988079071,
+        "z": 0.5
+      },
+      "rotation": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 1
+      },
+      "scaling": {
+        "x": 1,
+        "y": 0.15,
+        "z": 1
+      },
+      "pivot": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "materialId": "gray-tiles",
+      "parentId": "tilerow6",
+      "receiveShadows": true,
+      "castShadows": false,
+      "sortIndex": 300,
+      "visible": true,
+      "isPrimitive": true,
+      "type": "Cube"
+    },
+    {
+      "id": "tile03_dup_dup_1",
+      "name": "tile03_dup_dup_1",
+      "position": {
+        "x": -7.296505451202393,
+        "y": -0.699999988079071,
+        "z": 0.5
+      },
+      "rotation": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 1
+      },
+      "scaling": {
+        "x": 1,
+        "y": 0.15,
+        "z": 1
+      },
+      "pivot": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "materialId": "gray-tiles",
+      "parentId": "tilerow6",
+      "receiveShadows": true,
+      "castShadows": false,
+      "sortIndex": 500,
+      "visible": true,
+      "isPrimitive": true,
+      "type": "Cube"
+    },
+    {
+      "id": "tile04_dup_dup_1",
+      "name": "tile04_dup_dup_1",
+      "position": {
+        "x": -6.202653408050537,
+        "y": -0.699999988079071,
+        "z": 0.5
+      },
+      "rotation": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 1
+      },
+      "scaling": {
+        "x": 1,
+        "y": 0.15,
+        "z": 1
+      },
+      "pivot": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "materialId": "gray-tiles",
+      "parentId": "tilerow6",
+      "receiveShadows": true,
+      "castShadows": false,
+      "sortIndex": 600,
+      "visible": true,
+      "isPrimitive": true,
+      "type": "Cube"
+    },
+    {
+      "id": "tile05_dup_dup_1",
+      "name": "tile05_dup_dup_1",
+      "position": {
+        "x": -5.1026530265808105,
+        "y": -0.699999988079071,
+        "z": 0.5
+      },
+      "rotation": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 1
+      },
+      "scaling": {
+        "x": 1,
+        "y": 0.15,
+        "z": 1
+      },
+      "pivot": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "materialId": "gray-tiles",
+      "parentId": "tilerow6",
+      "receiveShadows": true,
+      "castShadows": false,
+      "sortIndex": 700,
+      "visible": true,
+      "isPrimitive": true,
+      "type": "Cube"
+    },
+    {
+      "id": "tile06_dup_dup_1",
+      "name": "tile06_dup_dup_1",
+      "position": {
+        "x": -3.9991588592529297,
+        "y": -0.699999988079071,
+        "z": 0.5
+      },
+      "rotation": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 1
+      },
+      "scaling": {
+        "x": 1,
+        "y": 0.15,
+        "z": 1
+      },
+      "pivot": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "materialId": "gray-tiles",
+      "parentId": "tilerow6",
+      "receiveShadows": true,
+      "castShadows": false,
+      "sortIndex": 800,
+      "visible": true,
+      "isPrimitive": true,
+      "type": "Cube"
+    },
+    {
+      "id": "tile07_dup_dup_1",
+      "name": "tile07_dup_dup_1",
+      "position": {
+        "x": -2.9000000953674316,
+        "y": -0.699999988079071,
+        "z": 0.5
+      },
+      "rotation": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 1
+      },
+      "scaling": {
+        "x": 1,
+        "y": 0.15,
+        "z": 1
+      },
+      "pivot": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "materialId": "gray-tiles",
+      "parentId": "tilerow6",
+      "receiveShadows": true,
+      "castShadows": false,
+      "sortIndex": 900,
+      "visible": true,
+      "isPrimitive": true,
+      "type": "Cube"
+    },
+    {
+      "id": "tile08_dup_dup_1",
+      "name": "tile08_dup_dup_1",
+      "position": {
+        "x": -1.7999999523162842,
+        "y": -0.699999988079071,
+        "z": 0.5
+      },
+      "rotation": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 1
+      },
+      "scaling": {
+        "x": 1,
+        "y": 0.15,
+        "z": 1
+      },
+      "pivot": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "materialId": "gray-tiles",
+      "parentId": "tilerow6",
+      "receiveShadows": true,
+      "castShadows": false,
+      "sortIndex": 1500,
+      "visible": true,
+      "isPrimitive": true,
+      "type": "Cube"
+    },
+    {
+      "id": "tile09_dup_dup_1",
+      "name": "tile09_dup_dup_1",
+      "position": {
+        "x": -0.7033326625823975,
+        "y": -0.699999988079071,
+        "z": 0.5
+      },
+      "rotation": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 1
+      },
+      "scaling": {
+        "x": 1,
+        "y": 0.15,
+        "z": 1
+      },
+      "pivot": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "materialId": "gray-tiles",
+      "parentId": "tilerow6",
+      "receiveShadows": true,
+      "castShadows": false,
+      "sortIndex": 1600,
+      "visible": true,
+      "isPrimitive": true,
+      "type": "Cube"
+    },
+    {
+      "id": "tile10_dup_dup_1",
+      "name": "tile10_dup_dup_1",
+      "position": {
+        "x": 0.4000000059604645,
+        "y": -0.699999988079071,
+        "z": 0.5
+      },
+      "rotation": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 1
+      },
+      "scaling": {
+        "x": 1,
+        "y": 0.15,
+        "z": 1
+      },
+      "pivot": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "materialId": "gray-tiles",
+      "parentId": "tilerow6",
+      "receiveShadows": true,
+      "castShadows": false,
+      "sortIndex": 1700,
+      "visible": true,
+      "isPrimitive": true,
+      "type": "Cube"
+    },
+    {
+      "id": "tile02_dup_dup_dup_1",
+      "name": "tile02_dup_dup_dup_1",
+      "position": {
+        "x": -8.399999618530273,
+        "y": -0.699999988079071,
+        "z": 0.5
+      },
+      "rotation": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 1
+      },
+      "scaling": {
+        "x": 1,
+        "y": 0.15,
+        "z": 1
+      },
+      "pivot": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "materialId": "gray-tiles",
+      "parentId": "tilerow7",
+      "receiveShadows": true,
+      "castShadows": false,
+      "sortIndex": 100,
+      "visible": true,
+      "isPrimitive": true,
+      "type": "Cube"
+    },
+    {
+      "id": "tile01_dup_dup_dup_1",
+      "name": "tile01_dup_dup_dup_1",
+      "position": {
+        "x": -9.5,
+        "y": -0.699999988079071,
+        "z": 0.5
+      },
+      "rotation": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 1
+      },
+      "scaling": {
+        "x": 1,
+        "y": 0.15,
+        "z": 1
+      },
+      "pivot": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "materialId": "gray-tiles",
+      "parentId": "tilerow7",
+      "receiveShadows": true,
+      "castShadows": false,
+      "sortIndex": 300,
+      "visible": true,
+      "isPrimitive": true,
+      "type": "Cube"
+    },
+    {
+      "id": "tile03_dup_dup_dup_1",
+      "name": "tile03_dup_dup_dup_1",
+      "position": {
+        "x": -7.296505451202393,
+        "y": -0.699999988079071,
+        "z": 0.5
+      },
+      "rotation": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 1
+      },
+      "scaling": {
+        "x": 1,
+        "y": 0.15,
+        "z": 1
+      },
+      "pivot": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "materialId": "gray-tiles",
+      "parentId": "tilerow7",
+      "receiveShadows": true,
+      "castShadows": false,
+      "sortIndex": 500,
+      "visible": true,
+      "isPrimitive": true,
+      "type": "Cube"
+    },
+    {
+      "id": "tile04_dup_dup_dup_1",
+      "name": "tile04_dup_dup_dup_1",
+      "position": {
+        "x": -6.202653408050537,
+        "y": -0.699999988079071,
+        "z": 0.5
+      },
+      "rotation": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 1
+      },
+      "scaling": {
+        "x": 1,
+        "y": 0.15,
+        "z": 1
+      },
+      "pivot": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "materialId": "gray-tiles",
+      "parentId": "tilerow7",
+      "receiveShadows": true,
+      "castShadows": false,
+      "sortIndex": 600,
+      "visible": true,
+      "isPrimitive": true,
+      "type": "Cube"
+    },
+    {
+      "id": "tile05_dup_dup_dup_1",
+      "name": "tile05_dup_dup_dup_1",
+      "position": {
+        "x": -5.1026530265808105,
+        "y": -0.699999988079071,
+        "z": 0.5
+      },
+      "rotation": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 1
+      },
+      "scaling": {
+        "x": 1,
+        "y": 0.15,
+        "z": 1
+      },
+      "pivot": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "materialId": "gray-tiles",
+      "parentId": "tilerow7",
+      "receiveShadows": true,
+      "castShadows": false,
+      "sortIndex": 700,
+      "visible": true,
+      "isPrimitive": true,
+      "type": "Cube"
+    },
+    {
+      "id": "tile06_dup_dup_dup_1",
+      "name": "tile06_dup_dup_dup_1",
+      "position": {
+        "x": -3.9991588592529297,
+        "y": -0.699999988079071,
+        "z": 0.5
+      },
+      "rotation": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 1
+      },
+      "scaling": {
+        "x": 1,
+        "y": 0.15,
+        "z": 1
+      },
+      "pivot": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "materialId": "gray-tiles",
+      "parentId": "tilerow7",
+      "receiveShadows": true,
+      "castShadows": false,
+      "sortIndex": 800,
+      "visible": true,
+      "isPrimitive": true,
+      "type": "Cube"
+    },
+    {
+      "id": "tile07_dup_dup_dup_1",
+      "name": "tile07_dup_dup_dup_1",
+      "position": {
+        "x": -2.9000000953674316,
+        "y": -0.699999988079071,
+        "z": 0.5
+      },
+      "rotation": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 1
+      },
+      "scaling": {
+        "x": 1,
+        "y": 0.15,
+        "z": 1
+      },
+      "pivot": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "materialId": "gray-tiles",
+      "parentId": "tilerow7",
+      "receiveShadows": true,
+      "castShadows": false,
+      "sortIndex": 900,
+      "visible": true,
+      "isPrimitive": true,
+      "type": "Cube"
+    },
+    {
+      "id": "tile08_dup_dup_dup_1",
+      "name": "tile08_dup_dup_dup_1",
+      "position": {
+        "x": -1.7999999523162842,
+        "y": -0.699999988079071,
+        "z": 0.5
+      },
+      "rotation": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 1
+      },
+      "scaling": {
+        "x": 1,
+        "y": 0.15,
+        "z": 1
+      },
+      "pivot": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "materialId": "gray-tiles",
+      "parentId": "tilerow7",
+      "receiveShadows": true,
+      "castShadows": false,
+      "sortIndex": 1500,
+      "visible": true,
+      "isPrimitive": true,
+      "type": "Cube"
+    },
+    {
+      "id": "tile09_dup_dup_dup_1",
+      "name": "tile09_dup_dup_dup_1",
+      "position": {
+        "x": -0.7033326625823975,
+        "y": -0.699999988079071,
+        "z": 0.5
+      },
+      "rotation": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 1
+      },
+      "scaling": {
+        "x": 1,
+        "y": 0.15,
+        "z": 1
+      },
+      "pivot": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "materialId": "gray-tiles",
+      "parentId": "tilerow7",
+      "receiveShadows": true,
+      "castShadows": false,
+      "sortIndex": 1600,
+      "visible": true,
+      "isPrimitive": true,
+      "type": "Cube"
+    },
+    {
+      "id": "tile10_dup_dup_dup_1",
+      "name": "tile10_dup_dup_dup_1",
+      "position": {
+        "x": 0.4000000059604645,
+        "y": -0.699999988079071,
+        "z": 0.5
+      },
+      "rotation": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 1
+      },
+      "scaling": {
+        "x": 1,
+        "y": 0.15,
+        "z": 1
+      },
+      "pivot": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "materialId": "gray-tiles",
+      "parentId": "tilerow7",
+      "receiveShadows": true,
+      "castShadows": false,
+      "sortIndex": 1700,
+      "visible": true,
+      "isPrimitive": true,
+      "type": "Cube"
+    },
+    {
+      "id": "tile02_dup_dup_dup_dup",
+      "name": "tile02_dup_dup_dup_dup",
+      "position": {
+        "x": -8.399999618530273,
+        "y": -0.699999988079071,
+        "z": 0.5
+      },
+      "rotation": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 1
+      },
+      "scaling": {
+        "x": 1,
+        "y": 0.15,
+        "z": 1
+      },
+      "pivot": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "materialId": "gray-tiles",
+      "parentId": "tilerow8",
+      "receiveShadows": true,
+      "castShadows": false,
+      "sortIndex": 100,
+      "visible": true,
+      "isPrimitive": true,
+      "type": "Cube"
+    },
+    {
+      "id": "tile01_dup_dup_dup_dup",
+      "name": "tile01_dup_dup_dup_dup",
+      "position": {
+        "x": -9.5,
+        "y": -0.699999988079071,
+        "z": 0.5
+      },
+      "rotation": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 1
+      },
+      "scaling": {
+        "x": 1,
+        "y": 0.15,
+        "z": 1
+      },
+      "pivot": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "materialId": "gray-tiles",
+      "parentId": "tilerow8",
+      "receiveShadows": true,
+      "castShadows": false,
+      "sortIndex": 300,
+      "visible": true,
+      "isPrimitive": true,
+      "type": "Cube"
+    },
+    {
+      "id": "tile03_dup_dup_dup_dup",
+      "name": "tile03_dup_dup_dup_dup",
+      "position": {
+        "x": -7.296505451202393,
+        "y": -0.699999988079071,
+        "z": 0.5
+      },
+      "rotation": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 1
+      },
+      "scaling": {
+        "x": 1,
+        "y": 0.15,
+        "z": 1
+      },
+      "pivot": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "materialId": "gray-tiles",
+      "parentId": "tilerow8",
+      "receiveShadows": true,
+      "castShadows": false,
+      "sortIndex": 500,
+      "visible": true,
+      "isPrimitive": true,
+      "type": "Cube"
+    },
+    {
+      "id": "tile04_dup_dup_dup_dup",
+      "name": "tile04_dup_dup_dup_dup",
+      "position": {
+        "x": -6.202653408050537,
+        "y": -0.699999988079071,
+        "z": 0.5
+      },
+      "rotation": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 1
+      },
+      "scaling": {
+        "x": 1,
+        "y": 0.15,
+        "z": 1
+      },
+      "pivot": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "materialId": "gray-tiles",
+      "parentId": "tilerow8",
+      "receiveShadows": true,
+      "castShadows": false,
+      "sortIndex": 600,
+      "visible": true,
+      "isPrimitive": true,
+      "type": "Cube"
+    },
+    {
+      "id": "tile05_dup_dup_dup_dup",
+      "name": "tile05_dup_dup_dup_dup",
+      "position": {
+        "x": -5.1026530265808105,
+        "y": -0.699999988079071,
+        "z": 0.5
+      },
+      "rotation": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 1
+      },
+      "scaling": {
+        "x": 1,
+        "y": 0.15,
+        "z": 1
+      },
+      "pivot": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "materialId": "gray-tiles",
+      "parentId": "tilerow8",
+      "receiveShadows": true,
+      "castShadows": false,
+      "sortIndex": 700,
+      "visible": true,
+      "isPrimitive": true,
+      "type": "Cube"
+    },
+    {
+      "id": "tile06_dup_dup_dup_dup",
+      "name": "tile06_dup_dup_dup_dup",
+      "position": {
+        "x": -3.9991588592529297,
+        "y": -0.699999988079071,
+        "z": 0.5
+      },
+      "rotation": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 1
+      },
+      "scaling": {
+        "x": 1,
+        "y": 0.15,
+        "z": 1
+      },
+      "pivot": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "materialId": "gray-tiles",
+      "parentId": "tilerow8",
+      "receiveShadows": true,
+      "castShadows": false,
+      "sortIndex": 800,
+      "visible": true,
+      "isPrimitive": true,
+      "type": "Cube"
+    },
+    {
+      "id": "tile07_dup_dup_dup_dup",
+      "name": "tile07_dup_dup_dup_dup",
+      "position": {
+        "x": -2.9000000953674316,
+        "y": -0.699999988079071,
+        "z": 0.5
+      },
+      "rotation": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 1
+      },
+      "scaling": {
+        "x": 1,
+        "y": 0.15,
+        "z": 1
+      },
+      "pivot": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "materialId": "gray-tiles",
+      "parentId": "tilerow8",
+      "receiveShadows": true,
+      "castShadows": false,
+      "sortIndex": 900,
+      "visible": true,
+      "isPrimitive": true,
+      "type": "Cube"
+    },
+    {
+      "id": "tile08_dup_dup_dup_dup",
+      "name": "tile08_dup_dup_dup_dup",
+      "position": {
+        "x": -1.7999999523162842,
+        "y": -0.699999988079071,
+        "z": 0.5
+      },
+      "rotation": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 1
+      },
+      "scaling": {
+        "x": 1,
+        "y": 0.15,
+        "z": 1
+      },
+      "pivot": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "materialId": "gray-tiles",
+      "parentId": "tilerow8",
+      "receiveShadows": true,
+      "castShadows": false,
+      "sortIndex": 1500,
+      "visible": true,
+      "isPrimitive": true,
+      "type": "Cube"
+    },
+    {
+      "id": "tile09_dup_dup_dup_dup",
+      "name": "tile09_dup_dup_dup_dup",
+      "position": {
+        "x": -0.7033326625823975,
+        "y": -0.699999988079071,
+        "z": 0.5
+      },
+      "rotation": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 1
+      },
+      "scaling": {
+        "x": 1,
+        "y": 0.15,
+        "z": 1
+      },
+      "pivot": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "materialId": "gray-tiles",
+      "parentId": "tilerow8",
+      "receiveShadows": true,
+      "castShadows": false,
+      "sortIndex": 1600,
+      "visible": true,
+      "isPrimitive": true,
+      "type": "Cube"
+    },
+    {
+      "id": "tile10_dup_dup_dup_dup",
+      "name": "tile10_dup_dup_dup_dup",
+      "position": {
+        "x": 0.4000000059604645,
+        "y": -0.699999988079071,
+        "z": 0.5
+      },
+      "rotation": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 1
+      },
+      "scaling": {
+        "x": 1,
+        "y": 0.15,
+        "z": 1
+      },
+      "pivot": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "materialId": "gray-tiles",
+      "parentId": "tilerow8",
+      "receiveShadows": true,
+      "castShadows": false,
+      "sortIndex": 1700,
+      "visible": true,
+      "isPrimitive": true,
+      "type": "Cube"
+    },
+    {
+      "id": "tile02_dup_2",
+      "name": "tile02_dup_2",
+      "position": {
+        "x": -8.399999618530273,
+        "y": -0.699999988079071,
+        "z": 0.5
+      },
+      "rotation": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 1
+      },
+      "scaling": {
+        "x": 1,
+        "y": 0.15,
+        "z": 1
+      },
+      "pivot": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "materialId": "gray-tiles",
+      "parentId": "tilerow9",
+      "receiveShadows": true,
+      "castShadows": false,
+      "sortIndex": 100,
+      "visible": true,
+      "isPrimitive": true,
+      "type": "Cube"
+    },
+    {
+      "id": "tile01_dup_2",
+      "name": "tile01_dup_2",
+      "position": {
+        "x": -9.5,
+        "y": -0.699999988079071,
+        "z": 0.5
+      },
+      "rotation": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 1
+      },
+      "scaling": {
+        "x": 1,
+        "y": 0.15,
+        "z": 1
+      },
+      "pivot": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "materialId": "gray-tiles",
+      "parentId": "tilerow9",
+      "receiveShadows": true,
+      "castShadows": false,
+      "sortIndex": 300,
+      "visible": true,
+      "isPrimitive": true,
+      "type": "Cube"
+    },
+    {
+      "id": "tile03_dup_2",
+      "name": "tile03_dup_2",
+      "position": {
+        "x": -7.296505451202393,
+        "y": -0.699999988079071,
+        "z": 0.5
+      },
+      "rotation": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 1
+      },
+      "scaling": {
+        "x": 1,
+        "y": 0.15,
+        "z": 1
+      },
+      "pivot": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "materialId": "gray-tiles",
+      "parentId": "tilerow9",
+      "receiveShadows": true,
+      "castShadows": false,
+      "sortIndex": 500,
+      "visible": true,
+      "isPrimitive": true,
+      "type": "Cube"
+    },
+    {
+      "id": "tile04_dup_2",
+      "name": "tile04_dup_2",
+      "position": {
+        "x": -6.202653408050537,
+        "y": -0.699999988079071,
+        "z": 0.5
+      },
+      "rotation": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 1
+      },
+      "scaling": {
+        "x": 1,
+        "y": 0.15,
+        "z": 1
+      },
+      "pivot": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "materialId": "gray-tiles",
+      "parentId": "tilerow9",
+      "receiveShadows": true,
+      "castShadows": false,
+      "sortIndex": 600,
+      "visible": true,
+      "isPrimitive": true,
+      "type": "Cube"
+    },
+    {
+      "id": "tile05_dup_2",
+      "name": "tile05_dup_2",
+      "position": {
+        "x": -5.1026530265808105,
+        "y": -0.699999988079071,
+        "z": 0.5
+      },
+      "rotation": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 1
+      },
+      "scaling": {
+        "x": 1,
+        "y": 0.15,
+        "z": 1
+      },
+      "pivot": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "materialId": "gray-tiles",
+      "parentId": "tilerow9",
+      "receiveShadows": true,
+      "castShadows": false,
+      "sortIndex": 700,
+      "visible": true,
+      "isPrimitive": true,
+      "type": "Cube"
+    },
+    {
+      "id": "tile06_dup_2",
+      "name": "tile06_dup_2",
+      "position": {
+        "x": -3.9991588592529297,
+        "y": -0.699999988079071,
+        "z": 0.5
+      },
+      "rotation": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 1
+      },
+      "scaling": {
+        "x": 1,
+        "y": 0.15,
+        "z": 1
+      },
+      "pivot": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "materialId": "gray-tiles",
+      "parentId": "tilerow9",
+      "receiveShadows": true,
+      "castShadows": false,
+      "sortIndex": 800,
+      "visible": true,
+      "isPrimitive": true,
+      "type": "Cube"
+    },
+    {
+      "id": "tile07_dup_2",
+      "name": "tile07_dup_2",
+      "position": {
+        "x": -2.9000000953674316,
+        "y": -0.699999988079071,
+        "z": 0.5
+      },
+      "rotation": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 1
+      },
+      "scaling": {
+        "x": 1,
+        "y": 0.15,
+        "z": 1
+      },
+      "pivot": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "materialId": "gray-tiles",
+      "parentId": "tilerow9",
+      "receiveShadows": true,
+      "castShadows": false,
+      "sortIndex": 900,
+      "visible": true,
+      "isPrimitive": true,
+      "type": "Cube"
+    },
+    {
+      "id": "tile08_dup_2",
+      "name": "tile08_dup_2",
+      "position": {
+        "x": -1.7999999523162842,
+        "y": -0.699999988079071,
+        "z": 0.5
+      },
+      "rotation": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 1
+      },
+      "scaling": {
+        "x": 1,
+        "y": 0.15,
+        "z": 1
+      },
+      "pivot": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "materialId": "gray-tiles",
+      "parentId": "tilerow9",
+      "receiveShadows": true,
+      "castShadows": false,
+      "sortIndex": 1500,
+      "visible": true,
+      "isPrimitive": true,
+      "type": "Cube"
+    },
+    {
+      "id": "tile09_dup_2",
+      "name": "tile09_dup_2",
+      "position": {
+        "x": -0.7033326625823975,
+        "y": -0.699999988079071,
+        "z": 0.5
+      },
+      "rotation": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 1
+      },
+      "scaling": {
+        "x": 1,
+        "y": 0.15,
+        "z": 1
+      },
+      "pivot": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "materialId": "gray-tiles",
+      "parentId": "tilerow9",
+      "receiveShadows": true,
+      "castShadows": false,
+      "sortIndex": 1600,
+      "visible": true,
+      "isPrimitive": true,
+      "type": "Cube"
+    },
+    {
+      "id": "tile10_dup_2",
+      "name": "tile10_dup_2",
+      "position": {
+        "x": 0.4000000059604645,
+        "y": -0.699999988079071,
+        "z": 0.5
+      },
+      "rotation": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 1
+      },
+      "scaling": {
+        "x": 1,
+        "y": 0.15,
+        "z": 1
+      },
+      "pivot": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "materialId": "gray-tiles",
+      "parentId": "tilerow9",
+      "receiveShadows": true,
+      "castShadows": false,
+      "sortIndex": 1700,
+      "visible": true,
+      "isPrimitive": true,
+      "type": "Cube"
+    }
+  ],
+  "transformNodes": [
+    {
+      "id": "tilerow9",
+      "name": "tilerow9",
+      "position": {
+        "x": 4.395975589752197,
+        "y": 1,
+        "z": 3.8898158073425293
+      },
+      "rotation": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 1
+      },
+      "scaling": {
+        "x": 1,
+        "y": 1,
+        "z": 1
+      },
+      "parentId": null,
+      "sortIndex": 0,
+      "visible": true
+    },
+    {
+      "id": "tilerow8",
+      "name": "tilerow8",
+      "position": {
+        "x": 4.395975589752197,
+        "y": 1,
+        "z": 2.7630133628845215
+      },
+      "rotation": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 1
+      },
+      "scaling": {
+        "x": 1,
+        "y": 1,
+        "z": 1
+      },
+      "parentId": null,
+      "sortIndex": 800,
+      "visible": true
+    },
+    {
+      "id": "tilerow7",
+      "name": "tilerow7",
+      "position": {
+        "x": 4.395975589752197,
+        "y": 1,
+        "z": 1.6630133390426636
+      },
+      "rotation": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 1
+      },
+      "scaling": {
+        "x": 1,
+        "y": 1,
+        "z": 1
+      },
+      "parentId": null,
+      "sortIndex": 700,
+      "visible": true
+    },
+    {
+      "id": "tilerow1",
+      "name": "tilerow1",
+      "position": {
+        "x": 4.395975589752197,
+        "y": 1,
+        "z": -4.936986923217773
+      },
+      "rotation": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 1
+      },
+      "scaling": {
+        "x": 1,
+        "y": 1,
+        "z": 1
+      },
+      "parentId": null,
+      "sortIndex": 100,
+      "visible": true
+    },
+    {
+      "id": "tilerow2",
+      "name": "tilerow2",
+      "position": {
+        "x": 4.395975589752197,
+        "y": 1,
+        "z": -3.8369860649108887
+      },
+      "rotation": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 1
+      },
+      "scaling": {
+        "x": 1,
+        "y": 1,
+        "z": 1
+      },
+      "parentId": null,
+      "sortIndex": 200,
+      "visible": true
+    },
+    {
+      "id": "tilerow3",
+      "name": "tilerow3",
+      "position": {
+        "x": 4.395975589752197,
+        "y": 1,
+        "z": -2.7369866371154785
+      },
+      "rotation": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 1
+      },
+      "scaling": {
+        "x": 1,
+        "y": 1,
+        "z": 1
+      },
+      "parentId": null,
+      "sortIndex": 300,
+      "visible": true
+    },
+    {
+      "id": "tilerow4",
+      "name": "tilerow4",
+      "position": {
+        "x": 4.395975589752197,
+        "y": 1,
+        "z": -1.636986494064331
+      },
+      "rotation": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 1
+      },
+      "scaling": {
+        "x": 1,
+        "y": 1,
+        "z": 1
+      },
+      "parentId": null,
+      "sortIndex": 400,
+      "visible": true
+    },
+    {
+      "id": "tilerow5",
+      "name": "tilerow5",
+      "position": {
+        "x": 4.395975589752197,
+        "y": 1,
+        "z": -0.5369866490364075
+      },
+      "rotation": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 1
+      },
+      "scaling": {
+        "x": 1,
+        "y": 1,
+        "z": 1
+      },
+      "parentId": null,
+      "sortIndex": 500,
+      "visible": true
+    },
+    {
+      "id": "tilerow6",
+      "name": "tilerow6",
+      "position": {
+        "x": 4.395975589752197,
+        "y": 1,
+        "z": 0.5630131959915161
+      },
+      "rotation": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 1
+      },
+      "scaling": {
+        "x": 1,
+        "y": 1,
+        "z": 1
+      },
+      "parentId": null,
+      "sortIndex": 600,
+      "visible": true
+    }
+  ]
+}

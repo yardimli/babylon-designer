@@ -34,9 +34,9 @@
   {
     "name": "grass",
     "albedo": [
-      0.26666666666666666,
-      0.7764705882352941,
-      0.08235294117647059
+      0.17647058823529413,
+      0.3803921568627451,
+      0.10196078431372549
     ],
     "emissive": [
       0,
@@ -44,8 +44,9 @@
       0
     ],
     "metallic": 0,
-    "roughness": 1,
-    "alpha": 1
+    "roughness": 0.5,
+    "alpha": 1,
+    "albedoType": "color"
   },
   {
     "name": "red",
@@ -175,12 +176,252 @@
     },
     "texturePath": "/materials/textures/1770896116367_23263317_6764559.jpg",
     "emissive": [
+      0.00784313725490196,
+      0.00784313725490196,
+      0.00784313725490196
+    ],
+    "metallic": 0,
+    "roughness": 0.48,
+    "alpha": 1
+  },
+  {
+    "name": "gray-tiles",
+    "albedoType": "gradient",
+    "albedo": [
+      0.4,
+      0.4,
+      0.4
+    ],
+    "gradient": {
+      "top": [
+        0.7803921568627451,
+        0.7803921568627451,
+        0.7803921568627451
+      ],
+      "bottom": [
+        0.6705882352941176,
+        0.6705882352941176,
+        0.6705882352941176
+      ]
+    },
+    "texturePath": null,
+    "emissive": [
+      0.10196078431372549,
+      0.10196078431372549,
+      0.10196078431372549
+    ],
+    "metallic": 0,
+    "roughness": 0.3,
+    "alpha": 1
+  },
+  {
+    "name": "gray-pants",
+    "albedoType": "color",
+    "albedo": [
+      0.11372549019607843,
+      0.10588235294117647,
+      0.10588235294117647
+    ],
+    "gradient": {
+      "top": [
+        1,
+        1,
+        1
+      ],
+      "bottom": [
+        0,
+        0,
+        0
+      ]
+    },
+    "texturePath": null,
+    "emissive": [
       0,
       0,
       0
     ],
     "metallic": 0,
     "roughness": 1,
+    "alpha": 1
+  },
+  {
+    "name": "leg-joint",
+    "albedoType": "color",
+    "albedo": [
+      1,
+      0.6588235294117647,
+      0.6588235294117647
+    ],
+    "gradient": {
+      "top": [
+        1,
+        1,
+        1
+      ],
+      "bottom": [
+        0,
+        0,
+        0
+      ]
+    },
+    "texturePath": null,
+    "emissive": [
+      0,
+      0,
+      0
+    ],
+    "metallic": 0,
+    "roughness": 1,
+    "alpha": 1
+  },
+  {
+    "name": "shoes",
+    "albedoType": "color",
+    "albedo": [
+      0.5450980392156862,
+      0.3333333333333333,
+      0.3333333333333333
+    ],
+    "gradient": {
+      "top": [
+        1,
+        1,
+        1
+      ],
+      "bottom": [
+        0,
+        0,
+        0
+      ]
+    },
+    "texturePath": null,
+    "emissive": [
+      0,
+      0,
+      0
+    ],
+    "metallic": 0,
+    "roughness": 1,
+    "alpha": 1
+  },
+  {
+    "name": "shirt-blue",
+    "albedoType": "color",
+    "albedo": [
+      0,
+      0.3333333333333333,
+      1
+    ],
+    "gradient": {
+      "top": [
+        1,
+        1,
+        1
+      ],
+      "bottom": [
+        0,
+        0,
+        0
+      ]
+    },
+    "texturePath": null,
+    "emissive": [
+      0.2196078431372549,
+      0.2196078431372549,
+      0.2196078431372549
+    ],
+    "metallic": 0,
+    "roughness": 1,
+    "alpha": 1
+  },
+  {
+    "name": "parcel",
+    "albedoType": "color",
+    "albedo": [
+      0.27058823529411763,
+      0.3843137254901961,
+      0.17647058823529413
+    ],
+    "gradient": {
+      "top": [
+        1,
+        1,
+        1
+      ],
+      "bottom": [
+        0,
+        0,
+        0
+      ]
+    },
+    "texturePath": null,
+    "emissive": [
+      0,
+      0,
+      0
+    ],
+    "metallic": 0,
+    "roughness": 0.5,
+    "alpha": 1
+  },
+  {
+    "name": "tape",
+    "albedoType": "color",
+    "albedo": [
+      0.1803921568627451,
+      0.1803921568627451,
+      0.1803921568627451
+    ],
+    "gradient": {
+      "top": [
+        1,
+        1,
+        1
+      ],
+      "bottom": [
+        0,
+        0,
+        0
+      ]
+    },
+    "texturePath": null,
+    "emissive": [
+      0,
+      0,
+      0
+    ],
+    "metallic": 0,
+    "roughness": 0.3,
+    "alpha": 1
+  },
+  {
+    "name": "wall-gray",
+    "albedoType": "gradient",
+    "albedo": [
+      1,
+      1,
+      1
+    ],
+    "gradient": {
+      "top": [
+        0.7803921568627451,
+        0.7803921568627451,
+        0.7803921568627451
+      ],
+      "bottom": [
+        0.4392156862745098,
+        0.4392156862745098,
+        0.4392156862745098
+      ]
+    },
+    "texturePath": null,
+    "emissive": [
+      0,
+      0,
+      0
+    ],
+    "metallic": 0,
+    "roughness": 0.3,
     "alpha": 1
   }
 ]

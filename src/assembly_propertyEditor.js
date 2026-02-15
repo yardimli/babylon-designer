@@ -1,4 +1,4 @@
-import { Vector3, Quaternion, Color3, AbstractMesh } from "@babylonjs/core";
+import { Vector3, Quaternion, Color3, AbstractMesh, TransformNode } from "@babylonjs/core";
 import { scene, getUniqueId } from "./assembly_scene.js";
 import { markModified } from "./assembly_manager.js";
 import { selectNode, getSelectedNodes } from "./assembly_selectionManager.js";
@@ -319,7 +319,6 @@ function bindInputs(targets) {
 	}
 }
 
-// ... rest of the file (updateParentDropdown, updateMaterialDropdown, etc) ...
 function updateParentDropdown(targets) {
 	const select = document.getElementById("prop-parent");
 	select.innerHTML = '<option value="">None</option>';
@@ -464,7 +463,20 @@ function duplicateHierarchy(node, parent) {
 	const baseId = node.name + "_dup";
 	const newId = getUniqueId(scene, baseId);
 	
-	if (node.metadata && node.metadata.isLightProxy) {
+	// 1. Handle Assembly Root (Imported Scene)
+	if (node.metadata && node.metadata.isAssemblyRoot) {
+		newNode = new TransformNode(newId, scene);
+		newNode.position.copyFrom(node.position);
+		if (node.rotationQuaternion) newNode.rotationQuaternion = node.rotationQuaternion.clone();
+		else newNode.rotation = node.rotation.clone();
+		newNode.scaling.copyFrom(node.scaling);
+		newNode.name = node.name; // Preserve name logic if desired, or use newId
+		
+		// Deep copy metadata to preserve isAssemblyRoot, sourceFile, etc.
+		newNode.metadata = JSON.parse(JSON.stringify(node.metadata));
+	}
+	// 2. Handle Lights
+	else if (node.metadata && node.metadata.isLightProxy) {
 		const oldLight = scene.getLightByID(node.metadata.lightId);
 		if (oldLight) {
 			const savedData = {
@@ -475,20 +487,34 @@ function duplicateHierarchy(node, parent) {
 				direction: oldLight.direction ? { x: oldLight.direction.x, y: oldLight.direction.y, z: oldLight.direction.z } : null
 			};
 			newNode = createLight(node.metadata.lightType, savedData, scene);
-			if (newNode && parent) newNode.parent = parent;
 		}
-	} else if (node.metadata && node.metadata.isTransformNode) {
-		const savedData = {
-			id: newId,
-			position: node.position,
-			rotation: node.rotationQuaternion || Quaternion.FromEulerVector(node.rotation),
-			scaling: node.scaling,
-			name: newId
-		};
-		newNode = createTransformNode(savedData, scene);
-		if (newNode && parent) newNode.parent = parent;
-	} else if (node.metadata && node.metadata.isPrimitive) {
-		newNode = node.clone(newId, parent);
+	}
+	// 3. Handle Transform Nodes
+	else if (node.metadata && node.metadata.isTransformNode) {
+		// If it's an internal node (part of an assembly), duplicate as raw node to avoid adding a proxy box
+		if (node.metadata.isInternal) {
+			newNode = new TransformNode(newId, scene);
+			newNode.position.copyFrom(node.position);
+			if (node.rotationQuaternion) newNode.rotationQuaternion = node.rotationQuaternion.clone();
+			else newNode.rotation = node.rotation.clone();
+			newNode.scaling.copyFrom(node.scaling);
+			newNode.name = node.name;
+			newNode.metadata = JSON.parse(JSON.stringify(node.metadata));
+		} else {
+			// User-created node, use manager to create with proxy
+			const savedData = {
+				id: newId,
+				position: node.position,
+				rotation: node.rotationQuaternion || Quaternion.FromEulerVector(node.rotation),
+				scaling: node.scaling,
+				name: newId
+			};
+			newNode = createTransformNode(savedData, scene);
+		}
+	}
+	// 4. Handle Primitives and Shapes
+	else if (node.metadata && (node.metadata.isPrimitive || node.metadata.isShape)) {
+		newNode = node.clone(newId, parent); // Parent handled here or below
 		newNode.id = newId;
 		if (node.metadata) newNode.metadata = JSON.parse(JSON.stringify(node.metadata));
 		newNode.receiveShadows = node.receiveShadows;
@@ -496,11 +522,20 @@ function duplicateHierarchy(node, parent) {
 	}
 	
 	if (newNode) {
+		if (parent && !newNode.parent) newNode.parent = parent;
+		
+		// CRITICAL: Ensure isInternal is preserved if lost during creation
+		if (node.metadata && node.metadata.isInternal) {
+			if (!newNode.metadata) newNode.metadata = {};
+			newNode.metadata.isInternal = true;
+		}
+		
 		// Sync visibility
 		newNode.setEnabled(node.isEnabled());
 		
+		// Recurse Children
 		node.getChildren().forEach(child => {
-			if (child.metadata && (child.metadata.isPrimitive || child.metadata.isLightProxy || child.metadata.isTransformNode)) {
+			if (child.metadata && (child.metadata.isPrimitive || child.metadata.isShape || child.metadata.isLightProxy || child.metadata.isTransformNode)) {
 				duplicateHierarchy(child, newNode);
 			}
 		});

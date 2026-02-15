@@ -1,0 +1,449 @@
+{
+  "version": 1.1,
+  "type": "assembly",
+  "scenes": [
+    {
+      "id": "1st-floor-ground",
+      "sourceFile": "ground-tiles.json",
+      "position": {
+        "x": -2.462341070175171,
+        "y": 0,
+        "z": -4.674055099487305
+      },
+      "rotation": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 1
+      },
+      "scaling": {
+        "x": 3,
+        "y": 1,
+        "z": 3
+      },
+      "name": "1st-floor-ground",
+      "visible": true
+    },
+    {
+      "id": "brick-wall_inst",
+      "sourceFile": "brick-wall.json",
+      "position": {
+        "x": -6.002792835235596,
+        "y": 0.5999999046325684,
+        "z": 9.050000190734863
+      },
+      "rotation": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 1
+      },
+      "scaling": {
+        "x": 0.5,
+        "y": 0.5,
+        "z": 0.5
+      },
+      "name": "brick-wall_inst",
+      "visible": true
+    },
+    {
+      "id": "brick-wall_inst_1",
+      "sourceFile": "brick-wall.json",
+      "position": {
+        "x": -2.5027928352355957,
+        "y": 0.5999999046325684,
+        "z": 5.099999904632568
+      },
+      "rotation": {
+        "x": 0,
+        "y": 0.7071067811865475,
+        "z": 0,
+        "w": 0.7071067811865476
+      },
+      "scaling": {
+        "x": 0.4000000059604645,
+        "y": 0.5,
+        "z": 0.5
+      },
+      "name": "brick-wall_inst_1",
+      "visible": true
+    },
+    {
+      "id": "sky_inst",
+      "sourceFile": "sky.json",
+      "position": {
+        "x": 1.5199999809265137,
+        "y": 0,
+        "z": 21.600000381469727
+      },
+      "rotation": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 1
+      },
+      "scaling": {
+        "x": 2,
+        "y": 2,
+        "z": 1
+      },
+      "name": "sky_inst",
+      "visible": true
+    },
+    {
+      "id": "brick-wall_inst_dup",
+      "sourceFile": "brick-wall.json",
+      "position": {
+        "x": -6.002792835235596,
+        "y": 3.9000000953674316,
+        "z": 9.050000190734863
+      },
+      "rotation": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 1
+      },
+      "scaling": {
+        "x": 0.5,
+        "y": 0.5,
+        "z": 0.5
+      },
+      "name": "brick-wall_inst",
+      "visible": true
+    },
+    {
+      "id": "brick-wall_inst_1_dup",
+      "sourceFile": "brick-wall.json",
+      "position": {
+        "x": -2.5027928352355957,
+        "y": 3.9000000953674316,
+        "z": 5.099999904632568
+      },
+      "rotation": {
+        "x": 0,
+        "y": 0.7071067811865475,
+        "z": 0,
+        "w": 0.7071067811865476
+      },
+      "scaling": {
+        "x": 0.4000000059604645,
+        "y": 0.5,
+        "z": 0.5
+      },
+      "name": "brick-wall_inst_1",
+      "visible": true
+    },
+    {
+      "id": "humanoid_inst",
+      "sourceFile": "humanoid.json",
+      "position": {
+        "x": -14.979926109313965,
+        "y": 0.8100000023841858,
+        "z": -5.399637699127197
+      },
+      "rotation": {
+        "x": 0,
+        "y": 1,
+        "z": 0,
+        "w": 6.123234262925839e-17
+      },
+      "scaling": {
+        "x": 0.5,
+        "y": 0.5,
+        "z": 0.5
+      },
+      "name": "humanoid_inst",
+      "visible": true
+    },
+    {
+      "id": "brick-wall_inst_1_dup_1",
+      "sourceFile": "brick-wall.json",
+      "position": {
+        "x": -2.5027928352355957,
+        "y": 10.498096466064453,
+        "z": 5.099999904632568
+      },
+      "rotation": {
+        "x": 0,
+        "y": 0.7071067811865475,
+        "z": 0,
+        "w": 0.7071067811865476
+      },
+      "scaling": {
+        "x": 0.4000000059604645,
+        "y": 0.5,
+        "z": 0.5
+      },
+      "name": "brick-wall_inst_1",
+      "visible": true
+    },
+    {
+      "id": "brick-wall_inst_dup_1",
+      "sourceFile": "brick-wall.json",
+      "position": {
+        "x": -6.002792835235596,
+        "y": 10.498096466064453,
+        "z": 9.050000190734863
+      },
+      "rotation": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 1
+      },
+      "scaling": {
+        "x": 0.5,
+        "y": 0.5,
+        "z": 0.5
+      },
+      "name": "brick-wall_inst",
+      "visible": true
+    },
+    {
+      "id": "brick-wall_inst_1_dup_2",
+      "sourceFile": "brick-wall.json",
+      "position": {
+        "x": -2.5027928352355957,
+        "y": 7.198096752166748,
+        "z": 5.099999904632568
+      },
+      "rotation": {
+        "x": 0,
+        "y": 0.7071067811865475,
+        "z": 0,
+        "w": 0.7071067811865476
+      },
+      "scaling": {
+        "x": 0.4000000059604645,
+        "y": 0.5,
+        "z": 0.5
+      },
+      "name": "brick-wall_inst_1",
+      "visible": true
+    },
+    {
+      "id": "brick-wall_inst_dup_2",
+      "sourceFile": "brick-wall.json",
+      "position": {
+        "x": -6.002792835235596,
+        "y": 7.198096752166748,
+        "z": 9.050000190734863
+      },
+      "rotation": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 1
+      },
+      "scaling": {
+        "x": 0.5,
+        "y": 0.5,
+        "z": 0.5
+      },
+      "name": "brick-wall_inst",
+      "visible": true
+    },
+    {
+      "id": "2nd-floor-ground",
+      "sourceFile": "ground-tiles.json",
+      "position": {
+        "x": -2.67844820022583,
+        "y": 13.65999984741211,
+        "z": -4.495110034942627
+      },
+      "rotation": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 1
+      },
+      "scaling": {
+        "x": 3,
+        "y": 1,
+        "z": 3
+      },
+      "name": "2nd-floor-ground",
+      "visible": true
+    },
+    {
+      "id": "parcel-with-tape_inst",
+      "sourceFile": "parcel-with-tape.json",
+      "position": {
+        "x": -14.929527282714844,
+        "y": 3.4407238960266113,
+        "z": -3.7244906425476074
+      },
+      "rotation": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 1
+      },
+      "scaling": {
+        "x": 0.5,
+        "y": 0.4000000059604645,
+        "z": 0.4000000059604645
+      },
+      "name": "parcel-with-tape_inst",
+      "visible": true
+    },
+    {
+      "id": "gray-wall_inst",
+      "sourceFile": "gray-wall.json",
+      "position": {
+        "x": 5.655826568603516,
+        "y": 6.52747106552124,
+        "z": 2.130000114440918
+      },
+      "rotation": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 1
+      },
+      "scaling": {
+        "x": 1.649999976158142,
+        "y": 1.350000023841858,
+        "z": 1
+      },
+      "name": "gray-wall_inst",
+      "visible": true
+    },
+    {
+      "id": "gray-wall_inst_dup",
+      "sourceFile": "gray-wall.json",
+      "position": {
+        "x": 13.444029808044434,
+        "y": 6.480000019073486,
+        "z": -8.951613426208496
+      },
+      "rotation": {
+        "x": 0,
+        "y": 0.7071067811865475,
+        "z": 0,
+        "w": 0.7071067811865476
+      },
+      "scaling": {
+        "x": 2.200000047683716,
+        "y": 1.350000023841858,
+        "z": 1
+      },
+      "name": "gray-wall_inst",
+      "visible": true
+    },
+    {
+      "id": "brick-wall_inst_dup_3",
+      "sourceFile": "brick-wall.json",
+      "position": {
+        "x": -14.522801399230957,
+        "y": 3.9000000953674316,
+        "z": 9.050000190734863
+      },
+      "rotation": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 1
+      },
+      "scaling": {
+        "x": 0.5,
+        "y": 0.5,
+        "z": 0.5
+      },
+      "name": "brick-wall_inst",
+      "visible": true
+    },
+    {
+      "id": "brick-wall_inst_dup_4",
+      "sourceFile": "brick-wall.json",
+      "position": {
+        "x": -14.522801399230957,
+        "y": 10.498096466064453,
+        "z": 9.050000190734863
+      },
+      "rotation": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 1
+      },
+      "scaling": {
+        "x": 0.5,
+        "y": 0.5,
+        "z": 0.5
+      },
+      "name": "brick-wall_inst",
+      "visible": true
+    },
+    {
+      "id": "brick-wall_inst_dup_5",
+      "sourceFile": "brick-wall.json",
+      "position": {
+        "x": -14.522801399230957,
+        "y": 7.198096752166748,
+        "z": 9.050000190734863
+      },
+      "rotation": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 1
+      },
+      "scaling": {
+        "x": 0.5,
+        "y": 0.5,
+        "z": 0.5
+      },
+      "name": "brick-wall_inst",
+      "visible": true
+    },
+    {
+      "id": "brick-wall_inst_dup_6",
+      "sourceFile": "brick-wall.json",
+      "position": {
+        "x": -14.522801399230957,
+        "y": 0.5999999046325684,
+        "z": 9.050000190734863
+      },
+      "rotation": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 1
+      },
+      "scaling": {
+        "x": 0.5,
+        "y": 0.5,
+        "z": 0.5
+      },
+      "name": "brick-wall_inst",
+      "visible": true
+    }
+  ],
+  "lights": [
+    {
+      "id": "light_1771135934812",
+      "type": "directional",
+      "position": {
+        "x": 0,
+        "y": 0,
+        "z": 20
+      },
+      "direction": {
+        "x": 0.7157553896781752,
+        "y": -0.5107994918972512,
+        "z": -0.476212243883075
+      },
+      "intensity": 2,
+      "diffuse": {
+        "r": 1,
+        "g": 1,
+        "b": 1
+      },
+      "name": "light_1771135934812_proxy",
+      "parentId": null,
+      "visible": true
+    }
+  ]
+}
