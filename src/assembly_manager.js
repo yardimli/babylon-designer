@@ -1,4 +1,4 @@
-import { TransformNode, Quaternion, Vector3, Color3, PBRMaterial } from "@babylonjs/core";
+import { TransformNode, Quaternion, Vector3, Color3, StandardMaterial } from "@babylonjs/core";
 import { scene, resetAxisIndicator, getUniqueId } from "./assembly_scene.js";
 import { setupGizmos, disposeGizmos } from "./assembly_gizmoControl.js";
 import { updatePropertyEditor } from "./assembly_propertyEditor.js";

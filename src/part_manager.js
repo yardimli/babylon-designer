@@ -1,4 +1,4 @@
-import { Quaternion, PBRMaterial, Color3 } from "@babylonjs/core";
+import { Quaternion, StandardMaterial, Color3 } from "@babylonjs/core";
 import { part, resetAxisIndicator, getSkipMaterialNames } from "./part.js";
 import { setupGizmos, disposeGizmos } from "./part_gizmoControl.js";
 import { updatePropertyEditor } from "./part_propertyEditor.js";
@@ -91,6 +91,8 @@ export function serializeScene() {
 					type: mesh.metadata.lightType,
 					position: { x: light.position.x, y: light.position.y, z: light.position.z },
 					direction: light.direction ? { x: light.direction.x, y: light.direction.y, z: light.direction.z } : null,
+					angle: light.angle !== undefined ? light.angle : null, // NEW: Save angle
+					exponent: light.exponent !== undefined ? light.exponent : null, // NEW: Save exponent
 					intensity: light.intensity,
 					diffuse: { r: light.diffuse.r, g: light.diffuse.g, b: light.diffuse.b },
 					parentId: light.parent ? light.parent.id : null,
@@ -227,6 +229,7 @@ export async function loadSceneData(data) {
 		}
 	}
 
+
 	if (data.transformNodes) {
 		data.transformNodes.forEach(nodeData => {
 			const node = createTransformNode(nodeData, part);
@@ -234,20 +237,6 @@ export async function loadSceneData(data) {
 				idMap.set(nodeData.id, node.id);
 				if (node.metadata) node.metadata.sortIndex = nodeData.sortIndex || 0;
 				if (nodeData.visible !== undefined) node.setEnabled(nodeData.visible);
-			}
-		});
-	}
-
-	if (data.lights) {
-		data.lights.forEach(lightData => {
-			const proxy = createLight(lightData.type, lightData, part);
-			if (proxy) {
-				const light = part.getLightByID(proxy.metadata.lightId);
-				if (light) {
-					idMap.set(lightData.id, light.id);
-				}
-				if (proxy.metadata) proxy.metadata.sortIndex = lightData.sortIndex || 0;
-				if (lightData.visible !== undefined) proxy.setEnabled(lightData.visible);
 			}
 		});
 	}
@@ -273,6 +262,8 @@ export async function loadSceneData(data) {
 			}
 		});
 	}
+
+
 
 	// 4. Restore Hierarchy
 	const findParent = (idOrName) => {
@@ -300,8 +291,24 @@ export async function loadSceneData(data) {
 	};
 
 	restoreParents(data.transformNodes);
-	restoreParents(data.lights);
 	restoreParents(data.meshes);
+
+	if (data.lights) {
+		data.lights.forEach(lightData => {
+			if (lightData.type === "directional") return; // NEW: Ignore deprecated directional lights
+
+			const proxy = createLight(lightData.type, lightData, part);
+			if (proxy) {
+				const light = part.getLightByID(proxy.metadata.lightId);
+				if (light) {
+					idMap.set(lightData.id, light.id);
+				}
+				if (proxy.metadata) proxy.metadata.sortIndex = lightData.sortIndex || 0;
+				if (lightData.visible !== undefined) proxy.setEnabled(lightData.visible);
+			}
+		});
+	}
+	restoreParents(data.lights);
 
 	setupGizmos(part);
 	resetAxisIndicator();

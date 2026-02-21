@@ -1,7 +1,12 @@
 [
   {
     "name": "white",
-    "albedo": [
+    "diffuse": [
+      1,
+      1,
+      1
+    ],
+    "specular": [
       1,
       1,
       1
@@ -11,417 +16,514 @@
       0,
       0
     ],
-    "metallic": 0.47,
-    "roughness": 1,
-    "alpha": 1
+    "ambient": [
+      0,
+      0,
+      0
+    ],
+    "alpha": 1,
+    "specularPower": 128,
+    "diffuseTexture": null,
+    "bumpTexture": null,
+    "bumpLevel": 1,
+    "useParallax": false,
+    "useParallaxOcclusion": false,
+    "parallaxScaleBias": 0.05
   },
   {
     "name": "blue",
-    "albedo": [
+    "diffuse": [
       0,
       0.1568627450980392,
       0.9411764705882353
     ],
-    "emissive": [
-      0,
-      0,
-      0
-    ],
-    "metallic": 0.35,
-    "roughness": 1,
-    "alpha": 1
-  },
-  {
-    "name": "grass",
-    "albedo": [
-      0.17647058823529413,
-      0.3803921568627451,
-      0.10196078431372549
-    ],
-    "emissive": [
-      0,
-      0,
-      0
-    ],
-    "metallic": 0,
-    "roughness": 0.5,
-    "alpha": 1,
-    "albedoType": "color"
-  },
-  {
-    "name": "red",
-    "albedo": [
-      1,
-      0,
-      0
-    ],
-    "emissive": [
-      0,
-      0,
-      0
-    ],
-    "metallic": 0.54,
-    "roughness": 1,
-    "alpha": 1
-  },
-  {
-    "name": "sky",
-    "albedoType": "gradient",
-    "albedo": [
+    "specular": [
       1,
       1,
       1
     ],
-    "gradient": {
-      "top": [
-        0.8352941176470589,
-        0.8235294117647058,
-        0.9764705882352941
-      ],
-      "bottom": [
-        0.2980392156862745,
-        0,
-        1
-      ]
-    },
-    "texturePath": null,
+    "emissive": [
+      0,
+      0,
+      0
+    ],
+    "ambient": [
+      0,
+      0,
+      0
+    ],
+    "alpha": 1,
+    "specularPower": 128,
+    "diffuseTexture": null,
+    "bumpTexture": null,
+    "bumpLevel": 1,
+    "useParallax": false,
+    "useParallaxOcclusion": false,
+    "parallaxScaleBias": 0.05
+  },
+  {
+    "name": "grass",
+    "diffuse": [
+      0.17647058823529413,
+      0.3803921568627451,
+      0.10196078431372549
+    ],
+    "specular": [
+      1,
+      1,
+      1
+    ],
+    "emissive": [
+      0,
+      0,
+      0
+    ],
+    "ambient": [
+      0,
+      0,
+      0
+    ],
+    "alpha": 1,
+    "specularPower": 128,
+    "diffuseTexture": null,
+    "bumpTexture": null,
+    "bumpLevel": 1,
+    "useParallax": false,
+    "useParallaxOcclusion": false,
+    "parallaxScaleBias": 0.05
+  },
+  {
+    "name": "red",
+    "diffuse": [
+      1,
+      0,
+      0
+    ],
+    "specular": [
+      1,
+      1,
+      1
+    ],
+    "emissive": [
+      0,
+      0,
+      0
+    ],
+    "ambient": [
+      0,
+      0,
+      0
+    ],
+    "alpha": 1,
+    "specularPower": 128,
+    "diffuseTexture": null,
+    "bumpTexture": null,
+    "bumpLevel": 1,
+    "useParallax": false,
+    "useParallaxOcclusion": false,
+    "parallaxScaleBias": 0.05
+  },
+  {
+    "name": "sky",
+    "diffuse": [
+      1,
+      1,
+      1
+    ],
+    "specular": [
+      1,
+      1,
+      1
+    ],
     "emissive": [
       0.16862745098039217,
       0.16862745098039217,
       0.16862745098039217
     ],
-    "metallic": 0.04,
-    "roughness": 1,
-    "alpha": 1
+    "ambient": [
+      0,
+      0,
+      0
+    ],
+    "alpha": 1,
+    "specularPower": 128,
+    "diffuseTexture": null,
+    "bumpTexture": null,
+    "bumpLevel": 1,
+    "useParallax": false,
+    "useParallaxOcclusion": false,
+    "parallaxScaleBias": 0.05
   },
   {
     "name": "floor",
-    "albedoType": "image",
-    "albedo": [
+    "diffuse": [
       1,
       1,
       1
     ],
-    "gradient": {
-      "top": [
-        1,
-        1,
-        1
-      ],
-      "bottom": [
-        0,
-        0,
-        0
-      ]
-    },
-    "texturePath": "/materials/textures/1770877673666_floor.png",
+    "specular": [
+      1,
+      1,
+      1
+    ],
     "emissive": [
       0,
       0,
       0
     ],
-    "metallic": 0,
-    "roughness": 1,
-    "alpha": 1
+    "ambient": [
+      0,
+      0,
+      0
+    ],
+    "alpha": 1,
+    "specularPower": 128,
+    "diffuseTexture": "/materials/textures/1770877673666_floor.png",
+    "bumpTexture": null,
+    "bumpLevel": 1,
+    "useParallax": false,
+    "useParallaxOcclusion": false,
+    "parallaxScaleBias": 0.05
   },
   {
     "name": "roof",
-    "albedoType": "image",
-    "albedo": [
+    "diffuse": [
       1,
       1,
       1
     ],
-    "gradient": {
-      "top": [
-        1,
-        1,
-        1
-      ],
-      "bottom": [
-        0,
-        0,
-        0
-      ]
-    },
-    "texturePath": "/materials/textures/1770877892028_roof.jpg",
+    "specular": [
+      1,
+      1,
+      1
+    ],
     "emissive": [
       0,
       0,
       0
     ],
-    "metallic": 0,
-    "roughness": 1,
-    "alpha": 1
+    "ambient": [
+      0,
+      0,
+      0
+    ],
+    "alpha": 1,
+    "specularPower": 128,
+    "diffuseTexture": "/materials/textures/1770877892028_roof.jpg",
+    "bumpTexture": null,
+    "bumpLevel": 1,
+    "useParallax": false,
+    "useParallaxOcclusion": false,
+    "parallaxScaleBias": 0.05
   },
   {
     "name": "red stone",
-    "albedoType": "image",
-    "albedo": [
+    "diffuse": [
       1,
       1,
       1
     ],
-    "gradient": {
-      "top": [
-        1,
-        1,
-        1
-      ],
-      "bottom": [
-        0,
-        0,
-        0
-      ]
-    },
-    "texturePath": "/materials/textures/1770896116367_23263317_6764559.jpg",
+    "specular": [
+      1,
+      1,
+      1
+    ],
     "emissive": [
       0.00784313725490196,
       0.00784313725490196,
       0.00784313725490196
     ],
-    "metallic": 0,
-    "roughness": 0.48,
-    "alpha": 1
+    "ambient": [
+      0,
+      0,
+      0
+    ],
+    "alpha": 1,
+    "specularPower": 128,
+    "diffuseTexture": "/materials/textures/1770896116367_23263317_6764559.jpg",
+    "bumpTexture": null,
+    "bumpLevel": 1,
+    "useParallax": false,
+    "useParallaxOcclusion": false,
+    "parallaxScaleBias": 0.05
   },
   {
     "name": "gray-tiles",
-    "albedoType": "gradient",
-    "albedo": [
+    "diffuse": [
       0.4,
       0.4,
       0.4
     ],
-    "gradient": {
-      "top": [
-        0.7803921568627451,
-        0.7803921568627451,
-        0.7803921568627451
-      ],
-      "bottom": [
-        0.6705882352941176,
-        0.6705882352941176,
-        0.6705882352941176
-      ]
-    },
-    "texturePath": null,
+    "specular": [
+      1,
+      1,
+      1
+    ],
     "emissive": [
       0.10196078431372549,
       0.10196078431372549,
       0.10196078431372549
     ],
-    "metallic": 0,
-    "roughness": 0.3,
-    "alpha": 1
+    "ambient": [
+      0,
+      0,
+      0
+    ],
+    "alpha": 1,
+    "specularPower": 128,
+    "diffuseTexture": null,
+    "bumpTexture": null,
+    "bumpLevel": 1,
+    "useParallax": false,
+    "useParallaxOcclusion": false,
+    "parallaxScaleBias": 0.05
   },
   {
     "name": "gray-pants",
-    "albedoType": "color",
-    "albedo": [
+    "diffuse": [
       0.11372549019607843,
       0.10588235294117647,
       0.10588235294117647
     ],
-    "gradient": {
-      "top": [
-        1,
-        1,
-        1
-      ],
-      "bottom": [
-        0,
-        0,
-        0
-      ]
-    },
-    "texturePath": null,
+    "specular": [
+      1,
+      1,
+      1
+    ],
     "emissive": [
       0,
       0,
       0
     ],
-    "metallic": 0,
-    "roughness": 1,
-    "alpha": 1
+    "ambient": [
+      0,
+      0,
+      0
+    ],
+    "alpha": 1,
+    "specularPower": 128,
+    "diffuseTexture": null,
+    "bumpTexture": null,
+    "bumpLevel": 1,
+    "useParallax": false,
+    "useParallaxOcclusion": false,
+    "parallaxScaleBias": 0.05
   },
   {
     "name": "leg-joint",
-    "albedoType": "color",
-    "albedo": [
+    "diffuse": [
       1,
       0.6588235294117647,
       0.6588235294117647
     ],
-    "gradient": {
-      "top": [
-        1,
-        1,
-        1
-      ],
-      "bottom": [
-        0,
-        0,
-        0
-      ]
-    },
-    "texturePath": null,
+    "specular": [
+      1,
+      1,
+      1
+    ],
     "emissive": [
       0,
       0,
       0
     ],
-    "metallic": 0,
-    "roughness": 1,
-    "alpha": 1
+    "ambient": [
+      0,
+      0,
+      0
+    ],
+    "alpha": 1,
+    "specularPower": 128,
+    "diffuseTexture": null,
+    "bumpTexture": null,
+    "bumpLevel": 1,
+    "useParallax": false,
+    "useParallaxOcclusion": false,
+    "parallaxScaleBias": 0.05
   },
   {
     "name": "shoes",
-    "albedoType": "color",
-    "albedo": [
+    "diffuse": [
       0.5450980392156862,
       0.3333333333333333,
       0.3333333333333333
     ],
-    "gradient": {
-      "top": [
-        1,
-        1,
-        1
-      ],
-      "bottom": [
-        0,
-        0,
-        0
-      ]
-    },
-    "texturePath": null,
+    "specular": [
+      1,
+      1,
+      1
+    ],
     "emissive": [
       0,
       0,
       0
     ],
-    "metallic": 0,
-    "roughness": 1,
-    "alpha": 1
+    "ambient": [
+      0,
+      0,
+      0
+    ],
+    "alpha": 1,
+    "specularPower": 128,
+    "diffuseTexture": null,
+    "bumpTexture": null,
+    "bumpLevel": 1,
+    "useParallax": false,
+    "useParallaxOcclusion": false,
+    "parallaxScaleBias": 0.05
   },
   {
     "name": "shirt-blue",
-    "albedoType": "color",
-    "albedo": [
+    "diffuse": [
       0,
       0.3333333333333333,
       1
     ],
-    "gradient": {
-      "top": [
-        1,
-        1,
-        1
-      ],
-      "bottom": [
-        0,
-        0,
-        0
-      ]
-    },
-    "texturePath": null,
+    "specular": [
+      1,
+      1,
+      1
+    ],
     "emissive": [
       0.2196078431372549,
       0.2196078431372549,
       0.2196078431372549
     ],
-    "metallic": 0,
-    "roughness": 1,
-    "alpha": 1
+    "ambient": [
+      0,
+      0,
+      0
+    ],
+    "alpha": 1,
+    "specularPower": 128,
+    "diffuseTexture": null,
+    "bumpTexture": null,
+    "bumpLevel": 1,
+    "useParallax": false,
+    "useParallaxOcclusion": false,
+    "parallaxScaleBias": 0.05
   },
   {
     "name": "parcel",
-    "albedoType": "color",
-    "albedo": [
+    "diffuse": [
       0.27058823529411763,
       0.3843137254901961,
       0.17647058823529413
     ],
-    "gradient": {
-      "top": [
-        1,
-        1,
-        1
-      ],
-      "bottom": [
-        0,
-        0,
-        0
-      ]
-    },
-    "texturePath": null,
-    "emissive": [
-      0,
-      0,
-      0
-    ],
-    "metallic": 0,
-    "roughness": 0.5,
-    "alpha": 1
-  },
-  {
-    "name": "tape",
-    "albedoType": "color",
-    "albedo": [
-      0.1803921568627451,
-      0.1803921568627451,
-      0.1803921568627451
-    ],
-    "gradient": {
-      "top": [
-        1,
-        1,
-        1
-      ],
-      "bottom": [
-        0,
-        0,
-        0
-      ]
-    },
-    "texturePath": null,
-    "emissive": [
-      0,
-      0,
-      0
-    ],
-    "metallic": 0,
-    "roughness": 0.3,
-    "alpha": 1
-  },
-  {
-    "name": "wall-gray",
-    "albedoType": "gradient",
-    "albedo": [
+    "specular": [
       1,
       1,
       1
     ],
-    "gradient": {
-      "top": [
-        0.7803921568627451,
-        0.7803921568627451,
-        0.7803921568627451
-      ],
-      "bottom": [
-        0.4392156862745098,
-        0.4392156862745098,
-        0.4392156862745098
-      ]
-    },
-    "texturePath": null,
     "emissive": [
       0,
       0,
       0
     ],
-    "metallic": 0,
-    "roughness": 0.3,
-    "alpha": 1
+    "ambient": [
+      0,
+      0,
+      0
+    ],
+    "alpha": 1,
+    "specularPower": 128,
+    "diffuseTexture": null,
+    "bumpTexture": null,
+    "bumpLevel": 1,
+    "useParallax": false,
+    "useParallaxOcclusion": false,
+    "parallaxScaleBias": 0.05
+  },
+  {
+    "name": "tape",
+    "diffuse": [
+      0.1803921568627451,
+      0.1803921568627451,
+      0.1803921568627451
+    ],
+    "specular": [
+      1,
+      1,
+      1
+    ],
+    "emissive": [
+      0,
+      0,
+      0
+    ],
+    "ambient": [
+      0,
+      0,
+      0
+    ],
+    "alpha": 1,
+    "specularPower": 128,
+    "diffuseTexture": null,
+    "bumpTexture": null,
+    "bumpLevel": 1,
+    "useParallax": false,
+    "useParallaxOcclusion": false,
+    "parallaxScaleBias": 0.05
+  },
+  {
+    "name": "wall-gray",
+    "diffuse": [
+      1,
+      1,
+      1
+    ],
+    "specular": [
+      1,
+      1,
+      1
+    ],
+    "emissive": [
+      0,
+      0,
+      0
+    ],
+    "ambient": [
+      0,
+      0,
+      0
+    ],
+    "alpha": 1,
+    "specularPower": 128,
+    "diffuseTexture": null,
+    "bumpTexture": null,
+    "bumpLevel": 1,
+    "useParallax": false,
+    "useParallaxOcclusion": false,
+    "parallaxScaleBias": 0.05
+  },
+  {
+    "name": "brickwall2",
+    "diffuse": [
+      1,
+      1,
+      1
+    ],
+    "specular": [
+      1,
+      1,
+      1
+    ],
+    "emissive": [
+      0,
+      0,
+      0
+    ],
+    "ambient": [
+      0,
+      0,
+      0
+    ],
+    "alpha": 1,
+    "specularPower": 116,
+    "diffuseTexture": "/materials/textures/1771676929764_49188.jpg",
+    "bumpTexture": "/materials/textures/1771676937371_49188_normal.png",
+    "bumpLevel": 1.5,
+    "useParallax": true,
+    "useParallaxOcclusion": true,
+    "parallaxScaleBias": 0.05
   }
 ]

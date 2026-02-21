@@ -1,0 +1,102 @@
+{
+  "version": 1.5,
+  "materialFiles": [
+    "generic.json"
+  ],
+  "lights": [
+    {
+      "id": "light_1771654513056",
+      "type": "spot",
+      "position": {
+        "x": 0,
+        "y": 0,
+        "z": -10
+      },
+      "direction": {
+        "x": 0,
+        "y": 0,
+        "z": 1
+      },
+      "angle": 1.5707963267948966,
+      "exponent": 2,
+      "intensity": 2,
+      "diffuse": {
+        "r": 1,
+        "g": 1,
+        "b": 1
+      },
+      "parentId": null,
+      "sortIndex": 0,
+      "visible": true
+    }
+  ],
+  "meshes": [
+    {
+      "id": "Cube_1771654495516",
+      "name": "Cube_1771654495516",
+      "position": {
+        "x": 0,
+        "y": 0,
+        "z": -3
+      },
+      "rotation": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 1
+      },
+      "scaling": {
+        "x": 1,
+        "y": 1,
+        "z": 1
+      },
+      "pivot": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "materialId": "red",
+      "parentId": null,
+      "receiveShadows": true,
+      "castShadows": true,
+      "sortIndex": 0,
+      "visible": true,
+      "isPrimitive": true,
+      "type": "Cube"
+    },
+    {
+      "id": "Cube_1771657256097",
+      "name": "Cube_1771657256097",
+      "position": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "rotation": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 1
+      },
+      "scaling": {
+        "x": 10,
+        "y": 10,
+        "z": 1
+      },
+      "pivot": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "materialId": "gray-tiles",
+      "parentId": null,
+      "receiveShadows": true,
+      "castShadows": true,
+      "sortIndex": 0,
+      "visible": true,
+      "isPrimitive": true,
+      "type": "Cube"
+    }
+  ],
+  "transformNodes": []
+}

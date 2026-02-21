@@ -20,15 +20,21 @@ export function createShadowGenerator(light) {
 	if (light.getTypeID() === 0) {
 		// Fix: Point lights need a smaller minZ to cast shadows from close objects
 		// and a defined maxZ to ensure the depth map resolution is utilized correctly.
-		light.shadowMinZ = 0.1;
-		light.shadowMaxZ = 100;
+		// light.shadowMinZ = 0.1;
+		// light.shadowMaxZ = 100;
 	}
 
 	// 1 is DirectionalLight
 	if (light.getTypeID() === 1) {
 		// light.autoCalcShadowZBounds = true; this makes shadows not work so we use MinZ MaxZ instead
-        light.shadowMinZ = 0.1;
-        light.shadowMaxZ = 100;
+        // light.shadowMinZ = 0.1;
+        // light.shadowMaxZ = 100;
+	}
+
+	// 2 is SpotLight (Changed: Replaced DirectionalLight with SpotLight)
+	if (light.getTypeID() === 2) {
+		// light.shadowMinZ = 0;
+		// light.shadowMaxZ = 0;
 	}
 
 	// Store reference on the light for easy disposal later
@@ -69,6 +75,8 @@ export function setShadowCaster(mesh, shouldCast) {
 	// Ensure metadata exists and is updated
 	if (!mesh.metadata) mesh.metadata = {};
 	mesh.metadata.castShadows = shouldCast;
+
+	console.log(`Updating shadow casting for mesh ${mesh.name} (${mesh.id}): ${shouldCast}`);
 	
 	shadowGenerators.forEach(sg => {
 		if (shouldCast) {

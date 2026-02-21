@@ -1,4 +1,4 @@
-import { PBRMaterial, Color3, DynamicTexture, Texture } from "@babylonjs/core";
+import { StandardMaterial, Color3, Texture } from "@babylonjs/core";
 import { part } from "./part.js";
 import { updatePropertyEditor } from "./part_propertyEditor.js";
 
@@ -53,57 +53,46 @@ export async function loadMaterialFile(filename) {
 	}
 }
 
+// MODIFIED: Setup StandardMaterial properties
 function createMaterialFromData(data, filename) {
 	// Use the material name as ID.
-	// If a material with this name exists, we assume it's the same one or user wants to overwrite/use it.
 	const matId = data.name;
 
 	let mat = part.getMaterialByID(matId);
 	if (!mat) {
-		mat = new PBRMaterial(data.name, part);
+		mat = new StandardMaterial(data.name, part);
 		mat.id = matId;
 	}
 
-	// Reset texture to ensure clean state if switching types
-	if (mat.albedoTexture) {
-		mat.albedoTexture.dispose();
-		mat.albedoTexture = null;
+	// Clean up old textures
+	if (mat.diffuseTexture) mat.diffuseTexture.dispose();
+	if (mat.bumpTexture) mat.bumpTexture.dispose();
+	mat.diffuseTexture = null;
+	mat.bumpTexture = null;
+
+	// Fallbacks included for legacy PBR files
+	mat.diffuseColor = new Color3(...(data.diffuse || data.albedo || [1, 1, 1]));
+	mat.specularColor = new Color3(...(data.specular || [1, 1, 1]));
+	mat.emissiveColor = new Color3(...(data.emissive || [0, 0, 0]));
+	mat.ambientColor = new Color3(...(data.ambient || [0, 0, 0]));
+
+	mat.alpha = data.alpha !== undefined ? data.alpha : 1.0;
+	mat.specularPower = data.specularPower !== undefined ? data.specularPower : 128;
+
+	// Diffuse Texture (Legacy fallback to texturePath)
+	const diffTexPath = data.diffuseTexture || data.texturePath;
+	if (diffTexPath) {
+		mat.diffuseTexture = new Texture(diffTexPath, part);
 	}
 
-	// Update properties based on Albedo Type
-	const type = data.albedoType || 'color';
-
-	if (type === 'gradient') {
-		// Generate Gradient Texture
-		const dt = new DynamicTexture("gradTex_" + matId, { width: 256, height: 256 }, part, false);
-		const ctx = dt.getContext();
-		const grad = ctx.createLinearGradient(0, 0, 0, 256);
-
-		const c1 = new Color3(...(data.gradient?.top || [1, 1, 1]));
-		const c2 = new Color3(...(data.gradient?.bottom || [0, 0, 0]));
-
-		grad.addColorStop(0, c1.toHexString());
-		grad.addColorStop(1, c2.toHexString());
-
-		ctx.fillStyle = grad;
-		ctx.fillRect(0, 0, 256, 256);
-		dt.update();
-
-		mat.albedoTexture = dt;
-		mat.albedoColor = new Color3(1, 1, 1);
-	} else if (type === 'image' && data.texturePath) {
-		// Load Image Texture
-		mat.albedoTexture = new Texture(data.texturePath, part);
-		mat.albedoColor = new Color3(1, 1, 1);
-	} else {
-		// Solid Color
-		mat.albedoColor = new Color3(...data.albedo);
+	// Bump Texture & Parallax
+	if (data.bumpTexture) {
+		mat.bumpTexture = new Texture(data.bumpTexture, part);
+		mat.bumpTexture.level = data.bumpLevel !== undefined ? data.bumpLevel : 1.0;
+		mat.useParallax = !!data.useParallax;
+		mat.useParallaxOcclusion = !!data.useParallaxOcclusion;
+		mat.parallaxScaleBias = data.parallaxScaleBias !== undefined ? data.parallaxScaleBias : 0.05;
 	}
-
-	mat.emissiveColor = new Color3(...data.emissive);
-	mat.metallic = data.metallic;
-	mat.roughness = data.roughness;
-	mat.alpha = data.alpha;
 
 	// Tag it so we know it came from a file
 	mat.metadata = {

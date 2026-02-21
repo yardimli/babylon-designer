@@ -96,11 +96,26 @@ export function updatePropertyEditor(targets) {
 	bindInputs(targets);
 	bindDuplicateButton(targets);
 	bindDeleteButton(targets);
-	
+
 	// --- Light Properties ---
 	const allLights = targets.every(t => t.metadata && t.metadata.isLightProxy);
 	const lightProps = document.getElementById("light-properties");
-	
+
+	// NEW: Hide Rotation and Scale for lights (since we use Direction for Spot Lights)
+	const rotSpan = Array.from(document.querySelectorAll('#transform-container span')).find(s => s.innerText === "Rotation (Deg)");
+	const sclSpan = Array.from(document.querySelectorAll('#transform-container span')).find(s => s.innerText === "Scale");
+
+	if (rotSpan) {
+		const wrapper = rotSpan.parentElement;
+		if (allLights) wrapper.classList.add("hidden");
+		else wrapper.classList.remove("hidden");
+	}
+	if (sclSpan) {
+		const wrapper = sclSpan.parentElement;
+		if (allLights) wrapper.classList.add("hidden");
+		else wrapper.classList.remove("hidden");
+	}
+
 	if (allLights) {
 		lightProps.classList.remove("hidden");
 		bindLightInputs(targets);
@@ -197,6 +212,25 @@ function syncUIFromTargets(targets) {
 	document.getElementById("scl-x").value = sx !== null ? sx.toFixed(2) : "";
 	document.getElementById("scl-y").value = sy !== null ? sy.toFixed(2) : "";
 	document.getElementById("scl-z").value = sz !== null ? sz.toFixed(2) : "";
+
+	// NEW: Sync Spot Light Direction
+	const allLights = targets.every(t => t.metadata && t.metadata.isLightProxy);
+	if (allLights) {
+		const spotLights = targets.map(t => part.getLightByID(t.metadata.lightId)).filter(l => l && l.getTypeID() === 2);
+		if (spotLights.length > 0 && spotLights.length === targets.length) {
+			const dx = getCommonValue(spotLights, l => l.direction.x);
+			const dy = getCommonValue(spotLights, l => l.direction.y);
+			const dz = getCommonValue(spotLights, l => l.direction.z);
+
+			const dxInput = document.getElementById("prop-light-dir-x");
+			const dyInput = document.getElementById("prop-light-dir-y");
+			const dzInput = document.getElementById("prop-light-dir-z");
+
+			if (dxInput && document.activeElement !== dxInput) dxInput.value = dx !== null ? dx.toFixed(2) : "";
+			if (dyInput && document.activeElement !== dyInput) dyInput.value = dy !== null ? dy.toFixed(2) : "";
+			if (dzInput && document.activeElement !== dzInput) dzInput.value = dz !== null ? dz.toFixed(2) : "";
+		}
+	}
 }
 
 function bindInputs(targets) {
@@ -407,18 +441,28 @@ function updateMaterialDropdown(targets) {
 function bindLightInputs(targets) {
 	const lights = targets.map(t => part.getLightByID(t.metadata.lightId)).filter(l => l);
 	if (lights.length === 0) return;
-	
+
 	const iInput = document.getElementById("prop-light-intensity");
 	const cInput = document.getElementById("prop-light-diffuse");
-	
+
+	// NEW: Spot light inputs
+	const dirContainer = document.getElementById("container-light-direction");
+	const dxInput = document.getElementById("prop-light-dir-x");
+	const dyInput = document.getElementById("prop-light-dir-y");
+	const dzInput = document.getElementById("prop-light-dir-z");
+	const aContainer = document.getElementById("container-light-angle");
+	const aInput = document.getElementById("prop-light-angle");
+	const eContainer = document.getElementById("container-light-exponent");
+	const eInput = document.getElementById("prop-light-exponent");
+
 	const firstI = lights[0].intensity;
 	const allSameI = lights.every(l => Math.abs(l.intensity - firstI) < 0.01);
 	iInput.value = allSameI ? firstI : "";
-	
+
 	const firstC = lights[0].diffuse.toHexString();
 	const allSameC = lights.every(l => l.diffuse.toHexString() === firstC);
 	cInput.value = allSameC ? firstC : "#ffffff";
-	
+
 	iInput.onchange = () => {
 		const val = parseFloat(iInput.value);
 		if (!isNaN(val)) {
@@ -427,13 +471,85 @@ function bindLightInputs(targets) {
 			recordState();
 		}
 	};
-	
+
 	cInput.onchange = () => {
 		const col = Color3.FromHexString(cInput.value);
 		lights.forEach(l => l.diffuse = col);
 		markModified();
 		recordState();
 	};
+
+	// NEW: Spot Light specific bindings
+	const spotLights = lights.filter(l => l.getTypeID() === 2); // 2 is SpotLight
+	if (spotLights.length > 0 && spotLights.length === lights.length) {
+		dirContainer.classList.remove("hidden");
+		aContainer.classList.remove("hidden");
+		eContainer.classList.remove("hidden");
+
+		const firstDx = spotLights[0].direction.x;
+		const allSameDx = spotLights.every(l => Math.abs(l.direction.x - firstDx) < 0.01);
+		dxInput.value = allSameDx ? firstDx.toFixed(2) : "";
+
+		const firstDy = spotLights[0].direction.y;
+		const allSameDy = spotLights.every(l => Math.abs(l.direction.y - firstDy) < 0.01);
+		dyInput.value = allSameDy ? firstDy.toFixed(2) : "";
+
+		const firstDz = spotLights[0].direction.z;
+		const allSameDz = spotLights.every(l => Math.abs(l.direction.z - firstDz) < 0.01);
+		dzInput.value = allSameDz ? firstDz.toFixed(2) : "";
+
+		const firstA = spotLights[0].angle * (180 / Math.PI);
+		const allSameA = spotLights.every(l => Math.abs(l.angle * (180 / Math.PI) - firstA) < 0.01);
+		aInput.value = allSameA ? firstA.toFixed(2) : "";
+
+		const firstE = spotLights[0].exponent;
+		const allSameE = spotLights.every(l => Math.abs(l.exponent - firstE) < 0.01);
+		eInput.value = allSameE ? firstE.toFixed(2) : "";
+
+		const updateDirection = () => {
+			const x = parseFloat(dxInput.value);
+			const y = parseFloat(dyInput.value);
+			const z = parseFloat(dzInput.value);
+			if (!isNaN(x) && !isNaN(y) && !isNaN(z)) {
+				const newDir = new Vector3(x, y, z);
+				spotLights.forEach(l => {
+					l.direction = newDir;
+					const proxy = part.getMeshByID(l.id + "_proxy");
+					if (proxy) {
+						proxy.lookAt(proxy.position.add(newDir));
+					}
+				});
+				markModified();
+				recordState();
+			}
+		};
+
+		dxInput.onchange = updateDirection;
+		dyInput.onchange = updateDirection;
+		dzInput.onchange = updateDirection;
+
+		aInput.onchange = () => {
+			const val = parseFloat(aInput.value);
+			if (!isNaN(val)) {
+				spotLights.forEach(l => l.angle = val * (Math.PI / 180));
+				markModified();
+				recordState();
+			}
+		};
+
+		eInput.onchange = () => {
+			const val = parseFloat(eInput.value);
+			if (!isNaN(val)) {
+				spotLights.forEach(l => l.exponent = val);
+				markModified();
+				recordState();
+			}
+		};
+	} else {
+		dirContainer.classList.add("hidden");
+		aContainer.classList.add("hidden");
+		eContainer.classList.add("hidden");
+	}
 }
 
 function bindDuplicateButton(targets) {
@@ -463,7 +579,7 @@ function duplicateHierarchy(node, parent) {
 	let newNode = null;
 	const baseId = node.name + "_dup";
 	const newId = getUniqueId(part, baseId);
-	
+
 	if (node.metadata && node.metadata.isLightProxy) {
 		const oldLight = part.getLightByID(node.metadata.lightId);
 		if (oldLight) {
@@ -472,7 +588,9 @@ function duplicateHierarchy(node, parent) {
 				position: node.position,
 				intensity: oldLight.intensity,
 				diffuse: oldLight.diffuse,
-				direction: oldLight.direction ? { x: oldLight.direction.x, y: oldLight.direction.y, z: oldLight.direction.z } : null
+				direction: oldLight.direction ? { x: oldLight.direction.x, y: oldLight.direction.y, z: oldLight.direction.z } : null,
+				angle: oldLight.angle, // NEW
+				exponent: oldLight.exponent // NEW
 			};
 			newNode = createLight(node.metadata.lightType, savedData, part);
 			if (newNode && parent) newNode.parent = parent;

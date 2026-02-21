@@ -1,9 +1,12 @@
-import { Engine, Scene, Vector3, Color3, PBRMaterial, MeshBuilder, HemisphericLight, ArcRotateCamera, DynamicTexture, Texture } from '@babylonjs/core';
+import { Engine, Scene, Vector3, Color3, StandardMaterial, MeshBuilder, HemisphericLight, ArcRotateCamera, Texture } from '@babylonjs/core';
 
 const canvas = document.getElementById('previewCanvas');
 const engine = new Engine(canvas, true);
 const scene = new Scene(engine);
 let previewMaterial;
+
+// NEW: Store shapes for preview switching
+const previewShapes = {};
 
 // State
 let currentFilename = null;
@@ -15,35 +18,41 @@ const ui = {
 	fileList: document.getElementById('file-list'),
 	matList: document.getElementById('mat-list'),
 	inpFilename: document.getElementById('inp-filename'),
+	shapeSelector: document.getElementById('preview-shape'), // NEW
 
 	// Material Inputs
 	name: document.getElementById('mat-name'),
-	albedoType: document.getElementById('mat-albedo-type'),
 
-	// Type: Color
-	ctrlColor: document.getElementById('ctrl-color'),
-	albedo: document.getElementById('mat-albedo'),
-
-	// Type: Gradient
-	ctrlGradient: document.getElementById('ctrl-gradient'),
-	grad1: document.getElementById('mat-grad-1'),
-	grad2: document.getElementById('mat-grad-2'),
-
-	// Type: Image
-	ctrlImage: document.getElementById('ctrl-image'),
-	fileInput: document.getElementById('mat-file-input'),
-	texPreview: document.getElementById('mat-texture-preview'),
-	texPath: document.getElementById('mat-texture-path'),
-
+	// Colors
+	diffuse: document.getElementById('mat-diffuse'),
+	specular: document.getElementById('mat-specular'),
 	emissive: document.getElementById('mat-emissive'),
-	metallic: document.getElementById('mat-metallic'),
-	roughness: document.getElementById('mat-roughness'),
+	ambient: document.getElementById('mat-ambient'),
+
+	// Sliders
 	alpha: document.getElementById('mat-alpha'),
+	specularPower: document.getElementById('mat-specular-power'),
+	bumpLevel: document.getElementById('mat-bump-level'),
+	parallaxBias: document.getElementById('mat-parallax-bias'),
 
 	// Labels
-	lMetallic: document.getElementById('val-metallic'),
-	lRoughness: document.getElementById('val-roughness'),
 	lAlpha: document.getElementById('val-alpha'),
+	lSpecularPower: document.getElementById('val-specular-power'),
+	lBumpLevel: document.getElementById('val-bump-level'),
+	lParallaxBias: document.getElementById('val-parallax-bias'),
+
+	// Textures
+	diffuseFile: document.getElementById('mat-diffuse-file'),
+	diffusePath: document.getElementById('mat-diffuse-path'),
+	btnClearDiffuse: document.getElementById('btn-clear-diffuse'),
+
+	bumpFile: document.getElementById('mat-bump-file'),
+	bumpPath: document.getElementById('mat-bump-path'),
+	btnClearBump: document.getElementById('btn-clear-bump'),
+
+	// Checkboxes
+	useParallax: document.getElementById('mat-use-parallax'),
+	useParallaxOcclusion: document.getElementById('mat-use-parallax-occlusion'),
 
 	// Buttons
 	btnRefresh: document.getElementById('btn-refresh-files'),
@@ -65,9 +74,20 @@ function initScene () {
 	const light = new HemisphericLight('light', new Vector3(0, 1, 0), scene);
 	light.intensity = 1.0;
 
-	const sphere = MeshBuilder.CreateSphere('sphere', { diameter: 1.5, segments: 32 }, scene);
-	previewMaterial = new PBRMaterial('previewMat', scene);
-	sphere.material = previewMaterial;
+	previewMaterial = new StandardMaterial('previewMat', scene);
+
+	// NEW: Create multiple shapes for previewing
+	previewShapes.sphere = MeshBuilder.CreateSphere('sphere', { diameter: 1.5, segments: 32 }, scene);
+	previewShapes.box = MeshBuilder.CreateBox('box', { size: 1.2 }, scene);
+	previewShapes.cylinder = MeshBuilder.CreateCylinder('cylinder', { height: 1.5, diameter: 1.2 }, scene);
+
+	Object.values(previewShapes).forEach(shape => {
+		shape.material = previewMaterial;
+		shape.isVisible = false;
+	});
+
+	// Default to sphere
+	previewShapes.sphere.isVisible = true;
 
 	engine.runRenderLoop(() => scene.render());
 	window.addEventListener('resize', () => engine.resize());
@@ -75,60 +95,65 @@ function initScene () {
 
 // --- Logic ---
 
+// MODIFIED: Updated default data structure for StandardMaterial
 function createDefaultMaterialData (name) {
 	return {
 		name: name || 'New Material',
-		albedoType: 'color', // color, gradient, image
-		albedo: [1, 1, 1],
-		gradient: { top: [1, 1, 1], bottom: [0, 0, 0] },
-		texturePath: null,
+		diffuse: [1, 1, 1],
+		specular: [1, 1, 1],
 		emissive: [0, 0, 0],
-		metallic: 0,
-		roughness: 1,
-		alpha: 1
+		ambient: [0, 0, 0],
+		alpha: 1.0,
+		specularPower: 128,
+		diffuseTexture: null,
+		bumpTexture: null,
+		bumpLevel: 1.0,
+		useParallax: false,
+		useParallaxOcclusion: false,
+		parallaxScaleBias: 0.05
 	};
 }
 
+// MODIFIED: Apply StandardMaterial properties
 function updatePreviewFromData (data) {
 	if (!data) return;
 
-	// Reset textures
-	previewMaterial.albedoTexture = null;
+	previewMaterial.diffuseColor = new Color3(...data.diffuse);
+	previewMaterial.specularColor = new Color3(...data.specular);
+	previewMaterial.emissiveColor = new Color3(...data.emissive);
+	previewMaterial.ambientColor = new Color3(...data.ambient);
 
-	// Handle Albedo Type
-	if (data.albedoType === 'gradient') {
-		// Generate Gradient Texture
-		const dt = new DynamicTexture('gradTex', { width: 256, height: 256 }, scene, false);
-		const ctx = dt.getContext();
-		const grad = ctx.createLinearGradient(0, 0, 0, 256);
+	previewMaterial.alpha = data.alpha;
+	previewMaterial.specularPower = data.specularPower;
 
-		const c1 = new Color3(...(data.gradient?.top || [1, 1, 1]));
-		const c2 = new Color3(...(data.gradient?.bottom || [0, 0, 0]));
-
-		grad.addColorStop(0, c1.toHexString());
-		grad.addColorStop(1, c2.toHexString());
-
-		ctx.fillStyle = grad;
-		ctx.fillRect(0, 0, 256, 256);
-		dt.update();
-
-		previewMaterial.albedoTexture = dt;
-		previewMaterial.albedoColor = new Color3(1, 1, 1);
-	} else if (data.albedoType === 'image' && data.texturePath) {
-		// Load Image Texture
-		previewMaterial.albedoTexture = new Texture(data.texturePath, scene);
-		previewMaterial.albedoColor = new Color3(1, 1, 1);
+	// Handle Diffuse Texture
+	if (data.diffuseTexture) {
+		if (!previewMaterial.diffuseTexture || previewMaterial.diffuseTexture.name !== data.diffuseTexture) {
+			if (previewMaterial.diffuseTexture) previewMaterial.diffuseTexture.dispose();
+			previewMaterial.diffuseTexture = new Texture(data.diffuseTexture, scene);
+		}
 	} else {
-		// Solid Color
-		previewMaterial.albedoColor = new Color3(...data.albedo);
+		if (previewMaterial.diffuseTexture) previewMaterial.diffuseTexture.dispose();
+		previewMaterial.diffuseTexture = null;
 	}
 
-	previewMaterial.emissiveColor = new Color3(...data.emissive);
-	previewMaterial.metallic = data.metallic;
-	previewMaterial.roughness = data.roughness;
-	previewMaterial.alpha = data.alpha;
+	// Handle Bump Texture & Parallax
+	if (data.bumpTexture) {
+		if (!previewMaterial.bumpTexture || previewMaterial.bumpTexture.name !== data.bumpTexture) {
+			if (previewMaterial.bumpTexture) previewMaterial.bumpTexture.dispose();
+			previewMaterial.bumpTexture = new Texture(data.bumpTexture, scene);
+		}
+		previewMaterial.bumpTexture.level = data.bumpLevel;
+		previewMaterial.useParallax = data.useParallax;
+		previewMaterial.useParallaxOcclusion = data.useParallaxOcclusion;
+		previewMaterial.parallaxScaleBias = data.parallaxScaleBias;
+	} else {
+		if (previewMaterial.bumpTexture) previewMaterial.bumpTexture.dispose();
+		previewMaterial.bumpTexture = null;
+	}
 }
 
+// MODIFIED: Sync UI to new data structure
 function updateUIFromData (data) {
 	if (!data) {
 		ui.name.value = '';
@@ -136,68 +161,59 @@ function updateUIFromData (data) {
 	}
 	ui.name.value = data.name;
 
-	// Albedo Type
-	const type = data.albedoType || 'color';
-	ui.albedoType.value = type;
-
-	// Toggle Visibility
-	ui.ctrlColor.classList.toggle('hidden', type !== 'color');
-	ui.ctrlGradient.classList.toggle('hidden', type !== 'gradient');
-	ui.ctrlImage.classList.toggle('hidden', type !== 'image');
-
-	// Values
-	if (type === 'color') {
-		ui.albedo.value = new Color3(...data.albedo).toHexString();
-	} else if (type === 'gradient') {
-		const g = data.gradient || { top: [1, 1, 1], bottom: [0, 0, 0] };
-		ui.grad1.value = new Color3(...g.top).toHexString();
-		ui.grad2.value = new Color3(...g.bottom).toHexString();
-	} else if (type === 'image') {
-		ui.texPath.innerText = data.texturePath || 'No file selected';
-		if (data.texturePath) {
-			ui.texPreview.style.backgroundImage = `url('${data.texturePath}')`;
-		} else {
-			ui.texPreview.style.backgroundImage = 'none';
-		}
-	}
-
+	// Colors
+	ui.diffuse.value = new Color3(...data.diffuse).toHexString();
+	ui.specular.value = new Color3(...data.specular).toHexString();
 	ui.emissive.value = new Color3(...data.emissive).toHexString();
-	ui.metallic.value = data.metallic;
-	ui.roughness.value = data.roughness;
-	ui.alpha.value = data.alpha;
+	ui.ambient.value = new Color3(...data.ambient).toHexString();
 
-	ui.lMetallic.innerText = data.metallic.toFixed(2);
-	ui.lRoughness.innerText = data.roughness.toFixed(2);
+	// Sliders
+	ui.alpha.value = data.alpha;
+	ui.specularPower.value = data.specularPower;
+	ui.bumpLevel.value = data.bumpLevel;
+	ui.parallaxBias.value = data.parallaxScaleBias;
+
+	// Labels
 	ui.lAlpha.innerText = data.alpha.toFixed(2);
+	ui.lSpecularPower.innerText = data.specularPower;
+	ui.lBumpLevel.innerText = data.bumpLevel.toFixed(2);
+	ui.lParallaxBias.innerText = data.parallaxScaleBias.toFixed(3);
+
+	// Checkboxes
+	ui.useParallax.checked = data.useParallax;
+	ui.useParallaxOcclusion.checked = data.useParallaxOcclusion;
+
+	// Textures
+	ui.diffusePath.innerText = data.diffuseTexture || 'No file selected';
+	ui.bumpPath.innerText = data.bumpTexture || 'No file selected';
 }
 
+// MODIFIED: Sync Data from UI
 function updateDataFromUI () {
 	if (selectedIndex < 0 || !currentLibrary[selectedIndex]) return;
 
 	const data = currentLibrary[selectedIndex];
 
 	data.name = ui.name.value;
-	data.albedoType = ui.albedoType.value;
 
-	if (data.albedoType === 'color') {
-		data.albedo = Color3.FromHexString(ui.albedo.value).asArray();
-	} else if (data.albedoType === 'gradient') {
-		data.gradient = {
-			top: Color3.FromHexString(ui.grad1.value).asArray(),
-			bottom: Color3.FromHexString(ui.grad2.value).asArray()
-		};
-	}
-	// Image path is updated via upload handler, not here directly
-
+	data.diffuse = Color3.FromHexString(ui.diffuse.value).asArray();
+	data.specular = Color3.FromHexString(ui.specular.value).asArray();
 	data.emissive = Color3.FromHexString(ui.emissive.value).asArray();
-	data.metallic = parseFloat(ui.metallic.value);
-	data.roughness = parseFloat(ui.roughness.value);
+	data.ambient = Color3.FromHexString(ui.ambient.value).asArray();
+
 	data.alpha = parseFloat(ui.alpha.value);
+	data.specularPower = parseFloat(ui.specularPower.value);
+	data.bumpLevel = parseFloat(ui.bumpLevel.value);
+	data.parallaxScaleBias = parseFloat(ui.parallaxBias.value);
+
+	data.useParallax = ui.useParallax.checked;
+	data.useParallaxOcclusion = ui.useParallaxOcclusion.checked;
 
 	// Update Labels
-	ui.lMetallic.innerText = data.metallic.toFixed(2);
-	ui.lRoughness.innerText = data.roughness.toFixed(2);
 	ui.lAlpha.innerText = data.alpha.toFixed(2);
+	ui.lSpecularPower.innerText = data.specularPower;
+	ui.lBumpLevel.innerText = data.bumpLevel.toFixed(2);
+	ui.lParallaxBias.innerText = data.parallaxScaleBias.toFixed(3);
 
 	// Update Preview
 	updatePreviewFromData(data);
@@ -205,25 +221,20 @@ function updateDataFromUI () {
 	// Update List Name
 	const btn = ui.matList.children[selectedIndex];
 	if (btn) btn.innerText = data.name;
-
-	// Refresh UI visibility if type changed
-	ui.ctrlColor.classList.toggle('hidden', data.albedoType !== 'color');
-	ui.ctrlGradient.classList.toggle('hidden', data.albedoType !== 'gradient');
-	ui.ctrlImage.classList.toggle('hidden', data.albedoType !== 'image');
 }
 
-async function handleFileUpload (e) {
+// MODIFIED: Handle multiple texture types
+async function handleFileUpload (e, type) {
 	const file = e.target.files[0];
 	if (!file) return;
 
 	if (selectedIndex < 0) return;
 	const data = currentLibrary[selectedIndex];
 
-	// Show loading state
-	ui.texPath.innerText = 'Uploading...';
+	const pathLabel = type === 'diffuse' ? ui.diffusePath : ui.bumpPath;
+	pathLabel.innerText = 'Uploading...';
 
 	try {
-		// Use raw binary upload
 		const res = await fetch(`/api/upload-texture?name=${encodeURIComponent(file.name)}`, {
 			method: 'POST',
 			body: file
@@ -232,19 +243,23 @@ async function handleFileUpload (e) {
 		const result = await res.json();
 
 		if (result.success) {
-			data.texturePath = result.path;
-			ui.texPath.innerText = result.path;
-			ui.texPreview.style.backgroundImage = `url('${result.path}')`;
+			if (type === 'diffuse') data.diffuseTexture = result.path;
+			if (type === 'bump') data.bumpTexture = result.path;
+
+			pathLabel.innerText = result.path;
 			updatePreviewFromData(data);
 		} else {
 			alert('Upload failed: ' + result.error);
-			ui.texPath.innerText = 'Error';
+			pathLabel.innerText = 'Error';
 		}
 	} catch (err) {
 		console.error(err);
 		alert('Upload error');
-		ui.texPath.innerText = 'Error';
+		pathLabel.innerText = 'Error';
 	}
+
+	// Reset input
+	e.target.value = '';
 }
 
 function selectMaterial (index) {
@@ -336,9 +351,28 @@ async function loadLibrary (filename) {
 
 			// Handle legacy single-object files vs new array files
 			if (Array.isArray(json.data)) {
-				currentLibrary = json.data;
+				// Map legacy PBR properties to StandardMaterial if loading older files
+				currentLibrary = json.data.map(mat => {
+					if (mat.albedo) {
+						return {
+							name: mat.name,
+							diffuse: mat.albedo,
+							specular: [1,1,1],
+							emissive: mat.emissive || [0,0,0],
+							ambient: [0,0,0],
+							alpha: mat.alpha !== undefined ? mat.alpha : 1.0,
+							specularPower: 128,
+							diffuseTexture: mat.texturePath || null,
+							bumpTexture: null,
+							bumpLevel: 1.0,
+							useParallax: false,
+							useParallaxOcclusion: false,
+							parallaxScaleBias: 0.05
+						};
+					}
+					return mat;
+				});
 			} else {
-				// Wrap legacy single material
 				currentLibrary = [json.data];
 			}
 
@@ -408,12 +442,44 @@ function showStatus (msg) {
 
 function bindEvents () {
 	// Inputs
-	[ui.name, ui.albedo, ui.emissive, ui.metallic, ui.roughness, ui.alpha, ui.grad1, ui.grad2].forEach(el => {
+	[
+		ui.name, ui.diffuse, ui.specular, ui.emissive, ui.ambient,
+		ui.alpha, ui.specularPower, ui.bumpLevel, ui.parallaxBias
+	].forEach(el => {
 		el.addEventListener('input', updateDataFromUI);
 	});
 
-	ui.albedoType.addEventListener('change', updateDataFromUI);
-	ui.fileInput.addEventListener('change', handleFileUpload);
+	[ui.useParallax, ui.useParallaxOcclusion].forEach(el => {
+		el.addEventListener('change', updateDataFromUI);
+	});
+
+	// Textures
+	ui.diffuseFile.addEventListener('change', (e) => handleFileUpload(e, 'diffuse'));
+	ui.bumpFile.addEventListener('change', (e) => handleFileUpload(e, 'bump'));
+
+	ui.btnClearDiffuse.onclick = () => {
+		if (selectedIndex > -1) {
+			currentLibrary[selectedIndex].diffuseTexture = null;
+			updateUIFromData(currentLibrary[selectedIndex]);
+			updatePreviewFromData(currentLibrary[selectedIndex]);
+		}
+	};
+
+	ui.btnClearBump.onclick = () => {
+		if (selectedIndex > -1) {
+			currentLibrary[selectedIndex].bumpTexture = null;
+			updateUIFromData(currentLibrary[selectedIndex]);
+			updatePreviewFromData(currentLibrary[selectedIndex]);
+		}
+	};
+
+	// NEW: Shape Selector
+	ui.shapeSelector.addEventListener('change', (e) => {
+		Object.values(previewShapes).forEach(shape => shape.isVisible = false);
+		if (previewShapes[e.target.value]) {
+			previewShapes[e.target.value].isVisible = true;
+		}
+	});
 
 	ui.btnRefresh.onclick = fetchFiles;
 

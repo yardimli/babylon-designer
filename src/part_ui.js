@@ -11,7 +11,7 @@ import { recordState } from "./part_historyManager.js";
 import { selectNode } from "./part_selectionManager.js";
 
 const primitives = ["Cube", "Sphere", "Cylinder", "Plane", "Ground", "Cone", "Pyramid", "Empty"];
-const lights = ["Point", "Directional"];
+const lights = ["Point", "Spot"]; // Changed: Replaced Directional with Spot
 
 export function setupUI() {
 	const pList = document.getElementById("primitives-list");

@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+	<meta charset="UTF-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+	<title>BabylonJS Sandbox Test</title>
+	<!-- Link to the existing Tailwind/DaisyUI stylesheet -->
+	<link rel="stylesheet" href="./src/style.css" />
+</head>
+<body class="flex flex-col h-screen w-screen bg-base-300 text-base-content font-sans overflow-hidden">
+
+<!-- Top Navigation Bar -->
+<nav class="h-12 bg-base-100 border-b border-base-content/10 flex items-center px-4 gap-2 flex-none z-10 justify-between">
+	<div class="font-bold text-lg text-info">Sandbox Test Environment</div>
+	<div class="flex gap-2">
+		<a href="/index.html" class="btn btn-sm btn-outline btn-secondary">
+			Back to Designer ↗
+		</a>
+	</div>
+</nav>
+
+<!-- Main Workspace / Canvas Container -->
+<div class="flex-1 bg-black relative">
+	<canvas id="renderCanvas" class="w-full h-full outline-none"></canvas>
+	<div class="absolute bottom-4 left-4 text-xs opacity-50 pointer-events-none select-none text-white">
+		Drag to rotate • Scroll to zoom
+	</div>
+</div>
+
+<!-- Load the sandbox logic -->
+<script type="module" src="/src/testSandbox.js"></script>
+</body>
+</html>
