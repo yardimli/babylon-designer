@@ -11,11 +11,11 @@ const shadowGenerators = [];
 export function createShadowGenerator(light) {
 	// ShadowGenerator requires a size (1024) and the light source
 	const sg = new ShadowGenerator(1024, light);
-	
+
 	// Make shadows look smoother
 	sg.useBlurExponentialShadowMap = true;
 	sg.blurKernel = 32;
-	
+
 	// 0 is PointLight
 	if (light.getTypeID() === 0) {
 		// Fix: Point lights need a smaller minZ to cast shadows from close objects
@@ -23,25 +23,24 @@ export function createShadowGenerator(light) {
 		light.shadowMinZ = 0.1;
 		light.shadowMaxZ = 100;
 	}
-	
-	// 1 is DirectionalLight
-	if (light.getTypeID() === 1) {
-        // light.autoCalcShadowZBounds = true; this makes shadows not work so we use MinZ MaxZ instead
-        light.shadowMinZ = 0.1;
-        light.shadowMaxZ = 100;
+
+	// 2 is SpotLight (CHANGED: Replaced DirectionalLight with SpotLight)
+	if (light.getTypeID() === 2) {
+		// light.shadowMinZ = 0;
+		// light.shadowMaxZ = 0;
 	}
-	
+
 	// Store reference on the light for easy disposal later
 	light._shadowGenerator = sg;
 	shadowGenerators.push(sg);
-	
+
 	// Add existing meshes that are marked as shadow casters
 	scene.meshes.forEach(mesh => {
 		if (mesh.metadata && mesh.metadata.castShadows) {
 			sg.addShadowCaster(mesh, true);
 		}
 	});
-	
+
 	return sg;
 }
 
@@ -69,7 +68,7 @@ export function setShadowCaster(mesh, shouldCast) {
 	// Ensure metadata exists and is updated
 	if (!mesh.metadata) mesh.metadata = {};
 	mesh.metadata.castShadows = shouldCast;
-	
+
 	shadowGenerators.forEach(sg => {
 		if (shouldCast) {
 			// Second argument 'true' includes children

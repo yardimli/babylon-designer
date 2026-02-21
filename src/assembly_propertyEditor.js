@@ -14,13 +14,14 @@ function createVec3Input(label, idPrefix, container) {
 	const wrapper = document.createElement("div");
 	wrapper.className = "flex flex-col gap-1 mb-2";
 	wrapper.innerHTML = `<span class="text-xs font-bold opacity-70">${label}</span>`;
-	
+
 	const row = document.createElement("div");
 	row.className = "grid grid-cols-3 gap-1";
-	
+
 	["x", "y", "z"].forEach(axis => {
 		const input = document.createElement("input");
-		input.type = "text";
+		input.type = "number";
+		input.step = "0.1";
 		input.id = `${idPrefix}-${axis}`;
 		input.className = "input input-bordered input-xs w-full px-1";
 		input.placeholder = axis.toUpperCase();
@@ -40,29 +41,29 @@ export function updatePropertyEditor(targets) {
 	if (!Array.isArray(targets)) {
 		targets = targets ? [targets] : [];
 	}
-	
+
 	const editor = document.getElementById("property-editor");
 	const header = document.getElementById("properties-header");
-	
+
 	if (observer) {
 		scene.onBeforeRenderObservable.remove(observer);
 		observer = null;
 	}
-	
+
 	if (targets.length === 0) {
 		editor.classList.add("opacity-50", "pointer-events-none");
 		document.getElementById("prop-id").value = "";
 		// Reset visibility checkbox
 		const visInput = document.getElementById("prop-visible");
 		if (visInput) visInput.checked = false;
-		
+
 		document.getElementById("light-properties").classList.add("hidden");
 		if (header) header.innerText = "Properties";
 		return;
 	}
-	
+
 	editor.classList.remove("opacity-50", "pointer-events-none");
-	
+
 	// --- Header ---
 	if (header) {
 		if (targets.length === 1) {
@@ -71,12 +72,10 @@ export function updatePropertyEditor(targets) {
 			if (target.metadata) {
 				if (target.metadata.isPrimitive) typeLabel = target.metadata.type || "Mesh";
 				else if (target.metadata.isLightProxy) {
-					// MODIFIED: Show specific light type (Point/Directional) instead of generic "Light"
 					const t = target.metadata.lightType;
 					typeLabel = t ? (t.charAt(0).toUpperCase() + t.slice(1)) : "Light";
 				}
 				else if (target.metadata.isTransformNode) typeLabel = "Node";
-				// NEW: Assembly Root
 				else if (target.metadata.isAssemblyRoot) typeLabel = "Scene";
 			} else {
 				typeLabel = target.getClassName();
@@ -90,55 +89,70 @@ export function updatePropertyEditor(targets) {
 			document.getElementById("prop-id").disabled = true;
 		}
 	}
-	
+
 	// --- Common Bindings ---
 	updateParentDropdown(targets);
 	updateMaterialDropdown(targets);
 	bindInputs(targets);
 	bindDuplicateButton(targets);
 	bindDeleteButton(targets);
-	
+
 	// --- Light Properties ---
 	const allLights = targets.every(t => t.metadata && t.metadata.isLightProxy);
 	const lightProps = document.getElementById("light-properties");
-	
+
+	// CHANGED: Hide Rotation and Scale for lights
+	const rotSpan = Array.from(document.querySelectorAll('#transform-container span')).find(s => s.innerText === "Rotation (Deg)");
+	const sclSpan = Array.from(document.querySelectorAll('#transform-container span')).find(s => s.innerText === "Scale");
+
+	if (rotSpan) {
+		const wrapper = rotSpan.parentElement;
+		if (allLights) wrapper.classList.add("hidden");
+		else wrapper.classList.remove("hidden");
+	}
+	if (sclSpan) {
+		const wrapper = sclSpan.parentElement;
+		if (allLights) wrapper.classList.add("hidden");
+		else wrapper.classList.remove("hidden");
+	}
+
 	if (allLights) {
 		lightProps.classList.remove("hidden");
 		bindLightInputs(targets);
 	} else {
 		lightProps.classList.add("hidden");
 	}
-	
+
 	// --- Shadow Properties ---
 	const allMeshes = targets.every(t => t instanceof AbstractMesh && !t.metadata?.isTransformNode);
 	const receiveShadowsInput = document.getElementById("prop-receive-shadows");
 	const castShadowsInput = document.getElementById("prop-cast-shadows");
-	
+
 	if (allMeshes && receiveShadowsInput && castShadowsInput) {
 		receiveShadowsInput.closest(".form-control").classList.remove("hidden");
 		castShadowsInput.closest(".form-control").classList.remove("hidden");
-		
+
 		const allReceive = targets.every(t => t.receiveShadows);
 		const someReceive = targets.some(t => t.receiveShadows);
 		receiveShadowsInput.checked = allReceive;
 		receiveShadowsInput.indeterminate = someReceive && !allReceive;
-		
+
 		const allCast = targets.every(t => t.metadata && t.metadata.castShadows);
 		const someCast = targets.some(t => t.metadata && t.metadata.castShadows);
 		castShadowsInput.checked = allCast;
 		castShadowsInput.indeterminate = someCast && !allCast;
-		
+
 	} else if (receiveShadowsInput && castShadowsInput) {
 		receiveShadowsInput.closest(".form-control").classList.add("hidden");
 		castShadowsInput.closest(".form-control").classList.add("hidden");
 	}
-	
+
 	// --- Live Update Loop ---
 	observer = scene.onBeforeRenderObservable.add(() => {
 		if (document.activeElement.tagName === "INPUT" && document.activeElement.type !== "checkbox" && document.activeElement.type !== "color") return;
 		syncUIFromTargets(targets);
 	});
-	
+
 	// Initial Sync
 	syncUIFromTargets(targets);
 }
@@ -154,7 +168,7 @@ function getCommonValue(targets, getter) {
 }
 
 function syncUIFromTargets(targets) {
-	// NEW: Visibility Sync
+	// Visibility Sync
 	const visInput = document.getElementById("prop-visible");
 	if (visInput) {
 		const allEnabled = targets.every(t => t.isEnabled());
@@ -162,16 +176,16 @@ function syncUIFromTargets(targets) {
 		visInput.checked = allEnabled;
 		visInput.indeterminate = someEnabled && !allEnabled;
 	}
-	
+
 	// Position
 	const px = getCommonValue(targets, t => t.position.x);
 	const py = getCommonValue(targets, t => t.position.y);
 	const pz = getCommonValue(targets, t => t.position.z);
-	
+
 	document.getElementById("pos-x").value = px !== null ? px.toFixed(2) : "";
 	document.getElementById("pos-y").value = py !== null ? py.toFixed(2) : "";
 	document.getElementById("pos-z").value = pz !== null ? pz.toFixed(2) : "";
-	
+
 	// Rotation (Euler)
 	const getRot = (t, axis) => {
 		if (t.rotationQuaternion) {
@@ -179,23 +193,42 @@ function syncUIFromTargets(targets) {
 		}
 		return t.rotation[axis] * 180 / Math.PI;
 	};
-	
+
 	const rx = getCommonValue(targets, t => getRot(t, "x"));
 	const ry = getCommonValue(targets, t => getRot(t, "y"));
 	const rz = getCommonValue(targets, t => getRot(t, "z"));
-	
+
 	document.getElementById("rot-x").value = rx !== null ? rx.toFixed(2) : "";
 	document.getElementById("rot-y").value = ry !== null ? ry.toFixed(2) : "";
 	document.getElementById("rot-z").value = rz !== null ? rz.toFixed(2) : "";
-	
+
 	// Scale
 	const sx = getCommonValue(targets, t => t.scaling.x);
 	const sy = getCommonValue(targets, t => t.scaling.y);
 	const sz = getCommonValue(targets, t => t.scaling.z);
-	
+
 	document.getElementById("scl-x").value = sx !== null ? sx.toFixed(2) : "";
 	document.getElementById("scl-y").value = sy !== null ? sy.toFixed(2) : "";
 	document.getElementById("scl-z").value = sz !== null ? sz.toFixed(2) : "";
+
+	// CHANGED: Sync Spot Light Direction
+	const allLights = targets.every(t => t.metadata && t.metadata.isLightProxy);
+	if (allLights) {
+		const spotLights = targets.map(t => scene.getLightByID(t.metadata.lightId)).filter(l => l && l.getTypeID() === 2);
+		if (spotLights.length > 0 && spotLights.length === targets.length) {
+			const dx = getCommonValue(spotLights, l => l.direction.x);
+			const dy = getCommonValue(spotLights, l => l.direction.y);
+			const dz = getCommonValue(spotLights, l => l.direction.z);
+
+			const dxInput = document.getElementById("prop-light-dir-x");
+			const dyInput = document.getElementById("prop-light-dir-y");
+			const dzInput = document.getElementById("prop-light-dir-z");
+
+			if (dxInput && document.activeElement !== dxInput) dxInput.value = dx !== null ? dx.toFixed(2) : "";
+			if (dyInput && document.activeElement !== dyInput) dyInput.value = dy !== null ? dy.toFixed(2) : "";
+			if (dzInput && document.activeElement !== dzInput) dzInput.value = dz !== null ? dz.toFixed(2) : "";
+		}
+	}
 }
 
 function bindInputs(targets) {
@@ -203,25 +236,25 @@ function bindInputs(targets) {
 		const val = document.getElementById(id).value;
 		return val === "" ? null : parseFloat(val);
 	};
-	
+
 	const updateTargets = () => {
 		const px = getVal("pos-x");
 		const py = getVal("pos-y");
 		const pz = getVal("pos-z");
-		
+
 		const rx = getVal("rot-x");
 		const ry = getVal("rot-y");
 		const rz = getVal("rot-z");
-		
+
 		const sx = getVal("scl-x");
 		const sy = getVal("scl-y");
 		const sz = getVal("scl-z");
-		
+
 		targets.forEach(mesh => {
 			if (px !== null) mesh.position.x = px;
 			if (py !== null) mesh.position.y = py;
 			if (pz !== null) mesh.position.z = pz;
-			
+
 			if (rx !== null || ry !== null || rz !== null) {
 				let currentEuler;
 				if (mesh.rotationQuaternion) {
@@ -229,29 +262,29 @@ function bindInputs(targets) {
 				} else {
 					currentEuler = mesh.rotation;
 				}
-				
+
 				const radX = rx !== null ? rx * Math.PI / 180 : currentEuler.x;
 				const radY = ry !== null ? ry * Math.PI / 180 : currentEuler.y;
 				const radZ = rz !== null ? rz * Math.PI / 180 : currentEuler.z;
-				
+
 				if (!mesh.rotationQuaternion) mesh.rotationQuaternion = Quaternion.Identity();
 				Quaternion.FromEulerAnglesToRef(radX, radY, radZ, mesh.rotationQuaternion);
 			}
-			
+
 			if (sx !== null) mesh.scaling.x = sx;
 			if (sy !== null) mesh.scaling.y = sy;
 			if (sz !== null) mesh.scaling.z = sz;
 		});
-		
+
 		markModified();
 	};
-	
+
 	document.querySelectorAll("#transform-container input").forEach(input => {
 		input.oninput = updateTargets;
 		input.onchange = recordState;
 	});
-	
-	// NEW: Bind Visibility Checkbox
+
+	// Bind Visibility Checkbox
 	const visInput = document.getElementById("prop-visible");
 	if (visInput) {
 		visInput.onchange = (e) => {
@@ -263,13 +296,13 @@ function bindInputs(targets) {
 			refreshSceneGraph();
 		};
 	}
-	
+
 	// ID Renaming (Only for single selection)
 	if (targets.length === 1) {
 		document.getElementById("prop-id").onchange = (e) => {
 			const mesh = targets[0];
 			let newName = e.target.value;
-			
+
 			if (mesh.metadata && mesh.metadata.isLightProxy) {
 				const light = scene.getLightByID(mesh.metadata.lightId);
 				if (light) {
@@ -294,7 +327,7 @@ function bindInputs(targets) {
 			recordState();
 		};
 	}
-	
+
 	// Shadow Checkboxes
 	const receiveShadowsInput = document.getElementById("prop-receive-shadows");
 	if (receiveShadowsInput) {
@@ -306,7 +339,7 @@ function bindInputs(targets) {
 			recordState();
 		};
 	}
-	
+
 	const castShadowsInput = document.getElementById("prop-cast-shadows");
 	if (castShadowsInput) {
 		castShadowsInput.onchange = (e) => {
@@ -322,7 +355,7 @@ function bindInputs(targets) {
 function updateParentDropdown(targets) {
 	const select = document.getElementById("prop-parent");
 	select.innerHTML = '<option value="">None</option>';
-	
+
 	const potentialParents = [];
 	scene.meshes.forEach(m => {
 		if (isUserMesh(m) && !targets.includes(m)) potentialParents.push(m);
@@ -330,14 +363,14 @@ function updateParentDropdown(targets) {
 	scene.transformNodes.forEach(t => {
 		if (t.metadata && t.metadata.isTransformNode && !targets.includes(t)) potentialParents.push(t);
 	});
-	
+
 	potentialParents.forEach(p => {
 		const option = document.createElement("option");
 		option.value = p.name;
 		option.text = p.name;
 		select.appendChild(option);
 	});
-	
+
 	if (targets.length === 1) {
 		const parent = targets[0].parent;
 		if (parent) select.value = parent.name;
@@ -347,12 +380,12 @@ function updateParentDropdown(targets) {
 		if (allSame && firstParent) select.value = firstParent.name;
 		else select.value = "";
 	}
-	
+
 	select.onchange = () => {
 		const parentName = select.value;
 		let parent = scene.getMeshByName(parentName);
 		if (!parent) parent = scene.getTransformNodeByName(parentName);
-		
+
 		targets.forEach(t => {
 			if (parent) {
 				let check = parent;
@@ -363,7 +396,7 @@ function updateParentDropdown(targets) {
 			}
 			setNodeParent(t, parent);
 		});
-		
+
 		markModified();
 		refreshSceneGraph();
 		recordState();
@@ -373,26 +406,26 @@ function updateParentDropdown(targets) {
 function updateMaterialDropdown(targets) {
 	const select = document.getElementById("prop-material");
 	select.innerHTML = '<option value="">None</option>';
-	
+
 	if (targets.some(t => t.metadata && t.metadata.isTransformNode)) {
 		select.closest(".form-control").classList.add("hidden");
 		return;
 	}
 	select.closest(".form-control").classList.remove("hidden");
-	
+
 	scene.materials.forEach(mat => {
 		const option = document.createElement("option");
 		option.value = mat.id;
 		option.text = mat.name;
 		select.appendChild(option);
 	});
-	
+
 	if (targets.length > 0) {
 		const firstMat = targets[0].material;
 		const allSame = targets.every(t => t.material === firstMat);
 		if (allSame && firstMat) select.value = firstMat.id;
 	}
-	
+
 	select.onchange = () => {
 		const mat = scene.getMaterialByID(select.value);
 		targets.forEach(t => {
@@ -406,18 +439,28 @@ function updateMaterialDropdown(targets) {
 function bindLightInputs(targets) {
 	const lights = targets.map(t => scene.getLightByID(t.metadata.lightId)).filter(l => l);
 	if (lights.length === 0) return;
-	
+
 	const iInput = document.getElementById("prop-light-intensity");
 	const cInput = document.getElementById("prop-light-diffuse");
-	
+
+	// CHANGED: Added Spot Light elements
+	const dirContainer = document.getElementById("container-light-direction");
+	const dxInput = document.getElementById("prop-light-dir-x");
+	const dyInput = document.getElementById("prop-light-dir-y");
+	const dzInput = document.getElementById("prop-light-dir-z");
+	const aContainer = document.getElementById("container-light-angle");
+	const aInput = document.getElementById("prop-light-angle");
+	const eContainer = document.getElementById("container-light-exponent");
+	const eInput = document.getElementById("prop-light-exponent");
+
 	const firstI = lights[0].intensity;
 	const allSameI = lights.every(l => Math.abs(l.intensity - firstI) < 0.01);
 	iInput.value = allSameI ? firstI : "";
-	
+
 	const firstC = lights[0].diffuse.toHexString();
 	const allSameC = lights.every(l => l.diffuse.toHexString() === firstC);
 	cInput.value = allSameC ? firstC : "#ffffff";
-	
+
 	iInput.onchange = () => {
 		const val = parseFloat(iInput.value);
 		if (!isNaN(val)) {
@@ -426,31 +469,103 @@ function bindLightInputs(targets) {
 			recordState();
 		}
 	};
-	
+
 	cInput.onchange = () => {
 		const col = Color3.FromHexString(cInput.value);
 		lights.forEach(l => l.diffuse = col);
 		markModified();
 		recordState();
 	};
+
+	// CHANGED: Bind Spot Light Properties
+	const spotLights = lights.filter(l => l.getTypeID() === 2); // 2 is SpotLight
+	if (spotLights.length > 0 && spotLights.length === lights.length) {
+		dirContainer.classList.remove("hidden");
+		aContainer.classList.remove("hidden");
+		eContainer.classList.remove("hidden");
+
+		const firstDx = spotLights[0].direction.x;
+		const allSameDx = spotLights.every(l => Math.abs(l.direction.x - firstDx) < 0.01);
+		dxInput.value = allSameDx ? firstDx.toFixed(2) : "";
+
+		const firstDy = spotLights[0].direction.y;
+		const allSameDy = spotLights.every(l => Math.abs(l.direction.y - firstDy) < 0.01);
+		dyInput.value = allSameDy ? firstDy.toFixed(2) : "";
+
+		const firstDz = spotLights[0].direction.z;
+		const allSameDz = spotLights.every(l => Math.abs(l.direction.z - firstDz) < 0.01);
+		dzInput.value = allSameDz ? firstDz.toFixed(2) : "";
+
+		const firstA = spotLights[0].angle * (180 / Math.PI);
+		const allSameA = spotLights.every(l => Math.abs(l.angle * (180 / Math.PI) - firstA) < 0.01);
+		aInput.value = allSameA ? firstA.toFixed(2) : "";
+
+		const firstE = spotLights[0].exponent;
+		const allSameE = spotLights.every(l => Math.abs(l.exponent - firstE) < 0.01);
+		eInput.value = allSameE ? firstE.toFixed(2) : "";
+
+		const updateDirection = () => {
+			const x = parseFloat(dxInput.value);
+			const y = parseFloat(dyInput.value);
+			const z = parseFloat(dzInput.value);
+			if (!isNaN(x) && !isNaN(y) && !isNaN(z)) {
+				const newDir = new Vector3(x, y, z);
+				spotLights.forEach(l => {
+					l.direction = newDir;
+					const proxy = scene.getMeshByID(l.id + "_proxy");
+					if (proxy) {
+						proxy.lookAt(proxy.position.add(newDir));
+					}
+				});
+				markModified();
+				recordState();
+			}
+		};
+
+		dxInput.onchange = updateDirection;
+		dyInput.onchange = updateDirection;
+		dzInput.onchange = updateDirection;
+
+		aInput.onchange = () => {
+			const val = parseFloat(aInput.value);
+			if (!isNaN(val)) {
+				spotLights.forEach(l => l.angle = val * (Math.PI / 180));
+				markModified();
+				recordState();
+			}
+		};
+
+		eInput.onchange = () => {
+			const val = parseFloat(eInput.value);
+			if (!isNaN(val)) {
+				spotLights.forEach(l => l.exponent = val);
+				markModified();
+				recordState();
+			}
+		};
+	} else {
+		if (dirContainer) dirContainer.classList.add("hidden");
+		if (aContainer) aContainer.classList.add("hidden");
+		if (eContainer) eContainer.classList.add("hidden");
+	}
 }
 
 function bindDuplicateButton(targets) {
 	const btn = document.getElementById("btn-duplicate-asset");
 	if (!btn) return;
-	
+
 	btn.onclick = () => {
 		const newSelection = [];
 		targets.forEach(node => {
 			const newNode = duplicateHierarchy(node, node.parent);
 			if (newNode) newSelection.push(newNode);
 		});
-		
+
 		if (newSelection.length > 0) {
 			selectNode(null);
 			selectNode(newSelection[0], false);
 			for(let i=1; i<newSelection.length; i++) selectNode(newSelection[i], true);
-			
+
 			markModified();
 			refreshSceneGraph();
 			recordState();
@@ -462,20 +577,16 @@ function duplicateHierarchy(node, parent) {
 	let newNode = null;
 	const baseId = node.name + "_dup";
 	const newId = getUniqueId(scene, baseId);
-	
-	// 1. Handle Assembly Root (Imported Scene)
+
 	if (node.metadata && node.metadata.isAssemblyRoot) {
 		newNode = new TransformNode(newId, scene);
 		newNode.position.copyFrom(node.position);
 		if (node.rotationQuaternion) newNode.rotationQuaternion = node.rotationQuaternion.clone();
 		else newNode.rotation = node.rotation.clone();
 		newNode.scaling.copyFrom(node.scaling);
-		newNode.name = node.name; // Preserve name logic if desired, or use newId
-		
-		// Deep copy metadata to preserve isAssemblyRoot, sourceFile, etc.
+		newNode.name = node.name;
 		newNode.metadata = JSON.parse(JSON.stringify(node.metadata));
 	}
-	// 2. Handle Lights
 	else if (node.metadata && node.metadata.isLightProxy) {
 		const oldLight = scene.getLightByID(node.metadata.lightId);
 		if (oldLight) {
@@ -484,14 +595,14 @@ function duplicateHierarchy(node, parent) {
 				position: node.position,
 				intensity: oldLight.intensity,
 				diffuse: oldLight.diffuse,
-				direction: oldLight.direction ? { x: oldLight.direction.x, y: oldLight.direction.y, z: oldLight.direction.z } : null
+				direction: oldLight.direction ? { x: oldLight.direction.x, y: oldLight.direction.y, z: oldLight.direction.z } : null,
+				angle: oldLight.angle, // CHANGED: Added angle
+				exponent: oldLight.exponent // CHANGED: Added exponent
 			};
 			newNode = createLight(node.metadata.lightType, savedData, scene);
 		}
 	}
-	// 3. Handle Transform Nodes
 	else if (node.metadata && node.metadata.isTransformNode) {
-		// If it's an internal node (part of an assembly), duplicate as raw node to avoid adding a proxy box
 		if (node.metadata.isInternal) {
 			newNode = new TransformNode(newId, scene);
 			newNode.position.copyFrom(node.position);
@@ -501,7 +612,6 @@ function duplicateHierarchy(node, parent) {
 			newNode.name = node.name;
 			newNode.metadata = JSON.parse(JSON.stringify(node.metadata));
 		} else {
-			// User-created node, use manager to create with proxy
 			const savedData = {
 				id: newId,
 				position: node.position,
@@ -512,28 +622,24 @@ function duplicateHierarchy(node, parent) {
 			newNode = createTransformNode(savedData, scene);
 		}
 	}
-	// 4. Handle Primitives and Shapes
 	else if (node.metadata && (node.metadata.isPrimitive || node.metadata.isShape)) {
-		newNode = node.clone(newId, parent); // Parent handled here or below
+		newNode = node.clone(newId, parent);
 		newNode.id = newId;
 		if (node.metadata) newNode.metadata = JSON.parse(JSON.stringify(node.metadata));
 		newNode.receiveShadows = node.receiveShadows;
 		if (newNode.metadata && newNode.metadata.castShadows) setShadowCaster(newNode, true);
 	}
-	
+
 	if (newNode) {
 		if (parent && !newNode.parent) newNode.parent = parent;
-		
-		// CRITICAL: Ensure isInternal is preserved if lost during creation
+
 		if (node.metadata && node.metadata.isInternal) {
 			if (!newNode.metadata) newNode.metadata = {};
 			newNode.metadata.isInternal = true;
 		}
-		
-		// Sync visibility
+
 		newNode.setEnabled(node.isEnabled());
-		
-		// Recurse Children
+
 		node.getChildren().forEach(child => {
 			if (child.metadata && (child.metadata.isPrimitive || child.metadata.isShape || child.metadata.isLightProxy || child.metadata.isTransformNode)) {
 				duplicateHierarchy(child, newNode);
@@ -546,7 +652,7 @@ function duplicateHierarchy(node, parent) {
 function bindDeleteButton(targets) {
 	const btn = document.getElementById("btn-delete-asset");
 	if (!btn) return;
-	
+
 	btn.onclick = () => {
 		const count = targets.length;
 		if (confirm(`Delete ${count} item(s)?`)) {
@@ -563,7 +669,7 @@ function bindDeleteButton(targets) {
 				}
 				node.dispose();
 			});
-			
+
 			selectNode(null);
 			markModified();
 			refreshSceneGraph();

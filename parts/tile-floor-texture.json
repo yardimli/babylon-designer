@@ -1,0 +1,45 @@
+{
+  "version": 1.5,
+  "materialFiles": [
+    "generic.json"
+  ],
+  "lights": [],
+  "meshes": [
+    {
+      "id": "Cube_1771680383984",
+      "name": "Cube_1771680383984",
+      "position": {
+        "x": 0,
+        "y": 0.5,
+        "z": 0
+      },
+      "rotation": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 1
+      },
+      "scaling": {
+        "x": 35,
+        "y": 0.2,
+        "z": 35
+      },
+      "pivot": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "materialId": "tile-floor-texture",
+      "uScale": 5,
+      "vScale": 5,
+      "parentId": null,
+      "receiveShadows": false,
+      "castShadows": true,
+      "sortIndex": 0,
+      "visible": true,
+      "isPrimitive": true,
+      "type": "Cube"
+    }
+  ],
+  "transformNodes": []
+}

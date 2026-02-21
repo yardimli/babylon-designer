@@ -10,18 +10,19 @@ import { refreshPartGraph, setNodeParent } from "./part_treeViewManager.js";
 
 let observer = null;
 
-// ... existing createVec3Input function ...
 function createVec3Input(label, idPrefix, container) {
 	const wrapper = document.createElement("div");
 	wrapper.className = "flex flex-col gap-1 mb-2";
 	wrapper.innerHTML = `<span class="text-xs font-bold opacity-70">${label}</span>`;
-	
+
 	const row = document.createElement("div");
 	row.className = "grid grid-cols-3 gap-1";
-	
+
 	["x", "y", "z"].forEach(axis => {
 		const input = document.createElement("input");
-		input.type = "text";
+		// CHANGED: Use number type and step for numeric inputs with up/down arrows
+		input.type = "number";
+		input.step = "0.1";
 		input.id = `${idPrefix}-${axis}`;
 		input.className = "input input-bordered input-xs w-full px-1";
 		input.placeholder = axis.toUpperCase();
@@ -41,29 +42,29 @@ export function updatePropertyEditor(targets) {
 	if (!Array.isArray(targets)) {
 		targets = targets ? [targets] : [];
 	}
-	
+
 	const editor = document.getElementById("property-editor");
 	const header = document.getElementById("properties-header");
-	
+
 	if (observer) {
 		part.onBeforeRenderObservable.remove(observer);
 		observer = null;
 	}
-	
+
 	if (targets.length === 0) {
 		editor.classList.add("opacity-50", "pointer-events-none");
 		document.getElementById("prop-id").value = "";
 		// Reset visibility checkbox
 		const visInput = document.getElementById("prop-visible");
 		if (visInput) visInput.checked = false;
-		
+
 		document.getElementById("light-properties").classList.add("hidden");
 		if (header) header.innerText = "Properties";
 		return;
 	}
-	
+
 	editor.classList.remove("opacity-50", "pointer-events-none");
-	
+
 	// --- Header ---
 	if (header) {
 		if (targets.length === 1) {
@@ -72,7 +73,6 @@ export function updatePropertyEditor(targets) {
 			if (target.metadata) {
 				if (target.metadata.isPrimitive) typeLabel = target.metadata.type || "Mesh";
 				else if (target.metadata.isLightProxy) {
-					// MODIFIED: Show specific light type (Point/Directional) instead of generic "Light"
 					const t = target.metadata.lightType;
 					typeLabel = t ? (t.charAt(0).toUpperCase() + t.slice(1)) : "Light";
 				}
@@ -89,7 +89,7 @@ export function updatePropertyEditor(targets) {
 			document.getElementById("prop-id").disabled = true;
 		}
 	}
-	
+
 	// --- Common Bindings ---
 	updateParentDropdown(targets);
 	updateMaterialDropdown(targets);
@@ -101,7 +101,6 @@ export function updatePropertyEditor(targets) {
 	const allLights = targets.every(t => t.metadata && t.metadata.isLightProxy);
 	const lightProps = document.getElementById("light-properties");
 
-	// NEW: Hide Rotation and Scale for lights (since we use Direction for Spot Lights)
 	const rotSpan = Array.from(document.querySelectorAll('#transform-container span')).find(s => s.innerText === "Rotation (Deg)");
 	const sclSpan = Array.from(document.querySelectorAll('#transform-container span')).find(s => s.innerText === "Scale");
 
@@ -122,42 +121,41 @@ export function updatePropertyEditor(targets) {
 	} else {
 		lightProps.classList.add("hidden");
 	}
-	
+
 	// --- Shadow Properties ---
 	const allMeshes = targets.every(t => t instanceof AbstractMesh && !t.metadata?.isTransformNode);
 	const receiveShadowsInput = document.getElementById("prop-receive-shadows");
 	const castShadowsInput = document.getElementById("prop-cast-shadows");
-	
+
 	if (allMeshes) {
 		receiveShadowsInput.closest(".form-control").classList.remove("hidden");
 		castShadowsInput.closest(".form-control").classList.remove("hidden");
-		
+
 		const allReceive = targets.every(t => t.receiveShadows);
 		const someReceive = targets.some(t => t.receiveShadows);
 		receiveShadowsInput.checked = allReceive;
 		receiveShadowsInput.indeterminate = someReceive && !allReceive;
-		
+
 		const allCast = targets.every(t => t.metadata && t.metadata.castShadows);
 		const someCast = targets.some(t => t.metadata && t.metadata.castShadows);
 		castShadowsInput.checked = allCast;
 		castShadowsInput.indeterminate = someCast && !allCast;
-		
+
 	} else {
 		receiveShadowsInput.closest(".form-control").classList.add("hidden");
 		castShadowsInput.closest(".form-control").classList.add("hidden");
 	}
-	
+
 	// --- Live Update Loop ---
 	observer = part.onBeforeRenderObservable.add(() => {
 		if (document.activeElement.tagName === "INPUT" && document.activeElement.type !== "checkbox" && document.activeElement.type !== "color") return;
 		syncUIFromTargets(targets);
 	});
-	
+
 	// Initial Sync
 	syncUIFromTargets(targets);
 }
 
-// ... existing getCommonValue function ...
 function getCommonValue(targets, getter) {
 	if (targets.length === 0) return null;
 	const first = getter(targets[0]);
@@ -169,25 +167,24 @@ function getCommonValue(targets, getter) {
 }
 
 function syncUIFromTargets(targets) {
-	// NEW: Visibility Sync
+	// Visibility Sync
 	const visInput = document.getElementById("prop-visible");
 	if (visInput) {
-		// Use isEnabled() to check if the node is active in the hierarchy
 		const allEnabled = targets.every(t => t.isEnabled());
 		const someEnabled = targets.some(t => t.isEnabled());
 		visInput.checked = allEnabled;
 		visInput.indeterminate = someEnabled && !allEnabled;
 	}
-	
+
 	// Position
 	const px = getCommonValue(targets, t => t.position.x);
 	const py = getCommonValue(targets, t => t.position.y);
 	const pz = getCommonValue(targets, t => t.position.z);
-	
+
 	document.getElementById("pos-x").value = px !== null ? px.toFixed(2) : "";
 	document.getElementById("pos-y").value = py !== null ? py.toFixed(2) : "";
 	document.getElementById("pos-z").value = pz !== null ? pz.toFixed(2) : "";
-	
+
 	// Rotation (Euler)
 	const getRot = (t, axis) => {
 		if (t.rotationQuaternion) {
@@ -195,25 +192,25 @@ function syncUIFromTargets(targets) {
 		}
 		return t.rotation[axis] * 180 / Math.PI;
 	};
-	
+
 	const rx = getCommonValue(targets, t => getRot(t, "x"));
 	const ry = getCommonValue(targets, t => getRot(t, "y"));
 	const rz = getCommonValue(targets, t => getRot(t, "z"));
-	
+
 	document.getElementById("rot-x").value = rx !== null ? rx.toFixed(2) : "";
 	document.getElementById("rot-y").value = ry !== null ? ry.toFixed(2) : "";
 	document.getElementById("rot-z").value = rz !== null ? rz.toFixed(2) : "";
-	
+
 	// Scale
 	const sx = getCommonValue(targets, t => t.scaling.x);
 	const sy = getCommonValue(targets, t => t.scaling.y);
 	const sz = getCommonValue(targets, t => t.scaling.z);
-	
+
 	document.getElementById("scl-x").value = sx !== null ? sx.toFixed(2) : "";
 	document.getElementById("scl-y").value = sy !== null ? sy.toFixed(2) : "";
 	document.getElementById("scl-z").value = sz !== null ? sz.toFixed(2) : "";
 
-	// NEW: Sync Spot Light Direction
+	// Sync Spot Light Direction
 	const allLights = targets.every(t => t.metadata && t.metadata.isLightProxy);
 	if (allLights) {
 		const spotLights = targets.map(t => part.getLightByID(t.metadata.lightId)).filter(l => l && l.getTypeID() === 2);
@@ -231,34 +228,63 @@ function syncUIFromTargets(targets) {
 			if (dzInput && document.activeElement !== dzInput) dzInput.value = dz !== null ? dz.toFixed(2) : "";
 		}
 	}
+
+	// NEW: Sync Texture Scale
+	const texScaleContainer = document.getElementById("container-texture-scale");
+	const uInput = document.getElementById("prop-mat-uscale");
+	const vInput = document.getElementById("prop-mat-vscale");
+
+	const hasTexture = targets.some(t => t.material && (t.material.diffuseTexture || t.material.bumpTexture));
+
+	if (hasTexture && texScaleContainer) {
+		texScaleContainer.classList.remove("hidden");
+
+		const getU = t => {
+			if (!t.material) return null;
+			const tex = t.material.diffuseTexture || t.material.bumpTexture;
+			return tex ? tex.uScale : null;
+		};
+		const getV = t => {
+			if (!t.material) return null;
+			const tex = t.material.diffuseTexture || t.material.bumpTexture;
+			return tex ? tex.vScale : null;
+		};
+
+		const uVal = getCommonValue(targets, getU);
+		const vVal = getCommonValue(targets, getV);
+
+		if (uInput && document.activeElement !== uInput) uInput.value = uVal !== null ? uVal.toFixed(2) : "";
+		if (vInput && document.activeElement !== vInput) vInput.value = vVal !== null ? vVal.toFixed(2) : "";
+	} else if (texScaleContainer) {
+		texScaleContainer.classList.add("hidden");
+	}
 }
 
 function bindInputs(targets) {
-	// ... existing getVal function ...
 	const getVal = (id) => {
 		const val = document.getElementById(id).value;
 		return val === "" ? null : parseFloat(val);
 	};
-	
+
 	const updateTargets = () => {
 		const px = getVal("pos-x");
 		const py = getVal("pos-y");
 		const pz = getVal("pos-z");
-		
+
 		const rx = getVal("rot-x");
 		const ry = getVal("rot-y");
 		const rz = getVal("rot-z");
-		
+
 		const sx = getVal("scl-x");
 		const sy = getVal("scl-y");
 		const sz = getVal("scl-z");
-		
+
 		targets.forEach(mesh => {
 			// Position
 			if (px !== null) mesh.position.x = px;
 			if (py !== null) mesh.position.y = py;
 			if (pz !== null) mesh.position.z = pz;
-			
+
 			// Rotation
 			if (rx !== null || ry !== null || rz !== null) {
 				let currentEuler;
@@ -267,30 +293,30 @@ function bindInputs(targets) {
 				} else {
 					currentEuler = mesh.rotation;
 				}
-				
+
 				const radX = rx !== null ? rx * Math.PI / 180 : currentEuler.x;
 				const radY = ry !== null ? ry * Math.PI / 180 : currentEuler.y;
 				const radZ = rz !== null ? rz * Math.PI / 180 : currentEuler.z;
-				
+
 				if (!mesh.rotationQuaternion) mesh.rotationQuaternion = Quaternion.Identity();
 				Quaternion.FromEulerAnglesToRef(radX, radY, radZ, mesh.rotationQuaternion);
 			}
-			
+
 			// Scale
 			if (sx !== null) mesh.scaling.x = sx;
 			if (sy !== null) mesh.scaling.y = sy;
 			if (sz !== null) mesh.scaling.z = sz;
 		});
-		
+
 		markModified();
 	};
-	
+
 	document.querySelectorAll("#transform-container input").forEach(input => {
 		input.oninput = updateTargets;
 		input.onchange = recordState;
 	});
-	
-	// NEW: Bind Visibility Checkbox
+
+	// Bind Visibility Checkbox
 	const visInput = document.getElementById("prop-visible");
 	if (visInput) {
 		visInput.onchange = (e) => {
@@ -299,17 +325,49 @@ function bindInputs(targets) {
 			});
 			markModified();
 			recordState();
-			// Refresh graph to potentially update visual indications if we add them later
 			refreshPartGraph();
 		};
 	}
-	
+
+	// NEW: Bind Texture Scale
+	const uInput = document.getElementById("prop-mat-uscale");
+	const vInput = document.getElementById("prop-mat-vscale");
+
+	const updateTextureScale = () => {
+		const u = parseFloat(uInput.value);
+		const v = parseFloat(vInput.value);
+		if (!isNaN(u) && !isNaN(v)) {
+			targets.forEach(t => {
+				if (t.material) {
+					if (t.material.diffuseTexture) {
+						t.material.diffuseTexture.uScale = u;
+						t.material.diffuseTexture.vScale = v;
+					}
+					if (t.material.bumpTexture) {
+						t.material.bumpTexture.uScale = u;
+						t.material.bumpTexture.vScale = v;
+					}
+				}
+			});
+			markModified();
+		}
+	};
+
+	if (uInput) {
+		uInput.oninput = updateTextureScale;
+		uInput.onchange = recordState;
+	}
+	if (vInput) {
+		vInput.oninput = updateTextureScale;
+		vInput.onchange = recordState;
+	}
+
 	// ID Renaming (Only for single selection)
 	if (targets.length === 1) {
 		document.getElementById("prop-id").onchange = (e) => {
 			const mesh = targets[0];
 			let newName = e.target.value;
-			
+
 			if (mesh.metadata && mesh.metadata.isLightProxy) {
 				const light = part.getLightByID(mesh.metadata.lightId);
 				if (light) {
@@ -334,7 +392,7 @@ function bindInputs(targets) {
 			recordState();
 		};
 	}
-	
+
 	// Shadow Checkboxes
 	document.getElementById("prop-receive-shadows").onchange = (e) => {
 		targets.forEach(t => {
@@ -343,7 +401,7 @@ function bindInputs(targets) {
 		markModified();
 		recordState();
 	};
-	
+
 	document.getElementById("prop-cast-shadows").onchange = (e) => {
 		targets.forEach(t => {
 			if (t instanceof AbstractMesh) setShadowCaster(t, e.target.checked);
@@ -353,11 +411,10 @@ function bindInputs(targets) {
 	};
 }
 
-// ... rest of the file (updateParentDropdown, updateMaterialDropdown, etc) ...
 function updateParentDropdown(targets) {
 	const select = document.getElementById("prop-parent");
 	select.innerHTML = '<option value="">None</option>';
-	
+
 	const potentialParents = [];
 	part.meshes.forEach(m => {
 		if (isUserMesh(m) && !targets.includes(m)) potentialParents.push(m);
@@ -365,14 +422,14 @@ function updateParentDropdown(targets) {
 	part.transformNodes.forEach(t => {
 		if (t.metadata && t.metadata.isTransformNode && !targets.includes(t)) potentialParents.push(t);
 	});
-	
+
 	potentialParents.forEach(p => {
 		const option = document.createElement("option");
 		option.value = p.name;
 		option.text = p.name;
 		select.appendChild(option);
 	});
-	
+
 	if (targets.length === 1) {
 		const parent = targets[0].parent;
 		if (parent) select.value = parent.name;
@@ -382,12 +439,12 @@ function updateParentDropdown(targets) {
 		if (allSame && firstParent) select.value = firstParent.name;
 		else select.value = "";
 	}
-	
+
 	select.onchange = () => {
 		const parentName = select.value;
 		let parent = part.getMeshByName(parentName);
 		if (!parent) parent = part.getTransformNodeByName(parentName);
-		
+
 		targets.forEach(t => {
 			if (parent) {
 				let check = parent;
@@ -398,7 +455,7 @@ function updateParentDropdown(targets) {
 			}
 			setNodeParent(t, parent);
 		});
-		
+
 		markModified();
 		refreshPartGraph();
 		recordState();
@@ -408,26 +465,26 @@ function updateParentDropdown(targets) {
 function updateMaterialDropdown(targets) {
 	const select = document.getElementById("prop-material");
 	select.innerHTML = '<option value="">None</option>';
-	
+
 	if (targets.some(t => t.metadata && t.metadata.isTransformNode)) {
 		select.closest(".form-control").classList.add("hidden");
 		return;
 	}
 	select.closest(".form-control").classList.remove("hidden");
-	
+
 	part.materials.forEach(mat => {
 		const option = document.createElement("option");
 		option.value = mat.id;
 		option.text = mat.name;
 		select.appendChild(option);
 	});
-	
+
 	if (targets.length > 0) {
 		const firstMat = targets[0].material;
 		const allSame = targets.every(t => t.material === firstMat);
 		if (allSame && firstMat) select.value = firstMat.id;
 	}
-	
+
 	select.onchange = () => {
 		const mat = part.getMaterialByID(select.value);
 		targets.forEach(t => {
@@ -445,7 +502,6 @@ function bindLightInputs(targets) {
 	const iInput = document.getElementById("prop-light-intensity");
 	const cInput = document.getElementById("prop-light-diffuse");
 
-	// NEW: Spot light inputs
 	const dirContainer = document.getElementById("container-light-direction");
 	const dxInput = document.getElementById("prop-light-dir-x");
 	const dyInput = document.getElementById("prop-light-dir-y");
@@ -479,7 +535,6 @@ function bindLightInputs(targets) {
 		recordState();
 	};
 
-	// NEW: Spot Light specific bindings
 	const spotLights = lights.filter(l => l.getTypeID() === 2); // 2 is SpotLight
 	if (spotLights.length > 0 && spotLights.length === lights.length) {
 		dirContainer.classList.remove("hidden");
@@ -555,19 +610,19 @@ function bindLightInputs(targets) {
 function bindDuplicateButton(targets) {
 	const btn = document.getElementById("btn-duplicate-asset");
 	if (!btn) return;
-	
+
 	btn.onclick = () => {
 		const newSelection = [];
 		targets.forEach(node => {
 			const newNode = duplicateHierarchy(node, node.parent);
 			if (newNode) newSelection.push(newNode);
 		});
-		
+
 		if (newSelection.length > 0) {
 			selectNode(null);
 			selectNode(newSelection[0], false);
 			for(let i=1; i<newSelection.length; i++) selectNode(newSelection[i], true);
-			
+
 			markModified();
 			refreshPartGraph();
 			recordState();
@@ -589,8 +644,8 @@ function duplicateHierarchy(node, parent) {
 				intensity: oldLight.intensity,
 				diffuse: oldLight.diffuse,
 				direction: oldLight.direction ? { x: oldLight.direction.x, y: oldLight.direction.y, z: oldLight.direction.z } : null,
-				angle: oldLight.angle, // NEW
-				exponent: oldLight.exponent // NEW
+				angle: oldLight.angle,
+				exponent: oldLight.exponent
 			};
 			newNode = createLight(node.metadata.lightType, savedData, part);
 			if (newNode && parent) newNode.parent = parent;
@@ -612,11 +667,10 @@ function duplicateHierarchy(node, parent) {
 		newNode.receiveShadows = node.receiveShadows;
 		if (newNode.metadata && newNode.metadata.castShadows) setShadowCaster(newNode, true);
 	}
-	
+
 	if (newNode) {
-		// Sync visibility on duplicate
 		newNode.setEnabled(node.isEnabled());
-		
+
 		node.getChildren().forEach(child => {
 			if (child.metadata && (child.metadata.isPrimitive || child.metadata.isLightProxy || child.metadata.isTransformNode)) {
 				duplicateHierarchy(child, newNode);
@@ -629,7 +683,7 @@ function duplicateHierarchy(node, parent) {
 function bindDeleteButton(targets) {
 	const btn = document.getElementById("btn-delete-asset");
 	if (!btn) return;
-	
+
 	btn.onclick = () => {
 		const count = targets.length;
 		if (confirm(`Delete ${count} item(s)?`)) {
@@ -646,7 +700,7 @@ function bindDeleteButton(targets) {
 				}
 				node.dispose();
 			});
-			
+
 			selectNode(null);
 			markModified();
 			refreshPartGraph();

@@ -27,7 +27,7 @@
       },
       "parentId": null,
       "sortIndex": 0,
-      "visible": true
+      "visible": false
     }
   ],
   "meshes": [
@@ -56,11 +56,13 @@
         "z": 0
       },
       "materialId": "grass",
+      "uScale": 1,
+      "vScale": 1,
       "parentId": null,
       "receiveShadows": true,
       "castShadows": false,
       "sortIndex": 600,
-      "visible": true,
+      "visible": false,
       "isPrimitive": true,
       "type": "Ground"
     },
@@ -89,6 +91,8 @@
         "z": 0
       },
       "materialId": "shirt-blue",
+      "uScale": 1,
+      "vScale": 1,
       "parentId": "upper-body",
       "receiveShadows": false,
       "castShadows": true,
@@ -122,6 +126,8 @@
         "z": 0
       },
       "materialId": "white",
+      "uScale": 1,
+      "vScale": 1,
       "parentId": "head",
       "receiveShadows": false,
       "castShadows": true,
@@ -155,6 +161,8 @@
         "z": 0
       },
       "materialId": "gray-pants",
+      "uScale": 1,
+      "vScale": 1,
       "parentId": "node_1769857745513",
       "receiveShadows": false,
       "castShadows": true,
@@ -188,6 +196,8 @@
         "z": 0
       },
       "materialId": "leg-joint",
+      "uScale": 1,
+      "vScale": 1,
       "parentId": "leg-left-lower",
       "receiveShadows": false,
       "castShadows": true,
@@ -221,6 +231,8 @@
         "z": 0
       },
       "materialId": "gray-pants",
+      "uScale": 1,
+      "vScale": 1,
       "parentId": "leg-left-lower",
       "receiveShadows": false,
       "castShadows": true,
@@ -254,6 +266,8 @@
         "z": 0
       },
       "materialId": "gray-pants",
+      "uScale": 1,
+      "vScale": 1,
       "parentId": "node_1769857745513",
       "receiveShadows": false,
       "castShadows": true,
@@ -287,6 +301,8 @@
         "z": 0
       },
       "materialId": "shoes",
+      "uScale": 1,
+      "vScale": 1,
       "parentId": "leg-left-lower",
       "receiveShadows": false,
       "castShadows": true,
@@ -320,6 +336,8 @@
         "z": 0
       },
       "materialId": "gray-pants",
+      "uScale": 1,
+      "vScale": 1,
       "parentId": "humanoid",
       "receiveShadows": false,
       "castShadows": true,
@@ -353,6 +371,8 @@
         "z": 0
       },
       "materialId": "leg-joint",
+      "uScale": 1,
+      "vScale": 1,
       "parentId": "leg-right-lower",
       "receiveShadows": false,
       "castShadows": true,
@@ -386,6 +406,8 @@
         "z": 0
       },
       "materialId": "gray-pants",
+      "uScale": 1,
+      "vScale": 1,
       "parentId": "leg-right-lower",
       "receiveShadows": false,
       "castShadows": true,
@@ -419,6 +441,8 @@
         "z": 0
       },
       "materialId": "shoes",
+      "uScale": 1,
+      "vScale": 1,
       "parentId": "leg-right-lower",
       "receiveShadows": false,
       "castShadows": true,
@@ -452,6 +476,8 @@
         "z": 0
       },
       "materialId": "gray-pants",
+      "uScale": 1,
+      "vScale": 1,
       "parentId": "leg-right",
       "receiveShadows": false,
       "castShadows": true,
@@ -485,6 +511,8 @@
         "z": 0
       },
       "materialId": "gray-pants",
+      "uScale": 1,
+      "vScale": 1,
       "parentId": "leg-right",
       "receiveShadows": false,
       "castShadows": true,
@@ -518,6 +546,8 @@
         "z": 0
       },
       "materialId": "leg-joint",
+      "uScale": 1,
+      "vScale": 1,
       "parentId": "right-arm-lower",
       "receiveShadows": false,
       "castShadows": true,
@@ -551,6 +581,8 @@
         "z": 0
       },
       "materialId": "shirt-blue",
+      "uScale": 1,
+      "vScale": 1,
       "parentId": "right-arm-lower",
       "receiveShadows": false,
       "castShadows": true,
@@ -584,6 +616,8 @@
         "z": 0
       },
       "materialId": "shirt-blue",
+      "uScale": 1,
+      "vScale": 1,
       "parentId": "right-arm",
       "receiveShadows": false,
       "castShadows": true,
@@ -617,6 +651,8 @@
         "z": 0
       },
       "materialId": "leg-joint",
+      "uScale": 1,
+      "vScale": 1,
       "parentId": "right-arm",
       "receiveShadows": false,
       "castShadows": true,
@@ -650,6 +686,8 @@
         "z": 0
       },
       "materialId": "shoes",
+      "uScale": 1,
+      "vScale": 1,
       "parentId": "right-arm-lower",
       "receiveShadows": false,
       "castShadows": true,
@@ -683,6 +721,8 @@
         "z": 0
       },
       "materialId": "leg-joint",
+      "uScale": 1,
+      "vScale": 1,
       "parentId": "left-arm-lower",
       "receiveShadows": false,
       "castShadows": true,
@@ -716,6 +756,8 @@
         "z": 0
       },
       "materialId": "shirt-blue",
+      "uScale": 1,
+      "vScale": 1,
       "parentId": "left-arm-lower",
       "receiveShadows": false,
       "castShadows": true,
@@ -749,6 +791,8 @@
         "z": 0
       },
       "materialId": "shoes",
+      "uScale": 1,
+      "vScale": 1,
       "parentId": "left-arm-lower",
       "receiveShadows": false,
       "castShadows": true,
@@ -782,6 +826,8 @@
         "z": 0
       },
       "materialId": "shirt-blue",
+      "uScale": 1,
+      "vScale": 1,
       "parentId": "left-arm",
       "receiveShadows": false,
       "castShadows": true,
@@ -815,6 +861,8 @@
         "z": 0
       },
       "materialId": "leg-joint",
+      "uScale": 1,
+      "vScale": 1,
       "parentId": "left-arm",
       "receiveShadows": false,
       "castShadows": true,
@@ -825,6 +873,75 @@
     }
   ],
   "transformNodes": [
+    {
+      "id": "right-arm",
+      "name": "right-arm",
+      "position": {
+        "x": 2.1,
+        "y": 2,
+        "z": 0
+      },
+      "rotation": {
+        "x": 0.3826834323650898,
+        "y": 0,
+        "z": 0,
+        "w": 0.9238795325112867
+      },
+      "scaling": {
+        "x": 1,
+        "y": 1,
+        "z": 1
+      },
+      "parentId": "upper-body",
+      "sortIndex": 400,
+      "visible": true
+    },
+    {
+      "id": "right-arm-lower",
+      "name": "right-arm-lower",
+      "position": {
+        "x": 0,
+        "y": -1.55,
+        "z": 0
+      },
+      "rotation": {
+        "x": 0.3826834323650898,
+        "y": 0,
+        "z": 0,
+        "w": 0.9238795325112867
+      },
+      "scaling": {
+        "x": 1,
+        "y": 1,
+        "z": 1
+      },
+      "parentId": "right-arm",
+      "sortIndex": 300,
+      "visible": true
+    },
+    {
+      "id": "left-arm-lower",
+      "name": "left-arm-lower",
+      "position": {
+        "x": 0,
+        "y": -1.55,
+        "z": 0
+      },
+      "rotation": {
+        "x": 0.3826834323650898,
+        "y": 0,
+        "z": 0,
+        "w": 0.9238795325112867
+      },
+      "scaling": {
+        "x": 1,
+        "y": 1,
+        "z": 1
+      },
+      "parentId": "left-arm",
+      "sortIndex": 300,
+      "visible": true
+    },
     {
       "id": "leg-right",
       "name": "leg-right",
@@ -1007,75 +1124,6 @@
       },
       "parentId": "upper-body",
       "sortIndex": 300,
-      "visible": true
-    },
-    {
-      "id": "left-arm-lower",
-      "name": "left-arm-lower",
-      "position": {
-        "x": 0,
-        "y": -1.55,
-        "z": 0
-      },
-      "rotation": {
-        "x": 0.3826834323650898,
-        "y": 0,
-        "z": 0,
-        "w": 0.9238795325112867
-      },
-      "scaling": {
-        "x": 1,
-        "y": 1,
-        "z": 1
-      },
-      "parentId": "left-arm",
-      "sortIndex": 300,
-      "visible": true
-    },
-    {
-      "id": "right-arm-lower",
-      "name": "right-arm-lower",
-      "position": {
-        "x": 0,
-        "y": -1.55,
-        "z": 0
-      },
-      "rotation": {
-        "x": 0.3826834323650898,
-        "y": 0,
-        "z": 0,
-        "w": 0.9238795325112867
-      },
-      "scaling": {
-        "x": 1,
-        "y": 1,
-        "z": 1
-      },
-      "parentId": "right-arm",
-      "sortIndex": 300,
-      "visible": true
-    },
-    {
-      "id": "right-arm",
-      "name": "right-arm",
-      "position": {
-        "x": 2.1,
-        "y": 2,
-        "z": 0
-      },
-      "rotation": {
-        "x": 0.3826834323650898,
-        "y": 0,
-        "z": 0,
-        "w": 0.9238795325112867
-      },
-      "scaling": {
-        "x": 1,
-        "y": 1,
-        "z": 1
-      },
-      "parentId": "upper-body",
-      "sortIndex": 400,
       "visible": true
     }
   ]

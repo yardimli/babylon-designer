@@ -3,7 +3,7 @@ import { part, resetAxisIndicator, getSkipMaterialNames } from "./part.js";
 import { setupGizmos, disposeGizmos } from "./part_gizmoControl.js";
 import { updatePropertyEditor } from "./part_propertyEditor.js";
 import { refreshPartGraph } from "./part_treeViewManager.js";
-import { createPrimitive, createShapeMesh } from "./part_ui.js"; // Updated import
+import { createPrimitive, createShapeMesh } from "./part_ui.js";
 import { createLight } from "./part_lightManager.js";
 import { createTransformNode } from "./part_transformNodeManager.js";
 import { clearShadowManagers } from "./part_shadowManager.js";
@@ -75,7 +75,7 @@ function openLoadModal() {
 
 export function serializeScene() {
 	const data = {
-		version: 1.5, // Bumped version
+		version: 1.5,
 		materialFiles: getLoadedMaterialFiles(),
 		lights: [],
 		meshes: [],
@@ -91,8 +91,8 @@ export function serializeScene() {
 					type: mesh.metadata.lightType,
 					position: { x: light.position.x, y: light.position.y, z: light.position.z },
 					direction: light.direction ? { x: light.direction.x, y: light.direction.y, z: light.direction.z } : null,
-					angle: light.angle !== undefined ? light.angle : null, // NEW: Save angle
-					exponent: light.exponent !== undefined ? light.exponent : null, // NEW: Save exponent
+					angle: light.angle !== undefined ? light.angle : null,
+					exponent: light.exponent !== undefined ? light.exponent : null,
 					intensity: light.intensity,
 					diffuse: { r: light.diffuse.r, g: light.diffuse.g, b: light.diffuse.b },
 					parentId: light.parent ? light.parent.id : null,
@@ -141,6 +141,17 @@ export function serializeScene() {
 
 			const pivot = mesh.getPivotPoint();
 
+			// NEW: Save Texture Scale overrides
+			let uScale = 1;
+			let vScale = 1;
+			if (mesh.material) {
+				const tex = mesh.material.diffuseTexture || mesh.material.bumpTexture;
+				if (tex) {
+					uScale = tex.uScale;
+					vScale = tex.vScale;
+				}
+			}
+
 			const meshData = {
 				id: mesh.id,
 				name: mesh.name,
@@ -149,6 +160,8 @@ export function serializeScene() {
 				scaling: { x: mesh.scaling.x, y: mesh.scaling.y, z: mesh.scaling.z },
 				pivot: { x: pivot.x, y: pivot.y, z: pivot.z },
 				materialId: mesh.material ? mesh.material.id : null,
+				uScale: uScale, // NEW
+				vScale: vScale, // NEW
 				parentId: mesh.parent ? mesh.parent.id : null,
 				receiveShadows: mesh.receiveShadows,
 				castShadows: mesh.metadata.castShadows || false,
@@ -254,7 +267,20 @@ export async function loadSceneData(data) {
 				idMap.set(meshData.id, mesh.id);
 				if (meshData.materialId) {
 					const mat = part.getMaterialByID(meshData.materialId);
-					if (mat) mesh.material = mat;
+					if (mat) {
+						mesh.material = mat;
+						// NEW: Restore texture scale
+						if (meshData.uScale !== undefined && meshData.vScale !== undefined) {
+							if (mat.diffuseTexture) {
+								mat.diffuseTexture.uScale = meshData.uScale;
+								mat.diffuseTexture.vScale = meshData.vScale;
+							}
+							if (mat.bumpTexture) {
+								mat.bumpTexture.uScale = meshData.uScale;
+								mat.bumpTexture.vScale = meshData.vScale;
+							}
+						}
+					}
 				}
 				mesh.receiveShadows = !!meshData.receiveShadows;
 				if (mesh.metadata) mesh.metadata.sortIndex = meshData.sortIndex || 0;
@@ -295,7 +321,7 @@ export async function loadSceneData(data) {
 
 	if (data.lights) {
 		data.lights.forEach(lightData => {
-			if (lightData.type === "directional") return; // NEW: Ignore deprecated directional lights
+			if (lightData.type === "directional") return;
 
 			const proxy = createLight(lightData.type, lightData, part);
 			if (proxy) {

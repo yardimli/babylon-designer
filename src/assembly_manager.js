@@ -108,7 +108,7 @@ export async function importSceneAsAsset(filename, position = Vector3.Zero(), sa
 				idMap.set(nodeData.id, node);
 				if (nodeData.name) nameMap.set(nodeData.name, node);
 
-				// NEW: Apply visibility from source file
+				// Apply visibility from source file
 				if (nodeData.visible !== undefined) node.setEnabled(nodeData.visible);
 			});
 		}
@@ -126,7 +126,7 @@ export async function importSceneAsAsset(filename, position = Vector3.Zero(), sa
 					idMap.set(lightData.id, proxy);
 					if (lightData.name) nameMap.set(lightData.name, proxy);
 
-					// NEW: Apply visibility from source file
+					// Apply visibility from source file
 					if (lightData.visible !== undefined) proxy.setEnabled(lightData.visible);
 				}
 			});
@@ -138,7 +138,7 @@ export async function importSceneAsAsset(filename, position = Vector3.Zero(), sa
 				const meshDataClone = { ...meshData, id: p(meshData.id) };
 				let mesh;
 
-				// NEW: Check for Shape vs Primitive
+				// Check for Shape vs Primitive
 				if (meshData.isShape) {
 					mesh = createShapeMesh(meshData.shapeData, meshData.shapeName || meshData.name, meshDataClone);
 				} else {
@@ -157,7 +157,7 @@ export async function importSceneAsAsset(filename, position = Vector3.Zero(), sa
 					idMap.set(meshData.id, mesh);
 					if (meshData.name) nameMap.set(meshData.name, mesh);
 
-					// NEW: Apply visibility from source file
+					// Apply visibility from source file
 					if (meshData.visible !== undefined) mesh.setEnabled(meshData.visible);
 				}
 			});
@@ -227,7 +227,7 @@ function serializeAssembly() {
 				rotation: rot,
 				scaling: { x: node.scaling.x, y: node.scaling.y, z: node.scaling.z },
 				name: node.name,
-				// NEW: Save visibility of the whole part set root
+				// Save visibility of the whole part set root
 				visible: node.isEnabled()
 			});
 		}
@@ -243,11 +243,13 @@ function serializeAssembly() {
 					type: mesh.metadata.lightType,
 					position: { x: light.position.x, y: light.position.y, z: light.position.z },
 					direction: light.direction ? { x: light.direction.x, y: light.direction.y, z: light.direction.z } : null,
+					angle: light.angle !== undefined ? light.angle : null, // CHANGED: Save angle
+					exponent: light.exponent !== undefined ? light.exponent : null, // CHANGED: Save exponent
 					intensity: light.intensity,
 					diffuse: { r: light.diffuse.r, g: light.diffuse.g, b: light.diffuse.b },
 					name: mesh.name,
 					parentId: light.parent ? light.parent.id : null,
-					// NEW: Save visibility
+					// Save visibility
 					visible: mesh.isEnabled()
 				});
 			}
@@ -295,7 +297,7 @@ export async function loadAssemblyData(data) {
 				root.position.set(s.position.x, s.position.y, s.position.z);
 				root.rotationQuaternion = new Quaternion(s.rotation.x, s.rotation.y, s.rotation.z, s.rotation.w);
 				root.scaling.set(s.scaling.x, s.scaling.y, s.scaling.z);
-				// NEW: Restore visibility of the whole part set root
+				// Restore visibility of the whole part set root
 				if (s.visible !== undefined) root.setEnabled(s.visible);
 			}
 		}
@@ -317,7 +319,7 @@ export async function loadAssemblyData(data) {
 						if (light) light.parent = parent;
 					}
 				}
-				// NEW: Restore visibility
+				// Restore visibility
 				if (l.visible !== undefined) proxy.setEnabled(l.visible);
 			}
 		});

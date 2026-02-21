@@ -487,8 +487,8 @@
       0
     ],
     "alpha": 1,
-    "specularPower": 128,
-    "diffuseTexture": null,
+    "specularPower": 38,
+    "diffuseTexture": "/materials/textures/1771680013498_7205.jpg",
     "bumpTexture": null,
     "bumpLevel": 1,
     "useParallax": false,
@@ -518,12 +518,43 @@
       0
     ],
     "alpha": 1,
-    "specularPower": 116,
+    "specularPower": 69,
     "diffuseTexture": "/materials/textures/1771676929764_49188.jpg",
     "bumpTexture": "/materials/textures/1771676937371_49188_normal.png",
-    "bumpLevel": 1.5,
+    "bumpLevel": 0.2,
     "useParallax": true,
     "useParallaxOcclusion": true,
+    "parallaxScaleBias": 0.05
+  },
+  {
+    "name": "tile-floor-texture",
+    "diffuse": [
+      1,
+      1,
+      1
+    ],
+    "specular": [
+      1,
+      1,
+      1
+    ],
+    "emissive": [
+      0,
+      0,
+      0
+    ],
+    "ambient": [
+      0,
+      0,
+      0
+    ],
+    "alpha": 1,
+    "specularPower": 128,
+    "diffuseTexture": "/materials/textures/1771680190357_5379.jpg",
+    "bumpTexture": null,
+    "bumpLevel": 1,
+    "useParallax": false,
+    "useParallaxOcclusion": false,
     "parallaxScaleBias": 0.05
   }
 ]
