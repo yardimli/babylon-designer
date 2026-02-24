@@ -120,13 +120,13 @@
 						<input type="color" id="prop-light-diffuse" class="h-8 w-full" />
 					</label>
 
-					<!-- NEW: Spot Light Properties -->
+					<!-- CHANGED: Spot Light Properties to use Degrees -->
 					<label class="form-control w-full mt-2 hidden" id="container-light-direction">
-						<div class="label"><span class="label-text">Direction (X, Y, Z)</span></div>
+						<div class="label"><span class="label-text">Direction (Deg X, Y, Z)</span></div>
 						<div class="grid grid-cols-3 gap-1">
-							<input type="number" id="prop-light-dir-x" class="input input-bordered w-full input-sm px-1" step="0.1" placeholder="X" />
-							<input type="number" id="prop-light-dir-y" class="input input-bordered w-full input-sm px-1" step="0.1" placeholder="Y" />
-							<input type="number" id="prop-light-dir-z" class="input input-bordered w-full input-sm px-1" step="0.1" placeholder="Z" />
+							<input type="number" id="prop-light-dir-x" class="input input-bordered w-full input-sm px-1" step="0.1" min="0" max="360" placeholder="X" />
+							<input type="number" id="prop-light-dir-y" class="input input-bordered w-full input-sm px-1" step="0.1" min="0" max="360" placeholder="Y" />
+							<input type="number" id="prop-light-dir-z" class="input input-bordered w-full input-sm px-1" step="0.1" min="0" max="360" placeholder="Z" />
 						</div>
 					</label>
 					<label class="form-control w-full mt-2 hidden" id="container-light-angle">

@@ -556,5 +556,98 @@
     "useParallax": false,
     "useParallaxOcclusion": false,
     "parallaxScaleBias": 0.05
+  },
+  {
+    "name": "gemini-tile",
+    "diffuse": [
+      1,
+      1,
+      1
+    ],
+    "specular": [
+      1,
+      1,
+      1
+    ],
+    "emissive": [
+      0,
+      0,
+      0
+    ],
+    "ambient": [
+      0,
+      0,
+      0
+    ],
+    "alpha": 1,
+    "specularPower": 128,
+    "diffuseTexture": "/materials/textures/1771854145545_T_Tiles2_Color2.png",
+    "bumpTexture": "/materials/textures/1771854155203_T_Tiles2_Normal.png",
+    "bumpLevel": 3,
+    "useParallax": false,
+    "useParallaxOcclusion": false,
+    "parallaxScaleBias": 0.11
+  },
+  {
+    "name": "old-brick",
+    "diffuse": [
+      1,
+      1,
+      1
+    ],
+    "specular": [
+      1,
+      1,
+      1
+    ],
+    "emissive": [
+      0,
+      0,
+      0
+    ],
+    "ambient": [
+      0,
+      0,
+      0
+    ],
+    "alpha": 1,
+    "specularPower": 106,
+    "diffuseTexture": "/materials/textures/1771935620738_OldBricks_01_basecolor.jpg",
+    "bumpTexture": "/materials/textures/1771935628843_OldBricks_01_normal.jpg",
+    "bumpLevel": 1.3,
+    "useParallax": false,
+    "useParallaxOcclusion": false,
+    "parallaxScaleBias": 0.05
+  },
+  {
+    "name": "beige-wall-2",
+    "diffuse": [
+      1,
+      1,
+      1
+    ],
+    "specular": [
+      1,
+      1,
+      1
+    ],
+    "emissive": [
+      0,
+      0,
+      0
+    ],
+    "ambient": [
+      0,
+      0,
+      0
+    ],
+    "alpha": 1,
+    "specularPower": 126,
+    "diffuseTexture": "/materials/textures/1771935856094_Beigewall2_Texture.png",
+    "bumpTexture": null,
+    "bumpLevel": 1,
+    "useParallax": false,
+    "useParallaxOcclusion": false,
+    "parallaxScaleBias": 0.05
   }
 ]

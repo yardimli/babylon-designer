@@ -29,7 +29,9 @@
         "y": 0,
         "z": 0
       },
-      "materialId": "wall-gray",
+      "materialId": "beige-wall-2",
+      "uScale": 1,
+      "vScale": 1,
       "parentId": null,
       "receiveShadows": true,
       "castShadows": true,

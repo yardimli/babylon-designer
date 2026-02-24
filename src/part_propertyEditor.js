@@ -20,7 +20,6 @@ function createVec3Input(label, idPrefix, container) {
 
 	["x", "y", "z"].forEach(axis => {
 		const input = document.createElement("input");
-		// CHANGED: Use number type and step for numeric inputs with up/down arrows
 		input.type = "number";
 		input.step = "0.1";
 		input.id = `${idPrefix}-${axis}`;
@@ -210,14 +209,23 @@ function syncUIFromTargets(targets) {
 	document.getElementById("scl-y").value = sy !== null ? sy.toFixed(2) : "";
 	document.getElementById("scl-z").value = sz !== null ? sz.toFixed(2) : "";
 
-	// Sync Spot Light Direction
+	// CHANGED: Sync Spot Light Direction using Proxy Rotation (Degrees 0-360)
 	const allLights = targets.every(t => t.metadata && t.metadata.isLightProxy);
 	if (allLights) {
-		const spotLights = targets.map(t => part.getLightByID(t.metadata.lightId)).filter(l => l && l.getTypeID() === 2);
-		if (spotLights.length > 0 && spotLights.length === targets.length) {
-			const dx = getCommonValue(spotLights, l => l.direction.x);
-			const dy = getCommonValue(spotLights, l => l.direction.y);
-			const dz = getCommonValue(spotLights, l => l.direction.z);
+		const spotLightProxies = targets.filter(t => {
+			const l = part.getLightByID(t.metadata.lightId);
+			return l && l.getTypeID() === 2;
+		});
+		if (spotLightProxies.length > 0 && spotLightProxies.length === targets.length) {
+			const getRotDeg = (t, axis) => {
+				let euler = t.rotationQuaternion ? t.rotationQuaternion.toEulerAngles() : t.rotation;
+				let deg = euler[axis] * 180 / Math.PI;
+				return (deg % 360 + 360) % 360;
+			};
+
+			const dx = getCommonValue(spotLightProxies, t => getRotDeg(t, "x"));
+			const dy = getCommonValue(spotLightProxies, t => getRotDeg(t, "y"));
+			const dz = getCommonValue(spotLightProxies, t => getRotDeg(t, "z"));
 
 			const dxInput = document.getElementById("prop-light-dir-x");
 			const dyInput = document.getElementById("prop-light-dir-y");
@@ -229,7 +237,7 @@ function syncUIFromTargets(targets) {
 		}
 	}
 
-	// NEW: Sync Texture Scale
+	// Sync Texture Scale
 	const texScaleContainer = document.getElementById("container-texture-scale");
 	const uInput = document.getElementById("prop-mat-uscale");
 	const vInput = document.getElementById("prop-mat-vscale");
@@ -329,7 +337,7 @@ function bindInputs(targets) {
 		};
 	}
 
-	// NEW: Bind Texture Scale
+	// Bind Texture Scale
 	const uInput = document.getElementById("prop-mat-uscale");
 	const vInput = document.getElementById("prop-mat-vscale");
 
@@ -519,14 +527,15 @@ function bindLightInputs(targets) {
 	const allSameC = lights.every(l => l.diffuse.toHexString() === firstC);
 	cInput.value = allSameC ? firstC : "#ffffff";
 
-	iInput.onchange = () => {
+	const updateIntensity = () => {
 		const val = parseFloat(iInput.value);
 		if (!isNaN(val)) {
 			lights.forEach(l => l.intensity = val);
 			markModified();
-			recordState();
 		}
 	};
+	iInput.oninput = updateIntensity;
+	iInput.onchange = recordState;
 
 	cInput.onchange = () => {
 		const col = Color3.FromHexString(cInput.value);
@@ -535,22 +544,31 @@ function bindLightInputs(targets) {
 		recordState();
 	};
 
+	// CHANGED: Bind Spot Light Properties using Proxy Rotation (Degrees 0-360)
 	const spotLights = lights.filter(l => l.getTypeID() === 2); // 2 is SpotLight
 	if (spotLights.length > 0 && spotLights.length === lights.length) {
 		dirContainer.classList.remove("hidden");
 		aContainer.classList.remove("hidden");
 		eContainer.classList.remove("hidden");
 
-		const firstDx = spotLights[0].direction.x;
-		const allSameDx = spotLights.every(l => Math.abs(l.direction.x - firstDx) < 0.01);
+		const getRotDeg = (l, axis) => {
+			const proxy = part.getMeshByID(l.id + "_proxy");
+			if (!proxy) return 0;
+			let euler = proxy.rotationQuaternion ? proxy.rotationQuaternion.toEulerAngles() : proxy.rotation;
+			let deg = euler[axis] * 180 / Math.PI;
+			return (deg % 360 + 360) % 360;
+		};
+
+		const firstDx = getRotDeg(spotLights[0], "x");
+		const allSameDx = spotLights.every(l => Math.abs(getRotDeg(l, "x") - firstDx) < 0.01);
 		dxInput.value = allSameDx ? firstDx.toFixed(2) : "";
 
-		const firstDy = spotLights[0].direction.y;
-		const allSameDy = spotLights.every(l => Math.abs(l.direction.y - firstDy) < 0.01);
+		const firstDy = getRotDeg(spotLights[0], "y");
+		const allSameDy = spotLights.every(l => Math.abs(getRotDeg(l, "y") - firstDy) < 0.01);
 		dyInput.value = allSameDy ? firstDy.toFixed(2) : "";
 
-		const firstDz = spotLights[0].direction.z;
-		const allSameDz = spotLights.every(l => Math.abs(l.direction.z - firstDz) < 0.01);
+		const firstDz = getRotDeg(spotLights[0], "z");
+		const allSameDz = spotLights.every(l => Math.abs(getRotDeg(l, "z") - firstDz) < 0.01);
 		dzInput.value = allSameDz ? firstDz.toFixed(2) : "";
 
 		const firstA = spotLights[0].angle * (180 / Math.PI);
@@ -566,40 +584,48 @@ function bindLightInputs(targets) {
 			const y = parseFloat(dyInput.value);
 			const z = parseFloat(dzInput.value);
 			if (!isNaN(x) && !isNaN(y) && !isNaN(z)) {
-				const newDir = new Vector3(x, y, z);
+				const pitch = x * Math.PI / 180;
+				const yaw = y * Math.PI / 180;
+				const roll = z * Math.PI / 180;
+
 				spotLights.forEach(l => {
-					l.direction = newDir;
 					const proxy = part.getMeshByID(l.id + "_proxy");
 					if (proxy) {
-						proxy.lookAt(proxy.position.add(newDir));
+						if (!proxy.rotationQuaternion) proxy.rotationQuaternion = Quaternion.Identity();
+						Quaternion.FromEulerAnglesToRef(pitch, yaw, roll, proxy.rotationQuaternion);
 					}
 				});
 				markModified();
-				recordState();
 			}
 		};
 
-		dxInput.onchange = updateDirection;
-		dyInput.onchange = updateDirection;
-		dzInput.onchange = updateDirection;
+		dxInput.oninput = updateDirection;
+		dyInput.oninput = updateDirection;
+		dzInput.oninput = updateDirection;
 
-		aInput.onchange = () => {
+		dxInput.onchange = recordState;
+		dyInput.onchange = recordState;
+		dzInput.onchange = recordState;
+
+		const updateAngle = () => {
 			const val = parseFloat(aInput.value);
 			if (!isNaN(val)) {
 				spotLights.forEach(l => l.angle = val * (Math.PI / 180));
 				markModified();
-				recordState();
 			}
 		};
+		aInput.oninput = updateAngle;
+		aInput.onchange = recordState;
 
-		eInput.onchange = () => {
+		const updateExponent = () => {
 			const val = parseFloat(eInput.value);
 			if (!isNaN(val)) {
 				spotLights.forEach(l => l.exponent = val);
 				markModified();
-				recordState();
 			}
 		};
+		eInput.oninput = updateExponent;
+		eInput.onchange = recordState;
 	} else {
 		dirContainer.classList.add("hidden");
 		aContainer.classList.add("hidden");

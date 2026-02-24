@@ -29,9 +29,9 @@
         "y": 0,
         "z": 0
       },
-      "materialId": "brickwall2",
+      "materialId": "old-brick",
       "uScale": 3,
-      "vScale": 2,
+      "vScale": 3,
       "parentId": null,
       "receiveShadows": true,
       "castShadows": true,

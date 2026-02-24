@@ -29,9 +29,9 @@
         "y": 0,
         "z": 0
       },
-      "materialId": "tile-floor-texture",
-      "uScale": 5,
-      "vScale": 5,
+      "materialId": "gemini-tile",
+      "uScale": 3,
+      "vScale": 3,
       "parentId": null,
       "receiveShadows": false,
       "castShadows": true,

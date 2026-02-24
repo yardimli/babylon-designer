@@ -148,7 +148,20 @@ export async function importSceneAsAsset(filename, position = Vector3.Zero(), sa
 				if (mesh) {
 					if (meshData.materialId) {
 						const mat = scene.getMaterialByID(meshData.materialId);
-						if (mat) mesh.material = mat;
+						if (mat) {
+							mesh.material = mat;
+							// CHANGED: Restore texture scale when importing part into assembly
+							if (meshData.uScale !== undefined && meshData.vScale !== undefined) {
+								if (mat.diffuseTexture) {
+									mat.diffuseTexture.uScale = meshData.uScale;
+									mat.diffuseTexture.vScale = meshData.vScale;
+								}
+								if (mat.bumpTexture) {
+									mat.bumpTexture.uScale = meshData.uScale;
+									mat.bumpTexture.vScale = meshData.vScale;
+								}
+							}
+						}
 					}
 					// Ensure metadata exists and mark as internal
 					if (!mesh.metadata) mesh.metadata = {};
