@@ -10,6 +10,7 @@ import { clearShadowManagers } from "./assembly_shadowManager.js";
 import { setupHistory, recordState } from "./assembly_historyManager.js";
 import { selectNode } from "./assembly_selectionManager.js";
 import { getLoadedMaterialFiles, loadMaterialFile, clearMaterialManager } from "./assembly_materialManager.js";
+import { updateCSG, getNegativeMaterial } from "./assembly_csgManager.js"; // Added
 
 let currentFileName = null;
 let isModified = false;
@@ -146,11 +147,21 @@ export async function importSceneAsAsset(filename, position = Vector3.Zero(), sa
 				}
 
 				if (mesh) {
+					// NEW: Restore CSG state
+					if (meshData.isNegative) {
+						mesh.metadata.isNegative = true;
+						mesh.metadata.originalMaterialId = meshData.originalMaterialId;
+					}
+
 					if (meshData.materialId) {
 						const mat = scene.getMaterialByID(meshData.materialId);
 						if (mat) {
-							mesh.material = mat;
-							// CHANGED: Restore texture scale when importing part into assembly
+							if (meshData.isNegative) {
+								mesh.metadata.originalMaterialId = mat.id;
+							} else {
+								mesh.material = mat;
+							}
+							// Restore texture scale when importing part into assembly
 							if (meshData.uScale !== undefined && meshData.vScale !== undefined) {
 								if (mat.diffuseTexture) {
 									mat.diffuseTexture.uScale = meshData.uScale;
@@ -163,6 +174,12 @@ export async function importSceneAsAsset(filename, position = Vector3.Zero(), sa
 							}
 						}
 					}
+
+					// Apply negative material if needed
+					if (meshData.isNegative) {
+						mesh.material = getNegativeMaterial(scene);
+					}
+
 					// Ensure metadata exists and mark as internal
 					if (!mesh.metadata) mesh.metadata = {};
 					mesh.metadata.isInternal = true;
@@ -199,6 +216,8 @@ export async function importSceneAsAsset(filename, position = Vector3.Zero(), sa
 		restoreParents(data.lights);
 		restoreParents(data.meshes);
 
+		updateCSG(); // Recompute CSG after importing part
+
 		markModified();
 		refreshSceneGraph();
 		recordState();
@@ -218,7 +237,7 @@ function serializeAssembly() {
 		version: 1.1, // Bumped version
 		type: "assembly",
 		scenes: [],
-		lights: []
+		lights:[]
 	};
 
 	// 1. Serialize Imported Scenes (Roots)
@@ -256,8 +275,8 @@ function serializeAssembly() {
 					type: mesh.metadata.lightType,
 					position: { x: light.position.x, y: light.position.y, z: light.position.z },
 					direction: light.direction ? { x: light.direction.x, y: light.direction.y, z: light.direction.z } : null,
-					angle: light.angle !== undefined ? light.angle : null, // CHANGED: Save angle
-					exponent: light.exponent !== undefined ? light.exponent : null, // CHANGED: Save exponent
+					angle: light.angle !== undefined ? light.angle : null, // Save angle
+					exponent: light.exponent !== undefined ? light.exponent : null, // Save exponent
 					intensity: light.intensity,
 					diffuse: { r: light.diffuse.r, g: light.diffuse.g, b: light.diffuse.b },
 					name: mesh.name,
@@ -338,6 +357,7 @@ export async function loadAssemblyData(data) {
 		});
 	}
 
+	updateCSG(); // Recompute CSG after loading all parts
 	refreshSceneGraph();
 }
 
@@ -377,7 +397,7 @@ function createNewAssembly() {
 	clearMaterialManager();
 	selectNode(null);
 
-	const toDispose = [];
+	const toDispose =[];
 	scene.meshes.forEach(m => {
 		if (m.name !== "previewSphere" && m.name !== "hdrSkyBox" && !m.name.startsWith("gizmo")) {
 			toDispose.push(m);

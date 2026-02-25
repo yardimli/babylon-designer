@@ -7,6 +7,7 @@ import { setShadowCaster, disposeShadowGenerator } from "./assembly_shadowManage
 import { createTransformNode } from "./assembly_transformNodeManager.js";
 import { recordState } from "./assembly_historyManager.js";
 import { refreshSceneGraph, setNodeParent } from "./assembly_treeViewManager.js";
+import { updateCSG, getNegativeMaterial } from "./assembly_csgManager.js"; // Added
 
 let observer = null;
 
@@ -39,7 +40,7 @@ createVec3Input("Scale", "scl", transformContainer);
 
 export function updatePropertyEditor(targets) {
 	if (!Array.isArray(targets)) {
-		targets = targets ? [targets] : [];
+		targets = targets ? [targets] :[];
 	}
 
 	const editor = document.getElementById("property-editor");
@@ -285,12 +286,21 @@ function bindInputs(targets) {
 			if (sz !== null) mesh.scaling.z = sz;
 		});
 
+		// Temporarily show original meshes and hide CSG results during input drag
+		scene.meshes.forEach(m => {
+			if (m.metadata && m.metadata.isCSGResult) m.isVisible = false;
+			if (m.metadata && (m.metadata.isPrimitive || m.metadata.isShape) && !m.metadata.isNegative && m.isEnabled()) m.isVisible = true;
+		});
+
 		markModified();
 	};
 
 	document.querySelectorAll("#transform-container input").forEach(input => {
 		input.oninput = updateTargets;
-		input.onchange = recordState;
+		input.onchange = () => {
+			updateCSG();
+			recordState();
+		};
 	});
 
 	// Bind Visibility Checkbox
@@ -300,6 +310,7 @@ function bindInputs(targets) {
 			targets.forEach(t => {
 				t.setEnabled(e.target.checked);
 			});
+			updateCSG();
 			markModified();
 			recordState();
 			refreshSceneGraph();
@@ -365,7 +376,7 @@ function updateParentDropdown(targets) {
 	const select = document.getElementById("prop-parent");
 	select.innerHTML = '<option value="">None</option>';
 
-	const potentialParents = [];
+	const potentialParents =[];
 	scene.meshes.forEach(m => {
 		if (isUserMesh(m) && !targets.includes(m)) potentialParents.push(m);
 	});
@@ -580,7 +591,7 @@ function bindDuplicateButton(targets) {
 	if (!btn) return;
 
 	btn.onclick = () => {
-		const newSelection = [];
+		const newSelection =[];
 		targets.forEach(node => {
 			const newNode = duplicateHierarchy(node, node.parent);
 			if (newNode) newSelection.push(newNode);
@@ -591,6 +602,7 @@ function bindDuplicateButton(targets) {
 			selectNode(newSelection[0], false);
 			for(let i=1; i<newSelection.length; i++) selectNode(newSelection[i], true);
 
+			updateCSG();
 			markModified();
 			refreshSceneGraph();
 			recordState();
@@ -653,6 +665,11 @@ function duplicateHierarchy(node, parent) {
 		if (node.metadata) newNode.metadata = JSON.parse(JSON.stringify(node.metadata));
 		newNode.receiveShadows = node.receiveShadows;
 		if (newNode.metadata && newNode.metadata.castShadows) setShadowCaster(newNode, true);
+
+		// Apply negative material if duplicated mesh is negative
+		if (newNode.metadata && newNode.metadata.isNegative) {
+			newNode.material = getNegativeMaterial(scene);
+		}
 	}
 
 	if (newNode) {
@@ -696,6 +713,7 @@ function bindDeleteButton(targets) {
 			});
 
 			selectNode(null);
+			updateCSG();
 			markModified();
 			refreshSceneGraph();
 			recordState();

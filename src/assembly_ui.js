@@ -10,7 +10,7 @@ import { setShadowCaster } from "./assembly_shadowManager.js";
 import { recordState } from "./assembly_historyManager.js";
 import { selectNode } from "./assembly_selectionManager.js";
 
-const primitives = ["Cube", "Sphere", "Cylinder", "Plane", "Ground", "Cone", "Pyramid", "Empty"];
+const primitives =["Cube", "Sphere", "Cylinder", "Plane", "Ground", "Cone", "Pyramid", "Empty"];
 const lights = ["Point", "Directional"];
 
 export function setupUI() {
@@ -68,11 +68,10 @@ function setupGizmoButtons() {
 
 	if (!btnPos) return;
 
-	const setActive = (activeBtn) => {
-		[btnPos, btnRot, btnScl].forEach(btn => {
-			if (btn === activeBtn) btn.classList.add("btn-active");
-			else btn.classList.remove("btn-active");
-		});
+	const setActive = (activeBtn) => {[btnPos, btnRot, btnScl].forEach(btn => {
+		if (btn === activeBtn) btn.classList.add("btn-active");
+		else btn.classList.remove("btn-active");
+	});
 	};
 
 	btnPos.onclick = () => {
@@ -109,12 +108,12 @@ export function createShapeMesh(shapeData, name, savedState = null) {
 	const id = getUniqueId(scene, baseId);
 
 	// Reconstruct geometry
-	const solids = [];
-	const holes = [];
+	const solids =[];
+	const holes =[];
 
 	// Helper to convert shape object to Vector3 array
 	const getPoints = (shape) => {
-		const points = [];
+		const points =[];
 		if (shape.type === 'rect') {
 			points.push(
 				new Vector3(shape.x, 0, shape.y),
@@ -159,7 +158,7 @@ export function createShapeMesh(shapeData, name, savedState = null) {
 		if (shape.isHole) {
 			holes.push({ points });
 		} else {
-			solids.push({ points, myHoles: [] });
+			solids.push({ points, myHoles:[] });
 		}
 	});
 
@@ -225,6 +224,12 @@ export function createShapeMesh(shapeData, name, savedState = null) {
 				if (mat) rootMesh.material = mat;
 			}
 			if (savedState.visible !== undefined) rootMesh.setEnabled(savedState.visible);
+
+			// Apply CSG state
+			if (savedState.isNegative) {
+				rootMesh.metadata.isNegative = true;
+				rootMesh.metadata.originalMaterialId = savedState.originalMaterialId;
+			}
 		} else {
 			// Default placement
 			rootMesh.position.y = shapeData.extrusionHeight;
@@ -286,6 +291,12 @@ export function createPrimitive(type, savedData = null) {
 			// Fix: Restore receiveShadows
 			if (savedData.receiveShadows !== undefined) {
 				mesh.receiveShadows = savedData.receiveShadows;
+			}
+
+			// Apply CSG state
+			if (savedData.isNegative) {
+				mesh.metadata.isNegative = true;
+				mesh.metadata.originalMaterialId = savedData.originalMaterialId;
 			}
 		} else {
 			mesh.position.y = 0.5;
