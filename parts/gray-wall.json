@@ -37,6 +37,45 @@
       "castShadows": true,
       "sortIndex": 0,
       "visible": true,
+      "isNegative": false,
+      "originalMaterialId": null,
+      "isPrimitive": true,
+      "type": "Cube"
+    },
+    {
+      "id": "Cube_1772016050641",
+      "name": "Cube_1772016050641",
+      "position": {
+        "x": 0,
+        "y": -2.8410115242004395,
+        "z": 0
+      },
+      "rotation": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 1
+      },
+      "scaling": {
+        "x": 2.5,
+        "y": 4,
+        "z": 1
+      },
+      "pivot": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "materialId": "negativeMat",
+      "uScale": 1,
+      "vScale": 1,
+      "parentId": null,
+      "receiveShadows": false,
+      "castShadows": true,
+      "sortIndex": 0,
+      "visible": true,
+      "isNegative": true,
+      "originalMaterialId": null,
       "isPrimitive": true,
       "type": "Cube"
     }

@@ -8,6 +8,7 @@ const collapsedNodes = new Set();
 
 function isGraphNode(node) {
 	if (node instanceof AbstractMesh) {
+		if (node.metadata && node.metadata.isCSGResult) return false; // Hide CSG results from tree
 		return isUserMesh(node);
 	}
 	if (node.getClassName() === "TransformNode") {
@@ -48,9 +49,9 @@ export function setNodeParent(node, parent) {
 export function refreshPartGraph() {
 	const container = document.getElementById("part-explorer");
 	if (!container) return;
-	
+
 	container.innerHTML = "";
-	
+
 	container.ondragover = (e) => {
 		e.preventDefault();
 		if (e.target === container) container.classList.add("bg-base-content/5");
@@ -78,17 +79,17 @@ export function refreshPartGraph() {
 			}
 		}
 	};
-	
+
 	const roots = getSortedRoots();
 	if (roots.length === 0) {
 		container.innerHTML = "<div class='opacity-50 italic p-2'>Empty Part</div>";
 		return;
 	}
-	
+
 	roots.forEach(node => {
 		container.appendChild(createTreeNode(node, 0));
 	});
-	
+
 	// Re-apply highlights after rebuild
 	// We need to get current selection. Since we can't import getSelectedNodes due to circular dep risk if not careful,
 	// we rely on the fact that highlightInTree is called by selectionManager.
@@ -100,17 +101,17 @@ export function refreshPartGraph() {
 
 function createTreeNode(node, level) {
 	const wrapper = document.createElement("div");
-	
+
 	const row = document.createElement("div");
 	row.className = "flex items-center hover:bg-base-content/10 rounded cursor-pointer p-1 border-transparent border-y-2";
 	row.style.paddingLeft = `${level * 12 + 4}px`;
 	row.dataset.meshId = node.id;
-	
+
 	// Highlight if selected
 	if (isSelected(node)) {
 		row.classList.add("bg-primary/20", "text-primary");
 	}
-	
+
 	// --- Drag & Drop Logic ---
 	row.draggable = true;
 	row.ondragstart = (e) => {
@@ -165,7 +166,7 @@ function createTreeNode(node, level) {
 		else if (relY > height * 0.75) action = "after";
 		handleNodeDrop(draggedNode, node, action);
 	};
-	
+
 	// Expand/Collapse
 	const children = getSortedChildren(node);
 	const hasChildren = children.length > 0;
@@ -184,20 +185,20 @@ function createTreeNode(node, level) {
 		icon.innerText = "•";
 	}
 	row.appendChild(icon);
-	
+
 	const label = document.createElement("span");
 	label.innerText = node.name;
 	label.className = "truncate flex-1";
 	if (node.metadata && node.metadata.isTransformNode) label.className += " text-secondary";
 	row.appendChild(label);
-	
+
 	// Selection Logic (Updated for Shift)
 	row.onclick = (e) => {
 		selectNode(node, e.shiftKey);
 	};
-	
+
 	wrapper.appendChild(row);
-	
+
 	if (hasChildren && !collapsedNodes.has(node.id)) {
 		const childrenContainer = document.createElement("div");
 		children.forEach(child => {
@@ -205,7 +206,7 @@ function createTreeNode(node, level) {
 		});
 		wrapper.appendChild(childrenContainer);
 	}
-	
+
 	return wrapper;
 }
 
@@ -238,12 +239,12 @@ function handleNodeDrop(draggedNode, targetNode, action) {
 export function highlightInTree(nodes) {
 	const container = document.getElementById("part-explorer");
 	if (!container) return;
-	
+
 	// Clear all highlights
 	container.querySelectorAll("[data-mesh-id]").forEach(el => {
 		el.classList.remove("bg-primary/20", "text-primary");
 	});
-	
+
 	// Apply new highlights
 	if (Array.isArray(nodes)) {
 		nodes.forEach(node => {

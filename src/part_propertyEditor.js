@@ -7,6 +7,7 @@ import { setShadowCaster, disposeShadowGenerator } from "./part_shadowManager.js
 import { createTransformNode } from "./part_transformNodeManager.js";
 import { recordState } from "./part_historyManager.js";
 import { refreshPartGraph, setNodeParent } from "./part_treeViewManager.js";
+import { updateCSG, getNegativeMaterial } from "./part_csgManager.js"; // Added
 
 let observer = null;
 
@@ -121,14 +122,16 @@ export function updatePropertyEditor(targets) {
 		lightProps.classList.add("hidden");
 	}
 
-	// --- Shadow Properties ---
-	const allMeshes = targets.every(t => t instanceof AbstractMesh && !t.metadata?.isTransformNode);
+	// --- Shadow & CSG Properties ---
+	const allMeshes = targets.every(t => t instanceof AbstractMesh && !t.metadata?.isTransformNode && !t.metadata?.isLightProxy);
 	const receiveShadowsInput = document.getElementById("prop-receive-shadows");
 	const castShadowsInput = document.getElementById("prop-cast-shadows");
+	const negativeInput = document.getElementById("prop-negative"); // Added
 
 	if (allMeshes) {
 		receiveShadowsInput.closest(".form-control").classList.remove("hidden");
 		castShadowsInput.closest(".form-control").classList.remove("hidden");
+		negativeInput.closest(".form-control").classList.remove("hidden"); // Added
 
 		const allReceive = targets.every(t => t.receiveShadows);
 		const someReceive = targets.some(t => t.receiveShadows);
@@ -140,9 +143,16 @@ export function updatePropertyEditor(targets) {
 		castShadowsInput.checked = allCast;
 		castShadowsInput.indeterminate = someCast && !allCast;
 
+		// Added CSG Checkbox Sync
+		const allNeg = targets.every(t => t.metadata && t.metadata.isNegative);
+		const someNeg = targets.some(t => t.metadata && t.metadata.isNegative);
+		negativeInput.checked = allNeg;
+		negativeInput.indeterminate = someNeg && !allNeg;
+
 	} else {
 		receiveShadowsInput.closest(".form-control").classList.add("hidden");
 		castShadowsInput.closest(".form-control").classList.add("hidden");
+		negativeInput.closest(".form-control").classList.add("hidden"); // Added
 	}
 
 	// --- Live Update Loop ---
@@ -316,12 +326,21 @@ function bindInputs(targets) {
 			if (sz !== null) mesh.scaling.z = sz;
 		});
 
+		// Temporarily show original meshes and hide CSG results during input drag
+		part.meshes.forEach(m => {
+			if (m.metadata && m.metadata.isCSGResult) m.isVisible = false;
+			if (m.metadata && (m.metadata.isPrimitive || m.metadata.isShape) && !m.metadata.isNegative && m.isEnabled()) m.isVisible = true;
+		});
+
 		markModified();
 	};
 
 	document.querySelectorAll("#transform-container input").forEach(input => {
 		input.oninput = updateTargets;
-		input.onchange = recordState;
+		input.onchange = () => {
+			updateCSG(); // Recompute CSG after input change
+			recordState();
+		};
 	});
 
 	// Bind Visibility Checkbox
@@ -331,6 +350,7 @@ function bindInputs(targets) {
 			targets.forEach(t => {
 				t.setEnabled(e.target.checked);
 			});
+			updateCSG(); // Recompute CSG if visibility changes
 			markModified();
 			recordState();
 			refreshPartGraph();
@@ -406,6 +426,7 @@ function bindInputs(targets) {
 		targets.forEach(t => {
 			if (t instanceof AbstractMesh) t.receiveShadows = e.target.checked;
 		});
+		updateCSG(); // Recompute CSG to apply shadow changes to result
 		markModified();
 		recordState();
 	};
@@ -414,9 +435,40 @@ function bindInputs(targets) {
 		targets.forEach(t => {
 			if (t instanceof AbstractMesh) setShadowCaster(t, e.target.checked);
 		});
+		updateCSG(); // Recompute CSG to apply shadow changes to result
 		markModified();
 		recordState();
 	};
+
+	// CSG Negative Checkbox
+	const negativeInput = document.getElementById("prop-negative");
+	if (negativeInput) {
+		negativeInput.onchange = (e) => {
+			const isNeg = e.target.checked;
+			targets.forEach(t => {
+				if (t instanceof AbstractMesh) {
+					if (!t.metadata) t.metadata = {};
+					t.metadata.isNegative = isNeg;
+
+					if (isNeg) {
+						// Store original material and apply negative visualizer
+						t.metadata.originalMaterialId = t.material ? t.material.id : null;
+						t.material = getNegativeMaterial(part);
+					} else {
+						// Restore original material
+						if (t.metadata.originalMaterialId) {
+							t.material = part.getMaterialByID(t.metadata.originalMaterialId);
+						} else {
+							t.material = null;
+						}
+					}
+				}
+			});
+			updateCSG();
+			markModified();
+			recordState();
+		};
+	}
 }
 
 function updateParentDropdown(targets) {
@@ -464,6 +516,7 @@ function updateParentDropdown(targets) {
 			setNodeParent(t, parent);
 		});
 
+		updateCSG(); // Recompute CSG if world transforms change
 		markModified();
 		refreshPartGraph();
 		recordState();
@@ -496,8 +549,13 @@ function updateMaterialDropdown(targets) {
 	select.onchange = () => {
 		const mat = part.getMaterialByID(select.value);
 		targets.forEach(t => {
-			t.material = mat;
+			if (t.metadata && t.metadata.isNegative) {
+				t.metadata.originalMaterialId = mat ? mat.id : null;
+			} else {
+				t.material = mat;
+			}
 		});
+		updateCSG(); // Recompute CSG to apply new material to results
 		markModified();
 		recordState();
 	};
@@ -649,6 +707,7 @@ function bindDuplicateButton(targets) {
 			selectNode(newSelection[0], false);
 			for(let i=1; i<newSelection.length; i++) selectNode(newSelection[i], true);
 
+			updateCSG(); // Recompute CSG for duplicated meshes
 			markModified();
 			refreshPartGraph();
 			recordState();
@@ -692,6 +751,11 @@ function duplicateHierarchy(node, parent) {
 		if (node.metadata) newNode.metadata = JSON.parse(JSON.stringify(node.metadata));
 		newNode.receiveShadows = node.receiveShadows;
 		if (newNode.metadata && newNode.metadata.castShadows) setShadowCaster(newNode, true);
+
+		// Apply negative material if duplicated mesh is negative
+		if (newNode.metadata && newNode.metadata.isNegative) {
+			newNode.material = getNegativeMaterial(part);
+		}
 	}
 
 	if (newNode) {
@@ -728,6 +792,7 @@ function bindDeleteButton(targets) {
 			});
 
 			selectNode(null);
+			updateCSG(); // Recompute CSG after deletion
 			markModified();
 			refreshPartGraph();
 			recordState();

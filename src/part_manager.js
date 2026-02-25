@@ -10,6 +10,7 @@ import { clearShadowManagers } from "./part_shadowManager.js";
 import { setupHistory } from "./part_historyManager.js";
 import { selectNode } from "./part_selectionManager.js";
 import { getLoadedMaterialFiles, loadMaterialFile, clearMaterialManager } from "./part_materialManager.js";
+import { updateCSG, getNegativeMaterial } from "./part_csgManager.js"; // Added
 
 let currentFileName = null;
 let isModified = false;
@@ -166,7 +167,9 @@ export function serializeScene() {
 				receiveShadows: mesh.receiveShadows,
 				castShadows: mesh.metadata.castShadows || false,
 				sortIndex: mesh.metadata.sortIndex || 0,
-				visible: mesh.isEnabled()
+				visible: mesh.isEnabled(),
+				isNegative: mesh.metadata.isNegative || false, // NEW: Save CSG state
+				originalMaterialId: mesh.metadata.originalMaterialId || null // NEW: Save original material ID
 			};
 
 			if (mesh.metadata.isPrimitive) {
@@ -220,7 +223,8 @@ export async function loadSceneData(data) {
 	const toDispose = [];
 	part.meshes.forEach(m => {
 		if (m.name === "previewSphere") return;
-		if (m.metadata && (m.metadata.isPrimitive || m.metadata.isShape || m.metadata.isLightProxy || m.metadata.isTransformNodeProxy)) toDispose.push(m);
+		// Added isCSGResult to cleanup
+		if (m.metadata && (m.metadata.isPrimitive || m.metadata.isShape || m.metadata.isLightProxy || m.metadata.isTransformNodeProxy || m.metadata.isCSGResult)) toDispose.push(m);
 	});
 	part.transformNodes.forEach(t => {
 		if (t.name !== "axisRoot" && t.metadata && t.metadata.isTransformNode) toDispose.push(t);
@@ -231,7 +235,7 @@ export async function loadSceneData(data) {
 
 	toDispose.forEach(n => n.dispose());
 
-	const matsToDispose = part.materials.filter(m => m.name !== "default material" && m.name !== "lightMat" && m.name !== "previewMat" && m.name !== "transformNodeMat");
+	const matsToDispose = part.materials.filter(m => m.name !== "default material" && m.name !== "lightMat" && m.name !== "previewMat" && m.name !== "transformNodeMat" && m.name !== "negativeMat");
 	matsToDispose.forEach(m => m.dispose());
 
 	const idMap = new Map();
@@ -265,10 +269,21 @@ export async function loadSceneData(data) {
 
 			if (mesh) {
 				idMap.set(meshData.id, mesh.id);
+
+				// Restore CSG state
+				if (meshData.isNegative) {
+					mesh.metadata.isNegative = true;
+					mesh.metadata.originalMaterialId = meshData.originalMaterialId;
+				}
+
 				if (meshData.materialId) {
 					const mat = part.getMaterialByID(meshData.materialId);
 					if (mat) {
-						mesh.material = mat;
+						if (meshData.isNegative) {
+							mesh.metadata.originalMaterialId = mat.id;
+						} else {
+							mesh.material = mat;
+						}
 						// NEW: Restore texture scale
 						if (meshData.uScale !== undefined && meshData.vScale !== undefined) {
 							if (mat.diffuseTexture) {
@@ -282,6 +297,12 @@ export async function loadSceneData(data) {
 						}
 					}
 				}
+
+				// Apply negative material if needed
+				if (meshData.isNegative) {
+					mesh.material = getNegativeMaterial(part);
+				}
+
 				mesh.receiveShadows = !!meshData.receiveShadows;
 				if (mesh.metadata) mesh.metadata.sortIndex = meshData.sortIndex || 0;
 				if (meshData.visible !== undefined) mesh.setEnabled(meshData.visible);
@@ -338,6 +359,7 @@ export async function loadSceneData(data) {
 
 	setupGizmos(part);
 	resetAxisIndicator();
+	updateCSG(); // Rebuild CSG after loading
 	refreshPartGraph();
 }
 
@@ -380,7 +402,8 @@ function createNewScene() {
 	selectNode(null);
 
 	part.meshes.forEach(m => {
-		if (m.metadata && (m.metadata.isPrimitive || m.metadata.isShape || m.metadata.isLightProxy || m.metadata.isTransformNodeProxy)) m.dispose();
+		// Added isCSGResult to cleanup
+		if (m.metadata && (m.metadata.isPrimitive || m.metadata.isShape || m.metadata.isLightProxy || m.metadata.isTransformNodeProxy || m.metadata.isCSGResult)) m.dispose();
 	});
 	part.transformNodes.forEach(t => {
 		if (t.name !== "axisRoot" && t.metadata && t.metadata.isTransformNode) t.dispose();

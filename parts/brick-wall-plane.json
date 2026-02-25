@@ -33,7 +33,7 @@
       "uScale": 3,
       "vScale": 3,
       "parentId": null,
-      "receiveShadows": true,
+      "receiveShadows": false,
       "castShadows": true,
       "sortIndex": 0,
       "visible": true,

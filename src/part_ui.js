@@ -9,6 +9,7 @@ import { refreshPartGraph } from "./part_treeViewManager.js";
 import { setShadowCaster } from "./part_shadowManager.js";
 import { recordState } from "./part_historyManager.js";
 import { selectNode } from "./part_selectionManager.js";
+import { updateCSG, getNegativeMaterial } from "./part_csgManager.js"; // Added
 
 const primitives = ["Cube", "Sphere", "Cylinder", "Plane", "Ground", "Cone", "Pyramid", "Empty"];
 const lights = ["Point", "Spot"]; // Changed: Replaced Directional with Spot
@@ -65,6 +66,7 @@ export function setupUI() {
 
 		if (createdNode) {
 			selectNode(createdNode, false);
+			updateCSG(); // Recompute CSG when new nodes are added
 			markModified();
 			refreshPartGraph();
 			recordState();
@@ -233,7 +235,8 @@ export function createShapeMesh(shapeData, name, savedState = null) {
 			isShape: true,
 			shapeData: shapeData,
 			shapeName: name,
-			castShadows: true
+			castShadows: true,
+			isNegative: false // Default CSG state
 		};
 
 		if (savedState) {
@@ -256,6 +259,13 @@ export function createShapeMesh(shapeData, name, savedState = null) {
 				if (mat) rootMesh.material = mat;
 			}
 			if (savedState.visible !== undefined) rootMesh.setEnabled(savedState.visible);
+
+			// Apply CSG state
+			if (savedState.isNegative) {
+				rootMesh.metadata.isNegative = true;
+				rootMesh.metadata.originalMaterialId = savedState.originalMaterialId;
+				rootMesh.material = getNegativeMaterial(part);
+			}
 		} else {
 			// Default placement
 			rootMesh.position.y = shapeData.extrusionHeight;
@@ -297,7 +307,7 @@ export function createPrimitive(type, savedData = null) {
 	}
 
 	if (mesh) {
-		mesh.metadata = { type: type, isPrimitive: true };
+		mesh.metadata = { type: type, isPrimitive: true, isNegative: false };
 
 		if (savedData) {
 			if (savedData.name) mesh.name = savedData.name;
@@ -313,6 +323,13 @@ export function createPrimitive(type, savedData = null) {
 
 			if (savedData.pivot) mesh.setPivotPoint(new Vector3(savedData.pivot.x, savedData.pivot.y, savedData.pivot.z));
 			if (savedData.castShadows) setShadowCaster(mesh, true);
+
+			// Apply CSG state
+			if (savedData.isNegative) {
+				mesh.metadata.isNegative = true;
+				mesh.metadata.originalMaterialId = savedData.originalMaterialId;
+				mesh.material = getNegativeMaterial(part);
+			}
 		} else {
 			mesh.position.y = 0.5;
 			setShadowCaster(mesh, true);
