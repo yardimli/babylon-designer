@@ -1,4 +1,4 @@
-import { CSG, StandardMaterial, Color3 } from "@babylonjs/core";
+import { CSG, StandardMaterial, Color3, Matrix } from "@babylonjs/core"; // Added Matrix
 import { scene } from "./assembly_scene.js";
 import { setShadowCaster } from "./assembly_shadowManager.js";
 
@@ -28,65 +28,93 @@ export function updateCSG() {
 		m.dispose();
 	});
 
-	// 2. Identify positive and negative meshes
-	const positives = [];
-	const negatives =[];
+	// 2. Group meshes by Parent (TransformNode or Assembly Root)
+	// Map<ParentID, { parent: Node, positives: [], negatives: [] }>
+	const csgGroups = new Map();
 
 	scene.meshes.forEach(m => {
 		if (m.metadata && (m.metadata.isPrimitive || m.metadata.isShape)) {
-			if (m.metadata.isNegative) {
-				if (m.isEnabled()) negatives.push(m);
-			} else {
-				if (m.isEnabled()) {
-					positives.push(m);
-					m.isVisible = true; // Restore visibility of positive meshes
+
+			// Restore visibility of positive meshes (will be hidden later if they participate in CSG)
+			if (!m.metadata.isNegative && m.isEnabled()) {
+				m.isVisible = true;
+			}
+
+			// Check if mesh belongs to a Parent (Part Root or TransformNode)
+			// In Assembly, parts are always parented to a root node.
+			const parent = m.parent;
+			if (parent) {
+				if (!csgGroups.has(parent.id)) {
+					csgGroups.set(parent.id, {
+						parent: parent,
+						positives: [],
+						negatives: []
+					});
+				}
+
+				const group = csgGroups.get(parent.id);
+
+				if (m.metadata.isNegative) {
+					if (m.isEnabled()) group.negatives.push(m);
+				} else {
+					if (m.isEnabled()) group.positives.push(m);
 				}
 			}
 		}
 	});
 
-	if (negatives.length === 0) return;
+	// 3. Perform CSG Subtractions per Group
+	csgGroups.forEach(group => {
+		if (group.negatives.length === 0 || group.positives.length === 0) return;
 
-	// 3. Perform CSG Subtractions
-	positives.forEach(pos => {
-		let csgPos = null;
-		let modified = false;
+		// Calculate Inverse Parent Matrix to transform World Space CSG back to Local Space
+		// This is crucial in Assembly because parts are rotated/moved in the scene.
+		const parentMatrix = group.parent.computeWorldMatrix(true);
+		const invertParentMatrix = parentMatrix.clone().invert();
 
-		// Ensure world matrix is up to date before CSG conversion
-		pos.computeWorldMatrix(true);
+		group.positives.forEach(pos => {
+			let csgPos = null;
+			let modified = false;
 
-		negatives.forEach(neg => {
-			neg.computeWorldMatrix(true);
-			// Fast pre-check using bounding boxes
-			if (pos.intersectsMesh(neg, true)) {
-				try {
-					if (!csgPos) csgPos = CSG.FromMesh(pos);
-					const csgNeg = CSG.FromMesh(neg);
-					csgPos = csgPos.subtract(csgNeg);
-					modified = true;
-				} catch (e) {
-					console.warn("CSG failed for meshes", pos.name, neg.name, e);
+			// Ensure world matrix is up to date before CSG conversion
+			pos.computeWorldMatrix(true);
+
+			group.negatives.forEach(neg => {
+				neg.computeWorldMatrix(true);
+				// Fast pre-check using bounding boxes
+				if (pos.intersectsMesh(neg, true)) {
+					try {
+						if (!csgPos) csgPos = CSG.FromMesh(pos);
+						const csgNeg = CSG.FromMesh(neg);
+						csgPos = csgPos.subtract(csgNeg);
+						modified = true;
+					} catch (e) {
+						console.warn("CSG failed for meshes", pos.name, neg.name, e);
+					}
 				}
+			});
+
+			if (modified && csgPos) {
+				// Create the result mesh (keepSubMeshes = false to inherit positive mesh material)
+				const resultMesh = csgPos.toMesh(pos.name + "_csg", pos.material, scene, false);
+				resultMesh.metadata = {
+					isCSGResult: true,
+					originalMeshId: pos.id,
+					isInternal: true // Keep it hidden from tree in assembly
+				};
+
+				// Parent the result to the group parent
+				resultMesh.parent = group.parent;
+
+				// Match shadow properties of the original mesh
+				resultMesh.receiveShadows = pos.receiveShadows;
+				if (pos.metadata && pos.metadata.castShadows) {
+					setShadowCaster(resultMesh, true);
+				}
+
+				// Hide the original positive mesh so only the CSG result is visible
+				pos.isVisible = false;
 			}
 		});
-
-		if (modified && csgPos) {
-			// Create the result mesh (keepSubMeshes = false to inherit positive mesh material)
-			const resultMesh = csgPos.toMesh(pos.name + "_csg", pos.material, scene, false);
-			resultMesh.metadata = {
-				isCSGResult: true,
-				originalMeshId: pos.id,
-				isInternal: true // Keep it hidden from tree in assembly
-			};
-
-			// Match shadow properties of the original mesh
-			resultMesh.receiveShadows = pos.receiveShadows;
-			if (pos.metadata && pos.metadata.castShadows) {
-				setShadowCaster(resultMesh, true);
-			}
-
-			// Hide the original positive mesh so only the CSG result is visible
-			pos.isVisible = false;
-		}
 	});
 }
