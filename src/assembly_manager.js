@@ -5,12 +5,12 @@ import { updatePropertyEditor } from "./assembly_propertyEditor.js";
 import { refreshSceneGraph } from "./assembly_treeViewManager.js";
 import { createLight } from "./assembly_lightManager.js";
 import { createTransformNode } from "./assembly_transformNodeManager.js";
-import { createPrimitive, createShapeMesh } from "./assembly_ui.js"; // Updated import
+import { createPrimitive, createShapeMesh } from "./assembly_ui.js";
 import { clearShadowManagers } from "./assembly_shadowManager.js";
 import { setupHistory, recordState } from "./assembly_historyManager.js";
 import { selectNode } from "./assembly_selectionManager.js";
 import { getLoadedMaterialFiles, loadMaterialFile, clearMaterialManager } from "./assembly_materialManager.js";
-import { updateCSG, getNegativeMaterial } from "./assembly_csgManager.js"; // Added
+import { updateCSG, getNegativeMaterial } from "./assembly_csgManager.js";
 
 let currentFileName = null;
 let isModified = false;
@@ -24,6 +24,7 @@ const saveNameInput = document.getElementById("save-assembly-name");
 export function setupAssemblyManager() {
 	updateStatus();
 	document.getElementById("btn-menu-save").onclick = () => handleSaveAction();
+	document.getElementById("btn-menu-save-as").onclick = () => handleSaveAsAction(); // Added
 	document.getElementById("btn-menu-load").onclick = () => openLoadModal();
 	document.getElementById("btn-menu-new").onclick = () => createNewAssembly();
 	document.getElementById("btn-modal-save").onclick = () => {
@@ -424,9 +425,15 @@ function handleSaveAction() {
 	else openSaveModal();
 }
 
-function openSaveModal() {
+// New function for Save As
+function handleSaveAsAction() {
+	openSaveModal(currentFileName);
+}
+
+function openSaveModal(prefillName = null) {
 	populateAssemblyList("save");
-	saveNameInput.value = "";
+	// Prefill with current name if available, stripping extension
+	saveNameInput.value = prefillName ? prefillName.replace(".json", "") : "";
 	document.getElementById("modal-title").innerText = "Save Assembly";
 	document.getElementById("btn-modal-save").classList.remove("hidden");
 	saveLoadModal.showModal();

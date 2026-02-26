@@ -10,7 +10,7 @@ import { clearShadowManagers } from "./part_shadowManager.js";
 import { setupHistory } from "./part_historyManager.js";
 import { selectNode } from "./part_selectionManager.js";
 import { getLoadedMaterialFiles, loadMaterialFile, clearMaterialManager } from "./part_materialManager.js";
-import { updateCSG, getNegativeMaterial } from "./part_csgManager.js"; // Added
+import { updateCSG, getNegativeMaterial } from "./part_csgManager.js";
 
 let currentFileName = null;
 let isModified = false;
@@ -24,6 +24,7 @@ const saveNameInput = document.getElementById("save-part-name");
 export function setupSceneManager() {
 	updateStatus();
 	document.getElementById("btn-menu-save").onclick = () => handleSaveAction();
+	document.getElementById("btn-menu-save-as").onclick = () => handleSaveAsAction(); // Added
 	document.getElementById("btn-menu-load").onclick = () => openLoadModal();
 	document.getElementById("btn-menu-new").onclick = () => createNewScene();
 	document.getElementById("btn-modal-save").onclick = () => {
@@ -59,9 +60,15 @@ function handleSaveAction() {
 	else openSaveModal();
 }
 
-function openSaveModal() {
+// New function for Save As
+function handleSaveAsAction() {
+	openSaveModal(currentFileName);
+}
+
+function openSaveModal(prefillName = null) {
 	populateSceneList("save");
-	saveNameInput.value = "";
+	// Prefill with current name if available, stripping extension
+	saveNameInput.value = prefillName ? prefillName.replace(".json", "") : "";
 	document.getElementById("modal-title").innerText = "Save Part";
 	document.getElementById("btn-modal-save").classList.remove("hidden");
 	saveLoadModal.showModal();

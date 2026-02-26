@@ -6,9 +6,9 @@
       "id": "brick-wall-narrow_inst",
       "sourceFile": "brick-wall-narrow.json",
       "position": {
-        "x": -2.12,
-        "y": 7.27,
-        "z": 5.64
+        "x": 0.910287082195282,
+        "y": 7.564891338348389,
+        "z": 5.639999866485596
       },
       "rotation": {
         "x": 0,
@@ -28,8 +28,8 @@
       "id": "brick-wall-plane_inst_dup",
       "sourceFile": "brick-wall-plane.json",
       "position": {
-        "x": -19.29153823852539,
-        "y": 7.384890556335449,
+        "x": -17.01797866821289,
+        "y": 7.532994270324707,
         "z": -0.9579911828041077
       },
       "rotation": {
@@ -50,8 +50,8 @@
       "id": "brick-wall-plane_inst",
       "sourceFile": "brick-wall-plane.json",
       "position": {
-        "x": -9.732351303100586,
-        "y": 7.291055202484131,
+        "x": -7.467572212219238,
+        "y": 7.529792785644531,
         "z": 9.610325813293457
       },
       "rotation": {
@@ -94,9 +94,9 @@
       "id": "parcel-with-tape_inst",
       "sourceFile": "parcel-with-tape.json",
       "position": {
-        "x": -9.32829761505127,
-        "y": 3.4407238960266113,
-        "z": -3.7244906425476074
+        "x": -9.9871187210083,
+        "y": 5.520885467529297,
+        "z": -3.0988805294036865
       },
       "rotation": {
         "x": 0,
@@ -105,20 +105,20 @@
         "w": 1
       },
       "scaling": {
-        "x": 0.5,
-        "y": 0.4000000059604645,
-        "z": 0.4000000059604645
+        "x": 0.800000011920929,
+        "y": 0.800000011920929,
+        "z": 0.800000011920929
       },
       "name": "parcel-with-tape_inst",
       "visible": true
     },
     {
-      "id": "gray-wall_inst",
-      "sourceFile": "gray-wall.json",
+      "id": "tile-floor-texture_inst_dup",
+      "sourceFile": "tile-floor-texture.json",
       "position": {
-        "x": 5.659999847412109,
-        "y": 6.70892333984375,
-        "z": 2.130000114440918
+        "x": 0,
+        "y": 0.0016393776750192046,
+        "z": 0
       },
       "rotation": {
         "x": 0,
@@ -127,20 +127,86 @@
         "w": 1
       },
       "scaling": {
-        "x": 1.649999976158142,
-        "y": 1.600000023841858,
+        "x": 1,
+        "y": 1,
         "z": 1
       },
-      "name": "gray-wall_inst",
+      "name": "tile-floor-texture_inst_dup",
       "visible": true
     },
     {
-      "id": "gray-wall_inst_dup",
-      "sourceFile": "gray-wall.json",
+      "id": "tile-floor-texture_inst",
+      "sourceFile": "tile-floor-texture.json",
       "position": {
-        "x": 13.4399995803833,
-        "y": 6.625801086425781,
-        "z": -8.949999809265137
+        "x": 0,
+        "y": 15.243706703186035,
+        "z": 0
+      },
+      "rotation": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 1
+      },
+      "scaling": {
+        "x": 1,
+        "y": 1,
+        "z": 1
+      },
+      "name": "tile-floor-texture_inst",
+      "visible": true
+    },
+    {
+      "id": "humanoid_inst",
+      "sourceFile": "humanoid.json",
+      "position": {
+        "x": -9.520000457763672,
+        "y": 1.2737480401992798,
+        "z": 0
+      },
+      "rotation": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 1
+      },
+      "scaling": {
+        "x": 0.75,
+        "y": 0.75,
+        "z": 0.75
+      },
+      "name": "humanoid_inst",
+      "visible": true
+    },
+    {
+      "id": "gray-wall-with-door_inst",
+      "sourceFile": "gray-wall-with-door.json",
+      "position": {
+        "x": 9.3587064743042,
+        "y": 8.630000114440918,
+        "z": 2.044938325881958
+      },
+      "rotation": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 1
+      },
+      "scaling": {
+        "x": 1.2000000476837158,
+        "y": 1,
+        "z": 1
+      },
+      "name": "gray-wall-with-door_inst",
+      "visible": true
+    },
+    {
+      "id": "gray-wall-with-window_inst",
+      "sourceFile": "gray-wall-with-window.json",
+      "position": {
+        "x": 17.3799991607666,
+        "y": 8.642898559570312,
+        "z": -7.7381367683410645
       },
       "rotation": {
         "x": 0,
@@ -149,77 +215,11 @@
         "w": 0.7071067811865476
       },
       "scaling": {
-        "x": 2.200000047683716,
-        "y": 1.600000023841858,
-        "z": 1
-      },
-      "name": "gray-wall_inst",
-      "visible": true
-    },
-    {
-      "id": "humanoid_inst",
-      "sourceFile": "humanoid.json",
-      "position": {
-        "x": -9.7704439163208,
-        "y": 0.8100000023841858,
-        "z": -5.399637699127197
-      },
-      "rotation": {
-        "x": 0,
-        "y": 1,
-        "z": 0,
-        "w": 6.123234262925839e-17
-      },
-      "scaling": {
-        "x": 0.5,
-        "y": 0.5,
-        "z": 0.5
-      },
-      "name": "humanoid_inst",
-      "visible": true
-    },
-    {
-      "id": "tile-floor-texture_inst",
-      "sourceFile": "tile-floor-texture.json",
-      "position": {
-        "x": -2.293173313140869,
-        "y": 0,
-        "z": -2.4631879329681396
-      },
-      "rotation": {
-        "x": 0,
-        "y": 0,
-        "z": 0,
-        "w": 1
-      },
-      "scaling": {
-        "x": 1,
+        "x": 1.2999999523162842,
         "y": 1,
         "z": 1
       },
-      "name": "tile-floor-texture_inst",
-      "visible": true
-    },
-    {
-      "id": "tile-floor-texture_inst_dup",
-      "sourceFile": "tile-floor-texture.json",
-      "position": {
-        "x": -2.293173313140869,
-        "y": 14.826987266540527,
-        "z": -2.4631879329681396
-      },
-      "rotation": {
-        "x": 0,
-        "y": 0,
-        "z": 0,
-        "w": 1
-      },
-      "scaling": {
-        "x": 1,
-        "y": 1,
-        "z": 1
-      },
-      "name": "tile-floor-texture_inst",
+      "name": "gray-wall-with-window_inst",
       "visible": true
     }
   ],

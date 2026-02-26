@@ -1,0 +1,219 @@
+{
+  "version": 1.5,
+  "materialFiles": [
+    "generic.json"
+  ],
+  "lights": [],
+  "meshes": [
+    {
+      "id": "Cube_1771136776313",
+      "name": "Cube_1771136776313",
+      "position": {
+        "x": 0,
+        "y": -0.5,
+        "z": 0
+      },
+      "rotation": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 1
+      },
+      "scaling": {
+        "x": 15,
+        "y": 15,
+        "z": 0.1
+      },
+      "pivot": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "materialId": "beige-wall-2",
+      "uScale": 1,
+      "vScale": 1,
+      "parentId": "node_1772022087508",
+      "receiveShadows": true,
+      "castShadows": true,
+      "sortIndex": 200,
+      "visible": true,
+      "isNegative": false,
+      "originalMaterialId": null,
+      "isPrimitive": true,
+      "type": "Cube"
+    },
+    {
+      "id": "Cube_1772016050641",
+      "name": "Cube_1772016050641",
+      "position": {
+        "x": -1.1676149368286133,
+        "y": 2.890000104904175,
+        "z": 0
+      },
+      "rotation": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 1
+      },
+      "scaling": {
+        "x": 2.5,
+        "y": 2.5,
+        "z": 1
+      },
+      "pivot": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "materialId": "negativeMat",
+      "uScale": 1,
+      "vScale": 1,
+      "parentId": "node_1772022087508",
+      "receiveShadows": false,
+      "castShadows": true,
+      "sortIndex": 100,
+      "visible": true,
+      "isNegative": true,
+      "originalMaterialId": "negativeMat",
+      "isPrimitive": true,
+      "type": "Cube"
+    },
+    {
+      "id": "Cube_1772016050641_dup",
+      "name": "Cube_1772016050641_dup",
+      "position": {
+        "x": 1.5053379535675049,
+        "y": 2.890000104904175,
+        "z": 0
+      },
+      "rotation": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 1
+      },
+      "scaling": {
+        "x": 2.5,
+        "y": 2.5,
+        "z": 1
+      },
+      "pivot": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "materialId": "negativeMat",
+      "uScale": 1,
+      "vScale": 1,
+      "parentId": "node_1772022087508",
+      "receiveShadows": false,
+      "castShadows": true,
+      "sortIndex": 100,
+      "visible": true,
+      "isNegative": true,
+      "originalMaterialId": "negativeMat",
+      "isPrimitive": true,
+      "type": "Cube"
+    },
+    {
+      "id": "Cube_1772016050641_dup_dup",
+      "name": "Cube_1772016050641_dup_dup",
+      "position": {
+        "x": 1.5053379535675049,
+        "y": 0.24727194011211395,
+        "z": 0
+      },
+      "rotation": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 1
+      },
+      "scaling": {
+        "x": 2.5,
+        "y": 2.5,
+        "z": 1
+      },
+      "pivot": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "materialId": "negativeMat",
+      "uScale": 1,
+      "vScale": 1,
+      "parentId": "node_1772022087508",
+      "receiveShadows": false,
+      "castShadows": true,
+      "sortIndex": 100,
+      "visible": true,
+      "isNegative": true,
+      "originalMaterialId": "negativeMat",
+      "isPrimitive": true,
+      "type": "Cube"
+    },
+    {
+      "id": "Cube_1772016050641_dup_1",
+      "name": "Cube_1772016050641_dup_1",
+      "position": {
+        "x": -1.1676149368286133,
+        "y": 0.23007099330425262,
+        "z": 0
+      },
+      "rotation": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 1
+      },
+      "scaling": {
+        "x": 2.5,
+        "y": 2.5,
+        "z": 1
+      },
+      "pivot": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "materialId": "negativeMat",
+      "uScale": 1,
+      "vScale": 1,
+      "parentId": "node_1772022087508",
+      "receiveShadows": false,
+      "castShadows": true,
+      "sortIndex": 100,
+      "visible": true,
+      "isNegative": true,
+      "originalMaterialId": "negativeMat",
+      "isPrimitive": true,
+      "type": "Cube"
+    }
+  ],
+  "transformNodes": [
+    {
+      "id": "node_1772022087508",
+      "name": "node_1772022087508",
+      "position": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "rotation": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 1
+      },
+      "scaling": {
+        "x": 1,
+        "y": 1,
+        "z": 1
+      },
+      "parentId": null,
+      "sortIndex": 0,
+      "visible": true
+    }
+  ]
+}
