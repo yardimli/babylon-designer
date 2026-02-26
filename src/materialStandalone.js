@@ -5,7 +5,7 @@ const engine = new Engine(canvas, true);
 const scene = new Scene(engine);
 let previewMaterial;
 
-// NEW: Store shapes for preview switching
+//  Store shapes for preview switching
 const previewShapes = {};
 
 // State
@@ -18,7 +18,7 @@ const ui = {
 	fileList: document.getElementById('file-list'),
 	matList: document.getElementById('mat-list'),
 	inpFilename: document.getElementById('inp-filename'),
-	shapeSelector: document.getElementById('preview-shape'), // NEW
+	shapeSelector: document.getElementById('preview-shape'),
 
 	// Material Inputs
 	name: document.getElementById('mat-name'),
@@ -76,7 +76,7 @@ function initScene () {
 
 	previewMaterial = new StandardMaterial('previewMat', scene);
 
-	// NEW: Create multiple shapes for previewing
+	//  Create multiple shapes for previewing
 	previewShapes.sphere = MeshBuilder.CreateSphere('sphere', { diameter: 1.5, segments: 32 }, scene);
 	previewShapes.box = MeshBuilder.CreateBox('box', { size: 1.2 }, scene);
 	previewShapes.cylinder = MeshBuilder.CreateCylinder('cylinder', { height: 1.5, diameter: 1.2 }, scene);
@@ -95,7 +95,6 @@ function initScene () {
 
 // --- Logic ---
 
-// MODIFIED: Updated default data structure for StandardMaterial
 function createDefaultMaterialData (name) {
 	return {
 		name: name || 'New Material',
@@ -114,7 +113,6 @@ function createDefaultMaterialData (name) {
 	};
 }
 
-// MODIFIED: Apply StandardMaterial properties
 function updatePreviewFromData (data) {
 	if (!data) return;
 
@@ -153,7 +151,6 @@ function updatePreviewFromData (data) {
 	}
 }
 
-// MODIFIED: Sync UI to new data structure
 function updateUIFromData (data) {
 	if (!data) {
 		ui.name.value = '';
@@ -188,7 +185,6 @@ function updateUIFromData (data) {
 	ui.bumpPath.innerText = data.bumpTexture || 'No file selected';
 }
 
-// MODIFIED: Sync Data from UI
 function updateDataFromUI () {
 	if (selectedIndex < 0 || !currentLibrary[selectedIndex]) return;
 
@@ -223,7 +219,6 @@ function updateDataFromUI () {
 	if (btn) btn.innerText = data.name;
 }
 
-// MODIFIED: Handle multiple texture types
 async function handleFileUpload (e, type) {
 	const file = e.target.files[0];
 	if (!file) return;
@@ -473,7 +468,7 @@ function bindEvents () {
 		}
 	};
 
-	// NEW: Shape Selector
+	//  Shape Selector
 	ui.shapeSelector.addEventListener('change', (e) => {
 		Object.values(previewShapes).forEach(shape => shape.isVisible = false);
 		if (previewShapes[e.target.value]) {

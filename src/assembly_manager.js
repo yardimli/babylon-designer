@@ -147,7 +147,7 @@ export async function importSceneAsAsset(filename, position = Vector3.Zero(), sa
 				}
 
 				if (mesh) {
-					// NEW: Restore CSG state
+					//  Restore CSG state
 					if (meshData.isNegative) {
 						mesh.metadata.isNegative = true;
 						mesh.metadata.originalMaterialId = meshData.originalMaterialId;

@@ -142,7 +142,7 @@ export function serializeScene() {
 
 			const pivot = mesh.getPivotPoint();
 
-			// NEW: Save Texture Scale overrides
+			//  Save Texture Scale overrides
 			let uScale = 1;
 			let vScale = 1;
 			if (mesh.material) {
@@ -161,15 +161,15 @@ export function serializeScene() {
 				scaling: { x: mesh.scaling.x, y: mesh.scaling.y, z: mesh.scaling.z },
 				pivot: { x: pivot.x, y: pivot.y, z: pivot.z },
 				materialId: mesh.material ? mesh.material.id : null,
-				uScale: uScale, // NEW
-				vScale: vScale, // NEW
+				uScale: uScale,
+				vScale: vScale,
 				parentId: mesh.parent ? mesh.parent.id : null,
 				receiveShadows: mesh.receiveShadows,
 				castShadows: mesh.metadata.castShadows || false,
 				sortIndex: mesh.metadata.sortIndex || 0,
 				visible: mesh.isEnabled(),
-				isNegative: mesh.metadata.isNegative || false, // NEW: Save CSG state
-				originalMaterialId: mesh.metadata.originalMaterialId || null // NEW: Save original material ID
+				isNegative: mesh.metadata.isNegative || false, //  Save CSG state
+				originalMaterialId: mesh.metadata.originalMaterialId || null //  Save original material ID
 			};
 
 			if (mesh.metadata.isPrimitive) {
@@ -284,7 +284,7 @@ export async function loadSceneData(data) {
 						} else {
 							mesh.material = mat;
 						}
-						// NEW: Restore texture scale
+						//  Restore texture scale
 						if (meshData.uScale !== undefined && meshData.vScale !== undefined) {
 							if (mat.diffuseTexture) {
 								mat.diffuseTexture.uScale = meshData.uScale;

@@ -7,7 +7,6 @@ import { recordState } from "./assembly_historyManager.js";
 import { selectNode } from "./assembly_selectionManager.js";
 import { importSceneAsAsset } from "./assembly_manager.js";
 
-// CHANGED: Replaced Directional with Spot
 const lights = ["Point", "Spot"];
 
 export function setupAssemblyUI() {

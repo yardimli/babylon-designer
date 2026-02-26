@@ -116,7 +116,7 @@ function draw2D() {
 	// Draw Shapes
 	state.shapes.forEach((shape, index) => {
 		const isSelected = state.selectedShapeIndex === index;
-		// NEW: Visual distinction for holes
+		//  Visual distinction for holes
 		const isHole = shape.isHole;
 
 		if (isSelected) {
@@ -437,7 +437,7 @@ function renderProperties() {
 	typeLabel.innerText = shape.type;
 	container.appendChild(typeLabel);
 
-	// NEW: Hole Toggle
+	//  Hole Toggle
 	const holeDiv = document.createElement('div');
 	holeDiv.className = 'form-control w-full mb-2';
 	holeDiv.innerHTML = `

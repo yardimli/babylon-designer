@@ -1,4 +1,4 @@
-import { PointLight, SpotLight, Vector3, Color3, MeshBuilder, StandardMaterial } from "@babylonjs/core"; // CHANGED: Imported SpotLight
+import { PointLight, SpotLight, Vector3, Color3, MeshBuilder, StandardMaterial } from "@babylonjs/core";
 import { createShadowGenerator } from "./assembly_shadowManager.js";
 import { getUniqueId } from "./assembly_scene.js";
 
@@ -14,7 +14,7 @@ export function createLight(type, savedData = null, scene) {
 		light.diffuse = new Color3(1, 1, 1);
 		light.position = new Vector3(0,5,-25);
 
-	} else if (type === "spot") { // CHANGED: Handle Spot Light
+	} else if (type === "spot") {
 		// Default angle 60 degrees (Math.PI / 3), exponent 2
 		light = new SpotLight(id, new Vector3(0, 5, -25), new Vector3(0, -1, 0.5), Math.PI / 3, 2, scene);
 		light.intensity = 0.5;
@@ -27,7 +27,7 @@ export function createLight(type, savedData = null, scene) {
 			light.position = new Vector3(savedData.position.x, savedData.position.y, savedData.position.z);
 			light.intensity = savedData.intensity;
 			light.diffuse = new Color3(savedData.diffuse.r, savedData.diffuse.g, savedData.diffuse.b);
-			if (type === "spot" && savedData.direction) { // CHANGED: Restore Spot Light properties
+			if (type === "spot" && savedData.direction) {
 				light.direction = new Vector3(savedData.direction.x, savedData.direction.y, savedData.direction.z);
 				if (savedData.angle !== undefined) light.angle = savedData.angle;
 				if (savedData.exponent !== undefined) light.exponent = savedData.exponent;
@@ -49,7 +49,7 @@ export function createLight(type, savedData = null, scene) {
 		// Sync initial visibility
 		proxy.setEnabled(light.isEnabled());
 
-		if (type === "spot") { // CHANGED: Look at direction for Spot Light
+		if (type === "spot") {
 			const target = proxy.position.add(light.direction);
 			proxy.lookAt(target);
 		}
@@ -84,11 +84,7 @@ function setupLightSync(proxy, light, scene) {
 			light.setEnabled(proxy.isEnabled());
 		}
 
-		if (light instanceof SpotLight) { // CHANGED: Sync Spot Light direction
-			// Spot Light direction is defined in World Space usually,
-			// but if parented, it becomes relative to parent.
-			// Proxy forward is World Space direction.
-
+		if (light instanceof SpotLight) {
 			if (light.parent) {
 				// Transform World Forward to Local Space
 				const parentWorldMatrix = light.parent.getWorldMatrix();

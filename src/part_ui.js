@@ -12,12 +12,12 @@ import { selectNode } from "./part_selectionManager.js";
 import { updateCSG, getNegativeMaterial } from "./part_csgManager.js"; // Added
 
 const primitives = ["Cube", "Sphere", "Cylinder", "Plane", "Ground", "Cone", "Pyramid", "Empty"];
-const lights = ["Point", "Spot"]; // Changed: Replaced Directional with Spot
+const lights = ["Point", "Spot"];
 
 export function setupUI() {
 	const pList = document.getElementById("primitives-list");
 	const lList = document.getElementById("lights-list");
-	const sList = document.getElementById("shapes-list"); // New container for shapes
+	const sList = document.getElementById("shapes-list");
 	const canvas = document.getElementById("renderCanvas");
 
 	setupGizmoButtons();
@@ -32,7 +32,7 @@ export function setupUI() {
 		lList.appendChild(div);
 	});
 
-	// NEW: Load saved shapes
+	// Load saved shapes
 	fetchShapes(sList);
 
 	canvas.addEventListener("dragover", (e) => e.preventDefault());
@@ -52,7 +52,7 @@ export function setupUI() {
 		} else if (category === "light") {
 			createdNode = createLight(type.toLowerCase(), null, part);
 		} else if (category === "shape") {
-			// NEW: Handle Shape Drop
+			//  Handle Shape Drop
 			try {
 				const res = await fetch(`/api/shapes?file=${type}.json`);
 				const json = await res.json();
@@ -132,7 +132,7 @@ function createDraggableItem(name, category) {
 	return div;
 }
 
-// NEW: Function to build mesh from shape data (mirrors shapeEditor logic)
+//  Function to build mesh from shape data (mirrors shapeEditor logic)
 export function createShapeMesh(shapeData, name, savedState = null) {
 	const baseId = savedState ? savedState.id : `${name}_${Date.now()}`;
 	const id = getUniqueId(part, baseId);

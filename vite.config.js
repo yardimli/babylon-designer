@@ -141,7 +141,7 @@ const fileSystemMiddleware = () => {
 				if (req.url.startsWith('/api/materials')) {
 					if (handleEndpoint(req, res, 'materials')) return;
 				}
-				// NEW: Shapes Endpoint
+				//  Shapes Endpoint
 				if (req.url.startsWith('/api/shapes')) {
 					if (handleEndpoint(req, res, 'shapes')) return;
 				}

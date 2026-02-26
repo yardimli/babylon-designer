@@ -212,7 +212,6 @@ function syncUIFromTargets(targets) {
 	document.getElementById("scl-y").value = sy !== null ? sy.toFixed(2) : "";
 	document.getElementById("scl-z").value = sz !== null ? sz.toFixed(2) : "";
 
-	// CHANGED: Sync Spot Light Direction using Proxy Rotation (Degrees 0-360)
 	const allLights = targets.every(t => t.metadata && t.metadata.isLightProxy);
 	if (allLights) {
 		const spotLightProxies = targets.filter(t => {
@@ -497,7 +496,6 @@ function bindLightInputs(targets) {
 		recordState();
 	};
 
-	// CHANGED: Bind Spot Light Properties using Proxy Rotation (Degrees 0-360)
 	const spotLights = lights.filter(l => l.getTypeID() === 2); // 2 is SpotLight
 	if (spotLights.length > 0 && spotLights.length === lights.length) {
 		dirContainer.classList.remove("hidden");

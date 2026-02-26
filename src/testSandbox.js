@@ -116,7 +116,7 @@ async function initScene () {
 	spotLight.intensity = 1;
 
 	// ==========================================
-	// NEW: Add a proxy sphere where the light is
+	//  Add a proxy sphere where the light is
 	// ==========================================
 	const lightProxy = MeshBuilder.CreateSphere('lightProxy', { diameter: 0.5 }, scene);
 	lightProxy.position = spotLight.position; // Bind to the spotlight's position

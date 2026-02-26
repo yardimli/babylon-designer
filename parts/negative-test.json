@@ -1,13 +1,11 @@
 {
   "version": 1.5,
-  "materialFiles": [
-    "generic.json"
-  ],
+  "materialFiles": [],
   "lights": [],
   "meshes": [
     {
-      "id": "Cube_1771136776313",
-      "name": "Cube_1771136776313",
+      "id": "Cube_1772024823134",
+      "name": "Cube_1772024823134",
       "position": {
         "x": 0,
         "y": -0.5,
@@ -20,20 +18,20 @@
         "w": 1
       },
       "scaling": {
-        "x": 10,
-        "y": 10,
-        "z": 0.10000000149011612
+        "x": 3,
+        "y": 3,
+        "z": 1
       },
       "pivot": {
         "x": 0,
         "y": 0,
         "z": 0
       },
-      "materialId": "beige-wall-2",
+      "materialId": null,
       "uScale": 1,
       "vScale": 1,
-      "parentId": "node_1772022087508",
-      "receiveShadows": true,
+      "parentId": "node_1772024856042",
+      "receiveShadows": false,
       "castShadows": true,
       "sortIndex": 200,
       "visible": true,
@@ -43,11 +41,11 @@
       "type": "Cube"
     },
     {
-      "id": "Cube_1772016050641",
-      "name": "Cube_1772016050641",
+      "id": "Sphere_1772024835019",
+      "name": "Sphere_1772024835019",
       "position": {
         "x": 0,
-        "y": -3.8410115242004395,
+        "y": -0.5,
         "z": 0
       },
       "rotation": {
@@ -57,36 +55,36 @@
         "w": 1
       },
       "scaling": {
-        "x": 2.5,
-        "y": 4,
-        "z": 1
+        "x": 2,
+        "y": 2,
+        "z": 2
       },
       "pivot": {
         "x": 0,
         "y": 0,
         "z": 0
       },
-      "materialId": "negativeMat",
+      "materialId": null,
       "uScale": 1,
       "vScale": 1,
-      "parentId": "node_1772022087508",
+      "parentId": "node_1772024856042",
       "receiveShadows": false,
-      "castShadows": true,
+      "castShadows": false,
       "sortIndex": 100,
       "visible": true,
-      "isNegative": true,
-      "originalMaterialId": "negativeMat",
+      "isNegative": false,
+      "originalMaterialId": null,
       "isPrimitive": true,
-      "type": "Cube"
+      "type": "Sphere"
     }
   ],
   "transformNodes": [
     {
-      "id": "node_1772022087508",
-      "name": "node_1772022087508",
+      "id": "node_1772024856042",
+      "name": "node_1772024856042",
       "position": {
         "x": 0,
-        "y": 1,
+        "y": 0,
         "z": 0
       },
       "rotation": {

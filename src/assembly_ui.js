@@ -102,7 +102,7 @@ function createDraggableItem(name, category) {
 	return div;
 }
 
-// NEW: Function to build mesh from shape data (Adapted from part_ui.js)
+//  Function to build mesh from shape data (Adapted from part_ui.js)
 export function createShapeMesh(shapeData, name, savedState = null) {
 	const baseId = savedState ? savedState.id : `${name}_${Date.now()}`;
 	const id = getUniqueId(scene, baseId);

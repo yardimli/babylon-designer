@@ -1,7 +1,7 @@
 import { createPart } from "./part.js";
 import { setupUI } from "./part_ui.js";
 import { setupGizmos } from "./part_gizmoControl.js";
-import { setupMaterialManager } from "./part_materialManager.js"; // Changed
+import { setupMaterialManager } from "./part_materialManager.js";
 import { setupSceneManager } from "./part_manager.js";
 
 // Initialize
@@ -10,7 +10,7 @@ const scene = createPart(canvas);
 
 setupGizmos(scene);
 setupUI();
-setupMaterialManager(); // Changed
+setupMaterialManager();
 setupSceneManager();
 
 // Start loop

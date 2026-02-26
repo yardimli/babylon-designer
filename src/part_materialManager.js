@@ -53,7 +53,6 @@ export async function loadMaterialFile(filename) {
 	}
 }
 
-// MODIFIED: Setup StandardMaterial properties
 function createMaterialFromData(data, filename) {
 	// Use the material name as ID.
 	const matId = data.name;
