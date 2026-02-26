@@ -73,13 +73,22 @@ export async function importSceneAsAsset(filename, position = Vector3.Zero(), sa
 		const baseId = savedId || filename.replace(".json", "_inst");
 		const instanceId = getUniqueId(scene, baseId);
 
+		// Calculate Sort Index (Append to end)
+		let maxIndex = 0;
+		scene.transformNodes.forEach(n => {
+			if (n.metadata && n.metadata.isAssemblyRoot) {
+				const idx = n.metadata.sortIndex || 0;
+				if (idx > maxIndex) maxIndex = idx;
+			}
+		});
+
 		const rootNode = new TransformNode(instanceId, scene);
 		rootNode.position = position;
 		rootNode.metadata = {
 			isAssemblyRoot: true,
 			isTransformNode: true,
 			sourceFile: filename,
-			sortIndex: 0
+			sortIndex: maxIndex + 100 // Default to end of list
 		};
 
 		// 2. Load Materials
@@ -242,28 +251,31 @@ function serializeAssembly() {
 	};
 
 	// 1. Serialize Imported Scenes (Roots)
-	scene.transformNodes.forEach(node => {
-		if (node.metadata && node.metadata.isAssemblyRoot) {
+	// Collect and Sort roots by sortIndex to ensure order is preserved
+	const roots = scene.transformNodes.filter(node => node.metadata && node.metadata.isAssemblyRoot);
+	roots.sort((a, b) => (a.metadata.sortIndex || 0) - (b.metadata.sortIndex || 0));
 
-			let rot = { x: 0, y: 0, z: 0, w: 1 };
-			if (node.rotationQuaternion) {
-				rot = { x: node.rotationQuaternion.x, y: node.rotationQuaternion.y, z: node.rotationQuaternion.z, w: node.rotationQuaternion.w };
-			} else {
-				const q = Quaternion.FromEulerVector(node.rotation);
-				rot = { x: q.x, y: q.y, z: q.z, w: q.w };
-			}
-
-			data.scenes.push({
-				id: node.id,
-				sourceFile: node.metadata.sourceFile,
-				position: { x: node.position.x, y: node.position.y, z: node.position.z },
-				rotation: rot,
-				scaling: { x: node.scaling.x, y: node.scaling.y, z: node.scaling.z },
-				name: node.name,
-				// Save visibility of the whole part set root
-				visible: node.isEnabled()
-			});
+	roots.forEach(node => {
+		let rot = { x: 0, y: 0, z: 0, w: 1 };
+		if (node.rotationQuaternion) {
+			rot = { x: node.rotationQuaternion.x, y: node.rotationQuaternion.y, z: node.rotationQuaternion.z, w: node.rotationQuaternion.w };
+		} else {
+			const q = Quaternion.FromEulerVector(node.rotation);
+			rot = { x: q.x, y: q.y, z: q.z, w: q.w };
 		}
+
+		data.scenes.push({
+			id: node.id,
+			sourceFile: node.metadata.sourceFile,
+			position: { x: node.position.x, y: node.position.y, z: node.position.z },
+			rotation: rot,
+			scaling: { x: node.scaling.x, y: node.scaling.y, z: node.scaling.z },
+			name: node.name,
+			// Save visibility of the whole part set root
+			visible: node.isEnabled(),
+			// Save the sort index
+			sortIndex: node.metadata.sortIndex
+		});
 	});
 
 	// 2. Serialize Local Lights
@@ -332,6 +344,8 @@ export async function loadAssemblyData(data) {
 				root.scaling.set(s.scaling.x, s.scaling.y, s.scaling.z);
 				// Restore visibility of the whole part set root
 				if (s.visible !== undefined) root.setEnabled(s.visible);
+				// Restore sort index
+				if (s.sortIndex !== undefined) root.metadata.sortIndex = s.sortIndex;
 			}
 		}
 	}

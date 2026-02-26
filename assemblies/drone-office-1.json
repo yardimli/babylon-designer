@@ -22,7 +22,8 @@
         "z": 1
       },
       "name": "brick-wall-narrow_inst",
-      "visible": true
+      "visible": true,
+      "sortIndex": 400
     },
     {
       "id": "brick-wall-plane_inst_dup",
@@ -44,7 +45,8 @@
         "z": 1
       },
       "name": "brick-wall-plane_inst",
-      "visible": true
+      "visible": true,
+      "sortIndex": 500
     },
     {
       "id": "brick-wall-plane_inst",
@@ -66,7 +68,8 @@
         "z": 1
       },
       "name": "brick-wall-plane_inst",
-      "visible": true
+      "visible": true,
+      "sortIndex": 600
     },
     {
       "id": "sky_inst",
@@ -88,15 +91,16 @@
         "z": 1
       },
       "name": "sky_inst",
-      "visible": true
+      "visible": true,
+      "sortIndex": 700
     },
     {
       "id": "parcel-with-tape_inst",
       "sourceFile": "parcel-with-tape.json",
       "position": {
-        "x": -9.9871187210083,
-        "y": 5.520885467529297,
-        "z": -3.0988805294036865
+        "x": -9.99,
+        "y": 5.52,
+        "z": -3.1
       },
       "rotation": {
         "x": 0,
@@ -105,56 +109,13 @@
         "w": 1
       },
       "scaling": {
-        "x": 0.800000011920929,
-        "y": 0.800000011920929,
-        "z": 0.800000011920929
+        "x": 0.9,
+        "y": 0.8,
+        "z": 0.8
       },
       "name": "parcel-with-tape_inst",
-      "visible": true
-    },
-    {
-      "id": "tile-floor-texture_inst_dup",
-      "sourceFile": "tile-floor-texture.json",
-      "position": {
-        "x": 0,
-        "y": 0.0016393776750192046,
-        "z": 0
-      },
-      "rotation": {
-        "x": 0,
-        "y": 0,
-        "z": 0,
-        "w": 1
-      },
-      "scaling": {
-        "x": 1,
-        "y": 1,
-        "z": 1
-      },
-      "name": "tile-floor-texture_inst_dup",
-      "visible": true
-    },
-    {
-      "id": "tile-floor-texture_inst",
-      "sourceFile": "tile-floor-texture.json",
-      "position": {
-        "x": 0,
-        "y": 15.243706703186035,
-        "z": 0
-      },
-      "rotation": {
-        "x": 0,
-        "y": 0,
-        "z": 0,
-        "w": 1
-      },
-      "scaling": {
-        "x": 1,
-        "y": 1,
-        "z": 1
-      },
-      "name": "tile-floor-texture_inst",
-      "visible": true
+      "visible": true,
+      "sortIndex": 800
     },
     {
       "id": "humanoid_inst",
@@ -176,7 +137,54 @@
         "z": 0.75
       },
       "name": "humanoid_inst",
-      "visible": true
+      "visible": true,
+      "sortIndex": 900
+    },
+    {
+      "id": "tile-floor-texture_inst_dup",
+      "sourceFile": "tile-floor-texture.json",
+      "position": {
+        "x": 0,
+        "y": 0.0016393776750192046,
+        "z": 0
+      },
+      "rotation": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 1
+      },
+      "scaling": {
+        "x": 1,
+        "y": 1,
+        "z": 1
+      },
+      "name": "tile-floor-texture_inst_dup",
+      "visible": true,
+      "sortIndex": 1000
+    },
+    {
+      "id": "tile-floor-texture_inst",
+      "sourceFile": "tile-floor-texture.json",
+      "position": {
+        "x": 0,
+        "y": 15.243706703186035,
+        "z": 0
+      },
+      "rotation": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 1
+      },
+      "scaling": {
+        "x": 1,
+        "y": 1,
+        "z": 1
+      },
+      "name": "tile-floor-texture_inst",
+      "visible": true,
+      "sortIndex": 1100
     },
     {
       "id": "gray-wall-with-door_inst",
@@ -198,7 +206,8 @@
         "z": 1
       },
       "name": "gray-wall-with-door_inst",
-      "visible": true
+      "visible": true,
+      "sortIndex": 1200
     },
     {
       "id": "gray-wall-with-window_inst",
@@ -220,7 +229,8 @@
         "z": 1
       },
       "name": "gray-wall-with-window_inst",
-      "visible": true
+      "visible": true,
+      "sortIndex": 1300
     }
   ],
   "lights": [

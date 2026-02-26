@@ -9,7 +9,7 @@ export function getNegativeMaterial(scene) {
 	if (!negativeMaterial) {
 		negativeMaterial = new StandardMaterial("negativeMat", scene);
 		negativeMaterial.diffuseColor = new Color3(1, 0.2, 0.2);
-		negativeMaterial.alpha = 0.4;
+		negativeMaterial.alpha = 0; //full transparent
 		negativeMaterial.specularColor = new Color3(0, 0, 0);
 		// Prevent this internal material from being exported
 		negativeMaterial.metadata = { isInternal: true };
