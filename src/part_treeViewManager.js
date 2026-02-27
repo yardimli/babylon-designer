@@ -1,7 +1,7 @@
 import { AbstractMesh } from "@babylonjs/core";
 import { part } from "./part.js";
 import { markModified } from "./part_manager.js";
-import { selectNode, isSelected } from "./part_selectionManager.js"; // Updated
+import { selectNode, isSelected } from "./part_selectionManager.js";
 import { recordState } from "./part_historyManager.js";
 
 const collapsedNodes = new Set();
@@ -89,14 +89,6 @@ export function refreshPartGraph() {
 	roots.forEach(node => {
 		container.appendChild(createTreeNode(node, 0));
 	});
-
-	// Re-apply highlights after rebuild
-	// We need to get current selection. Since we can't import getSelectedNodes due to circular dep risk if not careful,
-	// we rely on the fact that highlightInTree is called by selectionManager.
-	// But refreshPartGraph is called by others. So we should trigger a highlight update.
-	// Actually, we can import getSelectedNodes here safely if selectionManager doesn't import treeViewManager immediately at top level for execution.
-	// But simpler: just let the next selection update handle it, or pass it.
-	// For now, let's rely on the caller to update selection or add a small timeout.
 }
 
 function createTreeNode(node, level) {
@@ -240,17 +232,41 @@ export function highlightInTree(nodes) {
 	const container = document.getElementById("part-explorer");
 	if (!container) return;
 
-	// Clear all highlights
+	// 1. Ensure parents are expanded so the selected node is visible in DOM
+	let needsRefresh = false;
+	if (Array.isArray(nodes)) {
+		nodes.forEach(node => {
+			let parent = node.parent;
+			while (parent) {
+				if (collapsedNodes.has(parent.id)) {
+					collapsedNodes.delete(parent.id);
+					needsRefresh = true;
+				}
+				parent = parent.parent;
+			}
+		});
+	}
+
+	if (needsRefresh) {
+		refreshPartGraph();
+	}
+
+	// 2. Clear all highlights
 	container.querySelectorAll("[data-mesh-id]").forEach(el => {
 		el.classList.remove("bg-primary/20", "text-primary");
 	});
 
-	// Apply new highlights
+	// 3. Apply new highlights and scroll to the first one
+	let scrolled = false;
 	if (Array.isArray(nodes)) {
 		nodes.forEach(node => {
 			const el = container.querySelector(`[data-mesh-id="${node.id}"]`);
 			if (el) {
 				el.classList.add("bg-primary/20", "text-primary");
+				if (!scrolled) {
+					el.scrollIntoView({ behavior: "smooth", block: "nearest" });
+					scrolled = true;
+				}
 			}
 		});
 	}
