@@ -254,46 +254,49 @@ export async function importSceneAsAsset(filename, position = Vector3.Zero(), sa
 
 		// 5. Merge Meshes for the imported part
 		// Collect all descendants of the rootNode
-		const allChildMeshes = rootNode.getChildMeshes(false); // false = get all descendants
-		const meshesToMerge = [];
-		const meshesToDispose = [];
+		let merge_meshes = true;
+		if (merge_meshes) {
+			const allChildMeshes = rootNode.getChildMeshes(false); // false = get all descendants
+			const meshesToMerge = [];
+			const meshesToDispose = [];
 
-		allChildMeshes.forEach(m => {
-			// Skip light proxies
-			if (m.metadata && m.metadata.isLightProxy) return;
+			allChildMeshes.forEach(m => {
+				// Skip light proxies
+				if (m.metadata && m.metadata.isLightProxy) return;
 
-			// Merge visible, enabled meshes (includes CSG results and standard meshes)
-			if (m.isVisible && m.isEnabled()) {
-				meshesToMerge.push(m);
-			} else {
-				// Dispose hidden meshes (negatives, original positives hidden by CSG)
-				meshesToDispose.push(m);
+				// Merge visible, enabled meshes (includes CSG results and standard meshes)
+				if (m.isVisible && m.isEnabled()) {
+					meshesToMerge.push(m);
+				} else {
+					// Dispose hidden meshes (negatives, original positives hidden by CSG)
+					meshesToDispose.push(m);
+				}
+			});
+
+			if (meshesToMerge.length > 0) {
+				// MergeMeshes(meshes, disposeSource, allow32BitsIndices, meshSubclass, subdivideWithSubMeshes, multiMultiMaterials)
+				// We set disposeSource to false so we can handle disposal manually and safely
+				const merged = Mesh.MergeMeshes(meshesToMerge, false, true, undefined, false, true);
+				if (merged) {
+					merged.name = rootNode.name + "_visuals";
+					merged.metadata = {isInternal: true};
+					// Use setParent to maintain world transform relative to the rootNode
+					merged.setParent(rootNode);
+
+					// Set default shadow properties for the merged mesh
+					merged.receiveShadows = true;
+					setShadowCaster(merged, true);
+
+					// Ensure the merged mesh is pickable so the part can be selected
+					merged.isPickable = true;
+				}
 			}
-		});
 
-		if (meshesToMerge.length > 0) {
-			// MergeMeshes(meshes, disposeSource, allow32BitsIndices, meshSubclass, subdivideWithSubMeshes, multiMultiMaterials)
-			// We set disposeSource to false so we can handle disposal manually and safely
-			const merged = Mesh.MergeMeshes(meshesToMerge, false, true, undefined, false, true);
-			if (merged) {
-				merged.name = rootNode.name + "_visuals";
-				merged.metadata = { isInternal: true };
-				// Use setParent to maintain world transform relative to the rootNode
-				merged.setParent(rootNode);
-
-				// Set default shadow properties for the merged mesh
-				merged.receiveShadows = true;
-				setShadowCaster(merged, true);
-
-				// Ensure the merged mesh is pickable so the part can be selected
-				merged.isPickable = true;
-			}
+			// Clean up the unused hidden meshes and the original merged sources
+			[...meshesToMerge, ...meshesToDispose].forEach(m => {
+				if (!m.isDisposed()) m.dispose();
+			});
 		}
-
-		// Clean up the unused hidden meshes and the original merged sources
-		[...meshesToMerge, ...meshesToDispose].forEach(m => {
-			if (!m.isDisposed()) m.dispose();
-		});
 
 		markModified();
 		refreshSceneGraph();
