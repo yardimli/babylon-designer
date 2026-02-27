@@ -1,6 +1,7 @@
-import { updateGizmoAttachment } from "./assembly_gizmoControl.js"; // Updated
-import { updatePropertyEditor } from "./assembly_propertyEditor.js"; // Updated
-import { highlightInTree } from "./assembly_treeViewManager.js"; // Updated
+import { updateGizmoAttachment } from "./assembly_gizmoControl.js";
+import { updatePropertyEditor } from "./assembly_propertyEditor.js";
+import { highlightInTree } from "./assembly_treeViewManager.js";
+import { updateAlignButton } from "./assembly_alignmentManager.js"; // Added
 
 let selectedNodes = [];
 
@@ -22,7 +23,7 @@ export function selectNode(node, multi = false) {
 		clearSelection();
 		return;
 	}
-	
+
 	if (multi) {
 		const index = selectedNodes.indexOf(node);
 		if (index > -1) {
@@ -47,10 +48,13 @@ export function setSelection(nodes) {
 function notifySelectionChanged() {
 	// 1. Update Gizmo (Visuals & Controls)
 	updateGizmoAttachment(selectedNodes);
-	
+
 	// 2. Update Property Editor (Inputs)
 	updatePropertyEditor(selectedNodes);
-	
+
 	// 3. Update Tree View (Highlighting)
 	highlightInTree(selectedNodes);
+
+	// 4. Update Alignment Button state
+	updateAlignButton(selectedNodes.length); // Added
 }

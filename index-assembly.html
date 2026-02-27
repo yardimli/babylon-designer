@@ -34,6 +34,7 @@
 		<button id="btn-menu-save" class="btn btn-sm join-item">Save Set</button>
 		<button id="btn-menu-save-as" class="btn btn-sm join-item">Save As</button> <!-- Added Save As Button -->
 		<button id="btn-menu-load" class="btn btn-sm join-item">Load Set</button>
+		<button id="btn-menu-align" class="btn btn-sm join-item btn-disabled" disabled>Align</button>
 	</div>
 
 	<a href="/index.html" target="_blank" class="btn btn-sm btn-outline btn-secondary">
@@ -193,6 +194,66 @@
 		</div>
 	</div>
 </dialog>
+
+<!-- Alignment Modal -->
+<dialog id="align_modal" class="modal">
+	<div class="modal-box">
+		<h3 class="font-bold text-lg mb-4">Alignment Tools</h3>
+
+		<!-- Row 1: Axis Scope -->
+		<div class="flex gap-4 mb-4 p-2 bg-base-200 rounded">
+			<span class="font-bold text-sm opacity-70 my-auto">Axes:</span>
+			<label class="cursor-pointer label">
+				<span class="label-text mr-2">X</span>
+				<input type="checkbox" id="align-axis-x" class="checkbox checkbox-sm checkbox-error" checked />
+			</label>
+			<label class="cursor-pointer label">
+				<span class="label-text mr-2">Y</span>
+				<input type="checkbox" id="align-axis-y" class="checkbox checkbox-sm checkbox-success" />
+			</label>
+			<label class="cursor-pointer label">
+				<span class="label-text mr-2">Z</span>
+				<input type="checkbox" id="align-axis-z" class="checkbox checkbox-sm checkbox-info" />
+			</label>
+		</div>
+
+		<!-- Row 2: Alignment -->
+		<div class="mb-2">
+			<div class="text-xs font-bold opacity-50 mb-1">ALIGNMENT</div>
+			<div class="join w-full grid grid-cols-4">
+				<button id="btn-align-min" class="btn btn-sm join-item btn-outline">Min</button>
+				<button id="btn-align-center" class="btn btn-sm join-item btn-outline">Center</button>
+				<button id="btn-align-max" class="btn btn-sm join-item btn-outline">Max</button>
+				<button id="btn-align-pivot" class="btn btn-sm join-item btn-outline">Pivot</button>
+			</div>
+		</div>
+
+		<!-- Row 3: Distribution -->
+		<div class="mb-2">
+			<div class="text-xs font-bold opacity-50 mb-1">DISTRIBUTION</div>
+			<div class="join w-full grid grid-cols-2">
+				<button id="btn-dist-center" class="btn btn-sm join-item btn-outline">Distribute Centers</button>
+				<button id="btn-dist-gap" class="btn btn-sm join-item btn-outline">Distribute Gaps</button>
+			</div>
+		</div>
+
+		<!-- Row 4: Spacing -->
+		<div class="mb-4">
+			<div class="text-xs font-bold opacity-50 mb-1">SPACING</div>
+			<div class="join w-full">
+				<input type="number" id="align-spacing-val" class="input input-sm input-bordered join-item w-full" value="0" placeholder="Units" />
+				<button id="btn-apply-spacing" class="btn btn-sm join-item btn-primary">Apply Spacing</button>
+			</div>
+		</div>
+
+		<div class="modal-action">
+			<form method="dialog">
+				<button class="btn">Close</button>
+			</form>
+		</div>
+	</div>
+</dialog>
+
 
 <!-- Global Mouse Wheel handler for number inputs -->
 <script>

@@ -253,17 +253,41 @@ export function highlightInTree(nodes) {
 	const container = document.getElementById("part-explorer");
 	if (!container) return;
 
-	// Clear all highlights
+	// 1. Ensure parents are expanded so the selected node is visible in DOM
+	let needsRefresh = false;
+	if (Array.isArray(nodes)) {
+		nodes.forEach(node => {
+			let parent = node.parent;
+			while (parent) {
+				if (collapsedNodes.has(parent.id)) {
+					collapsedNodes.delete(parent.id);
+					needsRefresh = true;
+				}
+				parent = parent.parent;
+			}
+		});
+	}
+
+	if (needsRefresh) {
+		refreshSceneGraph();
+	}
+
+	// 2. Clear all highlights
 	container.querySelectorAll("[data-mesh-id]").forEach(el => {
 		el.classList.remove("bg-primary/20", "text-primary");
 	});
 
-	// Apply new highlights
+	// 3. Apply new highlights and scroll to the first one
+	let scrolled = false;
 	if (Array.isArray(nodes)) {
 		nodes.forEach(node => {
 			const el = container.querySelector(`[data-mesh-id="${node.id}"]`);
 			if (el) {
 				el.classList.add("bg-primary/20", "text-primary");
+				if (!scrolled) {
+					el.scrollIntoView({ behavior: "smooth", block: "nearest" });
+					scrolled = true;
+				}
 			}
 		});
 	}
