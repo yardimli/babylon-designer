@@ -1,12 +1,12 @@
-import { TransformNode, Quaternion, Vector3, Color3, StandardMaterial } from "@babylonjs/core";
-import { scene, resetAxisIndicator, getUniqueId, engine } from "./assembly_scene.js"; // Added engine
+import { TransformNode, Quaternion, Vector3, Color3, StandardMaterial, Mesh } from "@babylonjs/core"; // Added Mesh
+import { scene, resetAxisIndicator, getUniqueId, engine } from "./assembly_scene.js";
 import { setupGizmos, disposeGizmos } from "./assembly_gizmoControl.js";
 import { updatePropertyEditor } from "./assembly_propertyEditor.js";
 import { refreshSceneGraph } from "./assembly_treeViewManager.js";
 import { createLight } from "./assembly_lightManager.js";
 import { createTransformNode } from "./assembly_transformNodeManager.js";
 import { createPrimitive, createShapeMesh } from "./assembly_ui.js";
-import { clearShadowManagers } from "./assembly_shadowManager.js";
+import { clearShadowManagers, setShadowCaster } from "./assembly_shadowManager.js"; // Added setShadowCaster
 import { setupHistory, recordState } from "./assembly_historyManager.js";
 import { selectNode } from "./assembly_selectionManager.js";
 import { getLoadedMaterialFiles, loadMaterialFile, clearMaterialManager } from "./assembly_materialManager.js";
@@ -17,12 +17,10 @@ let isModified = false;
 const STORAGE_KEY_LAST_ASSEMBLY = "bd_last_assembly";
 
 const statusBarText = document.getElementById("status-text");
-// --- Added Statistics Elements ---
 const statFps = document.getElementById("stat-fps");
 const statMeshes = document.getElementById("stat-meshes");
 const statVerts = document.getElementById("stat-verts");
 const statMem = document.getElementById("stat-mem");
-// ---------------------------------
 
 const saveLoadModal = document.getElementById("save_load_modal");
 const assemblyListContainer = document.getElementById("assembly-list");
@@ -40,7 +38,7 @@ export function setupAssemblyManager() {
 	};
 
 	setupHistory(serializeAssembly, loadAssemblyData);
-	startStatsUpdater(); // Start the stats loop
+	startStatsUpdater();
 
 	// Auto-load last part set
 	const lastFile = localStorage.getItem(STORAGE_KEY_LAST_ASSEMBLY);
@@ -50,35 +48,20 @@ export function setupAssemblyManager() {
 	}
 }
 
-// --- Added Stats Updater Function ---
 function startStatsUpdater() {
 	setInterval(() => {
 		if (!engine) return;
-
-		// FPS
 		if (statFps) statFps.innerText = engine.getFps().toFixed(0) + " FPS";
-
 		if (scene) {
-			// Meshes
-			if (statMeshes) {
-				// Filter to show only relevant meshes if desired, or total count
-				// Here we show total meshes in scene array
-				statMeshes.innerText = scene.meshes.length + " Meshes";
-			}
-			// Vertices
-			if (statVerts) {
-				statVerts.innerText = (scene.totalVertices || 0).toLocaleString() + " Verts";
-			}
+			if (statMeshes) statMeshes.innerText = scene.meshes.length + " Meshes";
+			if (statVerts) statVerts.innerText = (scene.totalVertices || 0).toLocaleString() + " Verts";
 		}
-
-		// Memory (Chrome/Edge only)
 		if (statMem && window.performance && window.performance.memory) {
 			const mem = Math.round(window.performance.memory.usedJSHeapSize / 1048576);
 			statMem.innerText = mem + " MB";
 		}
 	}, 1000);
 }
-// ------------------------------------
 
 export function markModified() {
 	if (!isModified) {
@@ -238,6 +221,8 @@ export async function importSceneAsAsset(filename, position = Vector3.Zero(), sa
 					// Apply visibility from source file
 					if (meshData.visible !== undefined) mesh.setEnabled(meshData.visible);
 
+					mesh.freezeWorldMatrix();
+
 				}
 			});
 		}
@@ -267,6 +252,49 @@ export async function importSceneAsAsset(filename, position = Vector3.Zero(), sa
 
 		updateCSG(); // Recompute CSG after importing part
 
+		// 5. Merge Meshes for the imported part
+		// Collect all descendants of the rootNode
+		const allChildMeshes = rootNode.getChildMeshes(false); // false = get all descendants
+		const meshesToMerge = [];
+		const meshesToDispose = [];
+
+		allChildMeshes.forEach(m => {
+			// Skip light proxies
+			if (m.metadata && m.metadata.isLightProxy) return;
+
+			// Merge visible, enabled meshes (includes CSG results and standard meshes)
+			if (m.isVisible && m.isEnabled()) {
+				meshesToMerge.push(m);
+			} else {
+				// Dispose hidden meshes (negatives, original positives hidden by CSG)
+				meshesToDispose.push(m);
+			}
+		});
+
+		if (meshesToMerge.length > 0) {
+			// MergeMeshes(meshes, disposeSource, allow32BitsIndices, meshSubclass, subdivideWithSubMeshes, multiMultiMaterials)
+			// We set disposeSource to false so we can handle disposal manually and safely
+			const merged = Mesh.MergeMeshes(meshesToMerge, false, true, undefined, false, true);
+			if (merged) {
+				merged.name = rootNode.name + "_visuals";
+				merged.metadata = { isInternal: true };
+				// Use setParent to maintain world transform relative to the rootNode
+				merged.setParent(rootNode);
+
+				// Set default shadow properties for the merged mesh
+				merged.receiveShadows = true;
+				setShadowCaster(merged, true);
+
+				// Ensure the merged mesh is pickable so the part can be selected
+				merged.isPickable = true;
+			}
+		}
+
+		// Clean up the unused hidden meshes and the original merged sources
+		[...meshesToMerge, ...meshesToDispose].forEach(m => {
+			if (!m.isDisposed()) m.dispose();
+		});
+
 		markModified();
 		refreshSceneGraph();
 		recordState();
@@ -277,7 +305,6 @@ export async function importSceneAsAsset(filename, position = Vector3.Zero(), sa
 		console.error("Error importing part:", e);
 	}
 }
-
 
 // --- Saving / Loading Assemblies ---
 
