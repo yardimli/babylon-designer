@@ -1,5 +1,5 @@
 import { TransformNode, Quaternion, Vector3, Color3, StandardMaterial } from "@babylonjs/core";
-import { scene, resetAxisIndicator, getUniqueId } from "./assembly_scene.js";
+import { scene, resetAxisIndicator, getUniqueId, engine } from "./assembly_scene.js"; // Added engine
 import { setupGizmos, disposeGizmos } from "./assembly_gizmoControl.js";
 import { updatePropertyEditor } from "./assembly_propertyEditor.js";
 import { refreshSceneGraph } from "./assembly_treeViewManager.js";
@@ -17,6 +17,13 @@ let isModified = false;
 const STORAGE_KEY_LAST_ASSEMBLY = "bd_last_assembly";
 
 const statusBarText = document.getElementById("status-text");
+// --- Added Statistics Elements ---
+const statFps = document.getElementById("stat-fps");
+const statMeshes = document.getElementById("stat-meshes");
+const statVerts = document.getElementById("stat-verts");
+const statMem = document.getElementById("stat-mem");
+// ---------------------------------
+
 const saveLoadModal = document.getElementById("save_load_modal");
 const assemblyListContainer = document.getElementById("assembly-list");
 const saveNameInput = document.getElementById("save-assembly-name");
@@ -24,7 +31,7 @@ const saveNameInput = document.getElementById("save-assembly-name");
 export function setupAssemblyManager() {
 	updateStatus();
 	document.getElementById("btn-menu-save").onclick = () => handleSaveAction();
-	document.getElementById("btn-menu-save-as").onclick = () => handleSaveAsAction(); // Added
+	document.getElementById("btn-menu-save-as").onclick = () => handleSaveAsAction();
 	document.getElementById("btn-menu-load").onclick = () => openLoadModal();
 	document.getElementById("btn-menu-new").onclick = () => createNewAssembly();
 	document.getElementById("btn-modal-save").onclick = () => {
@@ -33,6 +40,7 @@ export function setupAssemblyManager() {
 	};
 
 	setupHistory(serializeAssembly, loadAssemblyData);
+	startStatsUpdater(); // Start the stats loop
 
 	// Auto-load last part set
 	const lastFile = localStorage.getItem(STORAGE_KEY_LAST_ASSEMBLY);
@@ -41,6 +49,36 @@ export function setupAssemblyManager() {
 		loadAssemblyInternal(lastFile);
 	}
 }
+
+// --- Added Stats Updater Function ---
+function startStatsUpdater() {
+	setInterval(() => {
+		if (!engine) return;
+
+		// FPS
+		if (statFps) statFps.innerText = engine.getFps().toFixed(0) + " FPS";
+
+		if (scene) {
+			// Meshes
+			if (statMeshes) {
+				// Filter to show only relevant meshes if desired, or total count
+				// Here we show total meshes in scene array
+				statMeshes.innerText = scene.meshes.length + " Meshes";
+			}
+			// Vertices
+			if (statVerts) {
+				statVerts.innerText = (scene.totalVertices || 0).toLocaleString() + " Verts";
+			}
+		}
+
+		// Memory (Chrome/Edge only)
+		if (statMem && window.performance && window.performance.memory) {
+			const mem = Math.round(window.performance.memory.usedJSHeapSize / 1048576);
+			statMem.innerText = mem + " MB";
+		}
+	}, 1000);
+}
+// ------------------------------------
 
 export function markModified() {
 	if (!isModified) {
@@ -199,6 +237,7 @@ export async function importSceneAsAsset(filename, position = Vector3.Zero(), sa
 
 					// Apply visibility from source file
 					if (meshData.visible !== undefined) mesh.setEnabled(meshData.visible);
+
 				}
 			});
 		}

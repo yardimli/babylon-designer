@@ -154,9 +154,18 @@
 </div>
 
 <!-- Bottom Status Bar -->
-<footer class="h-6 bg-base-100 border-t border-base-content/10 flex items-center px-4 text-xs select-none flex-none">
-	<span class="opacity-70 mr-2">Status:</span>
-	<span id="status-text" class="font-mono font-bold">Untitled Set</span>
+<footer class="h-6 bg-base-100 border-t border-base-content/10 flex items-center px-4 text-xs select-none flex-none gap-4">
+	<div class="flex items-center">
+		<span class="opacity-70 mr-2">Status:</span>
+		<span id="status-text" class="font-mono font-bold">Untitled Set</span>
+	</div>
+	<div class="flex-1"></div>
+	<div class="flex items-center gap-4 opacity-60 font-mono text-[10px] sm:text-xs">
+		<span id="stat-meshes" title="Total Meshes">0 Meshes</span>
+		<span id="stat-verts" title="Total Vertices">0 Verts</span>
+		<span id="stat-mem" title="JS Heap Size">0 MB</span>
+		<span id="stat-fps" class="font-bold text-accent" title="Frames Per Second">0 FPS</span>
+	</div>
 </footer>
 
 <!-- Save/Load Assembly Modal -->
