@@ -80,6 +80,9 @@ export function createScene(canvas) {
 	// --- Axis Indicator Setup (In-Scene) ---
 	createAxisIndicator(scene);
 
+	// --- Setup UI Bindings for Scene Settings ---
+	setupSceneSettings();
+
 	engine.runRenderLoop(() => {
 		scene.render();
 	});
@@ -246,4 +249,75 @@ function addLabel(scene, text, parent, colorName) {
 	mat.disableLighting = true;
 	mat.useAlphaFromDiffuseTexture = true;
 	plane.material = mat;
+}
+
+// Added: Setup Scene Settings UI (Background, Ambient, Diffuse, Ground)
+export function setupSceneSettings() {
+	const btnScene = document.getElementById("btn-menu-scene");
+	const modal = document.getElementById("scene_settings_modal");
+	const inputBg = document.getElementById("scene-bg-color");
+	const inputIntensity = document.getElementById("scene-ambient-intensity");
+	const labelIntensity = document.getElementById("val-ambient-intensity");
+	const inputDiffuse = document.getElementById("scene-light-diffuse");
+	const inputGround = document.getElementById("scene-light-ground");
+
+	if (btnScene && modal) {
+		btnScene.onclick = () => {
+			if (scene) {
+				// Sync Background
+				if (scene.clearColor) {
+					const hex = scene.clearColor.toHexString().substring(0, 7);
+					if (inputBg) inputBg.value = hex;
+				}
+
+				// Sync Light
+				const light = scene.getLightByName("hemiLight");
+				if (light) {
+					if (inputIntensity) inputIntensity.value = light.intensity;
+					if (labelIntensity) labelIntensity.innerText = light.intensity.toFixed(1);
+					if (inputDiffuse) inputDiffuse.value = light.diffuse.toHexString();
+					if (inputGround) inputGround.value = light.groundColor.toHexString();
+				}
+			}
+			modal.showModal();
+		};
+	}
+
+	if (inputBg) {
+		inputBg.oninput = (e) => {
+			if (scene) {
+				const c3 = Color3.FromHexString(e.target.value);
+				scene.clearColor = new Color4(c3.r, c3.g, c3.b, 1);
+			}
+		};
+	}
+
+	if (inputIntensity) {
+		inputIntensity.oninput = (e) => {
+			const val = parseFloat(e.target.value);
+			if (scene) {
+				const light = scene.getLightByName("hemiLight");
+				if (light) light.intensity = val;
+			}
+			if (labelIntensity) labelIntensity.innerText = val.toFixed(1);
+		};
+	}
+
+	if (inputDiffuse) {
+		inputDiffuse.oninput = (e) => {
+			if (scene) {
+				const light = scene.getLightByName("hemiLight");
+				if (light) light.diffuse = Color3.FromHexString(e.target.value);
+			}
+		};
+	}
+
+	if (inputGround) {
+		inputGround.oninput = (e) => {
+			if (scene) {
+				const light = scene.getLightByName("hemiLight");
+				if (light) light.groundColor = Color3.FromHexString(e.target.value);
+			}
+		};
+	}
 }

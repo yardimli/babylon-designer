@@ -1,6 +1,6 @@
-import { MeshBuilder, Vector3, Quaternion, TransformNode, Color3, Color4 } from "@babylonjs/core"; // Added Color3, Color4
-import earcut from 'earcut'; // Required for polygon extrusion
-import { part, getUniqueId, camera } from "./part.js"; // Added camera
+import { MeshBuilder, Vector3, Quaternion, TransformNode, Color3, Color4 } from "@babylonjs/core";
+import earcut from 'earcut';
+import { part, getUniqueId, camera } from "./part.js";
 import { setGizmoMode } from "./part_gizmoControl.js";
 import { createLight } from "./part_lightManager.js";
 import { createTransformNode } from "./part_transformNodeManager.js";
@@ -9,7 +9,7 @@ import { refreshPartGraph } from "./part_treeViewManager.js";
 import { setShadowCaster } from "./part_shadowManager.js";
 import { recordState } from "./part_historyManager.js";
 import { selectNode } from "./part_selectionManager.js";
-import { updateCSG, getNegativeMaterial } from "./part_csgManager.js"; // Added
+import { updateCSG, getNegativeMaterial } from "./part_csgManager.js";
 
 const primitives = ["Cube", "Sphere", "Cylinder", "Plane", "Ground", "Cone", "Pyramid", "Empty"];
 const lights = ["Point", "Spot"];
@@ -21,8 +21,8 @@ export function setupUI() {
 	const canvas = document.getElementById("renderCanvas");
 
 	setupGizmoButtons();
-	setupCameraControls(); // Added camera controls setup
-	setupSceneSettings(); // Added scene settings setup
+	setupCameraControls();
+	setupSceneSettings();
 
 	// --- Added Keyboard Shortcuts ---
 	window.addEventListener("keydown", (e) => {
@@ -165,6 +165,9 @@ function setupSceneSettings() {
 	const inputBg = document.getElementById("scene-bg-color");
 	const inputIntensity = document.getElementById("scene-ambient-intensity");
 	const labelIntensity = document.getElementById("val-ambient-intensity");
+	// Added inputs for light colors
+	const inputDiffuse = document.getElementById("scene-light-diffuse");
+	const inputGround = document.getElementById("scene-light-ground");
 
 	if (btnScene && modal) {
 		btnScene.onclick = () => {
@@ -177,11 +180,14 @@ function setupSceneSettings() {
 					if (inputBg) inputBg.value = hex;
 				}
 
-				// Sync Ambient Light Intensity
+				// Sync Ambient Light Properties
 				const light = part.getLightByName("hemiLight");
 				if (light) {
 					if (inputIntensity) inputIntensity.value = light.intensity;
 					if (labelIntensity) labelIntensity.innerText = light.intensity.toFixed(1);
+					// Sync Colors
+					if (inputDiffuse) inputDiffuse.value = light.diffuse.toHexString();
+					if (inputGround) inputGround.value = light.groundColor.toHexString();
 				}
 			}
 			modal.showModal();
@@ -210,6 +216,30 @@ function setupSceneSettings() {
 				}
 			}
 			if (labelIntensity) labelIntensity.innerText = val.toFixed(1);
+		};
+	}
+
+	// Added Handle Diffuse Color Change
+	if (inputDiffuse) {
+		inputDiffuse.oninput = (e) => {
+			if (part) {
+				const light = part.getLightByName("hemiLight");
+				if (light) {
+					light.diffuse = Color3.FromHexString(e.target.value);
+				}
+			}
+		};
+	}
+
+	// Added Handle Ground Color Change
+	if (inputGround) {
+		inputGround.oninput = (e) => {
+			if (part) {
+				const light = part.getLightByName("hemiLight");
+				if (light) {
+					light.groundColor = Color3.FromHexString(e.target.value);
+				}
+			}
 		};
 	}
 }
