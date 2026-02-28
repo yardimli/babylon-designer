@@ -3,13 +3,20 @@ import { markModified } from "./part_manager.js";
 import { recordState } from "./part_historyManager.js";
 import { selectNode, getSelectedNodes } from "./part_selectionManager.js";
 import { part } from "./part.js";
-import { updateCSG } from "./part_csgManager.js"; // Added
+import { updateCSG } from "./part_csgManager.js";
 
 export let gizmoManager;
 let selectionAnchor = null;
-let originalParents = new Map(); // Stores { nodeId: parentNode } during drag
+let originalParents = new Map();
+let pointerObserver = null; // 1. Add variable to track the observer
 
 export function disposeGizmos() {
+	// 2. Remove the observer if it exists
+	if (pointerObserver && part) {
+		part.onPointerObservable.remove(pointerObserver);
+		pointerObserver = null;
+	}
+
 	if (gizmoManager) {
 		gizmoManager.dispose();
 		gizmoManager = null;
@@ -21,7 +28,7 @@ export function disposeGizmos() {
 }
 
 export function setupGizmos(scene) {
-	disposeGizmos();
+	disposeGizmos(); // This will now clean up the previous observer
 
 	gizmoManager = new GizmoManager(scene);
 
@@ -31,42 +38,33 @@ export function setupGizmos(scene) {
 	gizmoManager.scaleGizmoEnabled = false;
 	gizmoManager.boundingBoxGizmoEnabled = false;
 
-	// Disable default pointer attachment. We handle picking manually.
 	gizmoManager.usePointerToAttachGizmos = false;
 	gizmoManager.clearGizmoOnEmptyPointerEvent = false;
 
-	// Create the Multi-Selection Anchor (hidden node)
 	selectionAnchor = new TransformNode("selectionAnchor", scene);
 	selectionAnchor.rotationQuaternion = Quaternion.Identity();
-	// Ensure it doesn't get saved or shown in tree
 	selectionAnchor.metadata = { isInternal: true };
 
-	// Custom Selection Logic
-	scene.onPointerObservable.add((pointerInfo) => {
+	// 3. Assign the observer to the variable
+	pointerObserver = scene.onPointerObservable.add((pointerInfo) => {
 		if (pointerInfo.type === PointerEventTypes.POINTERDOWN) {
-			// Only react to Left Click (button 0)
 			if (pointerInfo.event.button !== 0) return;
 
 			const pick = pointerInfo.pickInfo;
 			const isMulti = pointerInfo.event.shiftKey;
 
-			if (pick.hit && pick.pickedMesh) {
+			if (pick.hit && pick.pickedMesh && isMulti) {
 				const mesh = pick.pickedMesh;
-
-				// Don't select the gizmos themselves
 				if (mesh.isGizmoMesh || mesh.name.startsWith("gizmo_")) return;
 
 				let target = null;
 
-				// 1. Check if we clicked a TransformNode Proxy
 				if (mesh.metadata && mesh.metadata.isTransformNodeProxy) {
 					target = mesh.parent;
 				}
-				// 1.5. Check if we clicked a CSG Result (select original mesh instead)
 				else if (mesh.metadata && mesh.metadata.isCSGResult) {
 					target = scene.getMeshByID(mesh.metadata.originalMeshId);
 				}
-				// 2. Standard Mesh or Light Proxy
 				else {
 					target = mesh;
 				}
@@ -74,8 +72,7 @@ export function setupGizmos(scene) {
 				if (target) {
 					selectNode(target, isMulti);
 				}
-			} else {
-				// Clicked on empty space - Deselect
+			} if (!pick.hit && isMulti) {
 				selectNode(null);
 			}
 		}

@@ -54,8 +54,10 @@ export function getUniqueId(scene, baseId) {
 }
 
 export function createPart(canvas) {
-	engine = new Engine(canvas, true);
+	engine = new Engine(canvas, true, { stencil: true });
 	part = new Scene(engine);
+	part.setRenderingAutoClearDepthStencil(1, false, true, false)
+
 	//part.debugLayer.show();
 	part.clearColor = new Color4(0.1, 0.1, 0.1, 1);
 	part.createDefaultEnvironment({ createGround: false, createSkybox: false });
@@ -74,7 +76,7 @@ export function createPart(canvas) {
 
 	// Base Light
 	const light = new HemisphericLight("hemiLight", new Vector3(0, 1, 0), part);
-	light.intensity = 0.7;
+	light.intensity = 1;
 
 	// --- Axis Indicator Setup (In-Scene) ---
 	createAxisIndicator(part);
