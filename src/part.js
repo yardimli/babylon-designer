@@ -56,14 +56,14 @@ export function getUniqueId(scene, baseId) {
 export function createPart(canvas) {
 	engine = new Engine(canvas, true, { stencil: true });
 	part = new Scene(engine);
-	part.setRenderingAutoClearDepthStencil(1, false, true, false)
+	// part.setRenderingAutoClearDepthStencil(1, false, true, false)
 
 	//part.debugLayer.show();
 	part.clearColor = new Color4(0.1, 0.1, 0.1, 1);
 	part.createDefaultEnvironment({ createGround: false, createSkybox: false });
 
 	// Ensure rendering group 1 clears depth so the axis draws on top of the part
-	// part.setRenderingAutoClearDepthStencil(1, true, false, false);
+	part.setRenderingAutoClearDepthStencil(1, true, false, false);
 
 	// Camera
 	camera = new ArcRotateCamera("Camera", -Math.PI / 2, Math.PI / 2.5, 10, Vector3.Zero(), part);

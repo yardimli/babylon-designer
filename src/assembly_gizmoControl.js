@@ -3,13 +3,21 @@ import { markModified } from "./assembly_manager.js"; // Updated to assemblyMana
 import { recordState } from "./assembly_historyManager.js"; // Updated
 import { selectNode, getSelectedNodes } from "./assembly_selectionManager.js"; // Updated
 import { scene } from "./assembly_scene.js"; // Updated
-import { updateCSG } from "./assembly_csgManager.js"; // Added
+import { updateCSG } from "./assembly_csgManager.js";
+import {part} from "./part.js"; // Added
 
 export let gizmoManager;
 let selectionAnchor = null;
 let originalParents = new Map(); // Stores { nodeId: parentNode } during drag
+let pointerObserver = null; // 1. Add variable to track the observer
 
 export function disposeGizmos() {
+
+	if (pointerObserver) {
+		scene.onPointerObservable.remove(pointerObserver);
+		pointerObserver = null;
+	}
+
 	if (gizmoManager) {
 		gizmoManager.dispose();
 		gizmoManager = null;
@@ -42,15 +50,16 @@ export function setupGizmos(scene) {
 	selectionAnchor.metadata = { isInternal: true };
 
 	// Custom Selection Logic
-	scene.onPointerObservable.add((pointerInfo) => {
+	pointerObserver = scene.onPointerObservable.add((pointerInfo) => {
 		if (pointerInfo.type === PointerEventTypes.POINTERDOWN) {
 			// Only react to Left Click (button 0)
 			if (pointerInfo.event.button !== 0) return;
+			console.log("Pointer Down Event Detected:", pointerInfo);
 
 			const pick = pointerInfo.pickInfo;
 			const isMulti = pointerInfo.event.shiftKey;
 
-			if (pick.hit && pick.pickedMesh) {
+			if (pick.hit && pick.pickedMesh && isMulti) {
 				const mesh = pick.pickedMesh;
 
 				// Don't select the gizmos themselves
@@ -89,8 +98,7 @@ export function setupGizmos(scene) {
 				if (target) {
 					selectNode(target, isMulti);
 				}
-			} else {
-				// Clicked on empty space - Deselect
+			} if (!pick.hit && isMulti) {
 				selectNode(null);
 			}
 		}
