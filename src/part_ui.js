@@ -24,6 +24,17 @@ export function setupUI() {
 	setupCameraControls(); // Added camera controls setup
 	setupSceneSettings(); // Added scene settings setup
 
+	// --- Added Keyboard Shortcuts ---
+	window.addEventListener("keydown", (e) => {
+		if (e.key === "Escape") {
+			// Check if any modal is open to prevent accidental deselection when closing a modal
+			if (document.querySelector("dialog[open]")) return;
+
+			selectNode(null);
+		}
+	});
+	// --------------------------------
+
 	primitives.forEach(type => {
 		const div = createDraggableItem(type, "primitive");
 		pList.appendChild(div);

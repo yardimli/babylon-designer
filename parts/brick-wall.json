@@ -1807,7 +1807,7 @@
       "id": "red-brick_dup_1_dup_2",
       "name": "red-brick_dup_1_dup_2",
       "position": {
-        "x": -10.091165542602539,
+        "x": -10.059562683105469,
         "y": -0.5,
         "z": 0
       },
@@ -1839,9 +1839,300 @@
       "originalMaterialId": null,
       "isPrimitive": true,
       "type": "Cube"
+    },
+    {
+      "id": "red-brick_dup_1_dup_2_dup",
+      "name": "red-brick_dup_1_dup_2_dup",
+      "position": {
+        "x": -10.059562683105469,
+        "y": 1.709883689880371,
+        "z": 0
+      },
+      "rotation": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 1
+      },
+      "scaling": {
+        "x": 0.8999999761581421,
+        "y": 1,
+        "z": 1
+      },
+      "pivot": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "materialId": "red stone",
+      "uScale": 1,
+      "vScale": 1,
+      "parentId": "node_1770896268097",
+      "receiveShadows": true,
+      "castShadows": true,
+      "sortIndex": 600,
+      "visible": true,
+      "isNegative": false,
+      "originalMaterialId": null,
+      "isPrimitive": true,
+      "type": "Cube"
+    },
+    {
+      "id": "red-brick_dup_1_dup_2_dup_dup",
+      "name": "red-brick_dup_1_dup_2_dup_dup",
+      "position": {
+        "x": -10.059562683105469,
+        "y": 3.898406982421875,
+        "z": 0
+      },
+      "rotation": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 1
+      },
+      "scaling": {
+        "x": 0.8999999761581421,
+        "y": 1,
+        "z": 1
+      },
+      "pivot": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "materialId": "red stone",
+      "uScale": 1,
+      "vScale": 1,
+      "parentId": "node_1770896268097",
+      "receiveShadows": true,
+      "castShadows": true,
+      "sortIndex": 600,
+      "visible": true,
+      "isNegative": false,
+      "originalMaterialId": null,
+      "isPrimitive": true,
+      "type": "Cube"
+    },
+    {
+      "id": "red-brick_dup_1_dup_2_dup_1",
+      "name": "red-brick_dup_1_dup_2_dup_1",
+      "position": {
+        "x": 6.943680763244629,
+        "y": 0.5900108814239502,
+        "z": 0
+      },
+      "rotation": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 1
+      },
+      "scaling": {
+        "x": 0.8999999761581421,
+        "y": 1,
+        "z": 1
+      },
+      "pivot": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "materialId": "red stone",
+      "uScale": 1,
+      "vScale": 1,
+      "parentId": "node_1770896268097",
+      "receiveShadows": true,
+      "castShadows": true,
+      "sortIndex": 600,
+      "visible": true,
+      "isNegative": false,
+      "originalMaterialId": null,
+      "isPrimitive": true,
+      "type": "Cube"
+    },
+    {
+      "id": "red-brick_dup_1_dup_2_dup_dup_1",
+      "name": "red-brick_dup_1_dup_2_dup_dup_1",
+      "position": {
+        "x": 6.943680763244629,
+        "y": 2.7998945713043213,
+        "z": 0
+      },
+      "rotation": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 1
+      },
+      "scaling": {
+        "x": 0.8999999761581421,
+        "y": 1,
+        "z": 1
+      },
+      "pivot": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "materialId": "red stone",
+      "uScale": 1,
+      "vScale": 1,
+      "parentId": "node_1770896268097",
+      "receiveShadows": true,
+      "castShadows": true,
+      "sortIndex": 600,
+      "visible": true,
+      "isNegative": false,
+      "originalMaterialId": null,
+      "isPrimitive": true,
+      "type": "Cube"
+    },
+    {
+      "id": "red-brick_dup_1_dup_2_dup_dup_dup",
+      "name": "red-brick_dup_1_dup_2_dup_dup_dup",
+      "position": {
+        "x": 6.943680763244629,
+        "y": 4.988417625427246,
+        "z": 0
+      },
+      "rotation": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 1
+      },
+      "scaling": {
+        "x": 0.8999999761581421,
+        "y": 1,
+        "z": 1
+      },
+      "pivot": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "materialId": "red stone",
+      "uScale": 1,
+      "vScale": 1,
+      "parentId": "node_1770896268097",
+      "receiveShadows": true,
+      "castShadows": true,
+      "sortIndex": 600,
+      "visible": true,
+      "isNegative": false,
+      "originalMaterialId": null,
+      "isPrimitive": true,
+      "type": "Cube"
+    },
+    {
+      "id": "Cube_1772261267066",
+      "name": "Cube_1772261267066",
+      "position": {
+        "x": -1.6,
+        "y": 3.25,
+        "z": 0.15
+      },
+      "rotation": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 1
+      },
+      "scaling": {
+        "x": 18.6,
+        "y": 6.9,
+        "z": 0.2
+      },
+      "pivot": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "materialId": "red",
+      "uScale": 1,
+      "vScale": 1,
+      "parentId": null,
+      "receiveShadows": false,
+      "castShadows": true,
+      "sortIndex": 0,
+      "visible": true,
+      "isNegative": false,
+      "originalMaterialId": null,
+      "isPrimitive": true,
+      "type": "Cube"
     }
   ],
   "transformNodes": [
+    {
+      "id": "node_1770896268097_dup_dup_dup",
+      "name": "node_1770896268097_dup_dup_dup",
+      "position": {
+        "x": -1,
+        "y": 6.5,
+        "z": 0
+      },
+      "rotation": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 1
+      },
+      "scaling": {
+        "x": 1,
+        "y": 1,
+        "z": 1
+      },
+      "parentId": null,
+      "sortIndex": 0,
+      "visible": true
+    },
+    {
+      "id": "node_1770896268097_dup_1_dup",
+      "name": "node_1770896268097_dup_1_dup",
+      "position": {
+        "x": 0,
+        "y": 5.4,
+        "z": 0
+      },
+      "rotation": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 1
+      },
+      "scaling": {
+        "x": 1,
+        "y": 1,
+        "z": 1
+      },
+      "parentId": null,
+      "sortIndex": 0,
+      "visible": true
+    },
+    {
+      "id": "node_1770896268097_dup_dup",
+      "name": "node_1770896268097_dup_dup",
+      "position": {
+        "x": -1,
+        "y": 4.3,
+        "z": 0
+      },
+      "rotation": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 1
+      },
+      "scaling": {
+        "x": 1,
+        "y": 1,
+        "z": 1
+      },
+      "parentId": null,
+      "sortIndex": 0,
+      "visible": true
+    },
     {
       "id": "node_1770896268097",
       "name": "node_1770896268097",
@@ -1894,75 +2185,6 @@
       "position": {
         "x": -1,
         "y": 2.1,
-        "z": 0
-      },
-      "rotation": {
-        "x": 0,
-        "y": 0,
-        "z": 0,
-        "w": 1
-      },
-      "scaling": {
-        "x": 1,
-        "y": 1,
-        "z": 1
-      },
-      "parentId": null,
-      "sortIndex": 0,
-      "visible": true
-    },
-    {
-      "id": "node_1770896268097_dup_1_dup",
-      "name": "node_1770896268097_dup_1_dup",
-      "position": {
-        "x": 0,
-        "y": 5.4,
-        "z": 0
-      },
-      "rotation": {
-        "x": 0,
-        "y": 0,
-        "z": 0,
-        "w": 1
-      },
-      "scaling": {
-        "x": 1,
-        "y": 1,
-        "z": 1
-      },
-      "parentId": null,
-      "sortIndex": 0,
-      "visible": true
-    },
-    {
-      "id": "node_1770896268097_dup_dup_dup",
-      "name": "node_1770896268097_dup_dup_dup",
-      "position": {
-        "x": -1,
-        "y": 6.5,
-        "z": 0
-      },
-      "rotation": {
-        "x": 0,
-        "y": 0,
-        "z": 0,
-        "w": 1
-      },
-      "scaling": {
-        "x": 1,
-        "y": 1,
-        "z": 1
-      },
-      "parentId": null,
-      "sortIndex": 0,
-      "visible": true
-    },
-    {
-      "id": "node_1770896268097_dup_dup",
-      "name": "node_1770896268097_dup_dup",
-      "position": {
-        "x": -1,
-        "y": 4.3,
         "z": 0
       },
       "rotation": {

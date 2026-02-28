@@ -5,7 +5,7 @@ import { updatePropertyEditor } from "./assembly_propertyEditor.js";
 import { refreshSceneGraph } from "./assembly_treeViewManager.js";
 import { createLight } from "./assembly_lightManager.js";
 import { createTransformNode } from "./assembly_transformNodeManager.js";
-import { createPrimitive, createShapeMesh } from "./assembly_ui.js";
+import { createPrimitive, createShapeMesh } from "./assembly_primitives.js";
 import { clearShadowManagers, setShadowCaster } from "./assembly_shadowManager.js"; // Added setShadowCaster
 import { setupHistory, recordState } from "./assembly_historyManager.js";
 import { selectNode } from "./assembly_selectionManager.js";

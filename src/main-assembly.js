@@ -1,5 +1,5 @@
 import { createScene } from "./assembly_scene.js";
-import { setupAssemblyUI } from "./assemblyUI.js";
+import { setupAssemblyUI } from "./assembly_ui.js";
 import { setupGizmos } from "./assembly_gizmoControl.js";
 import { setupMaterialManager } from "./assembly_materialManager.js";
 import { setupAssemblyManager } from "./assembly_manager.js";

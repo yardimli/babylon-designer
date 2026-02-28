@@ -75,6 +75,7 @@ export function createScene(canvas) {
 	// Base Light
 	const light = new HemisphericLight("hemiLight", new Vector3(0, 1, 0), scene);
 	light.intensity = 0.7;
+	light.groundColor = new Color3(0.5, 0.5, 0.5);
 
 	// --- Axis Indicator Setup (In-Scene) ---
 	createAxisIndicator(scene);
