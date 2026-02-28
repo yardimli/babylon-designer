@@ -1,4 +1,4 @@
-import { MeshBuilder, Vector3, Quaternion, TransformNode } from "@babylonjs/core";
+import { MeshBuilder, Vector3, Quaternion, TransformNode, Color3, Color4 } from "@babylonjs/core"; // Added Color3, Color4
 import earcut from 'earcut'; // Required for polygon extrusion
 import { part, getUniqueId, camera } from "./part.js"; // Added camera
 import { setGizmoMode } from "./part_gizmoControl.js";
@@ -22,6 +22,7 @@ export function setupUI() {
 
 	setupGizmoButtons();
 	setupCameraControls(); // Added camera controls setup
+	setupSceneSettings(); // Added scene settings setup
 
 	primitives.forEach(type => {
 		const div = createDraggableItem(type, "primitive");
@@ -144,6 +145,62 @@ function setupCameraControls() {
 			btn.onclick = () => setView(map[id].a, map[id].b);
 		}
 	});
+}
+
+// Added function to handle scene settings (Background & Ambient Light)
+function setupSceneSettings() {
+	const btnScene = document.getElementById("btn-menu-scene");
+	const modal = document.getElementById("scene_settings_modal");
+	const inputBg = document.getElementById("scene-bg-color");
+	const inputIntensity = document.getElementById("scene-ambient-intensity");
+	const labelIntensity = document.getElementById("val-ambient-intensity");
+
+	if (btnScene && modal) {
+		btnScene.onclick = () => {
+			// Sync UI with current scene state before showing
+			if (part) {
+				// Sync Background Color
+				if (part.clearColor) {
+					// Convert Color4 to Hex (#RRGGBB) for input type="color"
+					const hex = part.clearColor.toHexString().substring(0, 7);
+					if (inputBg) inputBg.value = hex;
+				}
+
+				// Sync Ambient Light Intensity
+				const light = part.getLightByName("hemiLight");
+				if (light) {
+					if (inputIntensity) inputIntensity.value = light.intensity;
+					if (labelIntensity) labelIntensity.innerText = light.intensity.toFixed(1);
+				}
+			}
+			modal.showModal();
+		};
+	}
+
+	// Handle Background Color Change
+	if (inputBg) {
+		inputBg.oninput = (e) => {
+			if (part) {
+				// Convert Hex to Color3 then to Color4 (Alpha 1)
+				const c3 = Color3.FromHexString(e.target.value);
+				part.clearColor = new Color4(c3.r, c3.g, c3.b, 1);
+			}
+		};
+	}
+
+	// Handle Ambient Light Intensity Change
+	if (inputIntensity) {
+		inputIntensity.oninput = (e) => {
+			const val = parseFloat(e.target.value);
+			if (part) {
+				const light = part.getLightByName("hemiLight");
+				if (light) {
+					light.intensity = val;
+				}
+			}
+			if (labelIntensity) labelIntensity.innerText = val.toFixed(1);
+		};
+	}
 }
 
 function createDraggableItem(name, category) {
