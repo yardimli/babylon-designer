@@ -8,12 +8,15 @@ DONE:
 - rename scene to part
 - add new shape editor for drawing 2d shape then extrude 2d shape with ExtrudePolygon
 - rename sceneset to assembly
+- allow user to select multiple meshes on the scene when shift key is pressed like it is with the treeview
+- add camera view buttons to the toolbar for front/back/left/right/top/bottom views
+- in part editor add cutout to the part editor using Constructive Solid Geometry (CSG) to allow for cutting out one shape from another
 
 TODO:
 
+
 - add part animator
 
-- in part editor add cutout to the part editor using Constructive Solid Geometry (CSG) to allow for cutting out one shape from another
 - add new shape editor for drawing 2d shape then extrude 2d shape with ExtrudeShape (besides ExtrudePolygon)
 
 BUGS:

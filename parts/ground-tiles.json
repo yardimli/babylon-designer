@@ -6,39 +6,6 @@
   "lights": [],
   "meshes": [
     {
-      "id": "grass-gound",
-      "name": "grass-gound",
-      "position": {
-        "x": -0.13823123276233673,
-        "y": 0.15000000596046448,
-        "z": 0
-      },
-      "rotation": {
-        "x": 0,
-        "y": 0,
-        "z": 0,
-        "w": 1
-      },
-      "scaling": {
-        "x": 11.199999809265137,
-        "y": 1,
-        "z": 10.199999809265137
-      },
-      "pivot": {
-        "x": 0,
-        "y": 0,
-        "z": 0
-      },
-      "materialId": "grass",
-      "parentId": null,
-      "receiveShadows": false,
-      "castShadows": false,
-      "sortIndex": 900,
-      "visible": true,
-      "isPrimitive": true,
-      "type": "Ground"
-    },
-    {
       "id": "tile01",
       "name": "tile01",
       "position": {
@@ -62,12 +29,16 @@
         "y": 0,
         "z": 0
       },
-      "materialId": "gray-tiles",
+      "materialId": "wall-gray",
+      "uScale": 1,
+      "vScale": 1,
       "parentId": "tilerow1",
       "receiveShadows": true,
       "castShadows": false,
       "sortIndex": 300,
       "visible": true,
+      "isNegative": false,
+      "originalMaterialId": null,
       "isPrimitive": true,
       "type": "Cube"
     },
@@ -95,12 +66,16 @@
         "y": 0,
         "z": 0
       },
-      "materialId": "gray-tiles",
+      "materialId": "wall-gray",
+      "uScale": 1,
+      "vScale": 1,
       "parentId": "tilerow1",
       "receiveShadows": true,
       "castShadows": false,
       "sortIndex": 500,
       "visible": true,
+      "isNegative": false,
+      "originalMaterialId": null,
       "isPrimitive": true,
       "type": "Cube"
     },
@@ -128,12 +103,16 @@
         "y": 0,
         "z": 0
       },
-      "materialId": "gray-tiles",
+      "materialId": "wall-gray",
+      "uScale": 1,
+      "vScale": 1,
       "parentId": "tilerow1",
       "receiveShadows": true,
       "castShadows": false,
       "sortIndex": 100,
       "visible": true,
+      "isNegative": false,
+      "originalMaterialId": null,
       "isPrimitive": true,
       "type": "Cube"
     },
@@ -161,12 +140,16 @@
         "y": 0,
         "z": 0
       },
-      "materialId": "gray-tiles",
+      "materialId": "wall-gray",
+      "uScale": 1,
+      "vScale": 1,
       "parentId": "tilerow1",
       "receiveShadows": true,
       "castShadows": false,
       "sortIndex": 600,
       "visible": true,
+      "isNegative": false,
+      "originalMaterialId": null,
       "isPrimitive": true,
       "type": "Cube"
     },
@@ -194,12 +177,16 @@
         "y": 0,
         "z": 0
       },
-      "materialId": "gray-tiles",
+      "materialId": "wall-gray",
+      "uScale": 1,
+      "vScale": 1,
       "parentId": "tilerow1",
       "receiveShadows": true,
       "castShadows": false,
       "sortIndex": 700,
       "visible": true,
+      "isNegative": false,
+      "originalMaterialId": null,
       "isPrimitive": true,
       "type": "Cube"
     },
@@ -227,12 +214,16 @@
         "y": 0,
         "z": 0
       },
-      "materialId": "gray-tiles",
+      "materialId": "wall-gray",
+      "uScale": 1,
+      "vScale": 1,
       "parentId": "tilerow1",
       "receiveShadows": true,
       "castShadows": false,
       "sortIndex": 800,
       "visible": true,
+      "isNegative": false,
+      "originalMaterialId": null,
       "isPrimitive": true,
       "type": "Cube"
     },
@@ -260,12 +251,16 @@
         "y": 0,
         "z": 0
       },
-      "materialId": "gray-tiles",
+      "materialId": "wall-gray",
+      "uScale": 1,
+      "vScale": 1,
       "parentId": "tilerow1",
       "receiveShadows": true,
       "castShadows": false,
       "sortIndex": 1700,
       "visible": true,
+      "isNegative": false,
+      "originalMaterialId": null,
       "isPrimitive": true,
       "type": "Cube"
     },
@@ -293,12 +288,16 @@
         "y": 0,
         "z": 0
       },
-      "materialId": "gray-tiles",
+      "materialId": "wall-gray",
+      "uScale": 1,
+      "vScale": 1,
       "parentId": "tilerow1",
       "receiveShadows": true,
       "castShadows": false,
       "sortIndex": 1500,
       "visible": true,
+      "isNegative": false,
+      "originalMaterialId": null,
       "isPrimitive": true,
       "type": "Cube"
     },
@@ -326,12 +325,16 @@
         "y": 0,
         "z": 0
       },
-      "materialId": "gray-tiles",
+      "materialId": "wall-gray",
+      "uScale": 1,
+      "vScale": 1,
       "parentId": "tilerow1",
       "receiveShadows": true,
       "castShadows": false,
       "sortIndex": 1600,
       "visible": true,
+      "isNegative": false,
+      "originalMaterialId": null,
       "isPrimitive": true,
       "type": "Cube"
     },
@@ -359,12 +362,16 @@
         "y": 0,
         "z": 0
       },
-      "materialId": "gray-tiles",
+      "materialId": "wall-gray",
+      "uScale": 1,
+      "vScale": 1,
       "parentId": "tilerow1",
       "receiveShadows": true,
       "castShadows": false,
       "sortIndex": 900,
       "visible": true,
+      "isNegative": false,
+      "originalMaterialId": null,
       "isPrimitive": true,
       "type": "Cube"
     },
@@ -392,12 +399,16 @@
         "y": 0,
         "z": 0
       },
-      "materialId": "gray-tiles",
+      "materialId": "wall-gray",
+      "uScale": 1,
+      "vScale": 1,
       "parentId": "tilerow2",
       "receiveShadows": true,
       "castShadows": false,
       "sortIndex": 100,
       "visible": true,
+      "isNegative": false,
+      "originalMaterialId": null,
       "isPrimitive": true,
       "type": "Cube"
     },
@@ -425,12 +436,16 @@
         "y": 0,
         "z": 0
       },
-      "materialId": "gray-tiles",
+      "materialId": "wall-gray",
+      "uScale": 1,
+      "vScale": 1,
       "parentId": "tilerow2",
       "receiveShadows": true,
       "castShadows": false,
       "sortIndex": 300,
       "visible": true,
+      "isNegative": false,
+      "originalMaterialId": null,
       "isPrimitive": true,
       "type": "Cube"
     },
@@ -458,12 +473,16 @@
         "y": 0,
         "z": 0
       },
-      "materialId": "gray-tiles",
+      "materialId": "wall-gray",
+      "uScale": 1,
+      "vScale": 1,
       "parentId": "tilerow2",
       "receiveShadows": true,
       "castShadows": false,
       "sortIndex": 500,
       "visible": true,
+      "isNegative": false,
+      "originalMaterialId": null,
       "isPrimitive": true,
       "type": "Cube"
     },
@@ -491,12 +510,16 @@
         "y": 0,
         "z": 0
       },
-      "materialId": "gray-tiles",
+      "materialId": "wall-gray",
+      "uScale": 1,
+      "vScale": 1,
       "parentId": "tilerow2",
       "receiveShadows": true,
       "castShadows": false,
       "sortIndex": 600,
       "visible": true,
+      "isNegative": false,
+      "originalMaterialId": null,
       "isPrimitive": true,
       "type": "Cube"
     },
@@ -524,12 +547,16 @@
         "y": 0,
         "z": 0
       },
-      "materialId": "gray-tiles",
+      "materialId": "wall-gray",
+      "uScale": 1,
+      "vScale": 1,
       "parentId": "tilerow2",
       "receiveShadows": true,
       "castShadows": false,
       "sortIndex": 700,
       "visible": true,
+      "isNegative": false,
+      "originalMaterialId": null,
       "isPrimitive": true,
       "type": "Cube"
     },
@@ -557,12 +584,16 @@
         "y": 0,
         "z": 0
       },
-      "materialId": "gray-tiles",
+      "materialId": "wall-gray",
+      "uScale": 1,
+      "vScale": 1,
       "parentId": "tilerow2",
       "receiveShadows": true,
       "castShadows": false,
       "sortIndex": 800,
       "visible": true,
+      "isNegative": false,
+      "originalMaterialId": null,
       "isPrimitive": true,
       "type": "Cube"
     },
@@ -590,12 +621,16 @@
         "y": 0,
         "z": 0
       },
-      "materialId": "gray-tiles",
+      "materialId": "wall-gray",
+      "uScale": 1,
+      "vScale": 1,
       "parentId": "tilerow2",
       "receiveShadows": true,
       "castShadows": false,
       "sortIndex": 900,
       "visible": true,
+      "isNegative": false,
+      "originalMaterialId": null,
       "isPrimitive": true,
       "type": "Cube"
     },
@@ -623,12 +658,16 @@
         "y": 0,
         "z": 0
       },
-      "materialId": "gray-tiles",
+      "materialId": "wall-gray",
+      "uScale": 1,
+      "vScale": 1,
       "parentId": "tilerow2",
       "receiveShadows": true,
       "castShadows": false,
       "sortIndex": 1500,
       "visible": true,
+      "isNegative": false,
+      "originalMaterialId": null,
       "isPrimitive": true,
       "type": "Cube"
     },
@@ -656,12 +695,16 @@
         "y": 0,
         "z": 0
       },
-      "materialId": "gray-tiles",
+      "materialId": "wall-gray",
+      "uScale": 1,
+      "vScale": 1,
       "parentId": "tilerow2",
       "receiveShadows": true,
       "castShadows": false,
       "sortIndex": 1600,
       "visible": true,
+      "isNegative": false,
+      "originalMaterialId": null,
       "isPrimitive": true,
       "type": "Cube"
     },
@@ -689,12 +732,16 @@
         "y": 0,
         "z": 0
       },
-      "materialId": "gray-tiles",
+      "materialId": "wall-gray",
+      "uScale": 1,
+      "vScale": 1,
       "parentId": "tilerow2",
       "receiveShadows": true,
       "castShadows": false,
       "sortIndex": 1700,
       "visible": true,
+      "isNegative": false,
+      "originalMaterialId": null,
       "isPrimitive": true,
       "type": "Cube"
     },
@@ -722,12 +769,16 @@
         "y": 0,
         "z": 0
       },
-      "materialId": "gray-tiles",
+      "materialId": "wall-gray",
+      "uScale": 1,
+      "vScale": 1,
       "parentId": "tilerow3",
       "receiveShadows": true,
       "castShadows": false,
       "sortIndex": 100,
       "visible": true,
+      "isNegative": false,
+      "originalMaterialId": null,
       "isPrimitive": true,
       "type": "Cube"
     },
@@ -755,12 +806,16 @@
         "y": 0,
         "z": 0
       },
-      "materialId": "gray-tiles",
+      "materialId": "wall-gray",
+      "uScale": 1,
+      "vScale": 1,
       "parentId": "tilerow3",
       "receiveShadows": true,
       "castShadows": false,
       "sortIndex": 300,
       "visible": true,
+      "isNegative": false,
+      "originalMaterialId": null,
       "isPrimitive": true,
       "type": "Cube"
     },
@@ -788,12 +843,16 @@
         "y": 0,
         "z": 0
       },
-      "materialId": "gray-tiles",
+      "materialId": "wall-gray",
+      "uScale": 1,
+      "vScale": 1,
       "parentId": "tilerow3",
       "receiveShadows": true,
       "castShadows": false,
       "sortIndex": 500,
       "visible": true,
+      "isNegative": false,
+      "originalMaterialId": null,
       "isPrimitive": true,
       "type": "Cube"
     },
@@ -821,12 +880,16 @@
         "y": 0,
         "z": 0
       },
-      "materialId": "gray-tiles",
+      "materialId": "wall-gray",
+      "uScale": 1,
+      "vScale": 1,
       "parentId": "tilerow3",
       "receiveShadows": true,
       "castShadows": false,
       "sortIndex": 600,
       "visible": true,
+      "isNegative": false,
+      "originalMaterialId": null,
       "isPrimitive": true,
       "type": "Cube"
     },
@@ -854,12 +917,16 @@
         "y": 0,
         "z": 0
       },
-      "materialId": "gray-tiles",
+      "materialId": "wall-gray",
+      "uScale": 1,
+      "vScale": 1,
       "parentId": "tilerow3",
       "receiveShadows": true,
       "castShadows": false,
       "sortIndex": 700,
       "visible": true,
+      "isNegative": false,
+      "originalMaterialId": null,
       "isPrimitive": true,
       "type": "Cube"
     },
@@ -887,12 +954,16 @@
         "y": 0,
         "z": 0
       },
-      "materialId": "gray-tiles",
+      "materialId": "wall-gray",
+      "uScale": 1,
+      "vScale": 1,
       "parentId": "tilerow3",
       "receiveShadows": true,
       "castShadows": false,
       "sortIndex": 800,
       "visible": true,
+      "isNegative": false,
+      "originalMaterialId": null,
       "isPrimitive": true,
       "type": "Cube"
     },
@@ -920,12 +991,16 @@
         "y": 0,
         "z": 0
       },
-      "materialId": "gray-tiles",
+      "materialId": "wall-gray",
+      "uScale": 1,
+      "vScale": 1,
       "parentId": "tilerow3",
       "receiveShadows": true,
       "castShadows": false,
       "sortIndex": 900,
       "visible": true,
+      "isNegative": false,
+      "originalMaterialId": null,
       "isPrimitive": true,
       "type": "Cube"
     },
@@ -953,12 +1028,16 @@
         "y": 0,
         "z": 0
       },
-      "materialId": "gray-tiles",
+      "materialId": "wall-gray",
+      "uScale": 1,
+      "vScale": 1,
       "parentId": "tilerow3",
       "receiveShadows": true,
       "castShadows": false,
       "sortIndex": 1500,
       "visible": true,
+      "isNegative": false,
+      "originalMaterialId": null,
       "isPrimitive": true,
       "type": "Cube"
     },
@@ -986,12 +1065,16 @@
         "y": 0,
         "z": 0
       },
-      "materialId": "gray-tiles",
+      "materialId": "wall-gray",
+      "uScale": 1,
+      "vScale": 1,
       "parentId": "tilerow3",
       "receiveShadows": true,
       "castShadows": false,
       "sortIndex": 1600,
       "visible": true,
+      "isNegative": false,
+      "originalMaterialId": null,
       "isPrimitive": true,
       "type": "Cube"
     },
@@ -1019,12 +1102,16 @@
         "y": 0,
         "z": 0
       },
-      "materialId": "gray-tiles",
+      "materialId": "wall-gray",
+      "uScale": 1,
+      "vScale": 1,
       "parentId": "tilerow3",
       "receiveShadows": true,
       "castShadows": false,
       "sortIndex": 1700,
       "visible": true,
+      "isNegative": false,
+      "originalMaterialId": null,
       "isPrimitive": true,
       "type": "Cube"
     },
@@ -1052,12 +1139,16 @@
         "y": 0,
         "z": 0
       },
-      "materialId": "gray-tiles",
+      "materialId": "wall-gray",
+      "uScale": 1,
+      "vScale": 1,
       "parentId": "tilerow4",
       "receiveShadows": true,
       "castShadows": false,
       "sortIndex": 100,
       "visible": true,
+      "isNegative": false,
+      "originalMaterialId": null,
       "isPrimitive": true,
       "type": "Cube"
     },
@@ -1085,12 +1176,16 @@
         "y": 0,
         "z": 0
       },
-      "materialId": "gray-tiles",
+      "materialId": "wall-gray",
+      "uScale": 1,
+      "vScale": 1,
       "parentId": "tilerow4",
       "receiveShadows": true,
       "castShadows": false,
       "sortIndex": 300,
       "visible": true,
+      "isNegative": false,
+      "originalMaterialId": null,
       "isPrimitive": true,
       "type": "Cube"
     },
@@ -1118,12 +1213,16 @@
         "y": 0,
         "z": 0
       },
-      "materialId": "gray-tiles",
+      "materialId": "wall-gray",
+      "uScale": 1,
+      "vScale": 1,
       "parentId": "tilerow4",
       "receiveShadows": true,
       "castShadows": false,
       "sortIndex": 500,
       "visible": true,
+      "isNegative": false,
+      "originalMaterialId": null,
       "isPrimitive": true,
       "type": "Cube"
     },
@@ -1151,12 +1250,16 @@
         "y": 0,
         "z": 0
       },
-      "materialId": "gray-tiles",
+      "materialId": "wall-gray",
+      "uScale": 1,
+      "vScale": 1,
       "parentId": "tilerow4",
       "receiveShadows": true,
       "castShadows": false,
       "sortIndex": 600,
       "visible": true,
+      "isNegative": false,
+      "originalMaterialId": null,
       "isPrimitive": true,
       "type": "Cube"
     },
@@ -1184,12 +1287,16 @@
         "y": 0,
         "z": 0
       },
-      "materialId": "gray-tiles",
+      "materialId": "wall-gray",
+      "uScale": 1,
+      "vScale": 1,
       "parentId": "tilerow4",
       "receiveShadows": true,
       "castShadows": false,
       "sortIndex": 700,
       "visible": true,
+      "isNegative": false,
+      "originalMaterialId": null,
       "isPrimitive": true,
       "type": "Cube"
     },
@@ -1217,12 +1324,16 @@
         "y": 0,
         "z": 0
       },
-      "materialId": "gray-tiles",
+      "materialId": "wall-gray",
+      "uScale": 1,
+      "vScale": 1,
       "parentId": "tilerow4",
       "receiveShadows": true,
       "castShadows": false,
       "sortIndex": 800,
       "visible": true,
+      "isNegative": false,
+      "originalMaterialId": null,
       "isPrimitive": true,
       "type": "Cube"
     },
@@ -1250,12 +1361,16 @@
         "y": 0,
         "z": 0
       },
-      "materialId": "gray-tiles",
+      "materialId": "wall-gray",
+      "uScale": 1,
+      "vScale": 1,
       "parentId": "tilerow4",
       "receiveShadows": true,
       "castShadows": false,
       "sortIndex": 900,
       "visible": true,
+      "isNegative": false,
+      "originalMaterialId": null,
       "isPrimitive": true,
       "type": "Cube"
     },
@@ -1283,12 +1398,16 @@
         "y": 0,
         "z": 0
       },
-      "materialId": "gray-tiles",
+      "materialId": "wall-gray",
+      "uScale": 1,
+      "vScale": 1,
       "parentId": "tilerow4",
       "receiveShadows": true,
       "castShadows": false,
       "sortIndex": 1500,
       "visible": true,
+      "isNegative": false,
+      "originalMaterialId": null,
       "isPrimitive": true,
       "type": "Cube"
     },
@@ -1316,12 +1435,16 @@
         "y": 0,
         "z": 0
       },
-      "materialId": "gray-tiles",
+      "materialId": "wall-gray",
+      "uScale": 1,
+      "vScale": 1,
       "parentId": "tilerow4",
       "receiveShadows": true,
       "castShadows": false,
       "sortIndex": 1600,
       "visible": true,
+      "isNegative": false,
+      "originalMaterialId": null,
       "isPrimitive": true,
       "type": "Cube"
     },
@@ -1349,12 +1472,16 @@
         "y": 0,
         "z": 0
       },
-      "materialId": "gray-tiles",
+      "materialId": "wall-gray",
+      "uScale": 1,
+      "vScale": 1,
       "parentId": "tilerow4",
       "receiveShadows": true,
       "castShadows": false,
       "sortIndex": 1700,
       "visible": true,
+      "isNegative": false,
+      "originalMaterialId": null,
       "isPrimitive": true,
       "type": "Cube"
     },
@@ -1382,12 +1509,16 @@
         "y": 0,
         "z": 0
       },
-      "materialId": "gray-tiles",
+      "materialId": "wall-gray",
+      "uScale": 1,
+      "vScale": 1,
       "parentId": "tilerow5",
       "receiveShadows": true,
       "castShadows": false,
       "sortIndex": 100,
       "visible": true,
+      "isNegative": false,
+      "originalMaterialId": null,
       "isPrimitive": true,
       "type": "Cube"
     },
@@ -1415,12 +1546,16 @@
         "y": 0,
         "z": 0
       },
-      "materialId": "gray-tiles",
+      "materialId": "wall-gray",
+      "uScale": 1,
+      "vScale": 1,
       "parentId": "tilerow5",
       "receiveShadows": true,
       "castShadows": false,
       "sortIndex": 300,
       "visible": true,
+      "isNegative": false,
+      "originalMaterialId": null,
       "isPrimitive": true,
       "type": "Cube"
     },
@@ -1448,12 +1583,16 @@
         "y": 0,
         "z": 0
       },
-      "materialId": "gray-tiles",
+      "materialId": "wall-gray",
+      "uScale": 1,
+      "vScale": 1,
       "parentId": "tilerow5",
       "receiveShadows": true,
       "castShadows": false,
       "sortIndex": 500,
       "visible": true,
+      "isNegative": false,
+      "originalMaterialId": null,
       "isPrimitive": true,
       "type": "Cube"
     },
@@ -1481,12 +1620,16 @@
         "y": 0,
         "z": 0
       },
-      "materialId": "gray-tiles",
+      "materialId": "wall-gray",
+      "uScale": 1,
+      "vScale": 1,
       "parentId": "tilerow5",
       "receiveShadows": true,
       "castShadows": false,
       "sortIndex": 600,
       "visible": true,
+      "isNegative": false,
+      "originalMaterialId": null,
       "isPrimitive": true,
       "type": "Cube"
     },
@@ -1514,12 +1657,16 @@
         "y": 0,
         "z": 0
       },
-      "materialId": "gray-tiles",
+      "materialId": "wall-gray",
+      "uScale": 1,
+      "vScale": 1,
       "parentId": "tilerow5",
       "receiveShadows": true,
       "castShadows": false,
       "sortIndex": 700,
       "visible": true,
+      "isNegative": false,
+      "originalMaterialId": null,
       "isPrimitive": true,
       "type": "Cube"
     },
@@ -1547,12 +1694,16 @@
         "y": 0,
         "z": 0
       },
-      "materialId": "gray-tiles",
+      "materialId": "wall-gray",
+      "uScale": 1,
+      "vScale": 1,
       "parentId": "tilerow5",
       "receiveShadows": true,
       "castShadows": false,
       "sortIndex": 800,
       "visible": true,
+      "isNegative": false,
+      "originalMaterialId": null,
       "isPrimitive": true,
       "type": "Cube"
     },
@@ -1580,12 +1731,16 @@
         "y": 0,
         "z": 0
       },
-      "materialId": "gray-tiles",
+      "materialId": "wall-gray",
+      "uScale": 1,
+      "vScale": 1,
       "parentId": "tilerow5",
       "receiveShadows": true,
       "castShadows": false,
       "sortIndex": 900,
       "visible": true,
+      "isNegative": false,
+      "originalMaterialId": null,
       "isPrimitive": true,
       "type": "Cube"
     },
@@ -1613,12 +1768,16 @@
         "y": 0,
         "z": 0
       },
-      "materialId": "gray-tiles",
+      "materialId": "wall-gray",
+      "uScale": 1,
+      "vScale": 1,
       "parentId": "tilerow5",
       "receiveShadows": true,
       "castShadows": false,
       "sortIndex": 1500,
       "visible": true,
+      "isNegative": false,
+      "originalMaterialId": null,
       "isPrimitive": true,
       "type": "Cube"
     },
@@ -1646,12 +1805,16 @@
         "y": 0,
         "z": 0
       },
-      "materialId": "gray-tiles",
+      "materialId": "wall-gray",
+      "uScale": 1,
+      "vScale": 1,
       "parentId": "tilerow5",
       "receiveShadows": true,
       "castShadows": false,
       "sortIndex": 1600,
       "visible": true,
+      "isNegative": false,
+      "originalMaterialId": null,
       "isPrimitive": true,
       "type": "Cube"
     },
@@ -1679,12 +1842,16 @@
         "y": 0,
         "z": 0
       },
-      "materialId": "gray-tiles",
+      "materialId": "wall-gray",
+      "uScale": 1,
+      "vScale": 1,
       "parentId": "tilerow5",
       "receiveShadows": true,
       "castShadows": false,
       "sortIndex": 1700,
       "visible": true,
+      "isNegative": false,
+      "originalMaterialId": null,
       "isPrimitive": true,
       "type": "Cube"
     },
@@ -1712,12 +1879,16 @@
         "y": 0,
         "z": 0
       },
-      "materialId": "gray-tiles",
+      "materialId": "wall-gray",
+      "uScale": 1,
+      "vScale": 1,
       "parentId": "tilerow6",
       "receiveShadows": true,
       "castShadows": false,
       "sortIndex": 100,
       "visible": true,
+      "isNegative": false,
+      "originalMaterialId": null,
       "isPrimitive": true,
       "type": "Cube"
     },
@@ -1745,12 +1916,16 @@
         "y": 0,
         "z": 0
       },
-      "materialId": "gray-tiles",
+      "materialId": "wall-gray",
+      "uScale": 1,
+      "vScale": 1,
       "parentId": "tilerow6",
       "receiveShadows": true,
       "castShadows": false,
       "sortIndex": 300,
       "visible": true,
+      "isNegative": false,
+      "originalMaterialId": null,
       "isPrimitive": true,
       "type": "Cube"
     },
@@ -1778,12 +1953,16 @@
         "y": 0,
         "z": 0
       },
-      "materialId": "gray-tiles",
+      "materialId": "wall-gray",
+      "uScale": 1,
+      "vScale": 1,
       "parentId": "tilerow6",
       "receiveShadows": true,
       "castShadows": false,
       "sortIndex": 500,
       "visible": true,
+      "isNegative": false,
+      "originalMaterialId": null,
       "isPrimitive": true,
       "type": "Cube"
     },
@@ -1811,12 +1990,16 @@
         "y": 0,
         "z": 0
       },
-      "materialId": "gray-tiles",
+      "materialId": "wall-gray",
+      "uScale": 1,
+      "vScale": 1,
       "parentId": "tilerow6",
       "receiveShadows": true,
       "castShadows": false,
       "sortIndex": 600,
       "visible": true,
+      "isNegative": false,
+      "originalMaterialId": null,
       "isPrimitive": true,
       "type": "Cube"
     },
@@ -1844,12 +2027,16 @@
         "y": 0,
         "z": 0
       },
-      "materialId": "gray-tiles",
+      "materialId": "wall-gray",
+      "uScale": 1,
+      "vScale": 1,
       "parentId": "tilerow6",
       "receiveShadows": true,
       "castShadows": false,
       "sortIndex": 700,
       "visible": true,
+      "isNegative": false,
+      "originalMaterialId": null,
       "isPrimitive": true,
       "type": "Cube"
     },
@@ -1877,12 +2064,16 @@
         "y": 0,
         "z": 0
       },
-      "materialId": "gray-tiles",
+      "materialId": "wall-gray",
+      "uScale": 1,
+      "vScale": 1,
       "parentId": "tilerow6",
       "receiveShadows": true,
       "castShadows": false,
       "sortIndex": 800,
       "visible": true,
+      "isNegative": false,
+      "originalMaterialId": null,
       "isPrimitive": true,
       "type": "Cube"
     },
@@ -1910,12 +2101,16 @@
         "y": 0,
         "z": 0
       },
-      "materialId": "gray-tiles",
+      "materialId": "wall-gray",
+      "uScale": 1,
+      "vScale": 1,
       "parentId": "tilerow6",
       "receiveShadows": true,
       "castShadows": false,
       "sortIndex": 900,
       "visible": true,
+      "isNegative": false,
+      "originalMaterialId": null,
       "isPrimitive": true,
       "type": "Cube"
     },
@@ -1943,12 +2138,16 @@
         "y": 0,
         "z": 0
       },
-      "materialId": "gray-tiles",
+      "materialId": "wall-gray",
+      "uScale": 1,
+      "vScale": 1,
       "parentId": "tilerow6",
       "receiveShadows": true,
       "castShadows": false,
       "sortIndex": 1500,
       "visible": true,
+      "isNegative": false,
+      "originalMaterialId": null,
       "isPrimitive": true,
       "type": "Cube"
     },
@@ -1976,12 +2175,16 @@
         "y": 0,
         "z": 0
       },
-      "materialId": "gray-tiles",
+      "materialId": "wall-gray",
+      "uScale": 1,
+      "vScale": 1,
       "parentId": "tilerow6",
       "receiveShadows": true,
       "castShadows": false,
       "sortIndex": 1600,
       "visible": true,
+      "isNegative": false,
+      "originalMaterialId": null,
       "isPrimitive": true,
       "type": "Cube"
     },
@@ -2009,12 +2212,16 @@
         "y": 0,
         "z": 0
       },
-      "materialId": "gray-tiles",
+      "materialId": "wall-gray",
+      "uScale": 1,
+      "vScale": 1,
       "parentId": "tilerow6",
       "receiveShadows": true,
       "castShadows": false,
       "sortIndex": 1700,
       "visible": true,
+      "isNegative": false,
+      "originalMaterialId": null,
       "isPrimitive": true,
       "type": "Cube"
     },
@@ -2042,12 +2249,16 @@
         "y": 0,
         "z": 0
       },
-      "materialId": "gray-tiles",
+      "materialId": "wall-gray",
+      "uScale": 1,
+      "vScale": 1,
       "parentId": "tilerow7",
       "receiveShadows": true,
       "castShadows": false,
       "sortIndex": 100,
       "visible": true,
+      "isNegative": false,
+      "originalMaterialId": null,
       "isPrimitive": true,
       "type": "Cube"
     },
@@ -2075,12 +2286,16 @@
         "y": 0,
         "z": 0
       },
-      "materialId": "gray-tiles",
+      "materialId": "wall-gray",
+      "uScale": 1,
+      "vScale": 1,
       "parentId": "tilerow7",
       "receiveShadows": true,
       "castShadows": false,
       "sortIndex": 300,
       "visible": true,
+      "isNegative": false,
+      "originalMaterialId": null,
       "isPrimitive": true,
       "type": "Cube"
     },
@@ -2108,12 +2323,16 @@
         "y": 0,
         "z": 0
       },
-      "materialId": "gray-tiles",
+      "materialId": "wall-gray",
+      "uScale": 1,
+      "vScale": 1,
       "parentId": "tilerow7",
       "receiveShadows": true,
       "castShadows": false,
       "sortIndex": 500,
       "visible": true,
+      "isNegative": false,
+      "originalMaterialId": null,
       "isPrimitive": true,
       "type": "Cube"
     },
@@ -2141,12 +2360,16 @@
         "y": 0,
         "z": 0
       },
-      "materialId": "gray-tiles",
+      "materialId": "wall-gray",
+      "uScale": 1,
+      "vScale": 1,
       "parentId": "tilerow7",
       "receiveShadows": true,
       "castShadows": false,
       "sortIndex": 600,
       "visible": true,
+      "isNegative": false,
+      "originalMaterialId": null,
       "isPrimitive": true,
       "type": "Cube"
     },
@@ -2174,12 +2397,16 @@
         "y": 0,
         "z": 0
       },
-      "materialId": "gray-tiles",
+      "materialId": "wall-gray",
+      "uScale": 1,
+      "vScale": 1,
       "parentId": "tilerow7",
       "receiveShadows": true,
       "castShadows": false,
       "sortIndex": 700,
       "visible": true,
+      "isNegative": false,
+      "originalMaterialId": null,
       "isPrimitive": true,
       "type": "Cube"
     },
@@ -2207,12 +2434,16 @@
         "y": 0,
         "z": 0
       },
-      "materialId": "gray-tiles",
+      "materialId": "wall-gray",
+      "uScale": 1,
+      "vScale": 1,
       "parentId": "tilerow7",
       "receiveShadows": true,
       "castShadows": false,
       "sortIndex": 800,
       "visible": true,
+      "isNegative": false,
+      "originalMaterialId": null,
       "isPrimitive": true,
       "type": "Cube"
     },
@@ -2240,12 +2471,16 @@
         "y": 0,
         "z": 0
       },
-      "materialId": "gray-tiles",
+      "materialId": "wall-gray",
+      "uScale": 1,
+      "vScale": 1,
       "parentId": "tilerow7",
       "receiveShadows": true,
       "castShadows": false,
       "sortIndex": 900,
       "visible": true,
+      "isNegative": false,
+      "originalMaterialId": null,
       "isPrimitive": true,
       "type": "Cube"
     },
@@ -2273,12 +2508,16 @@
         "y": 0,
         "z": 0
       },
-      "materialId": "gray-tiles",
+      "materialId": "wall-gray",
+      "uScale": 1,
+      "vScale": 1,
       "parentId": "tilerow7",
       "receiveShadows": true,
       "castShadows": false,
       "sortIndex": 1500,
       "visible": true,
+      "isNegative": false,
+      "originalMaterialId": null,
       "isPrimitive": true,
       "type": "Cube"
     },
@@ -2306,12 +2545,16 @@
         "y": 0,
         "z": 0
       },
-      "materialId": "gray-tiles",
+      "materialId": "wall-gray",
+      "uScale": 1,
+      "vScale": 1,
       "parentId": "tilerow7",
       "receiveShadows": true,
       "castShadows": false,
       "sortIndex": 1600,
       "visible": true,
+      "isNegative": false,
+      "originalMaterialId": null,
       "isPrimitive": true,
       "type": "Cube"
     },
@@ -2339,12 +2582,16 @@
         "y": 0,
         "z": 0
       },
-      "materialId": "gray-tiles",
+      "materialId": "wall-gray",
+      "uScale": 1,
+      "vScale": 1,
       "parentId": "tilerow7",
       "receiveShadows": true,
       "castShadows": false,
       "sortIndex": 1700,
       "visible": true,
+      "isNegative": false,
+      "originalMaterialId": null,
       "isPrimitive": true,
       "type": "Cube"
     },
@@ -2372,12 +2619,16 @@
         "y": 0,
         "z": 0
       },
-      "materialId": "gray-tiles",
+      "materialId": "wall-gray",
+      "uScale": 1,
+      "vScale": 1,
       "parentId": "tilerow8",
       "receiveShadows": true,
       "castShadows": false,
       "sortIndex": 100,
       "visible": true,
+      "isNegative": false,
+      "originalMaterialId": null,
       "isPrimitive": true,
       "type": "Cube"
     },
@@ -2405,12 +2656,16 @@
         "y": 0,
         "z": 0
       },
-      "materialId": "gray-tiles",
+      "materialId": "wall-gray",
+      "uScale": 1,
+      "vScale": 1,
       "parentId": "tilerow8",
       "receiveShadows": true,
       "castShadows": false,
       "sortIndex": 300,
       "visible": true,
+      "isNegative": false,
+      "originalMaterialId": null,
       "isPrimitive": true,
       "type": "Cube"
     },
@@ -2438,12 +2693,16 @@
         "y": 0,
         "z": 0
       },
-      "materialId": "gray-tiles",
+      "materialId": "wall-gray",
+      "uScale": 1,
+      "vScale": 1,
       "parentId": "tilerow8",
       "receiveShadows": true,
       "castShadows": false,
       "sortIndex": 500,
       "visible": true,
+      "isNegative": false,
+      "originalMaterialId": null,
       "isPrimitive": true,
       "type": "Cube"
     },
@@ -2471,12 +2730,16 @@
         "y": 0,
         "z": 0
       },
-      "materialId": "gray-tiles",
+      "materialId": "wall-gray",
+      "uScale": 1,
+      "vScale": 1,
       "parentId": "tilerow8",
       "receiveShadows": true,
       "castShadows": false,
       "sortIndex": 600,
       "visible": true,
+      "isNegative": false,
+      "originalMaterialId": null,
       "isPrimitive": true,
       "type": "Cube"
     },
@@ -2504,12 +2767,16 @@
         "y": 0,
         "z": 0
       },
-      "materialId": "gray-tiles",
+      "materialId": "wall-gray",
+      "uScale": 1,
+      "vScale": 1,
       "parentId": "tilerow8",
       "receiveShadows": true,
       "castShadows": false,
       "sortIndex": 700,
       "visible": true,
+      "isNegative": false,
+      "originalMaterialId": null,
       "isPrimitive": true,
       "type": "Cube"
     },
@@ -2537,12 +2804,16 @@
         "y": 0,
         "z": 0
       },
-      "materialId": "gray-tiles",
+      "materialId": "wall-gray",
+      "uScale": 1,
+      "vScale": 1,
       "parentId": "tilerow8",
       "receiveShadows": true,
       "castShadows": false,
       "sortIndex": 800,
       "visible": true,
+      "isNegative": false,
+      "originalMaterialId": null,
       "isPrimitive": true,
       "type": "Cube"
     },
@@ -2570,12 +2841,16 @@
         "y": 0,
         "z": 0
       },
-      "materialId": "gray-tiles",
+      "materialId": "wall-gray",
+      "uScale": 1,
+      "vScale": 1,
       "parentId": "tilerow8",
       "receiveShadows": true,
       "castShadows": false,
       "sortIndex": 900,
       "visible": true,
+      "isNegative": false,
+      "originalMaterialId": null,
       "isPrimitive": true,
       "type": "Cube"
     },
@@ -2603,12 +2878,16 @@
         "y": 0,
         "z": 0
       },
-      "materialId": "gray-tiles",
+      "materialId": "wall-gray",
+      "uScale": 1,
+      "vScale": 1,
       "parentId": "tilerow8",
       "receiveShadows": true,
       "castShadows": false,
       "sortIndex": 1500,
       "visible": true,
+      "isNegative": false,
+      "originalMaterialId": null,
       "isPrimitive": true,
       "type": "Cube"
     },
@@ -2636,12 +2915,16 @@
         "y": 0,
         "z": 0
       },
-      "materialId": "gray-tiles",
+      "materialId": "wall-gray",
+      "uScale": 1,
+      "vScale": 1,
       "parentId": "tilerow8",
       "receiveShadows": true,
       "castShadows": false,
       "sortIndex": 1600,
       "visible": true,
+      "isNegative": false,
+      "originalMaterialId": null,
       "isPrimitive": true,
       "type": "Cube"
     },
@@ -2669,12 +2952,16 @@
         "y": 0,
         "z": 0
       },
-      "materialId": "gray-tiles",
+      "materialId": "wall-gray",
+      "uScale": 1,
+      "vScale": 1,
       "parentId": "tilerow8",
       "receiveShadows": true,
       "castShadows": false,
       "sortIndex": 1700,
       "visible": true,
+      "isNegative": false,
+      "originalMaterialId": null,
       "isPrimitive": true,
       "type": "Cube"
     },
@@ -2702,12 +2989,16 @@
         "y": 0,
         "z": 0
       },
-      "materialId": "gray-tiles",
+      "materialId": "wall-gray",
+      "uScale": 1,
+      "vScale": 1,
       "parentId": "tilerow9",
       "receiveShadows": true,
       "castShadows": false,
       "sortIndex": 100,
       "visible": true,
+      "isNegative": false,
+      "originalMaterialId": null,
       "isPrimitive": true,
       "type": "Cube"
     },
@@ -2735,12 +3026,16 @@
         "y": 0,
         "z": 0
       },
-      "materialId": "gray-tiles",
+      "materialId": "wall-gray",
+      "uScale": 1,
+      "vScale": 1,
       "parentId": "tilerow9",
       "receiveShadows": true,
       "castShadows": false,
       "sortIndex": 300,
       "visible": true,
+      "isNegative": false,
+      "originalMaterialId": null,
       "isPrimitive": true,
       "type": "Cube"
     },
@@ -2768,12 +3063,16 @@
         "y": 0,
         "z": 0
       },
-      "materialId": "gray-tiles",
+      "materialId": "wall-gray",
+      "uScale": 1,
+      "vScale": 1,
       "parentId": "tilerow9",
       "receiveShadows": true,
       "castShadows": false,
       "sortIndex": 500,
       "visible": true,
+      "isNegative": false,
+      "originalMaterialId": null,
       "isPrimitive": true,
       "type": "Cube"
     },
@@ -2801,12 +3100,16 @@
         "y": 0,
         "z": 0
       },
-      "materialId": "gray-tiles",
+      "materialId": "wall-gray",
+      "uScale": 1,
+      "vScale": 1,
       "parentId": "tilerow9",
       "receiveShadows": true,
       "castShadows": false,
       "sortIndex": 600,
       "visible": true,
+      "isNegative": false,
+      "originalMaterialId": null,
       "isPrimitive": true,
       "type": "Cube"
     },
@@ -2834,12 +3137,16 @@
         "y": 0,
         "z": 0
       },
-      "materialId": "gray-tiles",
+      "materialId": "wall-gray",
+      "uScale": 1,
+      "vScale": 1,
       "parentId": "tilerow9",
       "receiveShadows": true,
       "castShadows": false,
       "sortIndex": 700,
       "visible": true,
+      "isNegative": false,
+      "originalMaterialId": null,
       "isPrimitive": true,
       "type": "Cube"
     },
@@ -2867,12 +3174,16 @@
         "y": 0,
         "z": 0
       },
-      "materialId": "gray-tiles",
+      "materialId": "wall-gray",
+      "uScale": 1,
+      "vScale": 1,
       "parentId": "tilerow9",
       "receiveShadows": true,
       "castShadows": false,
       "sortIndex": 800,
       "visible": true,
+      "isNegative": false,
+      "originalMaterialId": null,
       "isPrimitive": true,
       "type": "Cube"
     },
@@ -2900,12 +3211,16 @@
         "y": 0,
         "z": 0
       },
-      "materialId": "gray-tiles",
+      "materialId": "wall-gray",
+      "uScale": 1,
+      "vScale": 1,
       "parentId": "tilerow9",
       "receiveShadows": true,
       "castShadows": false,
       "sortIndex": 900,
       "visible": true,
+      "isNegative": false,
+      "originalMaterialId": null,
       "isPrimitive": true,
       "type": "Cube"
     },
@@ -2933,12 +3248,16 @@
         "y": 0,
         "z": 0
       },
-      "materialId": "gray-tiles",
+      "materialId": "wall-gray",
+      "uScale": 1,
+      "vScale": 1,
       "parentId": "tilerow9",
       "receiveShadows": true,
       "castShadows": false,
       "sortIndex": 1500,
       "visible": true,
+      "isNegative": false,
+      "originalMaterialId": null,
       "isPrimitive": true,
       "type": "Cube"
     },
@@ -2966,12 +3285,16 @@
         "y": 0,
         "z": 0
       },
-      "materialId": "gray-tiles",
+      "materialId": "wall-gray",
+      "uScale": 1,
+      "vScale": 1,
       "parentId": "tilerow9",
       "receiveShadows": true,
       "castShadows": false,
       "sortIndex": 1600,
       "visible": true,
+      "isNegative": false,
+      "originalMaterialId": null,
       "isPrimitive": true,
       "type": "Cube"
     },
@@ -2999,24 +3322,26 @@
         "y": 0,
         "z": 0
       },
-      "materialId": "gray-tiles",
+      "materialId": "wall-gray",
+      "uScale": 1,
+      "vScale": 1,
       "parentId": "tilerow9",
       "receiveShadows": true,
       "castShadows": false,
       "sortIndex": 1700,
       "visible": true,
+      "isNegative": false,
+      "originalMaterialId": null,
       "isPrimitive": true,
       "type": "Cube"
-    }
-  ],
-  "transformNodes": [
+    },
     {
-      "id": "tilerow9",
-      "name": "tilerow9",
+      "id": "tile_base_block",
+      "name": "tile_base_block",
       "position": {
-        "x": 4.395975589752197,
-        "y": 1,
-        "z": 3.8898158073425293
+        "x": -0.15,
+        "y": 0.21,
+        "z": -0.03
       },
       "rotation": {
         "x": 0,
@@ -3025,21 +3350,37 @@
         "w": 1
       },
       "scaling": {
-        "x": 1,
-        "y": 1,
-        "z": 1
+        "x": 10.9,
+        "y": 0.05,
+        "z": 9.83
       },
+      "pivot": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "materialId": "wall-gray",
+      "uScale": 1,
+      "vScale": 1,
       "parentId": null,
-      "sortIndex": 0,
-      "visible": true
-    },
+      "receiveShadows": false,
+      "castShadows": true,
+      "sortIndex": 100,
+      "visible": true,
+      "isNegative": false,
+      "originalMaterialId": null,
+      "isPrimitive": true,
+      "type": "Cube"
+    }
+  ],
+  "transformNodes": [
     {
-      "id": "tilerow8",
-      "name": "tilerow8",
+      "id": "tilerow6",
+      "name": "tilerow6",
       "position": {
         "x": 4.395975589752197,
         "y": 1,
-        "z": 2.7630133628845215
+        "z": 0.5630131959915161
       },
       "rotation": {
         "x": 0,
@@ -3054,121 +3395,6 @@
       },
       "parentId": null,
       "sortIndex": 800,
-      "visible": true
-    },
-    {
-      "id": "tilerow7",
-      "name": "tilerow7",
-      "position": {
-        "x": 4.395975589752197,
-        "y": 1,
-        "z": 1.6630133390426636
-      },
-      "rotation": {
-        "x": 0,
-        "y": 0,
-        "z": 0,
-        "w": 1
-      },
-      "scaling": {
-        "x": 1,
-        "y": 1,
-        "z": 1
-      },
-      "parentId": null,
-      "sortIndex": 700,
-      "visible": true
-    },
-    {
-      "id": "tilerow1",
-      "name": "tilerow1",
-      "position": {
-        "x": 4.395975589752197,
-        "y": 1,
-        "z": -4.936986923217773
-      },
-      "rotation": {
-        "x": 0,
-        "y": 0,
-        "z": 0,
-        "w": 1
-      },
-      "scaling": {
-        "x": 1,
-        "y": 1,
-        "z": 1
-      },
-      "parentId": null,
-      "sortIndex": 100,
-      "visible": true
-    },
-    {
-      "id": "tilerow2",
-      "name": "tilerow2",
-      "position": {
-        "x": 4.395975589752197,
-        "y": 1,
-        "z": -3.8369860649108887
-      },
-      "rotation": {
-        "x": 0,
-        "y": 0,
-        "z": 0,
-        "w": 1
-      },
-      "scaling": {
-        "x": 1,
-        "y": 1,
-        "z": 1
-      },
-      "parentId": null,
-      "sortIndex": 200,
-      "visible": true
-    },
-    {
-      "id": "tilerow3",
-      "name": "tilerow3",
-      "position": {
-        "x": 4.395975589752197,
-        "y": 1,
-        "z": -2.7369866371154785
-      },
-      "rotation": {
-        "x": 0,
-        "y": 0,
-        "z": 0,
-        "w": 1
-      },
-      "scaling": {
-        "x": 1,
-        "y": 1,
-        "z": 1
-      },
-      "parentId": null,
-      "sortIndex": 300,
-      "visible": true
-    },
-    {
-      "id": "tilerow4",
-      "name": "tilerow4",
-      "position": {
-        "x": 4.395975589752197,
-        "y": 1,
-        "z": -1.636986494064331
-      },
-      "rotation": {
-        "x": 0,
-        "y": 0,
-        "z": 0,
-        "w": 1
-      },
-      "scaling": {
-        "x": 1,
-        "y": 1,
-        "z": 1
-      },
-      "parentId": null,
-      "sortIndex": 400,
       "visible": true
     },
     {
@@ -3191,16 +3417,16 @@
         "z": 1
       },
       "parentId": null,
-      "sortIndex": 500,
+      "sortIndex": 700,
       "visible": true
     },
     {
-      "id": "tilerow6",
-      "name": "tilerow6",
+      "id": "tilerow4",
+      "name": "tilerow4",
       "position": {
         "x": 4.395975589752197,
         "y": 1,
-        "z": 0.5630131959915161
+        "z": -1.636986494064331
       },
       "rotation": {
         "x": 0,
@@ -3215,6 +3441,144 @@
       },
       "parentId": null,
       "sortIndex": 600,
+      "visible": true
+    },
+    {
+      "id": "tilerow9",
+      "name": "tilerow9",
+      "position": {
+        "x": 4.395975589752197,
+        "y": 1,
+        "z": 3.8898158073425293
+      },
+      "rotation": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 1
+      },
+      "scaling": {
+        "x": 1,
+        "y": 1,
+        "z": 1
+      },
+      "parentId": null,
+      "sortIndex": 200,
+      "visible": true
+    },
+    {
+      "id": "tilerow8",
+      "name": "tilerow8",
+      "position": {
+        "x": 4.395975589752197,
+        "y": 1,
+        "z": 2.7630133628845215
+      },
+      "rotation": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 1
+      },
+      "scaling": {
+        "x": 1,
+        "y": 1,
+        "z": 1
+      },
+      "parentId": null,
+      "sortIndex": 1000,
+      "visible": true
+    },
+    {
+      "id": "tilerow7",
+      "name": "tilerow7",
+      "position": {
+        "x": 4.395975589752197,
+        "y": 1,
+        "z": 1.6630133390426636
+      },
+      "rotation": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 1
+      },
+      "scaling": {
+        "x": 1,
+        "y": 1,
+        "z": 1
+      },
+      "parentId": null,
+      "sortIndex": 900,
+      "visible": true
+    },
+    {
+      "id": "tilerow1",
+      "name": "tilerow1",
+      "position": {
+        "x": 4.395975589752197,
+        "y": 1,
+        "z": -4.936986923217773
+      },
+      "rotation": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 1
+      },
+      "scaling": {
+        "x": 1,
+        "y": 1,
+        "z": 1
+      },
+      "parentId": null,
+      "sortIndex": 300,
+      "visible": true
+    },
+    {
+      "id": "tilerow2",
+      "name": "tilerow2",
+      "position": {
+        "x": 4.395975589752197,
+        "y": 1,
+        "z": -3.8369860649108887
+      },
+      "rotation": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 1
+      },
+      "scaling": {
+        "x": 1,
+        "y": 1,
+        "z": 1
+      },
+      "parentId": null,
+      "sortIndex": 400,
+      "visible": true
+    },
+    {
+      "id": "tilerow3",
+      "name": "tilerow3",
+      "position": {
+        "x": 4.395975589752197,
+        "y": 1,
+        "z": -2.7369866371154785
+      },
+      "rotation": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 1
+      },
+      "scaling": {
+        "x": 1,
+        "y": 1,
+        "z": 1
+      },
+      "parentId": null,
+      "sortIndex": 500,
       "visible": true
     }
   ]

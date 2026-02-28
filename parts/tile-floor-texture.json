@@ -33,10 +33,12 @@
       "uScale": 3,
       "vScale": 3,
       "parentId": null,
-      "receiveShadows": false,
+      "receiveShadows": true,
       "castShadows": true,
       "sortIndex": 0,
       "visible": true,
+      "isNegative": false,
+      "originalMaterialId": null,
       "isPrimitive": true,
       "type": "Cube"
     }

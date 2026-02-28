@@ -98,9 +98,9 @@
       "id": "parcel-with-tape_inst",
       "sourceFile": "parcel-with-tape.json",
       "position": {
-        "x": -9.99,
-        "y": 5.52,
-        "z": -3.1
+        "x": -4.274120807647705,
+        "y": 5.519999980926514,
+        "z": -8.91098403930664
       },
       "rotation": {
         "x": 0,
@@ -109,9 +109,9 @@
         "w": 1
       },
       "scaling": {
-        "x": 0.9,
-        "y": 0.8,
-        "z": 0.8
+        "x": 0.8999999761581421,
+        "y": 0.800000011920929,
+        "z": 0.800000011920929
       },
       "name": "parcel-with-tape_inst",
       "visible": true,
@@ -121,7 +121,7 @@
       "id": "humanoid_inst",
       "sourceFile": "humanoid.json",
       "position": {
-        "x": -9.520000457763672,
+        "x": -3.93576979637146,
         "y": 1.2737480401992798,
         "z": 0
       },
@@ -257,15 +257,15 @@
       },
       "name": "light_1771679550075_proxy",
       "parentId": null,
-      "visible": true
+      "visible": false
     },
     {
       "id": "light_1771679550075_proxy_dup",
       "type": "spot",
       "position": {
-        "x": -14.679679870605469,
+        "x": -7.752923965454102,
         "y": 14.380000114440918,
-        "z": -19.14659309387207
+        "z": -21.667724609375
       },
       "direction": {
         "x": 0.32139380745050933,
@@ -273,8 +273,8 @@
         "z": 0.8830222206858477
       },
       "angle": 1.3439035240356338,
-      "exponent": 13.7,
-      "intensity": 1.1,
+      "exponent": 16.7,
+      "intensity": 2.9,
       "diffuse": {
         "r": 1,
         "g": 1,
@@ -304,6 +304,27 @@
       "name": "light_1771937058113_proxy",
       "parentId": null,
       "visible": false
+    },
+    {
+      "id": "light_1772176305870",
+      "type": "point",
+      "position": {
+        "x": -4.671978950500488,
+        "y": 15.59634017944336,
+        "z": -25
+      },
+      "direction": null,
+      "angle": null,
+      "exponent": null,
+      "intensity": 1.8,
+      "diffuse": {
+        "r": 1,
+        "g": 1,
+        "b": 1
+      },
+      "name": "light_1772176305870_proxy",
+      "parentId": null,
+      "visible": true
     }
   ]
 }

@@ -3,7 +3,29 @@
   "materialFiles": [
     "generic.json"
   ],
-  "lights": [],
+  "lights": [
+    {
+      "id": "light_1772256298031",
+      "type": "point",
+      "position": {
+        "x": 0.05561980977654457,
+        "y": 5,
+        "z": -7.338366508483887
+      },
+      "direction": null,
+      "angle": null,
+      "exponent": null,
+      "intensity": 333,
+      "diffuse": {
+        "r": 1,
+        "g": 1,
+        "b": 1
+      },
+      "parentId": null,
+      "sortIndex": 0,
+      "visible": false
+    }
+  ],
   "meshes": [
     {
       "id": "red-brick",
@@ -30,11 +52,15 @@
         "z": 0
       },
       "materialId": "red stone",
+      "uScale": 1,
+      "vScale": 1,
       "parentId": "node_1770896268097",
       "receiveShadows": true,
       "castShadows": true,
       "sortIndex": 100,
       "visible": true,
+      "isNegative": false,
+      "originalMaterialId": null,
       "isPrimitive": true,
       "type": "Cube"
     },
@@ -63,11 +89,15 @@
         "z": 0
       },
       "materialId": "red stone",
+      "uScale": 1,
+      "vScale": 1,
       "parentId": "node_1770896268097",
       "receiveShadows": true,
       "castShadows": true,
       "sortIndex": 200,
       "visible": true,
+      "isNegative": false,
+      "originalMaterialId": null,
       "isPrimitive": true,
       "type": "Cube"
     },
@@ -96,11 +126,15 @@
         "z": 0
       },
       "materialId": "red stone",
+      "uScale": 1,
+      "vScale": 1,
       "parentId": "node_1770896268097",
       "receiveShadows": true,
       "castShadows": true,
       "sortIndex": 800,
       "visible": true,
+      "isNegative": false,
+      "originalMaterialId": null,
       "isPrimitive": true,
       "type": "Cube"
     },
@@ -129,11 +163,15 @@
         "z": 0
       },
       "materialId": "red stone",
+      "uScale": 1,
+      "vScale": 1,
       "parentId": "node_1770896268097",
       "receiveShadows": true,
       "castShadows": true,
       "sortIndex": 700,
       "visible": true,
+      "isNegative": false,
+      "originalMaterialId": null,
       "isPrimitive": true,
       "type": "Cube"
     },
@@ -162,11 +200,15 @@
         "z": 0
       },
       "materialId": "red stone",
+      "uScale": 1,
+      "vScale": 1,
       "parentId": "node_1770896268097",
       "receiveShadows": true,
       "castShadows": true,
       "sortIndex": 600,
       "visible": true,
+      "isNegative": false,
+      "originalMaterialId": null,
       "isPrimitive": true,
       "type": "Cube"
     },
@@ -195,11 +237,15 @@
         "z": 0
       },
       "materialId": "red stone",
+      "uScale": 1,
+      "vScale": 1,
       "parentId": "node_1770896268097",
       "receiveShadows": true,
       "castShadows": true,
       "sortIndex": 500,
       "visible": true,
+      "isNegative": false,
+      "originalMaterialId": null,
       "isPrimitive": true,
       "type": "Cube"
     },
@@ -228,11 +274,15 @@
         "z": 0
       },
       "materialId": "red stone",
+      "uScale": 1,
+      "vScale": 1,
       "parentId": "node_1770896268097",
       "receiveShadows": true,
       "castShadows": true,
       "sortIndex": 300,
       "visible": true,
+      "isNegative": false,
+      "originalMaterialId": null,
       "isPrimitive": true,
       "type": "Cube"
     },
@@ -261,11 +311,15 @@
         "z": 0
       },
       "materialId": "red stone",
+      "uScale": 1,
+      "vScale": 1,
       "parentId": "node_1770896268097",
       "receiveShadows": true,
       "castShadows": true,
       "sortIndex": 400,
       "visible": true,
+      "isNegative": false,
+      "originalMaterialId": null,
       "isPrimitive": true,
       "type": "Cube"
     },
@@ -294,11 +348,15 @@
         "z": 0
       },
       "materialId": "red stone",
+      "uScale": 1,
+      "vScale": 1,
       "parentId": "node_1770896268097_dup",
       "receiveShadows": true,
       "castShadows": true,
       "sortIndex": 300,
       "visible": true,
+      "isNegative": false,
+      "originalMaterialId": null,
       "isPrimitive": true,
       "type": "Cube"
     },
@@ -327,11 +385,15 @@
         "z": 0
       },
       "materialId": "red stone",
+      "uScale": 1,
+      "vScale": 1,
       "parentId": "node_1770896268097_dup",
       "receiveShadows": true,
       "castShadows": true,
       "sortIndex": 400,
       "visible": true,
+      "isNegative": false,
+      "originalMaterialId": null,
       "isPrimitive": true,
       "type": "Cube"
     },
@@ -360,11 +422,15 @@
         "z": 0
       },
       "materialId": "red stone",
+      "uScale": 1,
+      "vScale": 1,
       "parentId": "node_1770896268097_dup",
       "receiveShadows": true,
       "castShadows": true,
       "sortIndex": 500,
       "visible": true,
+      "isNegative": false,
+      "originalMaterialId": null,
       "isPrimitive": true,
       "type": "Cube"
     },
@@ -393,11 +459,15 @@
         "z": 0
       },
       "materialId": "red stone",
+      "uScale": 1,
+      "vScale": 1,
       "parentId": "node_1770896268097_dup",
       "receiveShadows": true,
       "castShadows": true,
       "sortIndex": 600,
       "visible": true,
+      "isNegative": false,
+      "originalMaterialId": null,
       "isPrimitive": true,
       "type": "Cube"
     },
@@ -426,11 +496,15 @@
         "z": 0
       },
       "materialId": "red stone",
+      "uScale": 1,
+      "vScale": 1,
       "parentId": "node_1770896268097_dup",
       "receiveShadows": true,
       "castShadows": true,
       "sortIndex": 700,
       "visible": true,
+      "isNegative": false,
+      "originalMaterialId": null,
       "isPrimitive": true,
       "type": "Cube"
     },
@@ -459,11 +533,15 @@
         "z": 0
       },
       "materialId": "red stone",
+      "uScale": 1,
+      "vScale": 1,
       "parentId": "node_1770896268097_dup",
       "receiveShadows": true,
       "castShadows": true,
       "sortIndex": 800,
       "visible": true,
+      "isNegative": false,
+      "originalMaterialId": null,
       "isPrimitive": true,
       "type": "Cube"
     },
@@ -492,11 +570,15 @@
         "z": 0
       },
       "materialId": "red stone",
+      "uScale": 1,
+      "vScale": 1,
       "parentId": "node_1770896268097_dup",
       "receiveShadows": true,
       "castShadows": true,
       "sortIndex": 100,
       "visible": true,
+      "isNegative": false,
+      "originalMaterialId": null,
       "isPrimitive": true,
       "type": "Cube"
     },
@@ -525,11 +607,15 @@
         "z": 0
       },
       "materialId": "red stone",
+      "uScale": 1,
+      "vScale": 1,
       "parentId": "node_1770896268097_dup",
       "receiveShadows": true,
       "castShadows": true,
       "sortIndex": 200,
       "visible": true,
+      "isNegative": false,
+      "originalMaterialId": null,
       "isPrimitive": true,
       "type": "Cube"
     },
@@ -558,11 +644,15 @@
         "z": 0
       },
       "materialId": "red stone",
+      "uScale": 1,
+      "vScale": 1,
       "parentId": "node_1770896268097_dup_1",
       "receiveShadows": true,
       "castShadows": true,
       "sortIndex": 100,
       "visible": true,
+      "isNegative": false,
+      "originalMaterialId": null,
       "isPrimitive": true,
       "type": "Cube"
     },
@@ -591,11 +681,15 @@
         "z": 0
       },
       "materialId": "red stone",
+      "uScale": 1,
+      "vScale": 1,
       "parentId": "node_1770896268097_dup_1",
       "receiveShadows": true,
       "castShadows": true,
       "sortIndex": 200,
       "visible": true,
+      "isNegative": false,
+      "originalMaterialId": null,
       "isPrimitive": true,
       "type": "Cube"
     },
@@ -624,11 +718,15 @@
         "z": 0
       },
       "materialId": "red stone",
+      "uScale": 1,
+      "vScale": 1,
       "parentId": "node_1770896268097_dup_1",
       "receiveShadows": true,
       "castShadows": true,
       "sortIndex": 800,
       "visible": true,
+      "isNegative": false,
+      "originalMaterialId": null,
       "isPrimitive": true,
       "type": "Cube"
     },
@@ -657,11 +755,15 @@
         "z": 0
       },
       "materialId": "red stone",
+      "uScale": 1,
+      "vScale": 1,
       "parentId": "node_1770896268097_dup_1",
       "receiveShadows": true,
       "castShadows": true,
       "sortIndex": 700,
       "visible": true,
+      "isNegative": false,
+      "originalMaterialId": null,
       "isPrimitive": true,
       "type": "Cube"
     },
@@ -690,11 +792,15 @@
         "z": 0
       },
       "materialId": "red stone",
+      "uScale": 1,
+      "vScale": 1,
       "parentId": "node_1770896268097_dup_1",
       "receiveShadows": true,
       "castShadows": true,
       "sortIndex": 600,
       "visible": true,
+      "isNegative": false,
+      "originalMaterialId": null,
       "isPrimitive": true,
       "type": "Cube"
     },
@@ -723,11 +829,15 @@
         "z": 0
       },
       "materialId": "red stone",
+      "uScale": 1,
+      "vScale": 1,
       "parentId": "node_1770896268097_dup_1",
       "receiveShadows": true,
       "castShadows": true,
       "sortIndex": 500,
       "visible": true,
+      "isNegative": false,
+      "originalMaterialId": null,
       "isPrimitive": true,
       "type": "Cube"
     },
@@ -756,11 +866,15 @@
         "z": 0
       },
       "materialId": "red stone",
+      "uScale": 1,
+      "vScale": 1,
       "parentId": "node_1770896268097_dup_1",
       "receiveShadows": true,
       "castShadows": true,
       "sortIndex": 300,
       "visible": true,
+      "isNegative": false,
+      "originalMaterialId": null,
       "isPrimitive": true,
       "type": "Cube"
     },
@@ -789,11 +903,15 @@
         "z": 0
       },
       "materialId": "red stone",
+      "uScale": 1,
+      "vScale": 1,
       "parentId": "node_1770896268097_dup_1",
       "receiveShadows": true,
       "castShadows": true,
       "sortIndex": 400,
       "visible": true,
+      "isNegative": false,
+      "originalMaterialId": null,
       "isPrimitive": true,
       "type": "Cube"
     },
@@ -822,11 +940,15 @@
         "z": 0
       },
       "materialId": "red stone",
+      "uScale": 1,
+      "vScale": 1,
       "parentId": "node_1770896268097_dup_dup",
       "receiveShadows": true,
       "castShadows": true,
       "sortIndex": 300,
       "visible": true,
+      "isNegative": false,
+      "originalMaterialId": null,
       "isPrimitive": true,
       "type": "Cube"
     },
@@ -855,11 +977,15 @@
         "z": 0
       },
       "materialId": "red stone",
+      "uScale": 1,
+      "vScale": 1,
       "parentId": "node_1770896268097_dup_dup",
       "receiveShadows": true,
       "castShadows": true,
       "sortIndex": 400,
       "visible": true,
+      "isNegative": false,
+      "originalMaterialId": null,
       "isPrimitive": true,
       "type": "Cube"
     },
@@ -888,11 +1014,15 @@
         "z": 0
       },
       "materialId": "red stone",
+      "uScale": 1,
+      "vScale": 1,
       "parentId": "node_1770896268097_dup_dup",
       "receiveShadows": true,
       "castShadows": true,
       "sortIndex": 500,
       "visible": true,
+      "isNegative": false,
+      "originalMaterialId": null,
       "isPrimitive": true,
       "type": "Cube"
     },
@@ -921,11 +1051,15 @@
         "z": 0
       },
       "materialId": "red stone",
+      "uScale": 1,
+      "vScale": 1,
       "parentId": "node_1770896268097_dup_dup",
       "receiveShadows": true,
       "castShadows": true,
       "sortIndex": 600,
       "visible": true,
+      "isNegative": false,
+      "originalMaterialId": null,
       "isPrimitive": true,
       "type": "Cube"
     },
@@ -954,11 +1088,15 @@
         "z": 0
       },
       "materialId": "red stone",
+      "uScale": 1,
+      "vScale": 1,
       "parentId": "node_1770896268097_dup_dup",
       "receiveShadows": true,
       "castShadows": true,
       "sortIndex": 700,
       "visible": true,
+      "isNegative": false,
+      "originalMaterialId": null,
       "isPrimitive": true,
       "type": "Cube"
     },
@@ -987,11 +1125,15 @@
         "z": 0
       },
       "materialId": "red stone",
+      "uScale": 1,
+      "vScale": 1,
       "parentId": "node_1770896268097_dup_dup",
       "receiveShadows": true,
       "castShadows": true,
       "sortIndex": 800,
       "visible": true,
+      "isNegative": false,
+      "originalMaterialId": null,
       "isPrimitive": true,
       "type": "Cube"
     },
@@ -1020,11 +1162,15 @@
         "z": 0
       },
       "materialId": "red stone",
+      "uScale": 1,
+      "vScale": 1,
       "parentId": "node_1770896268097_dup_dup",
       "receiveShadows": true,
       "castShadows": true,
       "sortIndex": 100,
       "visible": true,
+      "isNegative": false,
+      "originalMaterialId": null,
       "isPrimitive": true,
       "type": "Cube"
     },
@@ -1053,11 +1199,15 @@
         "z": 0
       },
       "materialId": "red stone",
+      "uScale": 1,
+      "vScale": 1,
       "parentId": "node_1770896268097_dup_dup",
       "receiveShadows": true,
       "castShadows": true,
       "sortIndex": 200,
       "visible": true,
+      "isNegative": false,
+      "originalMaterialId": null,
       "isPrimitive": true,
       "type": "Cube"
     },
@@ -1086,11 +1236,15 @@
         "z": 0
       },
       "materialId": "red stone",
+      "uScale": 1,
+      "vScale": 1,
       "parentId": "node_1770896268097_dup_1_dup",
       "receiveShadows": true,
       "castShadows": true,
       "sortIndex": 100,
       "visible": true,
+      "isNegative": false,
+      "originalMaterialId": null,
       "isPrimitive": true,
       "type": "Cube"
     },
@@ -1119,11 +1273,15 @@
         "z": 0
       },
       "materialId": "red stone",
+      "uScale": 1,
+      "vScale": 1,
       "parentId": "node_1770896268097_dup_1_dup",
       "receiveShadows": true,
       "castShadows": true,
       "sortIndex": 200,
       "visible": true,
+      "isNegative": false,
+      "originalMaterialId": null,
       "isPrimitive": true,
       "type": "Cube"
     },
@@ -1152,11 +1310,15 @@
         "z": 0
       },
       "materialId": "red stone",
+      "uScale": 1,
+      "vScale": 1,
       "parentId": "node_1770896268097_dup_1_dup",
       "receiveShadows": true,
       "castShadows": true,
       "sortIndex": 800,
       "visible": true,
+      "isNegative": false,
+      "originalMaterialId": null,
       "isPrimitive": true,
       "type": "Cube"
     },
@@ -1185,11 +1347,15 @@
         "z": 0
       },
       "materialId": "red stone",
+      "uScale": 1,
+      "vScale": 1,
       "parentId": "node_1770896268097_dup_1_dup",
       "receiveShadows": true,
       "castShadows": true,
       "sortIndex": 700,
       "visible": true,
+      "isNegative": false,
+      "originalMaterialId": null,
       "isPrimitive": true,
       "type": "Cube"
     },
@@ -1218,11 +1384,15 @@
         "z": 0
       },
       "materialId": "red stone",
+      "uScale": 1,
+      "vScale": 1,
       "parentId": "node_1770896268097_dup_1_dup",
       "receiveShadows": true,
       "castShadows": true,
       "sortIndex": 600,
       "visible": true,
+      "isNegative": false,
+      "originalMaterialId": null,
       "isPrimitive": true,
       "type": "Cube"
     },
@@ -1251,11 +1421,15 @@
         "z": 0
       },
       "materialId": "red stone",
+      "uScale": 1,
+      "vScale": 1,
       "parentId": "node_1770896268097_dup_1_dup",
       "receiveShadows": true,
       "castShadows": true,
       "sortIndex": 500,
       "visible": true,
+      "isNegative": false,
+      "originalMaterialId": null,
       "isPrimitive": true,
       "type": "Cube"
     },
@@ -1284,11 +1458,15 @@
         "z": 0
       },
       "materialId": "red stone",
+      "uScale": 1,
+      "vScale": 1,
       "parentId": "node_1770896268097_dup_1_dup",
       "receiveShadows": true,
       "castShadows": true,
       "sortIndex": 300,
       "visible": true,
+      "isNegative": false,
+      "originalMaterialId": null,
       "isPrimitive": true,
       "type": "Cube"
     },
@@ -1317,11 +1495,15 @@
         "z": 0
       },
       "materialId": "red stone",
+      "uScale": 1,
+      "vScale": 1,
       "parentId": "node_1770896268097_dup_1_dup",
       "receiveShadows": true,
       "castShadows": true,
       "sortIndex": 400,
       "visible": true,
+      "isNegative": false,
+      "originalMaterialId": null,
       "isPrimitive": true,
       "type": "Cube"
     },
@@ -1350,11 +1532,15 @@
         "z": 0
       },
       "materialId": "red stone",
+      "uScale": 1,
+      "vScale": 1,
       "parentId": "node_1770896268097_dup_dup_dup",
       "receiveShadows": true,
       "castShadows": true,
       "sortIndex": 300,
       "visible": true,
+      "isNegative": false,
+      "originalMaterialId": null,
       "isPrimitive": true,
       "type": "Cube"
     },
@@ -1383,11 +1569,15 @@
         "z": 0
       },
       "materialId": "red stone",
+      "uScale": 1,
+      "vScale": 1,
       "parentId": "node_1770896268097_dup_dup_dup",
       "receiveShadows": true,
       "castShadows": true,
       "sortIndex": 400,
       "visible": true,
+      "isNegative": false,
+      "originalMaterialId": null,
       "isPrimitive": true,
       "type": "Cube"
     },
@@ -1416,11 +1606,15 @@
         "z": 0
       },
       "materialId": "red stone",
+      "uScale": 1,
+      "vScale": 1,
       "parentId": "node_1770896268097_dup_dup_dup",
       "receiveShadows": true,
       "castShadows": true,
       "sortIndex": 500,
       "visible": true,
+      "isNegative": false,
+      "originalMaterialId": null,
       "isPrimitive": true,
       "type": "Cube"
     },
@@ -1449,11 +1643,15 @@
         "z": 0
       },
       "materialId": "red stone",
+      "uScale": 1,
+      "vScale": 1,
       "parentId": "node_1770896268097_dup_dup_dup",
       "receiveShadows": true,
       "castShadows": true,
       "sortIndex": 600,
       "visible": true,
+      "isNegative": false,
+      "originalMaterialId": null,
       "isPrimitive": true,
       "type": "Cube"
     },
@@ -1482,11 +1680,15 @@
         "z": 0
       },
       "materialId": "red stone",
+      "uScale": 1,
+      "vScale": 1,
       "parentId": "node_1770896268097_dup_dup_dup",
       "receiveShadows": true,
       "castShadows": true,
       "sortIndex": 700,
       "visible": true,
+      "isNegative": false,
+      "originalMaterialId": null,
       "isPrimitive": true,
       "type": "Cube"
     },
@@ -1515,11 +1717,15 @@
         "z": 0
       },
       "materialId": "red stone",
+      "uScale": 1,
+      "vScale": 1,
       "parentId": "node_1770896268097_dup_dup_dup",
       "receiveShadows": true,
       "castShadows": true,
       "sortIndex": 800,
       "visible": true,
+      "isNegative": false,
+      "originalMaterialId": null,
       "isPrimitive": true,
       "type": "Cube"
     },
@@ -1548,11 +1754,15 @@
         "z": 0
       },
       "materialId": "red stone",
+      "uScale": 1,
+      "vScale": 1,
       "parentId": "node_1770896268097_dup_dup_dup",
       "receiveShadows": true,
       "castShadows": true,
       "sortIndex": 100,
       "visible": true,
+      "isNegative": false,
+      "originalMaterialId": null,
       "isPrimitive": true,
       "type": "Cube"
     },
@@ -1581,11 +1791,52 @@
         "z": 0
       },
       "materialId": "red stone",
+      "uScale": 1,
+      "vScale": 1,
       "parentId": "node_1770896268097_dup_dup_dup",
       "receiveShadows": true,
       "castShadows": true,
       "sortIndex": 200,
       "visible": true,
+      "isNegative": false,
+      "originalMaterialId": null,
+      "isPrimitive": true,
+      "type": "Cube"
+    },
+    {
+      "id": "red-brick_dup_1_dup_2",
+      "name": "red-brick_dup_1_dup_2",
+      "position": {
+        "x": -10.091165542602539,
+        "y": -0.5,
+        "z": 0
+      },
+      "rotation": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 1
+      },
+      "scaling": {
+        "x": 0.8999999761581421,
+        "y": 1,
+        "z": 1
+      },
+      "pivot": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "materialId": "red stone",
+      "uScale": 1,
+      "vScale": 1,
+      "parentId": "node_1770896268097",
+      "receiveShadows": true,
+      "castShadows": true,
+      "sortIndex": 600,
+      "visible": true,
+      "isNegative": false,
+      "originalMaterialId": null,
       "isPrimitive": true,
       "type": "Cube"
     }
@@ -1597,29 +1848,6 @@
       "position": {
         "x": 0,
         "y": 1,
-        "z": 0
-      },
-      "rotation": {
-        "x": 0,
-        "y": 0,
-        "z": 0,
-        "w": 1
-      },
-      "scaling": {
-        "x": 1,
-        "y": 1,
-        "z": 1
-      },
-      "parentId": null,
-      "sortIndex": 0,
-      "visible": true
-    },
-    {
-      "id": "node_1770896268097_dup",
-      "name": "node_1770896268097_dup",
-      "position": {
-        "x": -1,
-        "y": 2.1,
         "z": 0
       },
       "rotation": {
@@ -1661,11 +1889,11 @@
       "visible": true
     },
     {
-      "id": "node_1770896268097_dup_dup",
-      "name": "node_1770896268097_dup_dup",
+      "id": "node_1770896268097_dup",
+      "name": "node_1770896268097_dup",
       "position": {
         "x": -1,
-        "y": 4.3,
+        "y": 2.1,
         "z": 0
       },
       "rotation": {
@@ -1712,6 +1940,29 @@
       "position": {
         "x": -1,
         "y": 6.5,
+        "z": 0
+      },
+      "rotation": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 1
+      },
+      "scaling": {
+        "x": 1,
+        "y": 1,
+        "z": 1
+      },
+      "parentId": null,
+      "sortIndex": 0,
+      "visible": true
+    },
+    {
+      "id": "node_1770896268097_dup_dup",
+      "name": "node_1770896268097_dup_dup",
+      "position": {
+        "x": -1,
+        "y": 4.3,
         "z": 0
       },
       "rotation": {

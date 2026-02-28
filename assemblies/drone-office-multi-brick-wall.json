@@ -7,7 +7,7 @@
       "sourceFile": "ground-tiles.json",
       "position": {
         "x": -2.462341070175171,
-        "y": 0,
+        "y": -2.991013526916504,
         "z": -4.674055099487305
       },
       "rotation": {
@@ -22,7 +22,8 @@
         "z": 3
       },
       "name": "1st-floor-ground",
-      "visible": true
+      "visible": true,
+      "sortIndex": 100
     },
     {
       "id": "brick-wall_inst",
@@ -44,7 +45,31 @@
         "z": 0.5
       },
       "name": "brick-wall_inst",
-      "visible": true
+      "visible": true,
+      "sortIndex": 200
+    },
+    {
+      "id": "brick-wall_inst_dup_8",
+      "sourceFile": "brick-wall.json",
+      "position": {
+        "x": -6.002792835235596,
+        "y": -2.6497597694396973,
+        "z": 9.050000190734863
+      },
+      "rotation": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 1
+      },
+      "scaling": {
+        "x": 0.5,
+        "y": 0.5,
+        "z": 0.5
+      },
+      "name": "brick-wall_inst",
+      "visible": true,
+      "sortIndex": 200
     },
     {
       "id": "brick-wall_inst_1",
@@ -66,7 +91,31 @@
         "z": 0.5
       },
       "name": "brick-wall_inst_1",
-      "visible": true
+      "visible": true,
+      "sortIndex": 300
+    },
+    {
+      "id": "brick-wall_inst_1_dup_3",
+      "sourceFile": "brick-wall.json",
+      "position": {
+        "x": -2.5027928352355957,
+        "y": -2.6783411502838135,
+        "z": 5.099999904632568
+      },
+      "rotation": {
+        "x": 0,
+        "y": 0.7071067811865475,
+        "z": 0,
+        "w": 0.7071067811865476
+      },
+      "scaling": {
+        "x": 0.4000000059604645,
+        "y": 0.5,
+        "z": 0.5
+      },
+      "name": "brick-wall_inst_1",
+      "visible": true,
+      "sortIndex": 300
     },
     {
       "id": "sky_inst",
@@ -88,7 +137,8 @@
         "z": 1
       },
       "name": "sky_inst",
-      "visible": true
+      "visible": true,
+      "sortIndex": 400
     },
     {
       "id": "brick-wall_inst_dup",
@@ -110,7 +160,8 @@
         "z": 0.5
       },
       "name": "brick-wall_inst",
-      "visible": true
+      "visible": true,
+      "sortIndex": 500
     },
     {
       "id": "brick-wall_inst_1_dup",
@@ -132,15 +183,16 @@
         "z": 0.5
       },
       "name": "brick-wall_inst_1",
-      "visible": true
+      "visible": true,
+      "sortIndex": 600
     },
     {
       "id": "humanoid_inst",
       "sourceFile": "humanoid.json",
       "position": {
         "x": -14.979926109313965,
-        "y": 0.8100000023841858,
-        "z": -5.399637699127197
+        "y": -2.065864086151123,
+        "z": -3.471677541732788
       },
       "rotation": {
         "x": 0,
@@ -154,7 +206,8 @@
         "z": 0.5
       },
       "name": "humanoid_inst",
-      "visible": true
+      "visible": true,
+      "sortIndex": 700
     },
     {
       "id": "brick-wall_inst_1_dup_1",
@@ -176,7 +229,8 @@
         "z": 0.5
       },
       "name": "brick-wall_inst_1",
-      "visible": true
+      "visible": true,
+      "sortIndex": 800
     },
     {
       "id": "brick-wall_inst_dup_1",
@@ -198,7 +252,8 @@
         "z": 0.5
       },
       "name": "brick-wall_inst",
-      "visible": true
+      "visible": true,
+      "sortIndex": 900
     },
     {
       "id": "brick-wall_inst_1_dup_2",
@@ -220,7 +275,8 @@
         "z": 0.5
       },
       "name": "brick-wall_inst_1",
-      "visible": true
+      "visible": true,
+      "sortIndex": 1000
     },
     {
       "id": "brick-wall_inst_dup_2",
@@ -242,7 +298,8 @@
         "z": 0.5
       },
       "name": "brick-wall_inst",
-      "visible": true
+      "visible": true,
+      "sortIndex": 1100
     },
     {
       "id": "2nd-floor-ground",
@@ -264,15 +321,16 @@
         "z": 3
       },
       "name": "2nd-floor-ground",
-      "visible": true
+      "visible": true,
+      "sortIndex": 1200
     },
     {
       "id": "parcel-with-tape_inst",
       "sourceFile": "parcel-with-tape.json",
       "position": {
-        "x": -14.929527282714844,
-        "y": 3.4407238960266113,
-        "z": -3.7244906425476074
+        "x": -14.881951332092285,
+        "y": 0.8850345015525818,
+        "z": -1.975602388381958
       },
       "rotation": {
         "x": 0,
@@ -286,51 +344,8 @@
         "z": 0.4000000059604645
       },
       "name": "parcel-with-tape_inst",
-      "visible": true
-    },
-    {
-      "id": "gray-wall_inst",
-      "sourceFile": "gray-wall.json",
-      "position": {
-        "x": 5.655826568603516,
-        "y": 6.52747106552124,
-        "z": 2.130000114440918
-      },
-      "rotation": {
-        "x": 0,
-        "y": 0,
-        "z": 0,
-        "w": 1
-      },
-      "scaling": {
-        "x": 1.649999976158142,
-        "y": 1.350000023841858,
-        "z": 1
-      },
-      "name": "gray-wall_inst",
-      "visible": true
-    },
-    {
-      "id": "gray-wall_inst_dup",
-      "sourceFile": "gray-wall.json",
-      "position": {
-        "x": 13.444029808044434,
-        "y": 6.480000019073486,
-        "z": -8.951613426208496
-      },
-      "rotation": {
-        "x": 0,
-        "y": 0.7071067811865475,
-        "z": 0,
-        "w": 0.7071067811865476
-      },
-      "scaling": {
-        "x": 2.200000047683716,
-        "y": 1.350000023841858,
-        "z": 1
-      },
-      "name": "gray-wall_inst",
-      "visible": true
+      "visible": true,
+      "sortIndex": 1300
     },
     {
       "id": "brick-wall_inst_dup_3",
@@ -352,7 +367,8 @@
         "z": 0.5
       },
       "name": "brick-wall_inst",
-      "visible": true
+      "visible": true,
+      "sortIndex": 1600
     },
     {
       "id": "brick-wall_inst_dup_4",
@@ -374,7 +390,8 @@
         "z": 0.5
       },
       "name": "brick-wall_inst",
-      "visible": true
+      "visible": true,
+      "sortIndex": 1700
     },
     {
       "id": "brick-wall_inst_dup_5",
@@ -396,7 +413,8 @@
         "z": 0.5
       },
       "name": "brick-wall_inst",
-      "visible": true
+      "visible": true,
+      "sortIndex": 1800
     },
     {
       "id": "brick-wall_inst_dup_6",
@@ -418,30 +436,102 @@
         "z": 0.5
       },
       "name": "brick-wall_inst",
-      "visible": true
+      "visible": true,
+      "sortIndex": 1900
+    },
+    {
+      "id": "brick-wall_inst_dup_7",
+      "sourceFile": "brick-wall.json",
+      "position": {
+        "x": -14.522801399230957,
+        "y": -2.668231964111328,
+        "z": 9.050000190734863
+      },
+      "rotation": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 1
+      },
+      "scaling": {
+        "x": 0.5,
+        "y": 0.5,
+        "z": 0.5
+      },
+      "name": "brick-wall_inst",
+      "visible": true,
+      "sortIndex": 1900
+    },
+    {
+      "id": "gray-wall-with-door_inst",
+      "sourceFile": "gray-wall-with-door.json",
+      "position": {
+        "x": 5.7893500328063965,
+        "y": 5.64957857131958,
+        "z": 2.049999952316284
+      },
+      "rotation": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 1
+      },
+      "scaling": {
+        "x": 1.149999976158142,
+        "y": 1.2000000476837158,
+        "z": 1
+      },
+      "name": "gray-wall-with-door_inst",
+      "visible": true,
+      "sortIndex": 2000
+    },
+    {
+      "id": "gray-wall-with-window_inst",
+      "sourceFile": "gray-wall-with-window.json",
+      "position": {
+        "x": 13.430000305175781,
+        "y": 5.7063117027282715,
+        "z": -5.800000190734863
+      },
+      "rotation": {
+        "x": 0,
+        "y": 0.7071067811865475,
+        "z": 0,
+        "w": 0.7071067811865476
+      },
+      "scaling": {
+        "x": 1.5,
+        "y": 1.2000000476837158,
+        "z": 1
+      },
+      "name": "gray-wall-with-window_inst",
+      "visible": true,
+      "sortIndex": 2100
     }
   ],
   "lights": [
     {
-      "id": "light_1771135934812",
-      "type": "directional",
+      "id": "light_1772176918616",
+      "type": "spot",
       "position": {
-        "x": 0,
-        "y": 0,
-        "z": 20
+        "x": -9.22066879272461,
+        "y": 10.541319847106934,
+        "z": -16.33068084716797
       },
       "direction": {
-        "x": 0.7157553896781752,
-        "y": -0.5107994918972512,
-        "z": -0.476212243883075
+        "x": 0,
+        "y": -0.4230927495390909,
+        "z": 0.906086378491285
       },
-      "intensity": 2,
+      "angle": 1.413716694115407,
+      "exponent": 15.7,
+      "intensity": 50,
       "diffuse": {
         "r": 1,
         "g": 1,
         "b": 1
       },
-      "name": "light_1771135934812_proxy",
+      "name": "light_1772176918616_proxy",
       "parentId": null,
       "visible": true
     }
