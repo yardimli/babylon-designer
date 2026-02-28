@@ -1,6 +1,6 @@
 import { MeshBuilder, Vector3, Quaternion } from "@babylonjs/core";
 import earcut from 'earcut'; // Added for shape extrusion
-import { scene, getUniqueId } from "./assembly_scene.js";
+import { scene, getUniqueId, camera } from "./assembly_scene.js";
 import { setGizmoMode } from "./assembly_gizmoControl.js";
 import { createLight } from "./assembly_lightManager.js";
 import { createTransformNode } from "./assembly_transformNodeManager.js";
@@ -19,6 +19,7 @@ export function setupUI() {
 	const canvas = document.getElementById("renderCanvas");
 
 	setupGizmoButtons();
+	setupCameraControls(); // Added camera controls setup
 
 	if (pList) {
 		primitives.forEach(type => {
@@ -88,6 +89,30 @@ function setupGizmoButtons() {
 		setGizmoMode("scale");
 		setActive(btnScl);
 	};
+}
+
+function setupCameraControls() {
+	const setView = (alpha, beta) => {
+		if (!camera) return;
+		camera.alpha = alpha;
+		camera.beta = beta;
+	};
+
+	const map = {
+		"top": { a: -Math.PI / 2, b: 0 },
+		"bottom": { a: -Math.PI / 2, b: Math.PI },
+		"front": { a: -Math.PI / 2, b: Math.PI / 2 },
+		"back": { a: Math.PI / 2, b: Math.PI / 2 },
+		"left": { a: Math.PI, b: Math.PI / 2 },
+		"right": { a: 0, b: Math.PI / 2 }
+	};
+
+	Object.keys(map).forEach(id => {
+		const btn = document.getElementById(`btn-view-${id}`);
+		if (btn) {
+			btn.onclick = () => setView(map[id].a, map[id].b);
+		}
+	});
 }
 
 function createDraggableItem(name, category) {
