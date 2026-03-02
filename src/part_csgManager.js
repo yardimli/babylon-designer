@@ -9,7 +9,7 @@ export function getNegativeMaterial(scene) {
 	if (!negativeMaterial) {
 		negativeMaterial = new StandardMaterial("negativeMat", scene);
 		negativeMaterial.diffuseColor = new Color3(1, 0.2, 0.2);
-		negativeMaterial.alpha = 0.4;
+		negativeMaterial.alpha = 0.1;
 		negativeMaterial.specularColor = new Color3(0, 0, 0);
 		// Prevent this internal material from being exported
 		negativeMaterial.metadata = { isInternal: true };
@@ -28,8 +28,8 @@ export function updateCSG() {
 		m.dispose();
 	});
 
-	// 2. Group meshes by Parent (TransformNode)
-	// Map<ParentID, { parent: Node, positives: [], negatives: [] }>
+	// 2. Group meshes by Parent (TransformNode) OR Root
+	// Map<GroupID, { parent: Node|null, positives: [], negatives: [] }>
 	const csgGroups = new Map();
 
 	part.meshes.forEach(m => {
@@ -40,24 +40,32 @@ export function updateCSG() {
 				m.isVisible = true;
 			}
 
-			// Check if mesh belongs to a TransformNode
+			// Determine Group ID
 			const parent = m.parent;
+			let groupId = "root";
+			let groupParent = null;
+
+			// If mesh is child of a TransformNode, use that as group
 			if (parent && parent.metadata && parent.metadata.isTransformNode) {
-				if (!csgGroups.has(parent.id)) {
-					csgGroups.set(parent.id, {
-						parent: parent,
-						positives: [],
-						negatives: []
-					});
-				}
+				groupId = parent.id;
+				groupParent = parent;
+			}
 
-				const group = csgGroups.get(parent.id);
+			// Init Group
+			if (!csgGroups.has(groupId)) {
+				csgGroups.set(groupId, {
+					parent: groupParent,
+					positives: [],
+					negatives: []
+				});
+			}
 
-				if (m.metadata.isNegative) {
-					if (m.isEnabled()) group.negatives.push(m);
-				} else {
-					if (m.isEnabled()) group.positives.push(m);
-				}
+			const group = csgGroups.get(groupId);
+
+			if (m.metadata.isNegative) {
+				if (m.isEnabled()) group.negatives.push(m);
+			} else {
+				if (m.isEnabled()) group.positives.push(m);
 			}
 		}
 	});
@@ -67,8 +75,12 @@ export function updateCSG() {
 		if (group.negatives.length === 0 || group.positives.length === 0) return;
 
 		// Calculate Inverse Parent Matrix to transform World Space CSG back to Local Space
-		const parentMatrix = group.parent.computeWorldMatrix(true);
-		const invertParentMatrix = parentMatrix.clone().invert();
+		// If parent is null (root), transform is Identity
+		let invertParentMatrix = Matrix.Identity();
+		if (group.parent) {
+			const parentMatrix = group.parent.computeWorldMatrix(true);
+			invertParentMatrix = parentMatrix.clone().invert();
+		}
 
 		group.positives.forEach(pos => {
 			let csgPos = null;
@@ -97,7 +109,7 @@ export function updateCSG() {
 					originalMeshId: pos.id
 				};
 
-				// Parent the result to the TransformNode
+				// Parent the result to the TransformNode (or null for root)
 				resultMesh.parent = group.parent;
 
 				// Match shadow properties of the original mesh

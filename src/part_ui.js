@@ -1,4 +1,4 @@
-import { MeshBuilder, Vector3, Quaternion, TransformNode, Color3, Color4, StandardMaterial } from "@babylonjs/core";
+import { MeshBuilder, Vector3, Quaternion, TransformNode, Color3, Color4, StandardMaterial, Mesh } from "@babylonjs/core";
 import earcut from 'earcut';
 import { part, getUniqueId, camera } from "./part.js";
 import { setGizmoMode } from "./part_gizmoControl.js";
@@ -326,16 +326,19 @@ export function createShapeMesh(shapeData, name, savedState = null) {
 		}
 	});
 
-	let rootMesh = null;
+	// Store generated meshes to merge them later
+	const meshes = [];
 
 	// Create Meshes
 	solids.forEach((solid, i) => {
 		try {
+			// FIX: Use FRONTSIDE (default 0) instead of DOUBLESIDE (1).
+			// DOUBLESIDE causes CSG boolean operations to fail because normals point both ways.
 			const mesh = MeshBuilder.ExtrudePolygon(i === 0 ? id : `${id}_part_${i}`, {
 				shape: solid.points,
 				holes: solid.myHoles,
 				depth: shapeData.extrusionHeight,
-				sideOrientation: MeshBuilder.DOUBLESIDE,
+				sideOrientation: MeshBuilder.FRONTSIDE, // Changed from DOUBLESIDE
 				wrap: true
 			}, part, earcut);
 
@@ -348,15 +351,26 @@ export function createShapeMesh(shapeData, name, savedState = null) {
 				mesh.material = mat;
 			}
 
-			if (i === 0) {
-				rootMesh = mesh;
-			} else {
-				mesh.parent = rootMesh;
-			}
+			meshes.push(mesh);
 		} catch (e) {
 			console.warn("Failed to extrude shape part", e);
 		}
 	});
+
+	if (meshes.length === 0) return null;
+
+	let rootMesh;
+
+	// FIX: Merge multiple solids into a single mesh.
+	// This ensures the CSG manager (which looks at direct children of TransformNodes)
+	// sees the entire shape as one object, rather than a hierarchy where children are ignored.
+	if (meshes.length === 1) {
+		rootMesh = meshes[0];
+	} else {
+		rootMesh = Mesh.MergeMeshes(meshes, true, true, undefined, false, true);
+		rootMesh.name = id;
+		rootMesh.id = id;
+	}
 
 	if (rootMesh) {
 		// Store data for save/load
