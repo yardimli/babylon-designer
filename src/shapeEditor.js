@@ -14,11 +14,13 @@ const state = {
 	mode: 'select', // 'select', 'draw_poly'
 	selectedShapeIndex: -1,
 	selectedEdgeIndex: -1, // Only for polygons
+	selectedPointIndex: -1, // Only for polygons
 
 	// Drawing State
 	isDragging: false,
 	dragStart: { x: 0, y: 0 },
 	polyPoints: [], // Temp points for drawing new polygon
+	snapLines: [], // Temp lines for magnetic snap guides
 
 	// Viewport (2D)
 	pan: { x: 0, y: 0 }, // Center of canvas
@@ -156,6 +158,21 @@ function draw2D() {
 			ctx.fill();
 			ctx.stroke();
 
+			// Draw Vertices
+			shape.points.forEach((pt, idx) => {
+				const s = worldToScreen(pt.x, pt.y);
+				const isPtSelected = (isSelected && state.selectedPointIndex === idx);
+				ctx.beginPath();
+				ctx.arc(s.x, s.y, isPtSelected ? 5 : 3, 0, Math.PI * 2);
+				ctx.fillStyle = isPtSelected ? '#ffff00' : '#ffffff';
+				ctx.fill();
+				if (isPtSelected) {
+					ctx.strokeStyle = '#000';
+					ctx.lineWidth = 1;
+					ctx.stroke();
+				}
+			});
+
 			// Draw Edge Highlight if selected
 			if (isSelected && state.selectedEdgeIndex > -1) {
 				const pA = shape.points[state.selectedEdgeIndex];
@@ -172,6 +189,22 @@ function draw2D() {
 			}
 		}
 	});
+
+	// Draw Snap Lines
+	if (state.snapLines.length > 0) {
+		ctx.strokeStyle = '#00ffff';
+		ctx.lineWidth = 1;
+		ctx.setLineDash([4, 4]);
+		ctx.beginPath();
+		state.snapLines.forEach(l => {
+			const s1 = worldToScreen(l.x1, l.y1);
+			const s2 = worldToScreen(l.x2, l.y2);
+			ctx.moveTo(s1.x, s1.y);
+			ctx.lineTo(s2.x, s2.y);
+		});
+		ctx.stroke();
+		ctx.setLineDash([]);
+	}
 
 	// Draw Temp Poly
 	if (state.mode === 'draw_poly' && state.polyPoints.length > 0) {
@@ -314,7 +347,16 @@ function hitTest(wx, wy) {
 			const dy = wy - s.y;
 			if (Math.sqrt(dx * dx + dy * dy) <= s.diameter / 2) return { index: i };
 		} else if (s.type === 'poly') {
-			// Point in poly (Ray casting)
+			// 1. Check Points (Vertices) first - Priority
+			for (let j = 0; j < s.points.length; j++) {
+				const p = s.points[j];
+				// Tolerance 0.5 world units
+				if (Math.sqrt((p.x - wx) ** 2 + (p.y - wy) ** 2) < 0.5) {
+					return { index: i, point: j };
+				}
+			}
+
+			// 2. Check Inside (Ray casting)
 			let inside = false;
 			for (let j = 0, k = s.points.length - 1; j < s.points.length; k = j++) {
 				const xi = s.points[j].x; const yi = s.points[j].y;
@@ -323,7 +365,7 @@ function hitTest(wx, wy) {
 				if (intersect) inside = !inside;
 			}
 
-			// Check edge proximity
+			// 3. Check Edge proximity
 			let bestEdge = -1;
 			let minDist = 0.5; // World units tolerance
 
@@ -366,12 +408,14 @@ ui.canvas2d.addEventListener('mousedown', (e) => {
 	if (hit) {
 		state.selectedShapeIndex = hit.index;
 		state.selectedEdgeIndex = hit.edge !== undefined ? hit.edge : -1;
+		state.selectedPointIndex = hit.point !== undefined ? hit.point : -1;
 		state.isDragging = true;
 		state.dragStart = w;
 		renderProperties();
 	} else {
 		state.selectedShapeIndex = -1;
 		state.selectedEdgeIndex = -1;
+		state.selectedPointIndex = -1;
 		renderProperties();
 	}
 	draw2D();
@@ -382,22 +426,79 @@ ui.canvas2d.addEventListener('mousemove', (e) => {
 	const w = screenToWorld(m.x, m.y);
 
 	if (state.isDragging && state.selectedShapeIndex > -1) {
-		const dx = w.x - state.dragStart.x;
-		const dy = w.y - state.dragStart.y;
-
 		const shape = state.shapes[state.selectedShapeIndex];
 
-		if (shape.type === 'poly') {
-			shape.points.forEach(p => {
-				p.x += dx;
-				p.y += dy;
+		// Case A: Dragging a Vertex (Point)
+		if (state.selectedPointIndex > -1 && shape.type === 'poly') {
+			let targetX = w.x;
+			let targetY = w.y;
+			const snapThreshold = 0.5; // World units
+			state.snapLines = [];
+
+			// Collect snap candidates (vertices of all shapes)
+			const candidates = [];
+			state.shapes.forEach((s, sIdx) => {
+				if (s.type === 'poly') {
+					s.points.forEach((p, pIdx) => {
+						// Don't snap to self
+						if (sIdx === state.selectedShapeIndex && pIdx === state.selectedPointIndex) return;
+						candidates.push(p);
+					});
+				} else if (s.type === 'rect') {
+					candidates.push({ x: s.x, y: s.y });
+					candidates.push({ x: s.x + s.w, y: s.y });
+					candidates.push({ x: s.x + s.w, y: s.y + s.h });
+					candidates.push({ x: s.x, y: s.y + s.h });
+				} else if (s.type === 'circle') {
+					candidates.push({ x: s.x, y: s.y });
+				}
 			});
-		} else {
-			shape.x += dx;
-			shape.y += dy;
+
+			// Check Snapping
+			let snappedX = false;
+			let snappedY = false;
+
+			for (const c of candidates) {
+				// Snap X (Vertical alignment)
+				if (!snappedX && Math.abs(c.x - targetX) < snapThreshold) {
+					targetX = c.x;
+					snappedX = true;
+					// Add visual guide
+					state.snapLines.push({ x1: c.x, y1: c.y - 100, x2: c.x, y2: c.y + 100 });
+					state.snapLines.push({ x1: c.x, y1: c.y, x2: targetX, y2: targetY });
+				}
+				// Snap Y (Horizontal alignment)
+				if (!snappedY && Math.abs(c.y - targetY) < snapThreshold) {
+					targetY = c.y;
+					snappedY = true;
+					// Add visual guide
+					state.snapLines.push({ x1: c.x - 100, y1: c.y, x2: c.x + 100, y2: c.y });
+					state.snapLines.push({ x1: c.x, y1: c.y, x2: targetX, y2: targetY });
+				}
+			}
+
+			// Apply position
+			shape.points[state.selectedPointIndex].x = targetX;
+			shape.points[state.selectedPointIndex].y = targetY;
+			state.dragStart = w; // Keep drag start synced
+		}
+		// Case B: Dragging Whole Shape
+		else {
+			const dx = w.x - state.dragStart.x;
+			const dy = w.y - state.dragStart.y;
+
+			if (shape.type === 'poly') {
+				shape.points.forEach(p => {
+					p.x += dx;
+					p.y += dy;
+				});
+			} else {
+				shape.x += dx;
+				shape.y += dy;
+			}
+			state.dragStart = w;
 		}
 
-		state.dragStart = w;
 		draw2D();
 		// Debounce 3D update? For now update on mouseup
 	} else if (state.mode === 'draw_poly') {
@@ -408,6 +509,8 @@ ui.canvas2d.addEventListener('mousemove', (e) => {
 ui.canvas2d.addEventListener('mouseup', () => {
 	if (state.isDragging) {
 		state.isDragging = false;
+		state.snapLines = []; // Clear guides
+		draw2D();
 		update3D();
 		renderProperties(); // Update positions in UI
 	}
@@ -463,9 +566,22 @@ function renderProperties() {
 		addInput(container, 'Center Y', shape.y, v => { shape.y = v; draw2D(); update3D(); });
 		addInput(container, 'Diameter', shape.diameter, v => { shape.diameter = v; draw2D(); update3D(); });
 	} else if (shape.type === 'poly') {
-		container.innerHTML += '<div class="text-xs mb-2">Select an edge on the canvas to edit line properties.</div>';
+		container.innerHTML += '<div class="text-xs mb-2">Select a vertex or edge to edit specific properties.</div>';
 
-		if (state.selectedEdgeIndex > -1) {
+		// Vertex Editing
+		if (state.selectedPointIndex > -1) {
+			const idx = state.selectedPointIndex;
+			const pt = shape.points[idx];
+			const header = document.createElement('div');
+			header.className = 'divider my-1 text-xs';
+			header.innerText = `Vertex ${idx}`;
+			container.appendChild(header);
+
+			addInput(container, 'X', pt.x, v => { pt.x = v; draw2D(); update3D(); });
+			addInput(container, 'Y', pt.y, v => { pt.y = v; draw2D(); update3D(); });
+		}
+		// Edge Editing
+		else if (state.selectedEdgeIndex > -1) {
 			const idxA = state.selectedEdgeIndex;
 			const idxB = (idxA + 1) % shape.points.length;
 			const pA = shape.points[idxA];
@@ -490,13 +606,10 @@ function renderProperties() {
 			header.innerText = `Edge ${idxA}`;
 			container.appendChild(header);
 
-			addInput(container, 'Start X', pA.x, v => {
-				const diff = v - pA.x;
-				pA.x = v;
-				// Move B too to keep line same? No, user wants to move point A.
-				// But prompt says "line x,y position". Usually means start point.
-				draw2D(); update3D();
-			});
+			// Only show Start Point (Vertex A) coords if vertex not selected,
+			// though usually vertex selection takes precedence now.
+			// We can keep these for convenience.
+			addInput(container, 'Start X', pA.x, v => { pA.x = v; draw2D(); update3D(); });
 			addInput(container, 'Start Y', pA.y, v => { pA.y = v; draw2D(); update3D(); });
 
 			addInput(container, 'Length', len, v => updatePointB(v, angleDeg));
@@ -585,6 +698,7 @@ ui.btnDelete.onclick = () => {
 		state.shapes.splice(state.selectedShapeIndex, 1);
 		state.selectedShapeIndex = -1;
 		state.selectedEdgeIndex = -1;
+		state.selectedPointIndex = -1;
 		draw2D();
 		update3D();
 		renderProperties();

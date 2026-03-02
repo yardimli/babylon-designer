@@ -1,0 +1,352 @@
+{
+  "version": 1.5,
+  "materialFiles": [
+    "generic.json"
+  ],
+  "lights": [],
+  "meshes": [
+    {
+      "id": "Cube_1772447471042",
+      "name": "Cube_1772447471042",
+      "position": {
+        "x": 0,
+        "y": 0.5,
+        "z": 0
+      },
+      "rotation": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 1
+      },
+      "scaling": {
+        "x": 2,
+        "y": 0.3,
+        "z": 2
+      },
+      "pivot": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "materialId": "grass",
+      "uScale": 1,
+      "vScale": 1,
+      "parentId": null,
+      "receiveShadows": false,
+      "castShadows": true,
+      "sortIndex": 0,
+      "visible": true,
+      "isNegative": false,
+      "originalMaterialId": null,
+      "isLocked": true,
+      "isPrimitive": true,
+      "type": "Cube"
+    },
+    {
+      "id": "Cylinder_1772447546699",
+      "name": "Cylinder_1772447546699",
+      "position": {
+        "x": 0,
+        "y": -0.49870532751083374,
+        "z": 0
+      },
+      "rotation": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 1
+      },
+      "scaling": {
+        "x": 0.30000001192092896,
+        "y": 2,
+        "z": 0.30000001192092896
+      },
+      "pivot": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "materialId": "white",
+      "uScale": 1,
+      "vScale": 1,
+      "parentId": null,
+      "receiveShadows": false,
+      "castShadows": true,
+      "sortIndex": 0,
+      "visible": true,
+      "isNegative": false,
+      "originalMaterialId": null,
+      "isLocked": false,
+      "isPrimitive": true,
+      "type": "Cylinder"
+    },
+    {
+      "id": "Cube_1772447604267",
+      "name": "Cube_1772447604267",
+      "position": {
+        "x": 0,
+        "y": 1.3629909753799438,
+        "z": 1.100000023841858
+      },
+      "rotation": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 1
+      },
+      "scaling": {
+        "x": 2,
+        "y": 2,
+        "z": 0.20000000298023224
+      },
+      "pivot": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "materialId": "grass",
+      "uScale": 1,
+      "vScale": 1,
+      "parentId": null,
+      "receiveShadows": false,
+      "castShadows": true,
+      "sortIndex": 0,
+      "visible": true,
+      "isNegative": false,
+      "originalMaterialId": null,
+      "isLocked": false,
+      "isPrimitive": true,
+      "type": "Cube"
+    },
+    {
+      "id": "Cylinder_1772447672388",
+      "name": "Cylinder_1772447672388",
+      "position": {
+        "x": 0,
+        "y": -1.54,
+        "z": 0
+      },
+      "rotation": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 1
+      },
+      "scaling": {
+        "x": 2,
+        "y": 0.2,
+        "z": 2
+      },
+      "pivot": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "materialId": "grass",
+      "uScale": 1,
+      "vScale": 1,
+      "parentId": null,
+      "receiveShadows": false,
+      "castShadows": true,
+      "sortIndex": 0,
+      "visible": true,
+      "isNegative": false,
+      "originalMaterialId": null,
+      "isLocked": false,
+      "isPrimitive": true,
+      "type": "Cylinder"
+    },
+    {
+      "id": "Cube_1772447725571",
+      "name": "Cube_1772447725571",
+      "position": {
+        "x": 0,
+        "y": 2.066169261932373,
+        "z": 1.1104422807693481
+      },
+      "rotation": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 1
+      },
+      "scaling": {
+        "x": 1.5,
+        "y": 0.10000000149011612,
+        "z": 0.4000000059604645
+      },
+      "pivot": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "materialId": "negativeMat",
+      "uScale": 1,
+      "vScale": 1,
+      "parentId": null,
+      "receiveShadows": false,
+      "castShadows": true,
+      "sortIndex": 0,
+      "visible": true,
+      "isNegative": true,
+      "originalMaterialId": null,
+      "isLocked": false,
+      "isPrimitive": true,
+      "type": "Cube"
+    },
+    {
+      "id": "Cube_1772447725571_dup",
+      "name": "Cube_1772447725571_dup",
+      "position": {
+        "x": 0,
+        "y": 1.7533189058303833,
+        "z": 1.1104422807693481
+      },
+      "rotation": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 1
+      },
+      "scaling": {
+        "x": 1.5,
+        "y": 0.10000000149011612,
+        "z": 0.4000000059604645
+      },
+      "pivot": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "materialId": "negativeMat",
+      "uScale": 1,
+      "vScale": 1,
+      "parentId": null,
+      "receiveShadows": false,
+      "castShadows": true,
+      "sortIndex": 0,
+      "visible": true,
+      "isNegative": true,
+      "originalMaterialId": null,
+      "isLocked": false,
+      "isPrimitive": true,
+      "type": "Cube"
+    },
+    {
+      "id": "Cube_1772447725571_dup_dup",
+      "name": "Cube_1772447725571_dup_dup",
+      "position": {
+        "x": 0,
+        "y": 1.466623067855835,
+        "z": 1.1104422807693481
+      },
+      "rotation": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 1
+      },
+      "scaling": {
+        "x": 1.5,
+        "y": 0.10000000149011612,
+        "z": 0.4000000059604645
+      },
+      "pivot": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "materialId": "negativeMat",
+      "uScale": 1,
+      "vScale": 1,
+      "parentId": null,
+      "receiveShadows": false,
+      "castShadows": true,
+      "sortIndex": 0,
+      "visible": true,
+      "isNegative": true,
+      "originalMaterialId": null,
+      "isLocked": false,
+      "isPrimitive": true,
+      "type": "Cube"
+    },
+    {
+      "id": "Cube_1772447725571_dup_dup_dup",
+      "name": "Cube_1772447725571_dup_dup_dup",
+      "position": {
+        "x": 0,
+        "y": 1.1752594709396362,
+        "z": 1.1104422807693481
+      },
+      "rotation": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 1
+      },
+      "scaling": {
+        "x": 1.5,
+        "y": 0.10000000149011612,
+        "z": 0.4000000059604645
+      },
+      "pivot": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "materialId": "negativeMat",
+      "uScale": 1,
+      "vScale": 1,
+      "parentId": null,
+      "receiveShadows": false,
+      "castShadows": true,
+      "sortIndex": 0,
+      "visible": true,
+      "isNegative": true,
+      "originalMaterialId": null,
+      "isLocked": false,
+      "isPrimitive": true,
+      "type": "Cube"
+    },
+    {
+      "id": "Cube_1772447725571_dup_dup_dup_dup",
+      "name": "Cube_1772447725571_dup_dup_dup_dup",
+      "position": {
+        "x": 0,
+        "y": 0.8743705749511719,
+        "z": 1.1104422807693481
+      },
+      "rotation": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 1
+      },
+      "scaling": {
+        "x": 1.5,
+        "y": 0.10000000149011612,
+        "z": 0.4000000059604645
+      },
+      "pivot": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "materialId": "negativeMat",
+      "uScale": 1,
+      "vScale": 1,
+      "parentId": null,
+      "receiveShadows": false,
+      "castShadows": true,
+      "sortIndex": 0,
+      "visible": true,
+      "isNegative": true,
+      "originalMaterialId": null,
+      "isLocked": false,
+      "isPrimitive": true,
+      "type": "Cube"
+    }
+  ],
+  "transformNodes": []
+}

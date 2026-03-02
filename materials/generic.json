@@ -291,17 +291,17 @@
       1
     ],
     "emissive": [
-      0,
-      0,
-      0
+      0.25882352941176473,
+      0.25882352941176473,
+      0.25882352941176473
     ],
     "ambient": [
-      0,
-      0,
-      0
+      0.23137254901960785,
+      0.23137254901960785,
+      0.23137254901960785
     ],
     "alpha": 1,
-    "specularPower": 128,
+    "specularPower": 98,
     "diffuseTexture": null,
     "bumpTexture": null,
     "bumpLevel": 1,
@@ -343,9 +343,9 @@
   {
     "name": "shoes",
     "diffuse": [
-      0.5450980392156862,
-      0.3333333333333333,
-      0.3333333333333333
+      0.6470588235294118,
+      0.5137254901960784,
+      0.5137254901960784
     ],
     "specular": [
       1,
@@ -644,6 +644,37 @@
     "alpha": 1,
     "specularPower": 126,
     "diffuseTexture": "/materials/textures/1771935856094_Beigewall2_Texture.png",
+    "bumpTexture": null,
+    "bumpLevel": 1,
+    "useParallax": false,
+    "useParallaxOcclusion": false,
+    "parallaxScaleBias": 0.05
+  },
+  {
+    "name": "wood",
+    "diffuse": [
+      1,
+      1,
+      1
+    ],
+    "specular": [
+      1,
+      1,
+      1
+    ],
+    "emissive": [
+      0,
+      0,
+      0
+    ],
+    "ambient": [
+      0,
+      0,
+      0
+    ],
+    "alpha": 1,
+    "specularPower": 79,
+    "diffuseTexture": "/materials/textures/1772347724477_Wood2_Texture.png",
     "bumpTexture": null,
     "bumpLevel": 1,
     "useParallax": false,

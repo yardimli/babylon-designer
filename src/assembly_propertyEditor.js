@@ -7,7 +7,8 @@ import { setShadowCaster, disposeShadowGenerator } from "./assembly_shadowManage
 import { createTransformNode } from "./assembly_transformNodeManager.js";
 import { recordState } from "./assembly_historyManager.js";
 import { refreshSceneGraph, setNodeParent } from "./assembly_treeViewManager.js";
-import { updateCSG, getNegativeMaterial } from "./assembly_csgManager.js"; // Added
+import { updateCSG, getNegativeMaterial } from "./assembly_csgManager.js";
+import { updateGizmoAttachment } from "./assembly_gizmoControl.js"; // Added
 
 let observer = null;
 
@@ -54,9 +55,11 @@ export function updatePropertyEditor(targets) {
 	if (targets.length === 0) {
 		editor.classList.add("opacity-50", "pointer-events-none");
 		document.getElementById("prop-id").value = "";
-		// Reset visibility checkbox
+		// Reset checkboxes
 		const visInput = document.getElementById("prop-visible");
 		if (visInput) visInput.checked = false;
+		const lockInput = document.getElementById("prop-locked"); // Added
+		if (lockInput) lockInput.checked = false; // Added
 
 		document.getElementById("light-properties").classList.add("hidden");
 		if (header) header.innerText = "Properties";
@@ -102,7 +105,6 @@ export function updatePropertyEditor(targets) {
 	const allLights = targets.every(t => t.metadata && t.metadata.isLightProxy);
 	const lightProps = document.getElementById("light-properties");
 
-	// Hide Rotation and Scale for lights
 	const rotSpan = Array.from(document.querySelectorAll('#transform-container span')).find(s => s.innerText === "Rotation (Deg)");
 	const sclSpan = Array.from(document.querySelectorAll('#transform-container span')).find(s => s.innerText === "Scale");
 
@@ -178,6 +180,15 @@ function syncUIFromTargets(targets) {
 		visInput.indeterminate = someEnabled && !allEnabled;
 	}
 
+	// Locked Sync (Added)
+	const lockInput = document.getElementById("prop-locked");
+	if (lockInput) {
+		const allLocked = targets.every(t => t.metadata && t.metadata.isLocked);
+		const someLocked = targets.some(t => t.metadata && t.metadata.isLocked);
+		lockInput.checked = allLocked;
+		lockInput.indeterminate = someLocked && !allLocked;
+	}
+
 	// Position
 	const px = getCommonValue(targets, t => t.position.x);
 	const py = getCommonValue(targets, t => t.position.y);
@@ -246,7 +257,13 @@ function bindInputs(targets) {
 		return val === "" ? null : parseFloat(val);
 	};
 
+	// Check if any target is locked
+	const isLocked = targets.some(t => t.metadata && t.metadata.isLocked);
+
 	const updateTargets = () => {
+		// Prevent transform updates if locked
+		if (isLocked) return;
+
 		const px = getVal("pos-x");
 		const py = getVal("pos-y");
 		const pz = getVal("pos-z");
@@ -260,6 +277,8 @@ function bindInputs(targets) {
 		const sz = getVal("scl-z");
 
 		targets.forEach(mesh => {
+			if (mesh.metadata && mesh.metadata.isLocked) return; // Double check
+
 			if (px !== null) mesh.position.x = px;
 			if (py !== null) mesh.position.y = py;
 			if (pz !== null) mesh.position.z = pz;
@@ -294,11 +313,15 @@ function bindInputs(targets) {
 		markModified();
 	};
 
+	// Disable transform inputs if locked
 	document.querySelectorAll("#transform-container input").forEach(input => {
+		input.disabled = isLocked; // Disable UI
 		input.oninput = updateTargets;
 		input.onchange = () => {
-			updateCSG();
-			recordState();
+			if (!isLocked) {
+				updateCSG();
+				recordState();
+			}
 		};
 	});
 
@@ -313,6 +336,25 @@ function bindInputs(targets) {
 			markModified();
 			recordState();
 			refreshSceneGraph();
+		};
+	}
+
+	// Bind Locked Checkbox (Added)
+	const lockInput = document.getElementById("prop-locked");
+	if (lockInput) {
+		lockInput.onchange = (e) => {
+			const locked = e.target.checked;
+			targets.forEach(t => {
+				if (!t.metadata) t.metadata = {};
+				t.metadata.isLocked = locked;
+			});
+			// Refresh Gizmo state (hide if locked)
+			updateGizmoAttachment(targets);
+			// Refresh inputs (disable if locked)
+			bindInputs(targets);
+
+			markModified();
+			recordState();
 		};
 	}
 
@@ -372,6 +414,7 @@ function bindInputs(targets) {
 }
 
 function updateParentDropdown(targets) {
+	// ... (Existing implementation) ...
 	const select = document.getElementById("prop-parent");
 	select.innerHTML = '<option value="">None</option>';
 
@@ -423,6 +466,7 @@ function updateParentDropdown(targets) {
 }
 
 function updateMaterialDropdown(targets) {
+	// ... (Existing implementation) ...
 	const select = document.getElementById("prop-material");
 	select.innerHTML = '<option value="">None</option>';
 
@@ -456,6 +500,7 @@ function updateMaterialDropdown(targets) {
 }
 
 function bindLightInputs(targets) {
+	// ... (Existing implementation) ...
 	const lights = targets.map(t => scene.getLightByID(t.metadata.lightId)).filter(l => l);
 	if (lights.length === 0) return;
 
@@ -585,6 +630,7 @@ function bindLightInputs(targets) {
 }
 
 function bindDuplicateButton(targets) {
+	// ... (Existing implementation) ...
 	const btn = document.getElementById("btn-duplicate-asset");
 	if (!btn) return;
 
@@ -609,6 +655,7 @@ function bindDuplicateButton(targets) {
 }
 
 function duplicateHierarchy(node, parent) {
+	// ... (Existing implementation) ...
 	let newNode = null;
 	const baseId = node.name + "_dup";
 	const newId = getUniqueId(scene, baseId);
@@ -690,6 +737,7 @@ function duplicateHierarchy(node, parent) {
 }
 
 function bindDeleteButton(targets) {
+	// ... (Existing implementation) ...
 	const btn = document.getElementById("btn-delete-asset");
 	if (!btn) return;
 

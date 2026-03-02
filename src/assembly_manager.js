@@ -1,4 +1,4 @@
-import { TransformNode, Quaternion, Vector3, Color3, StandardMaterial, Mesh } from "@babylonjs/core"; // Added Mesh
+import { TransformNode, Quaternion, Vector3, Color3, StandardMaterial, Mesh } from "@babylonjs/core";
 import { scene, resetAxisIndicator, getUniqueId, engine } from "./assembly_scene.js";
 import { setupGizmos, disposeGizmos } from "./assembly_gizmoControl.js";
 import { updatePropertyEditor } from "./assembly_propertyEditor.js";
@@ -6,7 +6,7 @@ import { refreshSceneGraph } from "./assembly_treeViewManager.js";
 import { createLight } from "./assembly_lightManager.js";
 import { createTransformNode } from "./assembly_transformNodeManager.js";
 import { createPrimitive, createShapeMesh } from "./assembly_primitives.js";
-import { clearShadowManagers, setShadowCaster } from "./assembly_shadowManager.js"; // Added setShadowCaster
+import { clearShadowManagers, setShadowCaster } from "./assembly_shadowManager.js";
 import { setupHistory, recordState } from "./assembly_historyManager.js";
 import { selectNode } from "./assembly_selectionManager.js";
 import { getLoadedMaterialFiles, loadMaterialFile, clearMaterialManager } from "./assembly_materialManager.js";
@@ -140,7 +140,6 @@ export async function importSceneAsAsset(filename, position = Vector3.Zero(), sa
 				idMap.set(nodeData.id, node);
 				if (nodeData.name) nameMap.set(nodeData.name, node);
 
-				// Apply visibility from source file
 				if (nodeData.visible !== undefined) node.setEnabled(nodeData.visible);
 			});
 		}
@@ -158,7 +157,6 @@ export async function importSceneAsAsset(filename, position = Vector3.Zero(), sa
 					idMap.set(lightData.id, proxy);
 					if (lightData.name) nameMap.set(lightData.name, proxy);
 
-					// Apply visibility from source file
 					if (lightData.visible !== undefined) proxy.setEnabled(lightData.visible);
 				}
 			});
@@ -170,7 +168,6 @@ export async function importSceneAsAsset(filename, position = Vector3.Zero(), sa
 				const meshDataClone = { ...meshData, id: p(meshData.id) };
 				let mesh;
 
-				// Check for Shape vs Primitive
 				if (meshData.isShape) {
 					mesh = createShapeMesh(meshData.shapeData, meshData.shapeName || meshData.name, meshDataClone);
 				} else {
@@ -178,7 +175,6 @@ export async function importSceneAsAsset(filename, position = Vector3.Zero(), sa
 				}
 
 				if (mesh) {
-					//  Restore CSG state
 					if (meshData.isNegative) {
 						mesh.metadata.isNegative = true;
 						mesh.metadata.originalMaterialId = meshData.originalMaterialId;
@@ -192,7 +188,6 @@ export async function importSceneAsAsset(filename, position = Vector3.Zero(), sa
 							} else {
 								mesh.material = mat;
 							}
-							// Restore texture scale when importing part into assembly
 							if (meshData.uScale !== undefined && meshData.vScale !== undefined) {
 								if (mat.diffuseTexture) {
 									mat.diffuseTexture.uScale = meshData.uScale;
@@ -206,19 +201,16 @@ export async function importSceneAsAsset(filename, position = Vector3.Zero(), sa
 						}
 					}
 
-					// Apply negative material if needed
 					if (meshData.isNegative) {
 						mesh.material = getNegativeMaterial(scene);
 					}
 
-					// Ensure metadata exists and mark as internal
 					if (!mesh.metadata) mesh.metadata = {};
 					mesh.metadata.isInternal = true;
 
 					idMap.set(meshData.id, mesh);
 					if (meshData.name) nameMap.set(meshData.name, mesh);
 
-					// Apply visibility from source file
 					if (meshData.visible !== undefined) mesh.setEnabled(meshData.visible);
 
 					mesh.freezeWorldMatrix();
@@ -250,49 +242,39 @@ export async function importSceneAsAsset(filename, position = Vector3.Zero(), sa
 		restoreParents(data.lights);
 		restoreParents(data.meshes);
 
-		updateCSG(); // Recompute CSG after importing part
+		updateCSG();
 
 		// 5. Merge Meshes for the imported part
-		// Collect all descendants of the rootNode
 		let merge_meshes = true;
 		if (merge_meshes) {
-			const allChildMeshes = rootNode.getChildMeshes(false); // false = get all descendants
+			const allChildMeshes = rootNode.getChildMeshes(false);
 			const meshesToMerge = [];
 			const meshesToDispose = [];
 
 			allChildMeshes.forEach(m => {
-				// Skip light proxies
 				if (m.metadata && m.metadata.isLightProxy) return;
 
-				// Merge visible, enabled meshes (includes CSG results and standard meshes)
 				if (m.isVisible && m.isEnabled()) {
 					meshesToMerge.push(m);
 				} else {
-					// Dispose hidden meshes (negatives, original positives hidden by CSG)
 					meshesToDispose.push(m);
 				}
 			});
 
 			if (meshesToMerge.length > 0) {
-				// MergeMeshes(meshes, disposeSource, allow32BitsIndices, meshSubclass, subdivideWithSubMeshes, multiMultiMaterials)
-				// We set disposeSource to false so we can handle disposal manually and safely
 				const merged = Mesh.MergeMeshes(meshesToMerge, false, true, undefined, false, true);
 				if (merged) {
 					merged.name = rootNode.name + "_visuals";
 					merged.metadata = {isInternal: true};
-					// Use setParent to maintain world transform relative to the rootNode
 					merged.setParent(rootNode);
 
-					// Set default shadow properties for the merged mesh
 					merged.receiveShadows = true;
 					setShadowCaster(merged, true);
 
-					// Ensure the merged mesh is pickable so the part can be selected
 					merged.isPickable = true;
 				}
 			}
 
-			// Clean up the unused hidden meshes and the original merged sources
 			[...meshesToMerge, ...meshesToDispose].forEach(m => {
 				if (!m.isDisposed()) m.dispose();
 			});
@@ -313,14 +295,12 @@ export async function importSceneAsAsset(filename, position = Vector3.Zero(), sa
 
 function serializeAssembly() {
 	const data = {
-		version: 1.1, // Bumped version
+		version: 1.1,
 		type: "assembly",
 		scenes: [],
 		lights:[]
 	};
 
-	// 1. Serialize Imported Scenes (Roots)
-	// Collect and Sort roots by sortIndex to ensure order is preserved
 	const roots = scene.transformNodes.filter(node => node.metadata && node.metadata.isAssemblyRoot);
 	roots.sort((a, b) => (a.metadata.sortIndex || 0) - (b.metadata.sortIndex || 0));
 
@@ -340,14 +320,12 @@ function serializeAssembly() {
 			rotation: rot,
 			scaling: { x: node.scaling.x, y: node.scaling.y, z: node.scaling.z },
 			name: node.name,
-			// Save visibility of the whole part set root
 			visible: node.isEnabled(),
-			// Save the sort index
-			sortIndex: node.metadata.sortIndex
+			sortIndex: node.metadata.sortIndex,
+			isLocked: node.metadata.isLocked || false // Added
 		});
 	});
 
-	// 2. Serialize Local Lights
 	scene.meshes.forEach(mesh => {
 		if (mesh.metadata && mesh.metadata.isLightProxy && !mesh.metadata.isInternal) {
 			const light = scene.getLightByID(mesh.metadata.lightId);
@@ -357,14 +335,14 @@ function serializeAssembly() {
 					type: mesh.metadata.lightType,
 					position: { x: light.position.x, y: light.position.y, z: light.position.z },
 					direction: light.direction ? { x: light.direction.x, y: light.direction.y, z: light.direction.z } : null,
-					angle: light.angle !== undefined ? light.angle : null, // Save angle
-					exponent: light.exponent !== undefined ? light.exponent : null, // Save exponent
+					angle: light.angle !== undefined ? light.angle : null,
+					exponent: light.exponent !== undefined ? light.exponent : null,
 					intensity: light.intensity,
 					diffuse: { r: light.diffuse.r, g: light.diffuse.g, b: light.diffuse.b },
 					name: mesh.name,
 					parentId: light.parent ? light.parent.id : null,
-					// Save visibility
-					visible: mesh.isEnabled()
+					visible: mesh.isEnabled(),
+					isLocked: mesh.metadata.isLocked || false // Added
 				});
 			}
 		}
@@ -404,17 +382,15 @@ export async function loadAssemblyData(data) {
 	// 1. Load Scenes
 	if (data.scenes) {
 		for (const s of data.scenes) {
-			// Pass s.id as savedId to ensure ID stability for parenting
 			const root = await importSceneAsAsset(s.sourceFile, Vector3.Zero(), s.id);
 			if (root) {
 				root.name = s.name;
 				root.position.set(s.position.x, s.position.y, s.position.z);
 				root.rotationQuaternion = new Quaternion(s.rotation.x, s.rotation.y, s.rotation.z, s.rotation.w);
 				root.scaling.set(s.scaling.x, s.scaling.y, s.scaling.z);
-				// Restore visibility of the whole part set root
 				if (s.visible !== undefined) root.setEnabled(s.visible);
-				// Restore sort index
 				if (s.sortIndex !== undefined) root.metadata.sortIndex = s.sortIndex;
+				if (s.isLocked !== undefined) root.metadata.isLocked = s.isLocked; // Added
 			}
 		}
 	}
@@ -435,13 +411,13 @@ export async function loadAssemblyData(data) {
 						if (light) light.parent = parent;
 					}
 				}
-				// Restore visibility
 				if (l.visible !== undefined) proxy.setEnabled(l.visible);
+				if (l.isLocked !== undefined) proxy.metadata.isLocked = l.isLocked; // Added
 			}
 		});
 	}
 
-	updateCSG(); // Recompute CSG after loading all parts
+	updateCSG();
 	refreshSceneGraph();
 }
 
@@ -502,20 +478,17 @@ function createNewAssembly() {
 	refreshSceneGraph();
 }
 
-// ... UI Helpers (handleSaveAction, openSaveModal, etc) ...
 function handleSaveAction() {
 	if (currentFileName) saveAssemblyInternal(currentFileName.replace(".json", ""));
 	else openSaveModal();
 }
 
-// New function for Save As
 function handleSaveAsAction() {
 	openSaveModal(currentFileName);
 }
 
 function openSaveModal(prefillName = null) {
 	populateAssemblyList("save");
-	// Prefill with current name if available, stripping extension
 	saveNameInput.value = prefillName ? prefillName.replace(".json", "") : "";
 	document.getElementById("modal-title").innerText = "Save Assembly";
 	document.getElementById("btn-modal-save").classList.remove("hidden");

@@ -53,7 +53,6 @@ export function setupAlignmentManager() {
 	if (btnSpace) btnSpace.onclick = () => performSpacing();
 }
 
-// Called by selectionManager when selection changes
 export function updateAlignButton(selectedCount) {
 	if (!btnAlign) return;
 	if (selectedCount > 1) {
@@ -73,12 +72,10 @@ function getActiveAxes() {
 	};
 }
 
-// Helper to get world bounds or position for a node
 function getNodeBounds(node) {
 	if (node instanceof AbstractMesh) {
-		// Force world matrix update to ensure bounds are correct
 		node.computeWorldMatrix(true);
-		const hierarchy = node.getHierarchyBoundingVectors(true); // Include children
+		const hierarchy = node.getHierarchyBoundingVectors(true);
 		return {
 			min: hierarchy.min,
 			max: hierarchy.max,
@@ -86,7 +83,6 @@ function getNodeBounds(node) {
 			pivot: node.absolutePosition.clone()
 		};
 	} else {
-		// TransformNode (use position as min/max/center)
 		node.computeWorldMatrix(true);
 		const pos = node.absolutePosition.clone();
 		return {
@@ -105,33 +101,38 @@ function performAlignment(type) {
 	const axes = getActiveAxes();
 	const boundsList = nodes.map(n => ({ node: n, bounds: getNodeBounds(n) }));
 
-	// Calculate target value based on all selected nodes
+	// 1. Identify Locked Nodes
+	const lockedNodes = nodes.filter(n => n.metadata && n.metadata.isLocked);
+
+	// 2. Determine Reference Group (Locked nodes if any, else all)
+	const referenceList = lockedNodes.length > 0
+		? boundsList.filter(b => b.node.metadata && b.node.metadata.isLocked)
+		: boundsList;
+
 	const target = { x: 0, y: 0, z: 0 };
 
 	if (type === "min") {
-		target.x = Math.min(...boundsList.map(b => b.bounds.min.x));
-		target.y = Math.min(...boundsList.map(b => b.bounds.min.y));
-		target.z = Math.min(...boundsList.map(b => b.bounds.min.z));
+		target.x = Math.min(...referenceList.map(b => b.bounds.min.x));
+		target.y = Math.min(...referenceList.map(b => b.bounds.min.y));
+		target.z = Math.min(...referenceList.map(b => b.bounds.min.z));
 	} else if (type === "max") {
-		target.x = Math.max(...boundsList.map(b => b.bounds.max.x));
-		target.y = Math.max(...boundsList.map(b => b.bounds.max.y));
-		target.z = Math.max(...boundsList.map(b => b.bounds.max.z));
+		target.x = Math.max(...referenceList.map(b => b.bounds.max.x));
+		target.y = Math.max(...referenceList.map(b => b.bounds.max.y));
+		target.z = Math.max(...referenceList.map(b => b.bounds.max.z));
 	} else if (type === "center") {
-		// Average center of the selection bounds
-		const minX = Math.min(...boundsList.map(b => b.bounds.min.x));
-		const maxX = Math.max(...boundsList.map(b => b.bounds.max.x));
-		const minY = Math.min(...boundsList.map(b => b.bounds.min.y));
-		const maxY = Math.max(...boundsList.map(b => b.bounds.max.y));
-		const minZ = Math.min(...boundsList.map(b => b.bounds.min.z));
-		const maxZ = Math.max(...boundsList.map(b => b.bounds.max.z));
+		const minX = Math.min(...referenceList.map(b => b.bounds.min.x));
+		const maxX = Math.max(...referenceList.map(b => b.bounds.max.x));
+		const minY = Math.min(...referenceList.map(b => b.bounds.min.y));
+		const maxY = Math.max(...referenceList.map(b => b.bounds.max.y));
+		const minZ = Math.min(...referenceList.map(b => b.bounds.min.z));
+		const maxZ = Math.max(...referenceList.map(b => b.bounds.max.z));
 		target.x = (minX + maxX) / 2;
 		target.y = (minY + maxY) / 2;
 		target.z = (minZ + maxZ) / 2;
 	} else if (type === "pivot") {
-		// Average pivot point
 		let sum = new Vector3(0, 0, 0);
-		boundsList.forEach(b => sum.addInPlace(b.bounds.pivot));
-		sum.scaleInPlace(1.0 / boundsList.length);
+		referenceList.forEach(b => sum.addInPlace(b.bounds.pivot));
+		sum.scaleInPlace(1.0 / referenceList.length);
 		target.x = sum.x;
 		target.y = sum.y;
 		target.z = sum.z;
@@ -139,16 +140,14 @@ function performAlignment(type) {
 
 	// Apply
 	nodes.forEach(node => {
+		// Skip locked nodes
+		if (node.metadata && node.metadata.isLocked) return;
+
 		const currentPos = node.absolutePosition;
 		const bounds = getNodeBounds(node);
 		const newPos = currentPos.clone();
 
-		// Calculate offset required to move the specific feature to the target
-		// NewPos = Target - (FeaturePos - CurrentPos)
-		//        = CurrentPos + (Target - FeaturePos)
-
 		if (axes.x) {
-			// FIXED: Removed incorrect .bounds property access
 			let featureX = (type === "min") ? bounds.min.x : (type === "max") ? bounds.max.x : (type === "center") ? bounds.center.x : bounds.pivot.x;
 			newPos.x = currentPos.x + (target.x - featureX);
 		}
@@ -169,7 +168,7 @@ function performAlignment(type) {
 
 function performDistribution(type) {
 	const nodes = getSelectedNodes();
-	if (nodes.length < 3) return; // Need at least 3 to distribute
+	if (nodes.length < 3) return;
 
 	const axes = getActiveAxes();
 	const activeAxisKeys = [];
@@ -178,7 +177,6 @@ function performDistribution(type) {
 	if (axes.z) activeAxisKeys.push("z");
 
 	activeAxisKeys.forEach(axis => {
-		// Sort nodes by position on this axis
 		const sorted = [...nodes].sort((a, b) => {
 			return getNodeBounds(a).center[axis] - getNodeBounds(b).center[axis];
 		});
@@ -189,7 +187,6 @@ function performDistribution(type) {
 		const lastBounds = getNodeBounds(last);
 
 		if (type === "center") {
-			// Distribute centers evenly between first and last
 			const startVal = firstBounds.center[axis];
 			const endVal = lastBounds.center[axis];
 			const span = endVal - startVal;
@@ -197,6 +194,8 @@ function performDistribution(type) {
 
 			for (let i = 1; i < sorted.length - 1; i++) {
 				const node = sorted[i];
+				if (node.metadata && node.metadata.isLocked) continue; // Skip locked
+
 				const currentBounds = getNodeBounds(node);
 				const targetVal = startVal + (step * i);
 				const offset = targetVal - currentBounds.center[axis];
@@ -206,18 +205,10 @@ function performDistribution(type) {
 				node.setAbsolutePosition(pos);
 			}
 		} else if (type === "gap") {
-			// Distribute gaps evenly
-			// Total Span = (Last Max - First Min)
-			// Total Object Size = Sum of (Max - Min) for all objects
-			// Total Gap Space = Total Span - Total Object Size
-			// Gap = Total Gap Space / (Count - 1)
-
-			// 1. Find total span from "start of first" to "end of last"
 			const startEdge = firstBounds.min[axis];
 			const endEdge = lastBounds.max[axis];
 			const totalAvailable = endEdge - startEdge;
 
-			// 2. Sum widths of all objects
 			let totalWidth = 0;
 			const widths = sorted.map(n => {
 				const b = getNodeBounds(n);
@@ -226,24 +217,22 @@ function performDistribution(type) {
 				return w;
 			});
 
-			// 3. Calculate gap
 			const totalGap = totalAvailable - totalWidth;
 			const gap = totalGap / (sorted.length - 1);
 
-			// 4. Position
 			let currentEdge = startEdge;
 			sorted.forEach((node, i) => {
-				// First node stays put (conceptually), but we align it to ensure exact math
-				// We align the Min edge of the node to currentEdge
+				if (!node.metadata || !node.metadata.isLocked) {
+					const b = getNodeBounds(node);
+					const currentMin = b.min[axis];
+					const offset = currentEdge - currentMin;
+
+					const pos = node.absolutePosition.clone();
+					pos[axis] += offset;
+					node.setAbsolutePosition(pos);
+				}
+
 				const b = getNodeBounds(node);
-				const currentMin = b.min[axis];
-				const offset = currentEdge - currentMin;
-
-				const pos = node.absolutePosition.clone();
-				pos[axis] += offset;
-				node.setAbsolutePosition(pos);
-
-				// Advance edge
 				currentEdge += (b.max[axis] - b.min[axis]) + gap;
 			});
 		}
@@ -264,12 +253,10 @@ function performSpacing() {
 	if (axes.z) activeAxisKeys.push("z");
 
 	activeAxisKeys.forEach(axis => {
-		// Sort nodes by position on this axis
 		const sorted = [...nodes].sort((a, b) => {
 			return getNodeBounds(a).center[axis] - getNodeBounds(b).center[axis];
 		});
 
-		// Start from the first object's position + size
 		let prevNode = sorted[0];
 		let prevBounds = getNodeBounds(prevNode);
 		let currentPos = prevBounds.max[axis] + spacing;
@@ -278,13 +265,13 @@ function performSpacing() {
 			const node = sorted[i];
 			const b = getNodeBounds(node);
 
-			// Move node so its Min equals currentPos
-			const offset = currentPos - b.min[axis];
-			const pos = node.absolutePosition.clone();
-			pos[axis] += offset;
-			node.setAbsolutePosition(pos);
+			if (!node.metadata || !node.metadata.isLocked) {
+				const offset = currentPos - b.min[axis];
+				const pos = node.absolutePosition.clone();
+				pos[axis] += offset;
+				node.setAbsolutePosition(pos);
+			}
 
-			// Update for next
 			const width = b.max[axis] - b.min[axis];
 			currentPos += width + spacing;
 		}

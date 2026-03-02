@@ -1,15 +1,15 @@
 import { GizmoManager, PointerEventTypes, TransformNode, Vector3, Quaternion, Space } from "@babylonjs/core";
-import { markModified } from "./assembly_manager.js"; // Updated to assemblyManager
-import { recordState } from "./assembly_historyManager.js"; // Updated
-import { selectNode, getSelectedNodes } from "./assembly_selectionManager.js"; // Updated
-import { scene } from "./assembly_scene.js"; // Updated
+import { markModified } from "./assembly_manager.js";
+import { recordState } from "./assembly_historyManager.js";
+import { selectNode, getSelectedNodes } from "./assembly_selectionManager.js";
+import { scene } from "./assembly_scene.js";
 import { updateCSG } from "./assembly_csgManager.js";
-import {part} from "./part.js"; // Added
+import { part } from "./part.js";
 
 export let gizmoManager;
 let selectionAnchor = null;
-let originalParents = new Map(); // Stores { nodeId: parentNode } during drag
-let pointerObserver = null; // 1. Add variable to track the observer
+let originalParents = new Map();
+let pointerObserver = null;
 
 export function disposeGizmos() {
 
@@ -39,22 +39,16 @@ export function setupGizmos(scene) {
 	gizmoManager.scaleGizmoEnabled = false;
 	gizmoManager.boundingBoxGizmoEnabled = false;
 
-	// Disable default pointer attachment. We handle picking manually.
 	gizmoManager.usePointerToAttachGizmos = false;
 	gizmoManager.clearGizmoOnEmptyPointerEvent = false;
 
-	// Create the Multi-Selection Anchor (hidden node)
 	selectionAnchor = new TransformNode("selectionAnchor", scene);
 	selectionAnchor.rotationQuaternion = Quaternion.Identity();
-	// Ensure it doesn't get saved or shown in tree
 	selectionAnchor.metadata = { isInternal: true };
 
-	// Custom Selection Logic
 	pointerObserver = scene.onPointerObservable.add((pointerInfo) => {
 		if (pointerInfo.type === PointerEventTypes.POINTERDOWN) {
-			// Only react to Left Click (button 0)
 			if (pointerInfo.event.button !== 0) return;
-			console.log("Pointer Down Event Detected:", pointerInfo);
 
 			const pick = pointerInfo.pickInfo;
 			const isMulti = pointerInfo.event.shiftKey;
@@ -62,25 +56,20 @@ export function setupGizmos(scene) {
 			if (pick.hit && pick.pickedMesh && isMulti) {
 				const mesh = pick.pickedMesh;
 
-				// Don't select the gizmos themselves
 				if (mesh.isGizmoMesh || mesh.name.startsWith("gizmo_")) return;
 
 				let target = null;
 
-				// 1. Check if we clicked a TransformNode Proxy
 				if (mesh.metadata && mesh.metadata.isTransformNodeProxy) {
 					target = mesh.parent;
 				}
-				// 1.5. Check if we clicked a CSG Result (select original mesh instead)
 				else if (mesh.metadata && mesh.metadata.isCSGResult) {
 					target = scene.getMeshByID(mesh.metadata.originalMeshId);
 				}
-				// 2. Standard Mesh or Light Proxy
 				else {
 					target = mesh;
 				}
 
-				// --- Assembly Logic: Select Root if part of a set ---
 				if (target) {
 					let check = target;
 					let foundRoot = null;
@@ -93,7 +82,6 @@ export function setupGizmos(scene) {
 					}
 					if (foundRoot) target = foundRoot;
 				}
-				// ----------------------------------------------------
 
 				if (target) {
 					selectNode(target, isMulti);
@@ -107,18 +95,20 @@ export function setupGizmos(scene) {
 	attachDragObservers();
 }
 
-// Called by selectionManager when selection changes
 export function updateGizmoAttachment(nodes) {
 	if (!gizmoManager) return;
 
-	if (nodes.length === 0) {
+	// Check if any selected node is locked
+	const isLocked = nodes.some(n => n.metadata && n.metadata.isLocked);
+
+	if (nodes.length === 0 || isLocked) {
+		// Detach if empty or locked
 		gizmoManager.attachToMesh(null);
 		gizmoManager.attachToNode(null);
 		return;
 	}
 
 	if (nodes.length === 1) {
-		// Single Select: Attach directly
 		const target = nodes[0];
 		if (target.getClassName() === "TransformNode" || (target.metadata && target.metadata.isTransformNode)) {
 			gizmoManager.attachToNode(target);
@@ -126,7 +116,6 @@ export function updateGizmoAttachment(nodes) {
 			gizmoManager.attachToMesh(target);
 		}
 	} else {
-		// Multi Select: Attach to Anchor
 		updateAnchorPosition(nodes);
 		gizmoManager.attachToNode(selectionAnchor);
 	}
@@ -135,7 +124,6 @@ export function updateGizmoAttachment(nodes) {
 function updateAnchorPosition(nodes) {
 	if (!selectionAnchor || nodes.length === 0) return;
 
-	// Calculate center
 	let center = Vector3.Zero();
 	nodes.forEach(n => center.addInPlace(n.absolutePosition));
 	center.scaleInPlace(1.0 / nodes.length);
@@ -145,7 +133,6 @@ function updateAnchorPosition(nodes) {
 	selectionAnchor.scaling.setAll(1);
 }
 
-// Function to switch gizmo modes
 export function setGizmoMode(mode) {
 	if (!gizmoManager) return;
 
@@ -156,11 +143,10 @@ export function setGizmoMode(mode) {
 	attachDragObservers();
 }
 
-// Helper to attach observers to active gizmos
 function attachDragObservers() {
 	if (!gizmoManager || !gizmoManager.gizmos) return;
 
-	const gizmos =[
+	const gizmos = [
 		gizmoManager.gizmos.positionGizmo,
 		gizmoManager.gizmos.rotationGizmo,
 		gizmoManager.gizmos.scaleGizmo
@@ -169,46 +155,42 @@ function attachDragObservers() {
 	gizmos.forEach(g => {
 		if (g && !g._hasObserver) {
 
-			// --- Drag Start: Parent nodes to Anchor ---
 			g.onDragStartObservable.add(() => {
 				const nodes = getSelectedNodes();
+				// Double check locking
+				if (nodes.some(n => n.metadata && n.metadata.isLocked)) return;
+
 				if (nodes.length > 1 && selectionAnchor) {
 					originalParents.clear();
 
 					nodes.forEach(node => {
-						// Store original parent
 						originalParents.set(node.id, node.parent);
-
-						// Parent to anchor, maintaining world position
 						node.setParent(selectionAnchor);
 					});
 				}
 
-				// Temporarily show original meshes and hide CSG results during drag
 				scene.meshes.forEach(m => {
 					if (m.metadata && m.metadata.isCSGResult) m.isVisible = false;
 					if (m.metadata && (m.metadata.isPrimitive || m.metadata.isShape) && !m.metadata.isNegative && m.isEnabled()) m.isVisible = true;
 				});
 			});
 
-			// --- Drag End: Restore parents & Record ---
 			g.onDragEndObservable.add(() => {
 				const nodes = getSelectedNodes();
+				// Double check locking
+				if (nodes.some(n => n.metadata && n.metadata.isLocked)) return;
 
 				if (nodes.length > 1 && selectionAnchor) {
 					nodes.forEach(node => {
 						const originalParent = originalParents.get(node.id);
-						// Restore parent, maintaining world position (which is now modified)
 						node.setParent(originalParent);
 					});
 					originalParents.clear();
 
-					// Reset anchor rotation/scale for next time, but keep position at center
-					// Actually, simpler to just re-calculate anchor from new centers
 					updateAnchorPosition(nodes);
 				}
 
-				updateCSG(); // Recompute CSG after transform changes
+				updateCSG();
 				markModified();
 				recordState();
 			});
@@ -218,7 +200,6 @@ function attachDragObservers() {
 	});
 }
 
-// Deprecated export kept for compatibility if needed, but redirects to manager
 export function selectMesh(target) {
 	selectNode(target, false);
 }

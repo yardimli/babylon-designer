@@ -20,7 +20,6 @@
 	</div>
 
 	<!-- Camera Views -->
-	<!-- Added Camera Position Buttons -->
 	<div class="join mr-4">
 		<button id="btn-view-top" class="btn btn-sm join-item" title="Top View">T</button>
 		<button id="btn-view-bottom" class="btn btn-sm join-item" title="Bottom View">B</button>
@@ -45,9 +44,7 @@
 		<button id="btn-menu-save" class="btn btn-sm join-item">Save</button>
 		<button id="btn-menu-save-as" class="btn btn-sm join-item">Save As</button>
 		<button id="btn-menu-load" class="btn btn-sm join-item">Load</button>
-		<!-- Added Align Button -->
 		<button id="btn-menu-align" class="btn btn-sm join-item btn-disabled" disabled>Align</button>
-		<!-- Added Scene Settings Button -->
 		<button id="btn-menu-scene" class="btn btn-sm join-item">Scene</button>
 	</div>
 
@@ -119,6 +116,14 @@
 					<label class="label cursor-pointer justify-start gap-2">
 						<span class="label-text w-16">Visible</span>
 						<input type="checkbox" id="prop-visible" class="checkbox checkbox-xs" />
+					</label>
+				</div>
+
+				<!-- Locked Toggle (Added) -->
+				<div class="form-control">
+					<label class="label cursor-pointer justify-start gap-2">
+						<span class="label-text w-16 text-warning font-bold">Locked</span>
+						<input type="checkbox" id="prop-locked" class="checkbox checkbox-xs checkbox-warning" />
 					</label>
 				</div>
 
@@ -195,7 +200,7 @@
 					</label>
 				</div>
 
-				<!-- NEW: Negative (Subtract) -->
+				<!-- Negative (Subtract) -->
 				<div class="form-control">
 					<label class="label cursor-pointer justify-start gap-2">
 						<input type="checkbox" id="prop-negative" class="checkbox checkbox-xs" />
@@ -263,7 +268,7 @@
 	</div>
 </dialog>
 
-<!-- Added Alignment Modal -->
+<!-- Alignment Modal -->
 <dialog id="align_modal" class="modal">
 	<div class="modal-box">
 		<h3 class="font-bold text-lg mb-4">Alignment Tools</h3>
@@ -322,7 +327,7 @@
 	</div>
 </dialog>
 
-<!-- Added Scene Settings Modal -->
+<!-- Scene Settings Modal -->
 <dialog id="scene_settings_modal" class="modal">
 	<div class="modal-box">
 		<h3 class="font-bold text-lg mb-4">Scene Settings</h3>
@@ -342,7 +347,7 @@
 			<input type="range" min="0" max="2" step="0.1" value="1" id="scene-ambient-intensity" class="range range-xs" />
 		</label>
 
-		<!-- Added Light Colors -->
+		<!-- Light Colors -->
 		<label class="form-control w-full max-w-xs mb-4">
 			<div class="label">
 				<span class="label-text">Light Diffuse Color</span>

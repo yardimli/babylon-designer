@@ -1,0 +1,195 @@
+{
+  "version": 1.5,
+  "materialFiles": [
+    "generic.json"
+  ],
+  "lights": [],
+  "meshes": [
+    {
+      "id": "Cube_1772346339026",
+      "name": "Cube_1772346339026",
+      "position": {
+        "x": 0,
+        "y": 0.5,
+        "z": 0
+      },
+      "rotation": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 1
+      },
+      "scaling": {
+        "x": 6,
+        "y": 1,
+        "z": 1.5
+      },
+      "pivot": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "materialId": "wood",
+      "uScale": 1,
+      "vScale": 1,
+      "parentId": null,
+      "receiveShadows": false,
+      "castShadows": true,
+      "sortIndex": 0,
+      "visible": true,
+      "isNegative": false,
+      "originalMaterialId": null,
+      "isPrimitive": true,
+      "type": "Cube"
+    },
+    {
+      "id": "Cube_1772347761097",
+      "name": "Cube_1772347761097",
+      "position": {
+        "x": 0,
+        "y": 0.4000000059604645,
+        "z": -0.632222056388855
+      },
+      "rotation": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 1
+      },
+      "scaling": {
+        "x": 5.400000095367432,
+        "y": 0.800000011920929,
+        "z": 0.30000001192092896
+      },
+      "pivot": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "materialId": "negativeMat",
+      "uScale": 1,
+      "vScale": 1,
+      "parentId": null,
+      "receiveShadows": false,
+      "castShadows": true,
+      "sortIndex": 0,
+      "visible": true,
+      "isNegative": true,
+      "originalMaterialId": null,
+      "isPrimitive": true,
+      "type": "Cube"
+    },
+    {
+      "id": "Cube_1772347865262",
+      "name": "Cube_1772347865262",
+      "position": {
+        "x": -2.9698212146759033,
+        "y": 0.4000000059604645,
+        "z": 0
+      },
+      "rotation": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 1
+      },
+      "scaling": {
+        "x": 0.30000001192092896,
+        "y": 0.800000011920929,
+        "z": 0.800000011920929
+      },
+      "pivot": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "materialId": "negativeMat",
+      "uScale": 1,
+      "vScale": 1,
+      "parentId": null,
+      "receiveShadows": false,
+      "castShadows": true,
+      "sortIndex": 0,
+      "visible": true,
+      "isNegative": true,
+      "originalMaterialId": null,
+      "isPrimitive": true,
+      "type": "Cube"
+    },
+    {
+      "id": "Cube_1772347761097_dup",
+      "name": "Cube_1772347761097_dup",
+      "position": {
+        "x": 0,
+        "y": 0.4000000059604645,
+        "z": 0.5003897547721863
+      },
+      "rotation": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 1
+      },
+      "scaling": {
+        "x": 5.400000095367432,
+        "y": 0.800000011920929,
+        "z": 0.6000000238418579
+      },
+      "pivot": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "materialId": "negativeMat",
+      "uScale": 1,
+      "vScale": 1,
+      "parentId": null,
+      "receiveShadows": false,
+      "castShadows": true,
+      "sortIndex": 0,
+      "visible": true,
+      "isNegative": true,
+      "originalMaterialId": null,
+      "isPrimitive": true,
+      "type": "Cube"
+    },
+    {
+      "id": "Cube_1772347865262_dup",
+      "name": "Cube_1772347865262_dup",
+      "position": {
+        "x": 2.8878636360168457,
+        "y": 0.4000000059604645,
+        "z": 0
+      },
+      "rotation": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 1
+      },
+      "scaling": {
+        "x": 0.30000001192092896,
+        "y": 0.800000011920929,
+        "z": 0.800000011920929
+      },
+      "pivot": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "materialId": "negativeMat",
+      "uScale": 1,
+      "vScale": 1,
+      "parentId": null,
+      "receiveShadows": false,
+      "castShadows": true,
+      "sortIndex": 0,
+      "visible": true,
+      "isNegative": true,
+      "originalMaterialId": null,
+      "isPrimitive": true,
+      "type": "Cube"
+    }
+  ],
+  "transformNodes": []
+}

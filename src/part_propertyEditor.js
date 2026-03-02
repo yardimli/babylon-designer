@@ -7,7 +7,8 @@ import { setShadowCaster, disposeShadowGenerator } from "./part_shadowManager.js
 import { createTransformNode } from "./part_transformNodeManager.js";
 import { recordState } from "./part_historyManager.js";
 import { refreshPartGraph, setNodeParent } from "./part_treeViewManager.js";
-import { updateCSG, getNegativeMaterial } from "./part_csgManager.js"; // Added
+import { updateCSG, getNegativeMaterial } from "./part_csgManager.js";
+import { updateGizmoAttachment } from "./part_gizmoControl.js"; // Added to refresh gizmo when lock changes
 
 let observer = null;
 
@@ -54,9 +55,11 @@ export function updatePropertyEditor(targets) {
 	if (targets.length === 0) {
 		editor.classList.add("opacity-50", "pointer-events-none");
 		document.getElementById("prop-id").value = "";
-		// Reset visibility checkbox
+		// Reset checkboxes
 		const visInput = document.getElementById("prop-visible");
 		if (visInput) visInput.checked = false;
+		const lockInput = document.getElementById("prop-locked"); // Added
+		if (lockInput) lockInput.checked = false; // Added
 
 		document.getElementById("light-properties").classList.add("hidden");
 		if (header) header.innerText = "Properties";
@@ -126,12 +129,12 @@ export function updatePropertyEditor(targets) {
 	const allMeshes = targets.every(t => t instanceof AbstractMesh && !t.metadata?.isTransformNode && !t.metadata?.isLightProxy);
 	const receiveShadowsInput = document.getElementById("prop-receive-shadows");
 	const castShadowsInput = document.getElementById("prop-cast-shadows");
-	const negativeInput = document.getElementById("prop-negative"); // Added
+	const negativeInput = document.getElementById("prop-negative");
 
 	if (allMeshes) {
 		receiveShadowsInput.closest(".form-control").classList.remove("hidden");
 		castShadowsInput.closest(".form-control").classList.remove("hidden");
-		negativeInput.closest(".form-control").classList.remove("hidden"); // Added
+		negativeInput.closest(".form-control").classList.remove("hidden");
 
 		const allReceive = targets.every(t => t.receiveShadows);
 		const someReceive = targets.some(t => t.receiveShadows);
@@ -143,7 +146,6 @@ export function updatePropertyEditor(targets) {
 		castShadowsInput.checked = allCast;
 		castShadowsInput.indeterminate = someCast && !allCast;
 
-		// Added CSG Checkbox Sync
 		const allNeg = targets.every(t => t.metadata && t.metadata.isNegative);
 		const someNeg = targets.some(t => t.metadata && t.metadata.isNegative);
 		negativeInput.checked = allNeg;
@@ -152,7 +154,7 @@ export function updatePropertyEditor(targets) {
 	} else {
 		receiveShadowsInput.closest(".form-control").classList.add("hidden");
 		castShadowsInput.closest(".form-control").classList.add("hidden");
-		negativeInput.closest(".form-control").classList.add("hidden"); // Added
+		negativeInput.closest(".form-control").classList.add("hidden");
 	}
 
 	// --- Live Update Loop ---
@@ -183,6 +185,15 @@ function syncUIFromTargets(targets) {
 		const someEnabled = targets.some(t => t.isEnabled());
 		visInput.checked = allEnabled;
 		visInput.indeterminate = someEnabled && !allEnabled;
+	}
+
+	// Locked Sync (Added)
+	const lockInput = document.getElementById("prop-locked");
+	if (lockInput) {
+		const allLocked = targets.every(t => t.metadata && t.metadata.isLocked);
+		const someLocked = targets.some(t => t.metadata && t.metadata.isLocked);
+		lockInput.checked = allLocked;
+		lockInput.indeterminate = someLocked && !allLocked;
 	}
 
 	// Position
@@ -219,6 +230,7 @@ function syncUIFromTargets(targets) {
 	document.getElementById("scl-y").value = sy !== null ? sy.toFixed(2) : "";
 	document.getElementById("scl-z").value = sz !== null ? sz.toFixed(2) : "";
 
+	// ... (Light and Texture Scale sync code remains same) ...
 	const allLights = targets.every(t => t.metadata && t.metadata.isLightProxy);
 	if (allLights) {
 		const spotLightProxies = targets.filter(t => {
@@ -246,7 +258,6 @@ function syncUIFromTargets(targets) {
 		}
 	}
 
-	// Sync Texture Scale
 	const texScaleContainer = document.getElementById("container-texture-scale");
 	const uInput = document.getElementById("prop-mat-uscale");
 	const vInput = document.getElementById("prop-mat-vscale");
@@ -283,7 +294,13 @@ function bindInputs(targets) {
 		return val === "" ? null : parseFloat(val);
 	};
 
+	// Check if any target is locked
+	const isLocked = targets.some(t => t.metadata && t.metadata.isLocked);
+
 	const updateTargets = () => {
+		// Prevent transform updates if locked
+		if (isLocked) return;
+
 		const px = getVal("pos-x");
 		const py = getVal("pos-y");
 		const pz = getVal("pos-z");
@@ -297,6 +314,8 @@ function bindInputs(targets) {
 		const sz = getVal("scl-z");
 
 		targets.forEach(mesh => {
+			if (mesh.metadata && mesh.metadata.isLocked) return; // Double check
+
 			// Position
 			if (px !== null) mesh.position.x = px;
 			if (py !== null) mesh.position.y = py;
@@ -334,11 +353,15 @@ function bindInputs(targets) {
 		markModified();
 	};
 
+	// Disable transform inputs if locked
 	document.querySelectorAll("#transform-container input").forEach(input => {
+		input.disabled = isLocked; // Disable UI
 		input.oninput = updateTargets;
 		input.onchange = () => {
-			updateCSG(); // Recompute CSG after input change
-			recordState();
+			if (!isLocked) {
+				updateCSG();
+				recordState();
+			}
 		};
 	});
 
@@ -349,13 +372,33 @@ function bindInputs(targets) {
 			targets.forEach(t => {
 				t.setEnabled(e.target.checked);
 			});
-			updateCSG(); // Recompute CSG if visibility changes
+			updateCSG();
 			markModified();
 			recordState();
 			refreshPartGraph();
 		};
 	}
 
+	// Bind Locked Checkbox (Added)
+	const lockInput = document.getElementById("prop-locked");
+	if (lockInput) {
+		lockInput.onchange = (e) => {
+			const locked = e.target.checked;
+			targets.forEach(t => {
+				if (!t.metadata) t.metadata = {};
+				t.metadata.isLocked = locked;
+			});
+			// Refresh Gizmo state (hide if locked)
+			updateGizmoAttachment(targets);
+			// Refresh inputs (disable if locked)
+			bindInputs(targets);
+
+			markModified();
+			recordState();
+		};
+	}
+
+	// ... (Rest of bindings: Texture Scale, ID, Shadows, CSG) ...
 	// Bind Texture Scale
 	const uInput = document.getElementById("prop-mat-uscale");
 	const vInput = document.getElementById("prop-mat-vscale");
@@ -425,7 +468,7 @@ function bindInputs(targets) {
 		targets.forEach(t => {
 			if (t instanceof AbstractMesh) t.receiveShadows = e.target.checked;
 		});
-		updateCSG(); // Recompute CSG to apply shadow changes to result
+		updateCSG();
 		markModified();
 		recordState();
 	};
@@ -434,7 +477,7 @@ function bindInputs(targets) {
 		targets.forEach(t => {
 			if (t instanceof AbstractMesh) setShadowCaster(t, e.target.checked);
 		});
-		updateCSG(); // Recompute CSG to apply shadow changes to result
+		updateCSG();
 		markModified();
 		recordState();
 	};
@@ -450,11 +493,9 @@ function bindInputs(targets) {
 					t.metadata.isNegative = isNeg;
 
 					if (isNeg) {
-						// Store original material and apply negative visualizer
 						t.metadata.originalMaterialId = t.material ? t.material.id : null;
 						t.material = getNegativeMaterial(part);
 					} else {
-						// Restore original material
 						if (t.metadata.originalMaterialId) {
 							t.material = part.getMaterialByID(t.metadata.originalMaterialId);
 						} else {
@@ -471,6 +512,7 @@ function bindInputs(targets) {
 }
 
 function updateParentDropdown(targets) {
+	// ... (Existing implementation) ...
 	const select = document.getElementById("prop-parent");
 	select.innerHTML = '<option value="">None</option>';
 
@@ -515,7 +557,7 @@ function updateParentDropdown(targets) {
 			setNodeParent(t, parent);
 		});
 
-		updateCSG(); // Recompute CSG if world transforms change
+		updateCSG();
 		markModified();
 		refreshPartGraph();
 		recordState();
@@ -523,6 +565,7 @@ function updateParentDropdown(targets) {
 }
 
 function updateMaterialDropdown(targets) {
+	// ... (Existing implementation) ...
 	const select = document.getElementById("prop-material");
 	select.innerHTML = '<option value="">None</option>';
 
@@ -554,13 +597,14 @@ function updateMaterialDropdown(targets) {
 				t.material = mat;
 			}
 		});
-		updateCSG(); // Recompute CSG to apply new material to results
+		updateCSG();
 		markModified();
 		recordState();
 	};
 }
 
 function bindLightInputs(targets) {
+	// ... (Existing implementation) ...
 	const lights = targets.map(t => part.getLightByID(t.metadata.lightId)).filter(l => l);
 	if (lights.length === 0) return;
 
@@ -601,7 +645,7 @@ function bindLightInputs(targets) {
 		recordState();
 	};
 
-	const spotLights = lights.filter(l => l.getTypeID() === 2); // 2 is SpotLight
+	const spotLights = lights.filter(l => l.getTypeID() === 2);
 	if (spotLights.length > 0 && spotLights.length === lights.length) {
 		dirContainer.classList.remove("hidden");
 		aContainer.classList.remove("hidden");
@@ -690,6 +734,7 @@ function bindLightInputs(targets) {
 }
 
 function bindDuplicateButton(targets) {
+	// ... (Existing implementation) ...
 	const btn = document.getElementById("btn-duplicate-asset");
 	if (!btn) return;
 
@@ -705,7 +750,7 @@ function bindDuplicateButton(targets) {
 			selectNode(newSelection[0], false);
 			for(let i=1; i<newSelection.length; i++) selectNode(newSelection[i], true);
 
-			updateCSG(); // Recompute CSG for duplicated meshes
+			updateCSG();
 			markModified();
 			refreshPartGraph();
 			recordState();
@@ -714,6 +759,7 @@ function bindDuplicateButton(targets) {
 }
 
 function duplicateHierarchy(node, parent) {
+	// ... (Existing implementation) ...
 	let newNode = null;
 	const baseId = node.name + "_dup";
 	const newId = getUniqueId(part, baseId);
@@ -750,7 +796,6 @@ function duplicateHierarchy(node, parent) {
 		newNode.receiveShadows = node.receiveShadows;
 		if (newNode.metadata && newNode.metadata.castShadows) setShadowCaster(newNode, true);
 
-		// Apply negative material if duplicated mesh is negative
 		if (newNode.metadata && newNode.metadata.isNegative) {
 			newNode.material = getNegativeMaterial(part);
 		}
@@ -769,6 +814,7 @@ function duplicateHierarchy(node, parent) {
 }
 
 function bindDeleteButton(targets) {
+	// ... (Existing implementation) ...
 	const btn = document.getElementById("btn-delete-asset");
 	if (!btn) return;
 
@@ -790,7 +836,7 @@ function bindDeleteButton(targets) {
 			});
 
 			selectNode(null);
-			updateCSG(); // Recompute CSG after deletion
+			updateCSG();
 			markModified();
 			refreshPartGraph();
 			recordState();

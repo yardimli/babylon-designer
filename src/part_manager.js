@@ -24,7 +24,7 @@ const saveNameInput = document.getElementById("save-part-name");
 export function setupSceneManager() {
 	updateStatus();
 	document.getElementById("btn-menu-save").onclick = () => handleSaveAction();
-	document.getElementById("btn-menu-save-as").onclick = () => handleSaveAsAction(); // Added
+	document.getElementById("btn-menu-save-as").onclick = () => handleSaveAsAction();
 	document.getElementById("btn-menu-load").onclick = () => openLoadModal();
 	document.getElementById("btn-menu-new").onclick = () => createNewScene();
 	document.getElementById("btn-modal-save").onclick = () => {
@@ -60,14 +60,12 @@ function handleSaveAction() {
 	else openSaveModal();
 }
 
-// New function for Save As
 function handleSaveAsAction() {
 	openSaveModal(currentFileName);
 }
 
 function openSaveModal(prefillName = null) {
 	populateSceneList("save");
-	// Prefill with current name if available, stripping extension
 	saveNameInput.value = prefillName ? prefillName.replace(".json", "") : "";
 	document.getElementById("modal-title").innerText = "Save Part";
 	document.getElementById("btn-modal-save").classList.remove("hidden");
@@ -105,7 +103,8 @@ export function serializeScene() {
 					diffuse: { r: light.diffuse.r, g: light.diffuse.g, b: light.diffuse.b },
 					parentId: light.parent ? light.parent.id : null,
 					sortIndex: mesh.metadata.sortIndex || 0,
-					visible: mesh.isEnabled()
+					visible: mesh.isEnabled(),
+					isLocked: mesh.metadata.isLocked || false // Added
 				});
 			}
 		}
@@ -131,13 +130,13 @@ export function serializeScene() {
 				scaling: { x: node.scaling.x, y: node.scaling.y, z: node.scaling.z },
 				parentId: node.parent ? node.parent.id : null,
 				sortIndex: node.metadata.sortIndex || 0,
-				visible: node.isEnabled()
+				visible: node.isEnabled(),
+				isLocked: node.metadata.isLocked || false // Added
 			});
 		}
 	});
 
 	part.meshes.forEach(mesh => {
-		// Handle Primitives OR Custom Shapes
 		if (mesh.metadata && (mesh.metadata.isPrimitive || mesh.metadata.isShape)) {
 			let rot = { x: 0, y: 0, z: 0, w: 1 };
 			if (mesh.rotationQuaternion) {
@@ -149,7 +148,6 @@ export function serializeScene() {
 
 			const pivot = mesh.getPivotPoint();
 
-			//  Save Texture Scale overrides
 			let uScale = 1;
 			let vScale = 1;
 			if (mesh.material) {
@@ -175,8 +173,9 @@ export function serializeScene() {
 				castShadows: mesh.metadata.castShadows || false,
 				sortIndex: mesh.metadata.sortIndex || 0,
 				visible: mesh.isEnabled(),
-				isNegative: mesh.metadata.isNegative || false, //  Save CSG state
-				originalMaterialId: mesh.metadata.originalMaterialId || null //  Save original material ID
+				isNegative: mesh.metadata.isNegative || false,
+				originalMaterialId: mesh.metadata.originalMaterialId || null,
+				isLocked: mesh.metadata.isLocked || false // Added
 			};
 
 			if (mesh.metadata.isPrimitive) {
@@ -230,7 +229,6 @@ export async function loadSceneData(data) {
 	const toDispose = [];
 	part.meshes.forEach(m => {
 		if (m.name === "previewSphere") return;
-		// Added isCSGResult to cleanup
 		if (m.metadata && (m.metadata.isPrimitive || m.metadata.isShape || m.metadata.isLightProxy || m.metadata.isTransformNodeProxy || m.metadata.isCSGResult)) toDispose.push(m);
 	});
 	part.transformNodes.forEach(t => {
@@ -253,13 +251,15 @@ export async function loadSceneData(data) {
 		}
 	}
 
-
 	if (data.transformNodes) {
 		data.transformNodes.forEach(nodeData => {
 			const node = createTransformNode(nodeData, part);
 			if (node) {
 				idMap.set(nodeData.id, node.id);
-				if (node.metadata) node.metadata.sortIndex = nodeData.sortIndex || 0;
+				if (node.metadata) {
+					node.metadata.sortIndex = nodeData.sortIndex || 0;
+					node.metadata.isLocked = nodeData.isLocked || false; // Added
+				}
 				if (nodeData.visible !== undefined) node.setEnabled(nodeData.visible);
 			}
 		});
@@ -277,7 +277,6 @@ export async function loadSceneData(data) {
 			if (mesh) {
 				idMap.set(meshData.id, mesh.id);
 
-				// Restore CSG state
 				if (meshData.isNegative) {
 					mesh.metadata.isNegative = true;
 					mesh.metadata.originalMaterialId = meshData.originalMaterialId;
@@ -291,7 +290,6 @@ export async function loadSceneData(data) {
 						} else {
 							mesh.material = mat;
 						}
-						//  Restore texture scale
 						if (meshData.uScale !== undefined && meshData.vScale !== undefined) {
 							if (mat.diffuseTexture) {
 								mat.diffuseTexture.uScale = meshData.uScale;
@@ -305,21 +303,20 @@ export async function loadSceneData(data) {
 					}
 				}
 
-				// Apply negative material if needed
 				if (meshData.isNegative) {
 					mesh.material = getNegativeMaterial(part);
 				}
 
 				mesh.receiveShadows = !!meshData.receiveShadows;
-				if (mesh.metadata) mesh.metadata.sortIndex = meshData.sortIndex || 0;
+				if (mesh.metadata) {
+					mesh.metadata.sortIndex = meshData.sortIndex || 0;
+					mesh.metadata.isLocked = meshData.isLocked || false; // Added
+				}
 				if (meshData.visible !== undefined) mesh.setEnabled(meshData.visible);
 			}
 		});
 	}
 
-
-
-	// 4. Restore Hierarchy
 	const findParent = (idOrName) => {
 		if (!idOrName) return null;
 		const mappedId = idMap.get(idOrName) || idOrName;
@@ -357,7 +354,10 @@ export async function loadSceneData(data) {
 				if (light) {
 					idMap.set(lightData.id, light.id);
 				}
-				if (proxy.metadata) proxy.metadata.sortIndex = lightData.sortIndex || 0;
+				if (proxy.metadata) {
+					proxy.metadata.sortIndex = lightData.sortIndex || 0;
+					proxy.metadata.isLocked = lightData.isLocked || false; // Added
+				}
 				if (lightData.visible !== undefined) proxy.setEnabled(lightData.visible);
 			}
 		});
@@ -366,7 +366,7 @@ export async function loadSceneData(data) {
 
 	setupGizmos(part);
 	resetAxisIndicator();
-	updateCSG(); // Rebuild CSG after loading
+	updateCSG();
 	refreshPartGraph();
 }
 
@@ -409,7 +409,6 @@ function createNewScene() {
 	selectNode(null);
 
 	part.meshes.forEach(m => {
-		// Added isCSGResult to cleanup
 		if (m.metadata && (m.metadata.isPrimitive || m.metadata.isShape || m.metadata.isLightProxy || m.metadata.isTransformNodeProxy || m.metadata.isCSGResult)) m.dispose();
 	});
 	part.transformNodes.forEach(t => {

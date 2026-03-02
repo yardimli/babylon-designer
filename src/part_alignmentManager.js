@@ -32,21 +32,17 @@ export function setupAlignmentManager() {
 		}
 	};
 
-	// Bind Alignment Buttons
 	if (btnMin) btnMin.onclick = () => applyAlignment("min");
 	if (btnCenter) btnCenter.onclick = () => applyAlignment("center");
 	if (btnMax) btnMax.onclick = () => applyAlignment("max");
 	if (btnPivot) btnPivot.onclick = () => applyAlignment("pivot");
 
-	// Bind Distribution Buttons
 	if (btnDistCenter) btnDistCenter.onclick = () => applyDistribution("center");
 	if (btnDistGap) btnDistGap.onclick = () => applyDistribution("gap");
 
-	// Bind Spacing
 	if (btnApplySpacing) btnApplySpacing.onclick = () => applySpacing();
 }
 
-// Called by selectionManager to enable/disable button
 export function updateAlignButton(selectionCount) {
 	if (!btnMenuAlign) return;
 	if (selectionCount > 1) {
@@ -67,12 +63,9 @@ function getActiveAxes() {
 }
 
 function getBounds(node) {
-	// Ensure world matrix is updated
 	node.computeWorldMatrix(true);
 
-	// If it's a mesh, use bounding box
 	if (node.getBoundingInfo) {
-		// Refresh bounding info
 		node.refreshBoundingInfo(true);
 		const bbox = node.getBoundingInfo().boundingBox;
 		return {
@@ -82,7 +75,6 @@ function getBounds(node) {
 			pivot: node.absolutePosition
 		};
 	}
-	// If it's a TransformNode or Light, use position as point
 	else {
 		const pos = node.absolutePosition;
 		return {
@@ -101,27 +93,35 @@ function applyAlignment(type) {
 	const axes = getActiveAxes();
 	if (!axes.x && !axes.y && !axes.z) return;
 
-	// 1. Calculate Selection Group Bounds
+	// 1. Identify Locked Nodes
+	const lockedNodes = nodes.filter(n => n.metadata && n.metadata.isLocked);
+
+	// 2. Calculate Target Bounds
+	// If locked nodes exist, align to them. Otherwise, align to whole selection.
+	const referenceNodes = lockedNodes.length > 0 ? lockedNodes : nodes;
+
 	let groupMin = new Vector3(Number.MAX_VALUE, Number.MAX_VALUE, Number.MAX_VALUE);
 	let groupMax = new Vector3(-Number.MAX_VALUE, -Number.MAX_VALUE, -Number.MAX_VALUE);
 	let groupCenterSum = Vector3.Zero();
 
 	const boundsList = nodes.map(n => getBounds(n));
 
-	boundsList.forEach(b => {
+	// Only calculate bounds from reference nodes
+	referenceNodes.forEach(n => {
+		const b = getBounds(n);
 		groupMin = Vector3.Minimize(groupMin, b.min);
 		groupMax = Vector3.Maximize(groupMax, b.max);
 		groupCenterSum.addInPlace(b.center);
 	});
 
-	const groupCenter = groupCenterSum.scale(1.0 / nodes.length);
-	// Note: "Align Center" usually means align to the average center,
-	// or the center of the bounding box ( (min+max)/2 ).
-	// Let's use the bounding box center for consistency with Min/Max.
+	// const groupCenter = groupCenterSum.scale(1.0 / referenceNodes.length);
 	const groupBBoxCenter = groupMin.add(groupMax).scale(0.5);
 
-	// 2. Apply Transforms
+	// 3. Apply Transforms
 	nodes.forEach((node, i) => {
+		// Skip locked nodes - they are the anchors
+		if (node.metadata && node.metadata.isLocked) return;
+
 		const b = boundsList[i];
 		const currentPos = node.absolutePosition.clone();
 		const targetPos = currentPos.clone();
@@ -133,8 +133,6 @@ function applyAlignment(type) {
 
 			if (type === "min") {
 				// Align object's min to group's min
-				// Offset = GroupMin - ObjectMin
-				// NewPos = OldPos + Offset
 				const offset = groupMin[axis] - b.min[axis];
 				targetVal = currentPos[axis] + offset;
 			}
@@ -149,15 +147,13 @@ function applyAlignment(type) {
 				targetVal = currentPos[axis] + offset;
 			}
 			else if (type === "pivot") {
-				// Align object's pivot to group's average pivot (or center)
-				// Let's align to groupBBoxCenter for simplicity
+				// Align object's pivot to group's center
 				targetVal = groupBBoxCenter[axis];
 			}
 
 			targetPos[axis] = targetVal;
 		});
 
-		// Apply absolute position (handles parenting automatically in Babylon)
 		node.setAbsolutePosition(targetPos);
 	});
 
@@ -166,17 +162,18 @@ function applyAlignment(type) {
 
 function applyDistribution(type) {
 	const nodes = getSelectedNodes();
-	if (nodes.length < 3) return; // Need at least 3 to distribute
+	if (nodes.length < 3) return;
+
+	// Locked nodes should stay put in distribution too, but distribution logic is complex with locks.
+	// For simplicity, if any node is locked, we abort distribution or treat it as normal but skip moving locked ones (which might break spacing).
+	// Standard behavior: Locked nodes act as fixed points.
+	// Current implementation: Just skip moving locked nodes.
 
 	const axes = getActiveAxes();
-	// Distribution usually happens along one primary axis.
-	// If multiple are selected, we do it independently.
 
 	["x", "y", "z"].forEach(axis => {
 		if (!axes[axis]) return;
 
-		// 1. Sort nodes by position along this axis
-		// We use the center for sorting
 		const sorted = [...nodes].map(n => ({ node: n, bounds: getBounds(n) }));
 		sorted.sort((a, b) => a.bounds.center[axis] - b.bounds.center[axis]);
 
@@ -184,12 +181,13 @@ function applyDistribution(type) {
 		const last = sorted[sorted.length - 1];
 
 		if (type === "center") {
-			// Distribute centers evenly between first and last
 			const totalDist = last.bounds.center[axis] - first.bounds.center[axis];
 			const step = totalDist / (sorted.length - 1);
 
 			for (let i = 1; i < sorted.length - 1; i++) {
 				const item = sorted[i];
+				if (item.node.metadata && item.node.metadata.isLocked) continue; // Skip locked
+
 				const targetCenter = first.bounds.center[axis] + (step * i);
 				const offset = targetCenter - item.bounds.center[axis];
 
@@ -199,22 +197,10 @@ function applyDistribution(type) {
 			}
 		}
 		else if (type === "gap") {
-			// Distribute gaps evenly
-			// Total available space = (Last.Min - First.Max) ??
-			// Actually, Total Span = Last.Max - First.Min
-			// Sum of Widths = Sum(bounds.size)
-			// Total Gap Space = Total Span - Sum of Widths
-			// Gap = Total Gap Space / (count - 1)
-
-			// However, a simpler "Distribute Gaps" often keeps First and Last fixed
-			// and arranges intermediates.
-
-			// Calculate total span between First Max and Last Min
 			const startCoord = first.bounds.max[axis];
 			const endCoord = last.bounds.min[axis];
 			const availableSpace = endCoord - startCoord;
 
-			// Calculate sum of widths of intermediate items
 			let sumInterWidths = 0;
 			for (let i = 1; i < sorted.length - 1; i++) {
 				sumInterWidths += (sorted[i].bounds.max[axis] - sorted[i].bounds.min[axis]);
@@ -229,11 +215,12 @@ function applyDistribution(type) {
 				const item = sorted[i];
 				const width = item.bounds.max[axis] - item.bounds.min[axis];
 
-				// Move item such that its Min is at currentPos
-				const offset = currentPos - item.bounds.min[axis];
-				const pos = item.node.absolutePosition;
-				pos[axis] += offset;
-				item.node.setAbsolutePosition(pos);
+				if (!item.node.metadata || !item.node.metadata.isLocked) {
+					const offset = currentPos - item.bounds.min[axis];
+					const pos = item.node.absolutePosition;
+					pos[axis] += offset;
+					item.node.setAbsolutePosition(pos);
+				}
 
 				currentPos += width + gap;
 			}
@@ -253,20 +240,20 @@ function applySpacing() {
 	["x", "y", "z"].forEach(axis => {
 		if (!axes[axis]) return;
 
-		// Sort by position
 		const sorted = [...nodes].map(n => ({ node: n, bounds: getBounds(n) }));
 		sorted.sort((a, b) => a.bounds.center[axis] - b.bounds.center[axis]);
 
-		// Keep first item fixed, move others
 		let currentPos = sorted[0].bounds.max[axis] + spacing;
 
 		for (let i = 1; i < sorted.length; i++) {
 			const item = sorted[i];
-			// Move item such that its Min is at currentPos
-			const offset = currentPos - item.bounds.min[axis];
-			const pos = item.node.absolutePosition;
-			pos[axis] += offset;
-			item.node.setAbsolutePosition(pos);
+
+			if (!item.node.metadata || !item.node.metadata.isLocked) {
+				const offset = currentPos - item.bounds.min[axis];
+				const pos = item.node.absolutePosition;
+				pos[axis] += offset;
+				item.node.setAbsolutePosition(pos);
+			}
 
 			const width = item.bounds.max[axis] - item.bounds.min[axis];
 			currentPos += width + spacing;

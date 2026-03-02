@@ -23,7 +23,8 @@
       },
       "name": "1st-floor-ground",
       "visible": true,
-      "sortIndex": 100
+      "sortIndex": 100,
+      "isLocked": false
     },
     {
       "id": "brick-wall_inst",
@@ -46,7 +47,8 @@
       },
       "name": "brick-wall_inst",
       "visible": true,
-      "sortIndex": 200
+      "sortIndex": 200,
+      "isLocked": false
     },
     {
       "id": "brick-wall_inst_dup_8",
@@ -69,7 +71,8 @@
       },
       "name": "brick-wall_inst",
       "visible": true,
-      "sortIndex": 200
+      "sortIndex": 200,
+      "isLocked": false
     },
     {
       "id": "brick-wall_inst_1",
@@ -92,7 +95,8 @@
       },
       "name": "brick-wall_inst_1",
       "visible": true,
-      "sortIndex": 300
+      "sortIndex": 300,
+      "isLocked": false
     },
     {
       "id": "brick-wall_inst_1_dup_3",
@@ -115,7 +119,8 @@
       },
       "name": "brick-wall_inst_1",
       "visible": true,
-      "sortIndex": 300
+      "sortIndex": 300,
+      "isLocked": false
     },
     {
       "id": "brick-wall_inst_dup",
@@ -138,7 +143,8 @@
       },
       "name": "brick-wall_inst",
       "visible": true,
-      "sortIndex": 500
+      "sortIndex": 500,
+      "isLocked": false
     },
     {
       "id": "brick-wall_inst_1_dup",
@@ -161,7 +167,8 @@
       },
       "name": "brick-wall_inst_1",
       "visible": true,
-      "sortIndex": 600
+      "sortIndex": 600,
+      "isLocked": false
     },
     {
       "id": "humanoid_inst",
@@ -184,7 +191,8 @@
       },
       "name": "humanoid_inst",
       "visible": true,
-      "sortIndex": 700
+      "sortIndex": 700,
+      "isLocked": false
     },
     {
       "id": "brick-wall_inst_1_dup_1",
@@ -207,7 +215,8 @@
       },
       "name": "brick-wall_inst_1",
       "visible": true,
-      "sortIndex": 800
+      "sortIndex": 800,
+      "isLocked": false
     },
     {
       "id": "brick-wall_inst_dup_1",
@@ -230,7 +239,8 @@
       },
       "name": "brick-wall_inst",
       "visible": true,
-      "sortIndex": 900
+      "sortIndex": 900,
+      "isLocked": false
     },
     {
       "id": "brick-wall_inst_1_dup_2",
@@ -253,7 +263,8 @@
       },
       "name": "brick-wall_inst_1",
       "visible": true,
-      "sortIndex": 1000
+      "sortIndex": 1000,
+      "isLocked": false
     },
     {
       "id": "brick-wall_inst_dup_2",
@@ -276,30 +287,8 @@
       },
       "name": "brick-wall_inst",
       "visible": true,
-      "sortIndex": 1100
-    },
-    {
-      "id": "2nd-floor-ground",
-      "sourceFile": "ground-tiles.json",
-      "position": {
-        "x": -3.764561891555786,
-        "y": 13.65999984741211,
-        "z": -4.5
-      },
-      "rotation": {
-        "x": 0,
-        "y": 0,
-        "z": 1,
-        "w": 6.123233932053594e-17
-      },
-      "scaling": {
-        "x": 3.1500000953674316,
-        "y": 1,
-        "z": 3
-      },
-      "name": "2nd-floor-ground",
-      "visible": true,
-      "sortIndex": 1200
+      "sortIndex": 1100,
+      "isLocked": false
     },
     {
       "id": "parcel-with-tape_inst",
@@ -322,7 +311,8 @@
       },
       "name": "parcel-with-tape_inst",
       "visible": true,
-      "sortIndex": 1300
+      "sortIndex": 1300,
+      "isLocked": false
     },
     {
       "id": "brick-wall_inst_dup_3",
@@ -345,7 +335,8 @@
       },
       "name": "brick-wall_inst",
       "visible": true,
-      "sortIndex": 1600
+      "sortIndex": 1600,
+      "isLocked": false
     },
     {
       "id": "brick-wall_inst_dup_4",
@@ -368,7 +359,8 @@
       },
       "name": "brick-wall_inst",
       "visible": true,
-      "sortIndex": 1700
+      "sortIndex": 1700,
+      "isLocked": false
     },
     {
       "id": "brick-wall_inst_dup_5",
@@ -391,7 +383,8 @@
       },
       "name": "brick-wall_inst",
       "visible": true,
-      "sortIndex": 1800
+      "sortIndex": 1800,
+      "isLocked": false
     },
     {
       "id": "brick-wall_inst_dup_6",
@@ -414,7 +407,8 @@
       },
       "name": "brick-wall_inst",
       "visible": true,
-      "sortIndex": 1900
+      "sortIndex": 1900,
+      "isLocked": false
     },
     {
       "id": "brick-wall_inst_dup_7",
@@ -437,15 +431,16 @@
       },
       "name": "brick-wall_inst",
       "visible": true,
-      "sortIndex": 1900
+      "sortIndex": 1900,
+      "isLocked": false
     },
     {
       "id": "gray-wall-with-door_inst",
       "sourceFile": "gray-wall-with-door.json",
       "position": {
-        "x": 5.85,
-        "y": 6.1,
-        "z": 2.05
+        "x": 5.65,
+        "y": 6.14,
+        "z": 2.55
       },
       "rotation": {
         "x": 0,
@@ -454,13 +449,14 @@
         "w": 1
       },
       "scaling": {
-        "x": 1.15,
+        "x": 1.05,
         "y": 1.1,
         "z": 1
       },
       "name": "gray-wall-with-door_inst",
       "visible": true,
-      "sortIndex": 2000
+      "sortIndex": 2000,
+      "isLocked": false
     },
     {
       "id": "gray-wall-with-window_inst",
@@ -483,7 +479,80 @@
       },
       "name": "gray-wall-with-window_inst",
       "visible": true,
-      "sortIndex": 2100
+      "sortIndex": 2100,
+      "isLocked": false
+    },
+    {
+      "id": "table_inst",
+      "sourceFile": "table.json",
+      "position": {
+        "x": -14.1,
+        "y": -2.62,
+        "z": 1.35
+      },
+      "rotation": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 1
+      },
+      "scaling": {
+        "x": 1.4,
+        "y": 2.15,
+        "z": 2
+      },
+      "name": "table_inst",
+      "visible": true,
+      "sortIndex": 2200,
+      "isLocked": false
+    },
+    {
+      "id": "office-chair_inst",
+      "sourceFile": "office-chair.json",
+      "position": {
+        "x": -13.930000305175781,
+        "y": -1.7518976926803589,
+        "z": 3.7883353233337402
+      },
+      "rotation": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 1
+      },
+      "scaling": {
+        "x": 0.699999988079071,
+        "y": 0.5600000023841858,
+        "z": 0.5
+      },
+      "name": "office-chair_inst",
+      "visible": true,
+      "sortIndex": 2300,
+      "isLocked": false
+    },
+    {
+      "id": "female-sitting-humanoid_inst",
+      "sourceFile": "female-sitting-humanoid.json",
+      "position": {
+        "x": -13.520000457763672,
+        "y": -3.304307460784912,
+        "z": 3.808472156524658
+      },
+      "rotation": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 1
+      },
+      "scaling": {
+        "x": 0.5,
+        "y": 0.5,
+        "z": 0.5
+      },
+      "name": "female-sitting-humanoid_inst",
+      "visible": true,
+      "sortIndex": 2400,
+      "isLocked": false
     }
   ],
   "lights": [
@@ -510,7 +579,8 @@
       },
       "name": "light_1772176918616_proxy",
       "parentId": null,
-      "visible": true
+      "visible": true,
+      "isLocked": false
     }
   ]
 }

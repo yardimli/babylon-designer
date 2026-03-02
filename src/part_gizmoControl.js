@@ -8,10 +8,9 @@ import { updateCSG } from "./part_csgManager.js";
 export let gizmoManager;
 let selectionAnchor = null;
 let originalParents = new Map();
-let pointerObserver = null; // 1. Add variable to track the observer
+let pointerObserver = null;
 
 export function disposeGizmos() {
-	// 2. Remove the observer if it exists
 	if (pointerObserver && part) {
 		part.onPointerObservable.remove(pointerObserver);
 		pointerObserver = null;
@@ -28,7 +27,7 @@ export function disposeGizmos() {
 }
 
 export function setupGizmos(scene) {
-	disposeGizmos(); // This will now clean up the previous observer
+	disposeGizmos();
 
 	gizmoManager = new GizmoManager(scene);
 
@@ -45,7 +44,6 @@ export function setupGizmos(scene) {
 	selectionAnchor.rotationQuaternion = Quaternion.Identity();
 	selectionAnchor.metadata = { isInternal: true };
 
-	// 3. Assign the observer to the variable
 	pointerObserver = scene.onPointerObservable.add((pointerInfo) => {
 		if (pointerInfo.type === PointerEventTypes.POINTERDOWN) {
 			if (pointerInfo.event.button !== 0) return;
@@ -85,7 +83,11 @@ export function setupGizmos(scene) {
 export function updateGizmoAttachment(nodes) {
 	if (!gizmoManager) return;
 
-	if (nodes.length === 0) {
+	// Check if any selected node is locked
+	const isLocked = nodes.some(n => n.metadata && n.metadata.isLocked);
+
+	if (nodes.length === 0 || isLocked) {
+		// Detach if empty or if selection contains locked nodes (prevent move)
 		gizmoManager.attachToMesh(null);
 		gizmoManager.attachToNode(null);
 		return;
@@ -146,6 +148,9 @@ function attachDragObservers() {
 			// --- Drag Start: Parent nodes to Anchor ---
 			g.onDragStartObservable.add(() => {
 				const nodes = getSelectedNodes();
+				// Double check locking
+				if (nodes.some(n => n.metadata && n.metadata.isLocked)) return;
+
 				if (nodes.length > 1 && selectionAnchor) {
 					originalParents.clear();
 
@@ -168,6 +173,8 @@ function attachDragObservers() {
 			// --- Drag End: Restore parents & Record ---
 			g.onDragEndObservable.add(() => {
 				const nodes = getSelectedNodes();
+				// Double check locking
+				if (nodes.some(n => n.metadata && n.metadata.isLocked)) return;
 
 				if (nodes.length > 1 && selectionAnchor) {
 					nodes.forEach(node => {
@@ -178,7 +185,6 @@ function attachDragObservers() {
 					originalParents.clear();
 
 					// Reset anchor rotation/scale for next time, but keep position at center
-					// Actually, simpler to just re-calculate anchor from new centers
 					updateAnchorPosition(nodes);
 				}
 
@@ -192,7 +198,6 @@ function attachDragObservers() {
 	});
 }
 
-// Deprecated export kept for compatibility if needed, but redirects to manager
 export function selectMesh(target) {
 	selectNode(target, false);
 }
