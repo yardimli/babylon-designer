@@ -78,6 +78,10 @@ function createMaterialFromData(data, filename) {
 	mat.alpha = data.alpha !== undefined ? data.alpha : 1.0;
 	mat.specularPower = data.specularPower !== undefined ? data.specularPower : 128;
 
+	// Back Face Culling (Added)
+	// Default to true if undefined to match BabylonJS standard behavior
+	mat.backFaceCulling = data.backFaceCulling !== undefined ? data.backFaceCulling : true;
+
 	// Diffuse Texture (Legacy fallback to texturePath)
 	const diffTexPath = data.diffuseTexture || data.texturePath;
 	if (diffTexPath) {

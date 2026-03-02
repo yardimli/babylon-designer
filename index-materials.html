@@ -12,7 +12,7 @@
 <nav class="h-12 bg-base-100 border-b border-base-content/10 flex items-center px-4 gap-2 flex-none z-10 justify-between">
 	<div class="font-bold text-lg text-secondary">Material Editor</div>
 
-	<!-- NEW: Shape Selector -->
+	<!-- Shape Selector -->
 	<div class="flex items-center gap-2">
 		<span class="text-xs font-bold opacity-70 uppercase">Preview Shape:</span>
 		<select id="preview-shape" class="select select-bordered select-sm">
@@ -76,7 +76,6 @@
 	</div>
 
 	<!-- Right: Editor Controls -->
-	<!-- MODIFIED: Updated properties for StandardMaterial -->
 	<div class="w-80 bg-base-200 border-l border-base-content/10 p-4 flex flex-col gap-4 overflow-y-auto">
 
 		<div id="editor-overlay" class="hidden absolute inset-0 bg-base-200/50 z-10 cursor-not-allowed"></div>
@@ -122,6 +121,12 @@
 			</div>
 			<input type="range" id="mat-specular-power" min="1" max="256" step="1" value="128" class="range range-xs" />
 		</div>
+
+		<!-- Added Back Face Culling Checkbox -->
+		<label class="label cursor-pointer justify-start gap-2">
+			<input type="checkbox" id="mat-back-face-culling" class="checkbox checkbox-xs" checked />
+			<span class="label-text text-xs">Back Face Culling</span>
+		</label>
 
 		<div class="divider my-0">Textures</div>
 

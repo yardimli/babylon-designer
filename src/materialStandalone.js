@@ -53,6 +53,7 @@ const ui = {
 	// Checkboxes
 	useParallax: document.getElementById('mat-use-parallax'),
 	useParallaxOcclusion: document.getElementById('mat-use-parallax-occlusion'),
+	backFaceCulling: document.getElementById('mat-back-face-culling'), // Added
 
 	// Buttons
 	btnRefresh: document.getElementById('btn-refresh-files'),
@@ -109,7 +110,8 @@ function createDefaultMaterialData (name) {
 		bumpLevel: 1.0,
 		useParallax: false,
 		useParallaxOcclusion: false,
-		parallaxScaleBias: 0.05
+		parallaxScaleBias: 0.05,
+		backFaceCulling: true // Added default
 	};
 }
 
@@ -123,6 +125,9 @@ function updatePreviewFromData (data) {
 
 	previewMaterial.alpha = data.alpha;
 	previewMaterial.specularPower = data.specularPower;
+
+	// Apply Back Face Culling
+	previewMaterial.backFaceCulling = (data.backFaceCulling !== undefined) ? data.backFaceCulling : true; // Added
 
 	// Handle Diffuse Texture
 	if (data.diffuseTexture) {
@@ -179,6 +184,7 @@ function updateUIFromData (data) {
 	// Checkboxes
 	ui.useParallax.checked = data.useParallax;
 	ui.useParallaxOcclusion.checked = data.useParallaxOcclusion;
+	ui.backFaceCulling.checked = (data.backFaceCulling !== undefined) ? data.backFaceCulling : true; // Added
 
 	// Textures
 	ui.diffusePath.innerText = data.diffuseTexture || 'No file selected';
@@ -204,6 +210,7 @@ function updateDataFromUI () {
 
 	data.useParallax = ui.useParallax.checked;
 	data.useParallaxOcclusion = ui.useParallaxOcclusion.checked;
+	data.backFaceCulling = ui.backFaceCulling.checked; // Added
 
 	// Update Labels
 	ui.lAlpha.innerText = data.alpha.toFixed(2);
@@ -362,13 +369,17 @@ async function loadLibrary (filename) {
 							bumpLevel: 1.0,
 							useParallax: false,
 							useParallaxOcclusion: false,
-							parallaxScaleBias: 0.05
+							parallaxScaleBias: 0.05,
+							backFaceCulling: mat.backFaceCulling !== undefined ? mat.backFaceCulling : true // Added
 						};
 					}
+					// Ensure backFaceCulling exists for loaded standard materials
+					if (mat.backFaceCulling === undefined) mat.backFaceCulling = true; // Added
 					return mat;
 				});
 			} else {
 				currentLibrary = [json.data];
+				if (currentLibrary[0].backFaceCulling === undefined) currentLibrary[0].backFaceCulling = true; // Added
 			}
 
 			ui.inpFilename.value = filename.replace('.json', '');
@@ -444,7 +455,7 @@ function bindEvents () {
 		el.addEventListener('input', updateDataFromUI);
 	});
 
-	[ui.useParallax, ui.useParallaxOcclusion].forEach(el => {
+	[ui.useParallax, ui.useParallaxOcclusion, ui.backFaceCulling].forEach(el => { // Added backFaceCulling
 		el.addEventListener('change', updateDataFromUI);
 	});
 

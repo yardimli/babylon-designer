@@ -28,7 +28,8 @@
     "bumpLevel": 1,
     "useParallax": false,
     "useParallaxOcclusion": false,
-    "parallaxScaleBias": 0.05
+    "parallaxScaleBias": 0.05,
+    "backFaceCulling": true
   },
   {
     "name": "blue",
@@ -59,7 +60,8 @@
     "bumpLevel": 1,
     "useParallax": false,
     "useParallaxOcclusion": false,
-    "parallaxScaleBias": 0.05
+    "parallaxScaleBias": 0.05,
+    "backFaceCulling": true
   },
   {
     "name": "grass",
@@ -90,7 +92,8 @@
     "bumpLevel": 1,
     "useParallax": false,
     "useParallaxOcclusion": false,
-    "parallaxScaleBias": 0.05
+    "parallaxScaleBias": 0.05,
+    "backFaceCulling": true
   },
   {
     "name": "red",
@@ -121,7 +124,8 @@
     "bumpLevel": 1,
     "useParallax": false,
     "useParallaxOcclusion": false,
-    "parallaxScaleBias": 0.05
+    "parallaxScaleBias": 0.05,
+    "backFaceCulling": true
   },
   {
     "name": "sky",
@@ -152,7 +156,8 @@
     "bumpLevel": 1,
     "useParallax": false,
     "useParallaxOcclusion": false,
-    "parallaxScaleBias": 0.05
+    "parallaxScaleBias": 0.05,
+    "backFaceCulling": true
   },
   {
     "name": "floor",
@@ -183,7 +188,8 @@
     "bumpLevel": 1,
     "useParallax": false,
     "useParallaxOcclusion": false,
-    "parallaxScaleBias": 0.05
+    "parallaxScaleBias": 0.05,
+    "backFaceCulling": true
   },
   {
     "name": "roof",
@@ -214,7 +220,8 @@
     "bumpLevel": 1,
     "useParallax": false,
     "useParallaxOcclusion": false,
-    "parallaxScaleBias": 0.05
+    "parallaxScaleBias": 0.05,
+    "backFaceCulling": true
   },
   {
     "name": "red stone",
@@ -245,7 +252,8 @@
     "bumpLevel": 1,
     "useParallax": false,
     "useParallaxOcclusion": false,
-    "parallaxScaleBias": 0.05
+    "parallaxScaleBias": 0.05,
+    "backFaceCulling": true
   },
   {
     "name": "gray-tiles",
@@ -276,7 +284,8 @@
     "bumpLevel": 1,
     "useParallax": false,
     "useParallaxOcclusion": false,
-    "parallaxScaleBias": 0.05
+    "parallaxScaleBias": 0.05,
+    "backFaceCulling": true
   },
   {
     "name": "gray-pants",
@@ -307,7 +316,8 @@
     "bumpLevel": 1,
     "useParallax": false,
     "useParallaxOcclusion": false,
-    "parallaxScaleBias": 0.05
+    "parallaxScaleBias": 0.05,
+    "backFaceCulling": true
   },
   {
     "name": "leg-joint",
@@ -338,7 +348,8 @@
     "bumpLevel": 1,
     "useParallax": false,
     "useParallaxOcclusion": false,
-    "parallaxScaleBias": 0.05
+    "parallaxScaleBias": 0.05,
+    "backFaceCulling": true
   },
   {
     "name": "shoes",
@@ -369,7 +380,8 @@
     "bumpLevel": 1,
     "useParallax": false,
     "useParallaxOcclusion": false,
-    "parallaxScaleBias": 0.05
+    "parallaxScaleBias": 0.05,
+    "backFaceCulling": true
   },
   {
     "name": "shirt-blue",
@@ -400,7 +412,8 @@
     "bumpLevel": 1,
     "useParallax": false,
     "useParallaxOcclusion": false,
-    "parallaxScaleBias": 0.05
+    "parallaxScaleBias": 0.05,
+    "backFaceCulling": false
   },
   {
     "name": "parcel",
@@ -431,7 +444,8 @@
     "bumpLevel": 1,
     "useParallax": false,
     "useParallaxOcclusion": false,
-    "parallaxScaleBias": 0.05
+    "parallaxScaleBias": 0.05,
+    "backFaceCulling": true
   },
   {
     "name": "tape",
@@ -462,7 +476,8 @@
     "bumpLevel": 1,
     "useParallax": false,
     "useParallaxOcclusion": false,
-    "parallaxScaleBias": 0.05
+    "parallaxScaleBias": 0.05,
+    "backFaceCulling": true
   },
   {
     "name": "wall-gray",
@@ -493,7 +508,8 @@
     "bumpLevel": 1,
     "useParallax": false,
     "useParallaxOcclusion": false,
-    "parallaxScaleBias": 0.05
+    "parallaxScaleBias": 0.05,
+    "backFaceCulling": true
   },
   {
     "name": "brickwall2",
@@ -524,7 +540,8 @@
     "bumpLevel": 0.2,
     "useParallax": true,
     "useParallaxOcclusion": true,
-    "parallaxScaleBias": 0.05
+    "parallaxScaleBias": 0.05,
+    "backFaceCulling": true
   },
   {
     "name": "tile-floor-texture",
@@ -555,7 +572,8 @@
     "bumpLevel": 1,
     "useParallax": false,
     "useParallaxOcclusion": false,
-    "parallaxScaleBias": 0.05
+    "parallaxScaleBias": 0.05,
+    "backFaceCulling": true
   },
   {
     "name": "gemini-tile",
@@ -586,7 +604,8 @@
     "bumpLevel": 3,
     "useParallax": false,
     "useParallaxOcclusion": false,
-    "parallaxScaleBias": 0.11
+    "parallaxScaleBias": 0.11,
+    "backFaceCulling": true
   },
   {
     "name": "old-brick",
@@ -617,7 +636,8 @@
     "bumpLevel": 1.3,
     "useParallax": false,
     "useParallaxOcclusion": false,
-    "parallaxScaleBias": 0.05
+    "parallaxScaleBias": 0.05,
+    "backFaceCulling": true
   },
   {
     "name": "beige-wall-2",
@@ -648,7 +668,8 @@
     "bumpLevel": 1,
     "useParallax": false,
     "useParallaxOcclusion": false,
-    "parallaxScaleBias": 0.05
+    "parallaxScaleBias": 0.05,
+    "backFaceCulling": true
   },
   {
     "name": "wood",
@@ -679,6 +700,7 @@
     "bumpLevel": 1,
     "useParallax": false,
     "useParallaxOcclusion": false,
-    "parallaxScaleBias": 0.05
+    "parallaxScaleBias": 0.05,
+    "backFaceCulling": true
   }
 ]

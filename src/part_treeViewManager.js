@@ -21,7 +21,7 @@ function isUserMesh(mesh) {
 	return mesh.name !== "previewSphere" &&
 		!mesh.name.startsWith("gizmo") &&
 		mesh.name !== "hdrSkyBox" &&
-		(mesh.metadata?.isPrimitive || mesh.metadata?.isLightProxy);
+		(mesh.metadata?.isPrimitive || mesh.metadata?.isLightProxy || mesh.metadata?.isShape); // Added isShape
 }
 
 function getSortedRoots() {

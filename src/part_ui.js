@@ -1,4 +1,4 @@
-import { MeshBuilder, Vector3, Quaternion, TransformNode, Color3, Color4 } from "@babylonjs/core";
+import { MeshBuilder, Vector3, Quaternion, TransformNode, Color3, Color4, StandardMaterial } from "@babylonjs/core";
 import earcut from 'earcut';
 import { part, getUniqueId, camera } from "./part.js";
 import { setGizmoMode } from "./part_gizmoControl.js";
@@ -339,9 +339,14 @@ export function createShapeMesh(shapeData, name, savedState = null) {
 				wrap: true
 			}, part, earcut);
 
-			// Center pivot logic could go here, but for now keep origin
-			// ExtrudePolygon builds downwards usually, let's fix orientation to match primitive behavior if needed
-			// But ShapeEditor output is Y-up based on XZ plane.
+			// Fix for rendering: Ensure material has backFaceCulling disabled
+			// We create a default material for the shape if one doesn't exist
+			if (!mesh.material) {
+				const mat = new StandardMaterial(mesh.name + "_mat", part);
+				mat.backFaceCulling = false;
+				mat.diffuseColor = new Color3(0.6, 0.6, 0.6);
+				mesh.material = mat;
+			}
 
 			if (i === 0) {
 				rootMesh = mesh;

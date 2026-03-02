@@ -80,6 +80,7 @@ export function updatePropertyEditor(targets) {
 					typeLabel = t ? (t.charAt(0).toUpperCase() + t.slice(1)) : "Light";
 				}
 				else if (target.metadata.isTransformNode) typeLabel = "Node";
+				else if (target.metadata.isShape) typeLabel = "Shape"; // Added Shape label
 			} else {
 				typeLabel = target.getClassName();
 			}
@@ -848,5 +849,5 @@ function isUserMesh(mesh) {
 	return mesh.name !== "previewSphere" &&
 		!mesh.name.startsWith("gizmo") &&
 		mesh.name !== "hdrSkyBox" &&
-		(mesh.metadata?.isPrimitive || mesh.metadata?.isLightProxy);
+		(mesh.metadata?.isPrimitive || mesh.metadata?.isLightProxy || mesh.metadata?.isShape); // Added isShape
 }

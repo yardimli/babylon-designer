@@ -910,9 +910,9 @@
       "id": "woman-chest_1772450456589",
       "name": "woman-chest_1772450456589",
       "position": {
-        "x": -1.95,
-        "y": 6.25,
-        "z": -0.64
+        "x": -1.5172810554504395,
+        "y": 0.9600000381469727,
+        "z": -0.6200000047683716
       },
       "rotation": {
         "x": 0.5,
@@ -922,7 +922,7 @@
       },
       "scaling": {
         "x": 0.5,
-        "y": 2.8,
+        "y": 3,
         "z": 0.5
       },
       "pivot": {
@@ -933,10 +933,10 @@
       "materialId": "shirt-blue",
       "uScale": 1,
       "vScale": 1,
-      "parentId": null,
+      "parentId": "upper-body",
       "receiveShadows": false,
       "castShadows": true,
-      "sortIndex": 0,
+      "sortIndex": 300,
       "visible": true,
       "isNegative": false,
       "originalMaterialId": null,
@@ -976,23 +976,23 @@
       "shapeName": "woman-chest"
     },
     {
-      "id": "women-torso_1772450597170",
-      "name": "women-torso_1772450597170",
+      "id": "Cube_1772453014307",
+      "name": "Cube_1772453014307",
       "position": {
         "x": 0,
-        "y": 6.110544204711914,
-        "z": 0.4637230932712555
+        "y": 1.301567554473877,
+        "z": 0
       },
       "rotation": {
-        "x": 0.7071067811865475,
+        "x": 0,
         "y": 0,
         "z": 0,
-        "w": 0.7071067811865476
+        "w": 1
       },
       "scaling": {
-        "x": 0.4000000059604645,
-        "y": 0.5,
-        "z": 0.20000000298023224
+        "x": 3,
+        "y": 2.5,
+        "z": 1
       },
       "pivot": {
         "x": 0,
@@ -1002,13 +1002,51 @@
       "materialId": "shirt-blue",
       "uScale": 1,
       "vScale": 1,
-      "parentId": null,
+      "parentId": "upper-body",
       "receiveShadows": false,
       "castShadows": true,
-      "sortIndex": 0,
+      "sortIndex": 200,
       "visible": true,
       "isNegative": false,
       "originalMaterialId": null,
+      "isLocked": false,
+      "isPrimitive": true,
+      "type": "Cube"
+    },
+    {
+      "id": "women-torso-negative_1772453130905",
+      "name": "women-torso-negative_1772453130905",
+      "position": {
+        "x": 0.9023171663284302,
+        "y": 1.9000000953674316,
+        "z": 0.5664979219436646
+      },
+      "rotation": {
+        "x": -4.329780002184655e-17,
+        "y": 0.7071067811865476,
+        "z": 0.7071067811865475,
+        "w": 4.3297800021846564e-17
+      },
+      "scaling": {
+        "x": 0.4000000059604645,
+        "y": 0.800000011920929,
+        "z": 0.2199999988079071
+      },
+      "pivot": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "materialId": "negativeMat",
+      "uScale": 1,
+      "vScale": 1,
+      "parentId": "upper-body",
+      "receiveShadows": false,
+      "castShadows": false,
+      "sortIndex": 400,
+      "visible": true,
+      "isNegative": true,
+      "originalMaterialId": "women-torso-negative_1772453130905_mat",
       "isLocked": false,
       "isShape": true,
       "shapeData": {
@@ -1017,36 +1055,100 @@
             "type": "poly",
             "points": [
               {
-                "x": -5,
-                "y": -9
+                "x": -0.14907439138937084,
+                "y": -8.675
               },
               {
-                "x": -4,
-                "y": -3
+                "x": -0.15000000000000036,
+                "y": -8.724999999999998
               },
               {
-                "x": -4.347296355333862,
-                "y": -1.030384493975584
+                "x": 0.2999999999999998,
+                "y": -3.025
               },
               {
-                "x": -5.980048881726512,
-                "y": 3.426077494557558
+                "x": 0.20000000000000018,
+                "y": -1.075
               },
               {
-                "x": 3.4,
-                "y": 3.4000000000000026
+                "x": -0.75,
+                "y": 3.5
               },
               {
-                "x": 1.8112287815523824,
-                "y": -0.9651130473642335
+                "x": -1.6,
+                "y": 3.5
               },
               {
-                "x": 1.4639324262185218,
-                "y": -2.9347285533886494
+                "x": -1.5,
+                "y": -8.675
+              }
+            ],
+            "isHole": false
+          },
+          {
+            "type": "poly",
+            "points": [
+              {
+                "x": -0.14907439138937084,
+                "y": -8.675
               },
               {
-                "x": 2.800000000000004,
-                "y": -9
+                "x": -0.15000000000000036,
+                "y": -8.724999999999998
+              },
+              {
+                "x": 0.2999999999999998,
+                "y": -3.025
+              },
+              {
+                "x": 0.20000000000000018,
+                "y": -1.075
+              },
+              {
+                "x": -0.75,
+                "y": 3.5
+              },
+              {
+                "x": -1.6,
+                "y": 3.5
+              },
+              {
+                "x": -1.5,
+                "y": -8.675
+              }
+            ],
+            "isHole": false
+          },
+          {
+            "type": "poly",
+            "points": [
+              {
+                "x": -0.14907439138937084,
+                "y": -8.675
+              },
+              {
+                "x": -0.15000000000000036,
+                "y": -8.724999999999998
+              },
+              {
+                "x": 0.2999999999999998,
+                "y": -3.025
+              },
+              {
+                "x": 0.20000000000000018,
+                "y": -1.075
+              },
+              {
+                "x": -0.75,
+                "y": 3.5
+              },
+              {
+                "x": -1.6,
+                "y": 3.5
+              },
+              {
+                "x": -1.5,
+                "y": -8.675
               }
             ],
             "isHole": false
@@ -1054,34 +1156,10 @@
         ],
         "extrusionHeight": 2
       },
-      "shapeName": "women-torso"
+      "shapeName": "women-torso-negative"
     }
   ],
   "transformNodes": [
-    {
-      "id": "leg-right-lower",
-      "name": "leg-right-lower",
-      "position": {
-        "x": 0,
-        "y": -2,
-        "z": 0
-      },
-      "rotation": {
-        "x": -0.7071067811865475,
-        "y": 0,
-        "z": 0,
-        "w": 0.7071067811865476
-      },
-      "scaling": {
-        "x": 1,
-        "y": 1,
-        "z": 1
-      },
-      "parentId": "leg-right",
-      "sortIndex": 300,
-      "visible": true,
-      "isLocked": false
-    },
     {
       "id": "leg-right",
       "name": "leg-right",
@@ -1107,32 +1185,8 @@
       "isLocked": false
     },
     {
-      "id": "left-arm-lower",
-      "name": "left-arm-lower",
-      "position": {
-        "x": 0,
-        "y": -1.55,
-        "z": 0
-      },
-      "rotation": {
-        "x": 0.3826834323650898,
-        "y": 0,
-        "z": 0,
-        "w": 0.9238795325112867
-      },
-      "scaling": {
-        "x": 1,
-        "y": 1,
-        "z": 1
-      },
-      "parentId": "left-arm",
-      "sortIndex": 300,
-      "visible": true,
-      "isLocked": false
-    },
-    {
-      "id": "leg-left-lower",
-      "name": "leg-left-lower",
+      "id": "leg-right-lower",
+      "name": "leg-right-lower",
       "position": {
         "x": 0,
         "y": -2,
@@ -1149,103 +1203,7 @@
         "y": 1,
         "z": 1
       },
-      "parentId": "node_1769857745513",
-      "sortIndex": 300,
-      "visible": true,
-      "isLocked": false
-    },
-    {
-      "id": "upper-body",
-      "name": "upper-body",
-      "position": {
-        "x": 0,
-        "y": -2.8,
-        "z": 0
-      },
-      "rotation": {
-        "x": 0,
-        "y": 0,
-        "z": 0,
-        "w": 1
-      },
-      "scaling": {
-        "x": 1,
-        "y": 1,
-        "z": 1
-      },
-      "parentId": "humanoid",
-      "sortIndex": 100,
-      "visible": true,
-      "isLocked": false
-    },
-    {
-      "id": "head",
-      "name": "head",
-      "position": {
-        "x": 0,
-        "y": 2.7,
-        "z": 0
-      },
-      "rotation": {
-        "x": 0,
-        "y": 0,
-        "z": 0,
-        "w": 1
-      },
-      "scaling": {
-        "x": 1,
-        "y": 1,
-        "z": 1
-      },
-      "parentId": "upper-body",
-      "sortIndex": 100,
-      "visible": true,
-      "isLocked": false
-    },
-    {
-      "id": "humanoid",
-      "name": "humanoid",
-      "position": {
-        "x": -0.6085341572761536,
-        "y": 8.025453567504883,
-        "z": 0
-      },
-      "rotation": {
-        "x": 0,
-        "y": 0,
-        "z": 0,
-        "w": 1
-      },
-      "scaling": {
-        "x": 1,
-        "y": 1,
-        "z": 1
-      },
-      "parentId": null,
-      "sortIndex": 700,
-      "visible": true,
-      "isLocked": false
-    },
-    {
-      "id": "left-arm",
-      "name": "left-arm",
-      "position": {
-        "x": -2.1,
-        "y": 2,
-        "z": 0
-      },
-      "rotation": {
-        "x": 0.3826834323650898,
-        "y": 0,
-        "z": 0,
-        "w": 0.9238795325112867
-      },
-      "scaling": {
-        "x": 1,
-        "y": 1,
-        "z": 1
-      },
-      "parentId": "upper-body",
+      "parentId": "leg-right",
       "sortIndex": 300,
       "visible": true,
       "isLocked": false
@@ -1275,10 +1233,82 @@
       "isLocked": false
     },
     {
-      "id": "right-arm",
-      "name": "right-arm",
+      "id": "upper-body",
+      "name": "upper-body",
       "position": {
-        "x": 2.1,
+        "x": 0,
+        "y": -2.8,
+        "z": 0
+      },
+      "rotation": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 1
+      },
+      "scaling": {
+        "x": 1,
+        "y": 1,
+        "z": 1
+      },
+      "parentId": "humanoid",
+      "sortIndex": 100,
+      "visible": true,
+      "isLocked": false
+    },
+    {
+      "id": "leg-left-lower",
+      "name": "leg-left-lower",
+      "position": {
+        "x": 0,
+        "y": -2,
+        "z": 0
+      },
+      "rotation": {
+        "x": -0.7071067811865475,
+        "y": 0,
+        "z": 0,
+        "w": 0.7071067811865476
+      },
+      "scaling": {
+        "x": 1,
+        "y": 1,
+        "z": 1
+      },
+      "parentId": "node_1769857745513",
+      "sortIndex": 300,
+      "visible": true,
+      "isLocked": false
+    },
+    {
+      "id": "left-arm-lower",
+      "name": "left-arm-lower",
+      "position": {
+        "x": 0,
+        "y": -1.55,
+        "z": 0
+      },
+      "rotation": {
+        "x": 0.3826834323650898,
+        "y": 0,
+        "z": 0,
+        "w": 0.9238795325112867
+      },
+      "scaling": {
+        "x": 1,
+        "y": 1,
+        "z": 1
+      },
+      "parentId": "left-arm",
+      "sortIndex": 300,
+      "visible": true,
+      "isLocked": false
+    },
+    {
+      "id": "left-arm",
+      "name": "left-arm",
+      "position": {
+        "x": -2.1,
         "y": 2,
         "z": 0
       },
@@ -1294,7 +1324,55 @@
         "z": 1
       },
       "parentId": "upper-body",
-      "sortIndex": 400,
+      "sortIndex": 500,
+      "visible": true,
+      "isLocked": false
+    },
+    {
+      "id": "humanoid",
+      "name": "humanoid",
+      "position": {
+        "x": -0.6085341572761536,
+        "y": 8.025453567504883,
+        "z": 0
+      },
+      "rotation": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 1
+      },
+      "scaling": {
+        "x": 1,
+        "y": 1,
+        "z": 1
+      },
+      "parentId": null,
+      "sortIndex": 700,
+      "visible": true,
+      "isLocked": false
+    },
+    {
+      "id": "head",
+      "name": "head",
+      "position": {
+        "x": 0,
+        "y": 2.7,
+        "z": 0
+      },
+      "rotation": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 1
+      },
+      "scaling": {
+        "x": 1,
+        "y": 1,
+        "z": 1
+      },
+      "parentId": "upper-body",
+      "sortIndex": 100,
       "visible": true,
       "isLocked": false
     },
@@ -1319,6 +1397,30 @@
       },
       "parentId": "right-arm",
       "sortIndex": 300,
+      "visible": true,
+      "isLocked": false
+    },
+    {
+      "id": "right-arm",
+      "name": "right-arm",
+      "position": {
+        "x": 2.1,
+        "y": 2,
+        "z": 0
+      },
+      "rotation": {
+        "x": 0.3826834323650898,
+        "y": 0,
+        "z": 0,
+        "w": 0.9238795325112867
+      },
+      "scaling": {
+        "x": 1,
+        "y": 1,
+        "z": 1
+      },
+      "parentId": "upper-body",
+      "sortIndex": 600,
       "visible": true,
       "isLocked": false
     }
