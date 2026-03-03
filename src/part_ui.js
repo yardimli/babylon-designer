@@ -67,10 +67,15 @@ export function setupUI() {
 		} else if (category === "shape") {
 			//  Handle Shape Drop
 			try {
-				const res = await fetch(`/api/shapes?file=${type}.json`);
+				const filename = type.endsWith('.json') ? type : type + ".json";
+				const res = await fetch(`/api/shapes?file=${filename}`);
 				const json = await res.json();
 				if (json.success) {
 					createdNode = createShapeMesh(json.data, type);
+					// Modified: Store filename in metadata so it can be saved by reference
+					if (createdNode) {
+						createdNode.metadata.shapeFilename = filename;
+					}
 				}
 			} catch (err) {
 				console.error("Failed to load shape", err);
@@ -408,6 +413,11 @@ export function createShapeMesh(shapeData, name, savedState = null) {
 				rootMesh.metadata.isNegative = true;
 				rootMesh.metadata.originalMaterialId = savedState.originalMaterialId;
 				rootMesh.material = getNegativeMaterial(part);
+			}
+
+			// Modified: Preserve filename if it exists in saved state
+			if (savedState.shapeFilename) {
+				rootMesh.metadata.shapeFilename = savedState.shapeFilename;
 			}
 		} else {
 			// Default placement

@@ -183,8 +183,9 @@ export function serializeScene() {
 				meshData.type = mesh.metadata.type;
 			} else if (mesh.metadata.isShape) {
 				meshData.isShape = true;
-				meshData.shapeData = mesh.metadata.shapeData;
+				// meshData.shapeData = mesh.metadata.shapeData; // Modified: Do not save shape data
 				meshData.shapeName = mesh.metadata.shapeName;
+				meshData.shapeFilename = mesh.metadata.shapeFilename; // Modified: Save filename reference
 			}
 
 			data.meshes.push(meshData);
@@ -266,12 +267,31 @@ export async function loadSceneData(data) {
 	}
 
 	if (data.meshes) {
-		data.meshes.forEach(meshData => {
+		// Modified: Use for...of loop to handle async shape loading
+		for (const meshData of data.meshes) {
 			let mesh;
 			if (meshData.isPrimitive) {
 				mesh = createPrimitive(meshData.type, meshData);
 			} else if (meshData.isShape) {
-				mesh = createShapeMesh(meshData.shapeData, meshData.shapeName, meshData);
+				// Modified: Load shape from file if filename exists
+				if (meshData.shapeFilename) {
+					try {
+						const res = await fetch(`/api/shapes?file=${meshData.shapeFilename}`);
+						const json = await res.json();
+						if (json.success) {
+							mesh = createShapeMesh(json.data, meshData.shapeName, meshData);
+							// Ensure filename is preserved in metadata
+							if (mesh && mesh.metadata) mesh.metadata.shapeFilename = meshData.shapeFilename;
+						} else {
+							console.warn("Shape file not found:", meshData.shapeFilename);
+						}
+					} catch (e) {
+						console.error("Error loading shape:", e);
+					}
+				} else if (meshData.shapeData) {
+					// Fallback for legacy files containing raw data
+					mesh = createShapeMesh(meshData.shapeData, meshData.shapeName, meshData);
+				}
 			}
 
 			if (mesh) {
@@ -311,10 +331,11 @@ export async function loadSceneData(data) {
 				if (mesh.metadata) {
 					mesh.metadata.sortIndex = meshData.sortIndex || 0;
 					mesh.metadata.isLocked = meshData.isLocked || false; // Added
+					if (meshData.shapeFilename) mesh.metadata.shapeFilename = meshData.shapeFilename; // Ensure it sticks
 				}
 				if (meshData.visible !== undefined) mesh.setEnabled(meshData.visible);
 			}
-		});
+		}
 	}
 
 	const findParent = (idOrName) => {
