@@ -100,7 +100,7 @@
       "parentId": "head",
       "receiveShadows": false,
       "castShadows": true,
-      "sortIndex": 0,
+      "sortIndex": 100,
       "visible": true,
       "isNegative": false,
       "originalMaterialId": null,
@@ -907,75 +907,6 @@
       "type": "Sphere"
     },
     {
-      "id": "woman-chest_1772450456589",
-      "name": "woman-chest_1772450456589",
-      "position": {
-        "x": -1.5172810554504395,
-        "y": 0.9600000381469727,
-        "z": -0.6200000047683716
-      },
-      "rotation": {
-        "x": 0.5,
-        "y": -0.5,
-        "z": 0.4999999999999999,
-        "w": 0.5000000000000001
-      },
-      "scaling": {
-        "x": 0.5,
-        "y": 3,
-        "z": 0.5
-      },
-      "pivot": {
-        "x": 0,
-        "y": 0,
-        "z": 0
-      },
-      "materialId": "shirt-blue",
-      "uScale": 1,
-      "vScale": 1,
-      "parentId": "upper-body",
-      "receiveShadows": false,
-      "castShadows": true,
-      "sortIndex": 300,
-      "visible": true,
-      "isNegative": false,
-      "originalMaterialId": null,
-      "isLocked": false,
-      "isShape": true,
-      "shapeData": {
-        "shapes": [
-          {
-            "type": "poly",
-            "points": [
-              {
-                "x": 0.15000000000000022,
-                "y": -3.1763330963805387
-              },
-              {
-                "x": -0.65,
-                "y": -1.375
-              },
-              {
-                "x": -0.75,
-                "y": -0.575
-              },
-              {
-                "x": -0.35,
-                "y": 0.175
-              },
-              {
-                "x": 0.15,
-                "y": 0.575
-              }
-            ],
-            "isHole": false
-          }
-        ],
-        "extrusionHeight": 1
-      },
-      "shapeName": "woman-chest"
-    },
-    {
       "id": "Cube_1772453014307",
       "name": "Cube_1772453014307",
       "position": {
@@ -1005,7 +936,7 @@
       "parentId": "upper-body",
       "receiveShadows": false,
       "castShadows": true,
-      "sortIndex": 200,
+      "sortIndex": 500,
       "visible": true,
       "isNegative": false,
       "originalMaterialId": null,
@@ -1014,23 +945,62 @@
       "type": "Cube"
     },
     {
-      "id": "women-torso-negative_1772453130905",
-      "name": "women-torso-negative_1772453130905",
+      "id": "women-chest_1772516952448",
+      "name": "women-chest_1772516952448",
       "position": {
-        "x": 0.9023171663284302,
-        "y": 1.9000000953674316,
-        "z": 0.5664979219436646
+        "x": 1.5,
+        "y": -0.9913358688354492,
+        "z": -0.4699999988079071
       },
       "rotation": {
-        "x": -4.329780002184655e-17,
-        "y": 0.7071067811865476,
-        "z": 0.7071067811865475,
-        "w": 4.3297800021846564e-17
+        "x": 0.5,
+        "y": 0.5,
+        "z": -0.4999999999999999,
+        "w": 0.5000000000000001
       },
       "scaling": {
-        "x": 0.4000000059604645,
-        "y": 0.800000011920929,
-        "z": 0.2199999988079071
+        "x": 0.30000001192092896,
+        "y": 1.5,
+        "z": 0.30000001192092896
+      },
+      "pivot": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "materialId": "shirt-blue",
+      "uScale": 1,
+      "vScale": 1,
+      "parentId": "upper-body",
+      "receiveShadows": false,
+      "castShadows": true,
+      "sortIndex": 400,
+      "visible": true,
+      "isNegative": false,
+      "originalMaterialId": null,
+      "isLocked": false,
+      "isShape": true,
+      "shapeName": "women-chest",
+      "shapeFilename": "women-chest.json"
+    },
+    {
+      "id": "woman-torso-subtract_1772517125851",
+      "name": "woman-torso-subtract_1772517125851",
+      "position": {
+        "x": -0.6927823424339294,
+        "y": 4.070063591003418,
+        "z": -1.1996707916259766
+      },
+      "rotation": {
+        "x": -0.7071067811865475,
+        "y": 0,
+        "z": 0,
+        "w": 0.7071067811865476
+      },
+      "scaling": {
+        "x": 0.30000001192092896,
+        "y": 1,
+        "z": 0.30000001192092896
       },
       "pivot": {
         "x": 0,
@@ -1042,121 +1012,54 @@
       "vScale": 1,
       "parentId": "upper-body",
       "receiveShadows": false,
-      "castShadows": false,
-      "sortIndex": 400,
+      "castShadows": true,
+      "sortIndex": 200,
       "visible": true,
       "isNegative": true,
-      "originalMaterialId": "women-torso-negative_1772453130905_mat",
+      "originalMaterialId": "shirt-blue",
       "isLocked": false,
       "isShape": true,
-      "shapeData": {
-        "shapes": [
-          {
-            "type": "poly",
-            "points": [
-              {
-                "x": -0.14907439138937084,
-                "y": -8.675
-              },
-              {
-                "x": -0.15000000000000036,
-                "y": -8.724999999999998
-              },
-              {
-                "x": 0.2999999999999998,
-                "y": -3.025
-              },
-              {
-                "x": 0.20000000000000018,
-                "y": -1.075
-              },
-              {
-                "x": -0.75,
-                "y": 3.5
-              },
-              {
-                "x": -1.6,
-                "y": 3.5
-              },
-              {
-                "x": -1.5,
-                "y": -8.675
-              }
-            ],
-            "isHole": false
-          },
-          {
-            "type": "poly",
-            "points": [
-              {
-                "x": -0.14907439138937084,
-                "y": -8.675
-              },
-              {
-                "x": -0.15000000000000036,
-                "y": -8.724999999999998
-              },
-              {
-                "x": 0.2999999999999998,
-                "y": -3.025
-              },
-              {
-                "x": 0.20000000000000018,
-                "y": -1.075
-              },
-              {
-                "x": -0.75,
-                "y": 3.5
-              },
-              {
-                "x": -1.6,
-                "y": 3.5
-              },
-              {
-                "x": -1.5,
-                "y": -8.675
-              }
-            ],
-            "isHole": false
-          },
-          {
-            "type": "poly",
-            "points": [
-              {
-                "x": -0.14907439138937084,
-                "y": -8.675
-              },
-              {
-                "x": -0.15000000000000036,
-                "y": -8.724999999999998
-              },
-              {
-                "x": 0.2999999999999998,
-                "y": -3.025
-              },
-              {
-                "x": 0.20000000000000018,
-                "y": -1.075
-              },
-              {
-                "x": -0.75,
-                "y": 3.5
-              },
-              {
-                "x": -1.6,
-                "y": 3.5
-              },
-              {
-                "x": -1.5,
-                "y": -8.675
-              }
-            ],
-            "isHole": false
-          }
-        ],
-        "extrusionHeight": 2
+      "shapeName": "woman-torso-subtract",
+      "shapeFilename": "woman-torso-subtract.json"
+    },
+    {
+      "id": "woman-torso-subtract_1772517382267",
+      "name": "woman-torso-subtract_1772517382267",
+      "position": {
+        "x": 0.6886014938354492,
+        "y": 4.080631256103516,
+        "z": 0.7208883166313171
       },
-      "shapeName": "women-torso-negative"
+      "rotation": {
+        "x": -4.3297804701086715e-17,
+        "y": 0.7071067811865476,
+        "z": 0.7071067811865475,
+        "w": 4.329780470108673e-17
+      },
+      "scaling": {
+        "x": 0.30000001192092896,
+        "y": 1,
+        "z": 0.30000001192092896
+      },
+      "pivot": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "materialId": "negativeMat",
+      "uScale": 1,
+      "vScale": 1,
+      "parentId": "upper-body",
+      "receiveShadows": false,
+      "castShadows": true,
+      "sortIndex": 300,
+      "visible": true,
+      "isNegative": true,
+      "originalMaterialId": "woman-torso-subtract_1772517382267_mat",
+      "isLocked": false,
+      "isShape": true,
+      "shapeName": "woman-torso-subtract",
+      "shapeFilename": "woman-torso-subtract.json"
     }
   ],
   "transformNodes": [
@@ -1209,26 +1112,26 @@
       "isLocked": false
     },
     {
-      "id": "node_1769857745513",
-      "name": "leg-left",
+      "id": "left-arm-lower",
+      "name": "left-arm-lower",
       "position": {
-        "x": -1,
-        "y": -3.9,
+        "x": 0,
+        "y": -1.55,
         "z": 0
       },
       "rotation": {
-        "x": 0.7071067811865475,
+        "x": 0.3826834323650898,
         "y": 0,
         "z": 0,
-        "w": 0.7071067811865476
+        "w": 0.9238795325112867
       },
       "scaling": {
         "x": 1,
         "y": 1,
         "z": 1
       },
-      "parentId": "humanoid",
-      "sortIndex": 500,
+      "parentId": "left-arm",
+      "sortIndex": 300,
       "visible": true,
       "isLocked": false
     },
@@ -1257,15 +1160,15 @@
       "isLocked": false
     },
     {
-      "id": "leg-left-lower",
-      "name": "leg-left-lower",
+      "id": "node_1769857745513",
+      "name": "leg-left",
       "position": {
-        "x": 0,
-        "y": -2,
+        "x": -1,
+        "y": -3.9,
         "z": 0
       },
       "rotation": {
-        "x": -0.7071067811865475,
+        "x": 0.7071067811865475,
         "y": 0,
         "z": 0,
         "w": 0.7071067811865476
@@ -1275,32 +1178,32 @@
         "y": 1,
         "z": 1
       },
-      "parentId": "node_1769857745513",
-      "sortIndex": 300,
+      "parentId": "humanoid",
+      "sortIndex": 500,
       "visible": true,
       "isLocked": false
     },
     {
-      "id": "left-arm-lower",
-      "name": "left-arm-lower",
+      "id": "head",
+      "name": "head",
       "position": {
         "x": 0,
-        "y": -1.55,
+        "y": 2.7,
         "z": 0
       },
       "rotation": {
-        "x": 0.3826834323650898,
+        "x": 0,
         "y": 0,
         "z": 0,
-        "w": 0.9238795325112867
+        "w": 1
       },
       "scaling": {
         "x": 1,
         "y": 1,
         "z": 1
       },
-      "parentId": "left-arm",
-      "sortIndex": 300,
+      "parentId": "upper-body",
+      "sortIndex": 100,
       "visible": true,
       "isLocked": false
     },
@@ -1324,7 +1227,7 @@
         "z": 1
       },
       "parentId": "upper-body",
-      "sortIndex": 500,
+      "sortIndex": 600,
       "visible": true,
       "isLocked": false
     },
@@ -1353,26 +1256,26 @@
       "isLocked": false
     },
     {
-      "id": "head",
-      "name": "head",
+      "id": "leg-left-lower",
+      "name": "leg-left-lower",
       "position": {
         "x": 0,
-        "y": 2.7,
+        "y": -2,
         "z": 0
       },
       "rotation": {
-        "x": 0,
+        "x": -0.7071067811865475,
         "y": 0,
         "z": 0,
-        "w": 1
+        "w": 0.7071067811865476
       },
       "scaling": {
         "x": 1,
         "y": 1,
         "z": 1
       },
-      "parentId": "upper-body",
-      "sortIndex": 100,
+      "parentId": "node_1769857745513",
+      "sortIndex": 300,
       "visible": true,
       "isLocked": false
     },
@@ -1420,7 +1323,7 @@
         "z": 1
       },
       "parentId": "upper-body",
-      "sortIndex": 600,
+      "sortIndex": 700,
       "visible": true,
       "isLocked": false
     }

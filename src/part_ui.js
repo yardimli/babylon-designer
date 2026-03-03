@@ -266,115 +266,134 @@ export function createShapeMesh(shapeData, name, savedState = null) {
 	const baseId = savedState ? savedState.id : `${name}_${Date.now()}`;
 	const id = getUniqueId(part, baseId);
 
-	// Reconstruct geometry
-	const solids = [];
-	const holes = [];
+	let rootMesh;
 
-	// Helper to convert shape object to Vector3 array
-	const getPoints = (shape) => {
-		const points = [];
-		if (shape.type === 'rect') {
-			points.push(
-				new Vector3(shape.x, 0, shape.y),
-				new Vector3(shape.x + shape.w, 0, shape.y),
-				new Vector3(shape.x + shape.w, 0, shape.y + shape.h),
-				new Vector3(shape.x, 0, shape.y + shape.h)
-			);
-		} else if (shape.type === 'circle') {
-			const segments = 32;
-			const r = shape.diameter / 2;
-			for (let j = 0; j < segments; j++) {
-				const theta = (j / segments) * Math.PI * 2;
-				points.push(new Vector3(
-					shape.x + Math.cos(theta) * r,
-					0,
-					shape.y + Math.sin(theta) * r
-				));
-			}
-		} else if (shape.type === 'poly') {
-			shape.points.forEach(p => points.push(new Vector3(p.x, 0, p.y)));
-		}
-		return points;
-	};
-
-	// Helper: Check if point is inside polygon
-	const isPointInPoly = (pt, poly) => {
-		let inside = false;
-		for (let i = 0, j = poly.length - 1; i < poly.length; j = i++) {
-			const xi = poly[i].x; const yi = poly[i].z;
-			const xj = poly[j].x; const yj = poly[j].z;
-			const intersect = ((yi > pt.z) !== (yj > pt.z)) &&
-				(pt.x < (xj - xi) * (pt.z - yi) / (yj - yi) + xi);
-			if (intersect) inside = !inside;
-		}
-		return inside;
-	};
-
-	// Process shapes
-	shapeData.shapes.forEach((shape, i) => {
-		const points = getPoints(shape);
-		if (points.length < 3) return;
-		if (shape.isHole) {
-			holes.push({ points });
-		} else {
-			solids.push({ points, myHoles: [] });
-		}
-	});
-
-	// Assign holes
-	holes.forEach(hole => {
-		for (const solid of solids) {
-			if (isPointInPoly(hole.points[0], solid.points)) {
-				solid.myHoles.push(hole.points);
-				break;
-			}
-		}
-	});
-
-	// Store generated meshes to merge them later
-	const meshes = [];
-
-	// Create Meshes
-	solids.forEach((solid, i) => {
+	// Check for new simplified format (single points array)
+	if (shapeData.points && Array.isArray(shapeData.points)) {
 		try {
-			// FIX: Use FRONTSIDE (default 0) instead of DOUBLESIDE (1).
-			// DOUBLESIDE causes CSG boolean operations to fail because normals point both ways.
-			const mesh = MeshBuilder.ExtrudePolygon(i === 0 ? id : `${id}_part_${i}`, {
-				shape: solid.points,
-				holes: solid.myHoles,
-				depth: shapeData.extrusionHeight,
-				sideOrientation: MeshBuilder.FRONTSIDE, // Changed from DOUBLESIDE
+			const vectorPoints = shapeData.points.map(p => new Vector3(p.x, 0, p.y));
+
+			rootMesh = MeshBuilder.ExtrudePolygon(id, {
+				shape: vectorPoints,
+				depth: shapeData.extrusionHeight || 1,
+				sideOrientation: MeshBuilder.FRONTSIDE,
 				wrap: true
 			}, part, earcut);
 
-			// Fix for rendering: Ensure material has backFaceCulling disabled
-			// We create a default material for the shape if one doesn't exist
-			if (!mesh.material) {
-				const mat = new StandardMaterial(mesh.name + "_mat", part);
+			// Default Material
+			if (!rootMesh.material) {
+				const mat = new StandardMaterial(rootMesh.name + "_mat", part);
 				mat.backFaceCulling = false;
 				mat.diffuseColor = new Color3(0.6, 0.6, 0.6);
-				mesh.material = mat;
+				rootMesh.material = mat;
 			}
-
-			meshes.push(mesh);
 		} catch (e) {
-			console.warn("Failed to extrude shape part", e);
+			console.warn("Failed to extrude simplified shape", e);
 		}
-	});
+	}
+	// Fallback to Legacy Format (Multiple shapes/holes)
+	else if (shapeData.shapes) {
+		// Reconstruct geometry
+		const solids = [];
+		const holes = [];
 
-	if (meshes.length === 0) return null;
+		// Helper to convert shape object to Vector3 array
+		const getPoints = (shape) => {
+			const points = [];
+			if (shape.type === 'rect') {
+				points.push(
+					new Vector3(shape.x, 0, shape.y),
+					new Vector3(shape.x + shape.w, 0, shape.y),
+					new Vector3(shape.x + shape.w, 0, shape.y + shape.h),
+					new Vector3(shape.x, 0, shape.y + shape.h)
+				);
+			} else if (shape.type === 'circle') {
+				const segments = 32;
+				const r = shape.diameter / 2;
+				for (let j = 0; j < segments; j++) {
+					const theta = (j / segments) * Math.PI * 2;
+					points.push(new Vector3(
+						shape.x + Math.cos(theta) * r,
+						0,
+						shape.y + Math.sin(theta) * r
+					));
+				}
+			} else if (shape.type === 'poly') {
+				shape.points.forEach(p => points.push(new Vector3(p.x, 0, p.y)));
+			}
+			return points;
+		};
 
-	let rootMesh;
+		// Helper: Check if point is inside polygon
+		const isPointInPoly = (pt, poly) => {
+			let inside = false;
+			for (let i = 0, j = poly.length - 1; i < poly.length; j = i++) {
+				const xi = poly[i].x; const yi = poly[i].z;
+				const xj = poly[j].x; const yj = poly[j].z;
+				const intersect = ((yi > pt.z) !== (yj > pt.z)) &&
+					(pt.x < (xj - xi) * (pt.z - yi) / (yj - yi) + xi);
+				if (intersect) inside = !inside;
+			}
+			return inside;
+		};
 
-	// FIX: Merge multiple solids into a single mesh.
-	// This ensures the CSG manager (which looks at direct children of TransformNodes)
-	// sees the entire shape as one object, rather than a hierarchy where children are ignored.
-	if (meshes.length === 1) {
-		rootMesh = meshes[0];
-	} else {
-		rootMesh = Mesh.MergeMeshes(meshes, true, true, undefined, false, true);
-		rootMesh.name = id;
-		rootMesh.id = id;
+		// Process shapes
+		shapeData.shapes.forEach((shape, i) => {
+			const points = getPoints(shape);
+			if (points.length < 3) return;
+			if (shape.isHole) {
+				holes.push({ points });
+			} else {
+				solids.push({ points, myHoles: [] });
+			}
+		});
+
+		// Assign holes
+		holes.forEach(hole => {
+			for (const solid of solids) {
+				if (isPointInPoly(hole.points[0], solid.points)) {
+					solid.myHoles.push(hole.points);
+					break;
+				}
+			}
+		});
+
+		// Store generated meshes to merge them later
+		const meshes = [];
+
+		// Create Meshes
+		solids.forEach((solid, i) => {
+			try {
+				const mesh = MeshBuilder.ExtrudePolygon(i === 0 ? id : `${id}_part_${i}`, {
+					shape: solid.points,
+					holes: solid.myHoles,
+					depth: shapeData.extrusionHeight,
+					sideOrientation: MeshBuilder.FRONTSIDE,
+					wrap: true
+				}, part, earcut);
+
+				if (!mesh.material) {
+					const mat = new StandardMaterial(mesh.name + "_mat", part);
+					mat.backFaceCulling = false;
+					mat.diffuseColor = new Color3(0.6, 0.6, 0.6);
+					mesh.material = mat;
+				}
+
+				meshes.push(mesh);
+			} catch (e) {
+				console.warn("Failed to extrude shape part", e);
+			}
+		});
+
+		if (meshes.length === 0) return null;
+
+		if (meshes.length === 1) {
+			rootMesh = meshes[0];
+		} else {
+			rootMesh = Mesh.MergeMeshes(meshes, true, true, undefined, false, true);
+			rootMesh.name = id;
+			rootMesh.id = id;
+		}
 	}
 
 	if (rootMesh) {
@@ -421,7 +440,7 @@ export function createShapeMesh(shapeData, name, savedState = null) {
 			}
 		} else {
 			// Default placement
-			rootMesh.position.y = shapeData.extrusionHeight;
+			rootMesh.position.y = shapeData.extrusionHeight || 1;
 			setShadowCaster(rootMesh, true);
 		}
 	}

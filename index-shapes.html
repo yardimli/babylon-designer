@@ -38,11 +38,10 @@
 		<!-- Tools -->
 		<div class="flex-1 p-4 flex flex-col gap-2">
 			<h2 class="font-bold text-xs uppercase opacity-70">Tools</h2>
-			<button id="btn-tool-select" class="btn btn-sm btn-active">Select / Edit</button>
-			<div class="divider my-1">Add</div>
-			<button id="btn-tool-rect" class="btn btn-sm btn-outline">Rectangle</button>
-			<button id="btn-tool-circle" class="btn btn-sm btn-outline">Circle</button>
-			<button id="btn-tool-poly" class="btn btn-sm btn-outline">Draw Polygon</button>
+			<button id="btn-tool-select" class="btn btn-sm btn-outline">Select / Edit</button>
+			<div class="divider my-1">Draw</div>
+			<!-- Removed Rect/Circle buttons -->
+			<button id="btn-tool-poly" class="btn btn-sm btn-active btn-accent">Draw Polygon</button>
 
 			<div class="divider my-1">Global</div>
 			<label class="form-control w-full">
@@ -71,17 +70,13 @@
 		<div class="flex-1 p-4 overflow-y-auto">
 			<h2 class="font-bold mb-4">Properties</h2>
 			<div id="properties-container" class="flex flex-col gap-3 opacity-50 pointer-events-none">
-				<div class="text-xs italic">Select a shape or line to edit</div>
-			</div>
-
-			<div class="mt-4 pt-4 border-t border-base-content/10">
-				<button id="btn-delete-shape" class="btn btn-error btn-sm btn-outline w-full hidden">Delete Shape</button>
+				<div class="text-xs italic">Select a vertex or edge to edit</div>
 			</div>
 		</div>
 	</div>
 </div>
 
-<!-- NEW: Global Mouse Wheel handler for number inputs -->
+<!-- Global Mouse Wheel handler for number inputs -->
 <script>
 	document.addEventListener('wheel', function(e) {
 		if (e.target.tagName === 'INPUT' && e.target.type === 'number') {
