@@ -1,5 +1,5 @@
-import { TransformNode, Quaternion, Vector3, Color3, StandardMaterial, Mesh } from "@babylonjs/core";
-import { scene, resetAxisIndicator, getUniqueId, engine } from "./assembly_scene.js";
+import { TransformNode, Quaternion, Vector3, Color3, Color4, StandardMaterial, Mesh } from "@babylonjs/core"; // Added Color4
+import { scene, camera, resetAxisIndicator, getUniqueId, engine } from "./assembly_scene.js"; // Added camera
 import { setupGizmos, disposeGizmos } from "./assembly_gizmoControl.js";
 import { updatePropertyEditor } from "./assembly_propertyEditor.js";
 import { refreshSceneGraph } from "./assembly_treeViewManager.js";
@@ -31,7 +31,7 @@ export function setupAssemblyManager() {
 	document.getElementById("btn-menu-save").onclick = () => handleSaveAction();
 	document.getElementById("btn-menu-save-as").onclick = () => handleSaveAsAction();
 	document.getElementById("btn-menu-load").onclick = () => openLoadModal();
-	document.getElementById("btn-menu-new").onclick = () => createNewAssembly();
+	document.getElementById("btn-menu-new").onclick = () => createNewAssembly(true); // Pass true to reset camera and settings
 	document.getElementById("btn-modal-save").onclick = () => {
 		const name = saveNameInput.value.trim();
 		if (name) saveAssemblyInternal(name);
@@ -269,7 +269,7 @@ export async function importSceneAsAsset(filename, position = Vector3.Zero(), sa
 		if (merge_meshes) {
 			const allChildMeshes = rootNode.getChildMeshes(false);
 			const meshesToMerge = [];
-			const meshesToDispose = [];
+			const meshesToDispose =[];
 
 			allChildMeshes.forEach(m => {
 				if (m.metadata && m.metadata.isLightProxy) return;
@@ -293,9 +293,7 @@ export async function importSceneAsAsset(filename, position = Vector3.Zero(), sa
 
 					merged.isPickable = true;
 				}
-			}
-
-			[...meshesToMerge, ...meshesToDispose].forEach(m => {
+			}[...meshesToMerge, ...meshesToDispose].forEach(m => {
 				if (!m.isDisposed()) m.dispose();
 			});
 		}
@@ -315,11 +313,23 @@ export async function importSceneAsAsset(filename, position = Vector3.Zero(), sa
 
 function serializeAssembly() {
 	const data = {
-		version: 1.1,
+		version: 1.2, // Bumped version for scene settings
 		type: "assembly",
 		scenes: [],
-		lights: []
+		lights:[],
+		sceneSettings: {} // Added
 	};
+
+	// Save Scene Settings
+	if (scene.clearColor) {
+		data.sceneSettings.clearColor = { r: scene.clearColor.r, g: scene.clearColor.g, b: scene.clearColor.b };
+	}
+	const hemiLight = scene.getLightByName("hemiLight");
+	if (hemiLight) {
+		data.sceneSettings.ambientIntensity = hemiLight.intensity;
+		data.sceneSettings.diffuseColor = { r: hemiLight.diffuse.r, g: hemiLight.diffuse.g, b: hemiLight.diffuse.b };
+		data.sceneSettings.groundColor = { r: hemiLight.groundColor.r, g: hemiLight.groundColor.g, b: hemiLight.groundColor.b };
+	}
 
 	const roots = scene.transformNodes.filter(node => node.metadata && node.metadata.isAssemblyRoot);
 	roots.sort((a, b) => (a.metadata.sortIndex || 0) - (b.metadata.sortIndex || 0));
@@ -373,6 +383,17 @@ function serializeAssembly() {
 
 async function saveAssemblyInternal(name) {
 	const data = serializeAssembly();
+
+	// Inject camera state for file saving only (not for undo/redo history)
+	if (camera) {
+		data.camera = {
+			alpha: camera.alpha,
+			beta: camera.beta,
+			radius: camera.radius,
+			target: { x: camera.target.x, y: camera.target.y, z: camera.target.z }
+		};
+	}
+
 	try {
 		const response = await fetch('/api/assemblies', {
 			method: 'POST',
@@ -397,7 +418,7 @@ async function saveAssemblyInternal(name) {
 }
 
 export async function loadAssemblyData(data) {
-	createNewAssembly();
+	createNewAssembly(false); // Pass false to avoid resetting camera/settings on undo
 
 	// 1. Load Scenes
 	if (data.scenes) {
@@ -437,6 +458,37 @@ export async function loadAssemblyData(data) {
 		});
 	}
 
+	// 3. Apply Scene Settings
+	const hemiLight = scene.getLightByName("hemiLight");
+	if (data.sceneSettings) {
+		if (data.sceneSettings.clearColor) {
+			scene.clearColor = new Color4(data.sceneSettings.clearColor.r, data.sceneSettings.clearColor.g, data.sceneSettings.clearColor.b, 1);
+		}
+		if (hemiLight) {
+			if (data.sceneSettings.ambientIntensity !== undefined) hemiLight.intensity = data.sceneSettings.ambientIntensity;
+			if (data.sceneSettings.diffuseColor) hemiLight.diffuse = new Color3(data.sceneSettings.diffuseColor.r, data.sceneSettings.diffuseColor.g, data.sceneSettings.diffuseColor.b);
+			if (data.sceneSettings.groundColor) hemiLight.groundColor = new Color3(data.sceneSettings.groundColor.r, data.sceneSettings.groundColor.g, data.sceneSettings.groundColor.b);
+		}
+	} else {
+		// Defaults
+		scene.clearColor = new Color4(0.1, 0.1, 0.1, 1);
+		if (hemiLight) {
+			hemiLight.intensity = 0.7;
+			hemiLight.diffuse = new Color3(1, 1, 1);
+			hemiLight.groundColor = new Color3(0.5, 0.5, 0.5);
+		}
+	}
+
+	// 4. Apply Camera (only if present in file)
+	if (data.camera && camera) {
+		camera.alpha = data.camera.alpha;
+		camera.beta = data.camera.beta;
+		camera.radius = data.camera.radius;
+		if (data.camera.target) {
+			camera.target.set(data.camera.target.x, data.camera.target.y, data.camera.target.z);
+		}
+	}
+
 	updateCSG();
 	refreshSceneGraph();
 }
@@ -467,7 +519,7 @@ async function loadAssemblyInternal(filename) {
 	}
 }
 
-function createNewAssembly() {
+function createNewAssembly(resetAll = false) {
 	currentFileName = null;
 	localStorage.removeItem(STORAGE_KEY_LAST_ASSEMBLY);
 	isModified = false;
@@ -477,7 +529,7 @@ function createNewAssembly() {
 	clearMaterialManager();
 	selectNode(null);
 
-	const toDispose = [];
+	const toDispose =[];
 	scene.meshes.forEach(m => {
 		if (m.name !== "previewSphere" && m.name !== "hdrSkyBox" && !m.name.startsWith("gizmo")) {
 			toDispose.push(m);
@@ -491,6 +543,23 @@ function createNewAssembly() {
 	});
 
 	toDispose.forEach(n => n.dispose());
+
+	// Reset camera and settings only if requested (e.g., clicking "New Set")
+	if (resetAll) {
+		scene.clearColor = new Color4(0.1, 0.1, 0.1, 1);
+		const hemiLight = scene.getLightByName("hemiLight");
+		if (hemiLight) {
+			hemiLight.intensity = 0.7;
+			hemiLight.diffuse = new Color3(1, 1, 1);
+			hemiLight.groundColor = new Color3(0.5, 0.5, 0.5);
+		}
+		if (camera) {
+			camera.alpha = -Math.PI / 2;
+			camera.beta = Math.PI / 2.5;
+			camera.radius = 10;
+			camera.target.set(0, 0, 0);
+		}
+	}
 
 	setupGizmos(scene);
 	updateStatus();

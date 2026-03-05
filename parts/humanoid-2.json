@@ -1,0 +1,1214 @@
+{
+  "version": 1.5,
+  "materialFiles": [
+    "generic.json"
+  ],
+  "lights": [
+    {
+      "id": "light_1771653833347",
+      "type": "spot",
+      "position": {
+        "x": 0,
+        "y": 21,
+        "z": -10
+      },
+      "direction": {
+        "x": 0,
+        "y": -0.7071067811865476,
+        "z": 0.7071067811865476
+      },
+      "angle": 0.7330382858376184,
+      "exponent": 3,
+      "intensity": 1.7,
+      "diffuse": {
+        "r": 1,
+        "g": 1,
+        "b": 1
+      },
+      "parentId": null,
+      "sortIndex": 0,
+      "visible": false,
+      "isLocked": false
+    }
+  ],
+  "meshes": [
+    {
+      "id": "Ground",
+      "name": "Ground",
+      "position": {
+        "x": 0,
+        "y": -1.0599093437194824,
+        "z": 0
+      },
+      "rotation": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 1
+      },
+      "scaling": {
+        "x": 40,
+        "y": 1,
+        "z": 40
+      },
+      "pivot": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "materialId": "grass",
+      "uScale": 1,
+      "vScale": 1,
+      "parentId": null,
+      "receiveShadows": true,
+      "castShadows": false,
+      "sortIndex": 600,
+      "visible": false,
+      "isNegative": false,
+      "originalMaterialId": null,
+      "isLocked": false,
+      "isPrimitive": true,
+      "type": "Ground"
+    },
+    {
+      "id": "Cube_1769858046615",
+      "name": "torso-cube",
+      "position": {
+        "x": 0,
+        "y": 1.35,
+        "z": 0
+      },
+      "rotation": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 1
+      },
+      "scaling": {
+        "x": 3,
+        "y": 2.5,
+        "z": 1
+      },
+      "pivot": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "materialId": "gray-192",
+      "uScale": 1,
+      "vScale": 1,
+      "parentId": "upper-body",
+      "receiveShadows": false,
+      "castShadows": true,
+      "sortIndex": 200,
+      "visible": true,
+      "isNegative": false,
+      "originalMaterialId": null,
+      "isLocked": false,
+      "isPrimitive": true,
+      "type": "Cube"
+    },
+    {
+      "id": "hed-Sphere",
+      "name": "hed-Sphere",
+      "position": {
+        "x": 0,
+        "y": 1,
+        "z": 0
+      },
+      "rotation": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 1
+      },
+      "scaling": {
+        "x": 2,
+        "y": 2,
+        "z": 2
+      },
+      "pivot": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "materialId": null,
+      "uScale": 1,
+      "vScale": 1,
+      "parentId": "head",
+      "receiveShadows": false,
+      "castShadows": true,
+      "sortIndex": 0,
+      "visible": true,
+      "isNegative": false,
+      "originalMaterialId": null,
+      "isLocked": false,
+      "isPrimitive": true,
+      "type": "Sphere"
+    },
+    {
+      "id": "upper-leg",
+      "name": "upper-leg",
+      "position": {
+        "x": 0,
+        "y": -1,
+        "z": 0
+      },
+      "rotation": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 1
+      },
+      "scaling": {
+        "x": 1,
+        "y": 2,
+        "z": 1
+      },
+      "pivot": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "materialId": "gray-96",
+      "uScale": 1,
+      "vScale": 1,
+      "parentId": "node_1769857745513",
+      "receiveShadows": false,
+      "castShadows": true,
+      "sortIndex": 200,
+      "visible": true,
+      "isNegative": false,
+      "originalMaterialId": null,
+      "isLocked": false,
+      "isPrimitive": true,
+      "type": "Cylinder"
+    },
+    {
+      "id": "leg-lower-joint",
+      "name": "leg-lower-joint",
+      "position": {
+        "x": 0,
+        "y": -0.2,
+        "z": 0
+      },
+      "rotation": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 1
+      },
+      "scaling": {
+        "x": 1,
+        "y": 1,
+        "z": 1
+      },
+      "pivot": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "materialId": "leg-joint",
+      "uScale": 1,
+      "vScale": 1,
+      "parentId": "leg-left-lower",
+      "receiveShadows": false,
+      "castShadows": true,
+      "sortIndex": 100,
+      "visible": true,
+      "isNegative": false,
+      "originalMaterialId": null,
+      "isLocked": false,
+      "isPrimitive": true,
+      "type": "Sphere"
+    },
+    {
+      "id": "lower-leg",
+      "name": "lower-leg",
+      "position": {
+        "x": 0,
+        "y": -1.4,
+        "z": 0
+      },
+      "rotation": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 1
+      },
+      "scaling": {
+        "x": 1,
+        "y": 2,
+        "z": 1
+      },
+      "pivot": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "materialId": "gray-96",
+      "uScale": 1,
+      "vScale": 1,
+      "parentId": "leg-left-lower",
+      "receiveShadows": false,
+      "castShadows": true,
+      "sortIndex": 200,
+      "visible": true,
+      "isNegative": false,
+      "originalMaterialId": null,
+      "isLocked": false,
+      "isPrimitive": true,
+      "type": "Cylinder"
+    },
+    {
+      "id": "leg-upper-joint",
+      "name": "leg-upper-joint",
+      "position": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "rotation": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 1
+      },
+      "scaling": {
+        "x": 1,
+        "y": 1,
+        "z": 1
+      },
+      "pivot": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "materialId": "gray-96",
+      "uScale": 1,
+      "vScale": 1,
+      "parentId": "node_1769857745513",
+      "receiveShadows": false,
+      "castShadows": true,
+      "sortIndex": 100,
+      "visible": true,
+      "isNegative": false,
+      "originalMaterialId": null,
+      "isLocked": false,
+      "isPrimitive": true,
+      "type": "Sphere"
+    },
+    {
+      "id": "shoe",
+      "name": "shoe",
+      "position": {
+        "x": 0,
+        "y": -2.6,
+        "z": -0.2
+      },
+      "rotation": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 1
+      },
+      "scaling": {
+        "x": 1,
+        "y": 0.5,
+        "z": 1.5
+      },
+      "pivot": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "materialId": "shoes",
+      "uScale": 1,
+      "vScale": 1,
+      "parentId": "leg-left-lower",
+      "receiveShadows": false,
+      "castShadows": true,
+      "sortIndex": 300,
+      "visible": true,
+      "isNegative": false,
+      "originalMaterialId": null,
+      "isLocked": false,
+      "isPrimitive": true,
+      "type": "Cube"
+    },
+    {
+      "id": "pants-top",
+      "name": "pants-top",
+      "position": {
+        "x": 0,
+        "y": -3.25,
+        "z": 0
+      },
+      "rotation": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 1
+      },
+      "scaling": {
+        "x": 3,
+        "y": 1,
+        "z": 1
+      },
+      "pivot": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "materialId": "gray-96",
+      "uScale": 1,
+      "vScale": 1,
+      "parentId": "humanoid",
+      "receiveShadows": false,
+      "castShadows": true,
+      "sortIndex": 300,
+      "visible": true,
+      "isNegative": false,
+      "originalMaterialId": null,
+      "isLocked": false,
+      "isPrimitive": true,
+      "type": "Cube"
+    },
+    {
+      "id": "leg-right-lower-joint",
+      "name": "leg-right-lower-joint",
+      "position": {
+        "x": 0,
+        "y": -0.2,
+        "z": 0
+      },
+      "rotation": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 1
+      },
+      "scaling": {
+        "x": 1,
+        "y": 1,
+        "z": 1
+      },
+      "pivot": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "materialId": "leg-joint",
+      "uScale": 1,
+      "vScale": 1,
+      "parentId": "leg-right-lower",
+      "receiveShadows": false,
+      "castShadows": true,
+      "sortIndex": 100,
+      "visible": true,
+      "isNegative": false,
+      "originalMaterialId": null,
+      "isLocked": false,
+      "isPrimitive": true,
+      "type": "Sphere"
+    },
+    {
+      "id": "lower-leg-right",
+      "name": "lower-leg-right",
+      "position": {
+        "x": 0,
+        "y": -1.4,
+        "z": 0
+      },
+      "rotation": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 1
+      },
+      "scaling": {
+        "x": 1,
+        "y": 2,
+        "z": 1
+      },
+      "pivot": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "materialId": "gray-96",
+      "uScale": 1,
+      "vScale": 1,
+      "parentId": "leg-right-lower",
+      "receiveShadows": false,
+      "castShadows": true,
+      "sortIndex": 200,
+      "visible": true,
+      "isNegative": false,
+      "originalMaterialId": null,
+      "isLocked": false,
+      "isPrimitive": true,
+      "type": "Cylinder"
+    },
+    {
+      "id": "right-shoe",
+      "name": "right-shoe",
+      "position": {
+        "x": 0,
+        "y": -2.6,
+        "z": -0.2
+      },
+      "rotation": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 1
+      },
+      "scaling": {
+        "x": 1,
+        "y": 0.5,
+        "z": 1.5
+      },
+      "pivot": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "materialId": "shoes",
+      "uScale": 1,
+      "vScale": 1,
+      "parentId": "leg-right-lower",
+      "receiveShadows": false,
+      "castShadows": true,
+      "sortIndex": 300,
+      "visible": true,
+      "isNegative": false,
+      "originalMaterialId": null,
+      "isLocked": false,
+      "isPrimitive": true,
+      "type": "Cube"
+    },
+    {
+      "id": "right-upper-leg",
+      "name": "right-upper-leg",
+      "position": {
+        "x": 0,
+        "y": -1,
+        "z": 0
+      },
+      "rotation": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 1
+      },
+      "scaling": {
+        "x": 1,
+        "y": 2,
+        "z": 1
+      },
+      "pivot": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "materialId": "gray-96",
+      "uScale": 1,
+      "vScale": 1,
+      "parentId": "leg-right",
+      "receiveShadows": false,
+      "castShadows": true,
+      "sortIndex": 200,
+      "visible": true,
+      "isNegative": false,
+      "originalMaterialId": null,
+      "isLocked": false,
+      "isPrimitive": true,
+      "type": "Cylinder"
+    },
+    {
+      "id": "right-leg-upper-joint",
+      "name": "right-leg-upper-joint",
+      "position": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "rotation": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 1
+      },
+      "scaling": {
+        "x": 1,
+        "y": 1,
+        "z": 1
+      },
+      "pivot": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "materialId": "gray-96",
+      "uScale": 1,
+      "vScale": 1,
+      "parentId": "leg-right",
+      "receiveShadows": false,
+      "castShadows": true,
+      "sortIndex": 100,
+      "visible": true,
+      "isNegative": false,
+      "originalMaterialId": null,
+      "isLocked": false,
+      "isPrimitive": true,
+      "type": "Sphere"
+    },
+    {
+      "id": "right-arm-lower-joint",
+      "name": "right-arm-lower-joint",
+      "position": {
+        "x": 0,
+        "y": -0.2,
+        "z": 0
+      },
+      "rotation": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 1
+      },
+      "scaling": {
+        "x": 1,
+        "y": 1,
+        "z": 1
+      },
+      "pivot": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "materialId": "leg-joint",
+      "uScale": 1,
+      "vScale": 1,
+      "parentId": "right-arm-lower",
+      "receiveShadows": false,
+      "castShadows": true,
+      "sortIndex": 100,
+      "visible": true,
+      "isNegative": false,
+      "originalMaterialId": null,
+      "isLocked": false,
+      "isPrimitive": true,
+      "type": "Sphere"
+    },
+    {
+      "id": "right-arm-elbow",
+      "name": "right-arm-elbow",
+      "position": {
+        "x": 0,
+        "y": -1.1,
+        "z": 0
+      },
+      "rotation": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 1
+      },
+      "scaling": {
+        "x": 1,
+        "y": 1.5,
+        "z": 1
+      },
+      "pivot": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "materialId": "gray-192",
+      "uScale": 1,
+      "vScale": 1,
+      "parentId": "right-arm-lower",
+      "receiveShadows": false,
+      "castShadows": true,
+      "sortIndex": 200,
+      "visible": true,
+      "isNegative": false,
+      "originalMaterialId": null,
+      "isLocked": false,
+      "isPrimitive": true,
+      "type": "Cylinder"
+    },
+    {
+      "id": "right-arm-upper",
+      "name": "right-arm-upper",
+      "position": {
+        "x": 0,
+        "y": -0.9,
+        "z": 0
+      },
+      "rotation": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 1
+      },
+      "scaling": {
+        "x": 1,
+        "y": 1.5,
+        "z": 1
+      },
+      "pivot": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "materialId": "gray-192",
+      "uScale": 1,
+      "vScale": 1,
+      "parentId": "right-arm",
+      "receiveShadows": false,
+      "castShadows": true,
+      "sortIndex": 200,
+      "visible": true,
+      "isNegative": false,
+      "originalMaterialId": null,
+      "isLocked": false,
+      "isPrimitive": true,
+      "type": "Cylinder"
+    },
+    {
+      "id": "right-arm-upper-joint",
+      "name": "right-arm-upper-joint",
+      "position": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "rotation": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 1
+      },
+      "scaling": {
+        "x": 1,
+        "y": 1,
+        "z": 1
+      },
+      "pivot": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "materialId": "leg-joint",
+      "uScale": 1,
+      "vScale": 1,
+      "parentId": "right-arm",
+      "receiveShadows": false,
+      "castShadows": true,
+      "sortIndex": 100,
+      "visible": true,
+      "isNegative": false,
+      "originalMaterialId": null,
+      "isLocked": false,
+      "isPrimitive": true,
+      "type": "Sphere"
+    },
+    {
+      "id": "right-arm-hand",
+      "name": "right-arm-hand",
+      "position": {
+        "x": 0,
+        "y": -2.1,
+        "z": 0
+      },
+      "rotation": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 1
+      },
+      "scaling": {
+        "x": 1,
+        "y": 1,
+        "z": 1
+      },
+      "pivot": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "materialId": "shoes",
+      "uScale": 1,
+      "vScale": 1,
+      "parentId": "right-arm-lower",
+      "receiveShadows": false,
+      "castShadows": true,
+      "sortIndex": 300,
+      "visible": true,
+      "isNegative": false,
+      "originalMaterialId": null,
+      "isLocked": false,
+      "isPrimitive": true,
+      "type": "Sphere"
+    },
+    {
+      "id": "right-arm-lower-joint_dup",
+      "name": "right-arm-lower-joint_dup",
+      "position": {
+        "x": 0,
+        "y": -0.2,
+        "z": 0
+      },
+      "rotation": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 1
+      },
+      "scaling": {
+        "x": 1,
+        "y": 1,
+        "z": 1
+      },
+      "pivot": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "materialId": "leg-joint",
+      "uScale": 1,
+      "vScale": 1,
+      "parentId": "left-arm-lower",
+      "receiveShadows": false,
+      "castShadows": true,
+      "sortIndex": 100,
+      "visible": true,
+      "isNegative": false,
+      "originalMaterialId": null,
+      "isLocked": false,
+      "isPrimitive": true,
+      "type": "Sphere"
+    },
+    {
+      "id": "right-arm-elbow_dup",
+      "name": "right-arm-elbow_dup",
+      "position": {
+        "x": 0,
+        "y": -1.1,
+        "z": 0
+      },
+      "rotation": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 1
+      },
+      "scaling": {
+        "x": 1,
+        "y": 1.5,
+        "z": 1
+      },
+      "pivot": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "materialId": "gray-192",
+      "uScale": 1,
+      "vScale": 1,
+      "parentId": "left-arm-lower",
+      "receiveShadows": false,
+      "castShadows": true,
+      "sortIndex": 200,
+      "visible": true,
+      "isNegative": false,
+      "originalMaterialId": null,
+      "isLocked": false,
+      "isPrimitive": true,
+      "type": "Cylinder"
+    },
+    {
+      "id": "right-arm-hand_dup",
+      "name": "right-arm-hand_dup",
+      "position": {
+        "x": 0,
+        "y": -2.1,
+        "z": 0
+      },
+      "rotation": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 1
+      },
+      "scaling": {
+        "x": 1,
+        "y": 1,
+        "z": 1
+      },
+      "pivot": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "materialId": "shoes",
+      "uScale": 1,
+      "vScale": 1,
+      "parentId": "left-arm-lower",
+      "receiveShadows": false,
+      "castShadows": true,
+      "sortIndex": 300,
+      "visible": true,
+      "isNegative": false,
+      "originalMaterialId": null,
+      "isLocked": false,
+      "isPrimitive": true,
+      "type": "Sphere"
+    },
+    {
+      "id": "left-arm-upper",
+      "name": "left-arm-upper",
+      "position": {
+        "x": 0,
+        "y": -0.9,
+        "z": 0
+      },
+      "rotation": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 1
+      },
+      "scaling": {
+        "x": 1,
+        "y": 1.5,
+        "z": 1
+      },
+      "pivot": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "materialId": "gray-192",
+      "uScale": 1,
+      "vScale": 1,
+      "parentId": "left-arm",
+      "receiveShadows": false,
+      "castShadows": true,
+      "sortIndex": 200,
+      "visible": true,
+      "isNegative": false,
+      "originalMaterialId": null,
+      "isLocked": false,
+      "isPrimitive": true,
+      "type": "Cylinder"
+    },
+    {
+      "id": "left-arm-upper-joint",
+      "name": "left-arm-upper-joint",
+      "position": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "rotation": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 1
+      },
+      "scaling": {
+        "x": 1,
+        "y": 1,
+        "z": 1
+      },
+      "pivot": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "materialId": "leg-joint",
+      "uScale": 1,
+      "vScale": 1,
+      "parentId": "left-arm",
+      "receiveShadows": false,
+      "castShadows": true,
+      "sortIndex": 100,
+      "visible": true,
+      "isNegative": false,
+      "originalMaterialId": null,
+      "isLocked": false,
+      "isPrimitive": true,
+      "type": "Sphere"
+    }
+  ],
+  "transformNodes": [
+    {
+      "id": "left-arm-lower",
+      "name": "left-arm-lower",
+      "position": {
+        "x": 0,
+        "y": -1.55,
+        "z": 0
+      },
+      "rotation": {
+        "x": 0.3826834323650898,
+        "y": 0,
+        "z": 0,
+        "w": 0.9238795325112867
+      },
+      "scaling": {
+        "x": 1,
+        "y": 1,
+        "z": 1
+      },
+      "parentId": "left-arm",
+      "sortIndex": 300,
+      "visible": true,
+      "isLocked": false
+    },
+    {
+      "id": "leg-right-lower",
+      "name": "leg-right-lower",
+      "position": {
+        "x": 0,
+        "y": -2,
+        "z": 0
+      },
+      "rotation": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 1
+      },
+      "scaling": {
+        "x": 1,
+        "y": 1,
+        "z": 1
+      },
+      "parentId": "leg-right",
+      "sortIndex": 300,
+      "visible": true,
+      "isLocked": false
+    },
+    {
+      "id": "leg-right",
+      "name": "leg-right",
+      "position": {
+        "x": 1.05,
+        "y": -4,
+        "z": 0
+      },
+      "rotation": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 1
+      },
+      "scaling": {
+        "x": 1,
+        "y": 1,
+        "z": 1
+      },
+      "parentId": "humanoid",
+      "sortIndex": 400,
+      "visible": true,
+      "isLocked": false
+    },
+    {
+      "id": "head",
+      "name": "head",
+      "position": {
+        "x": 0,
+        "y": 2.7,
+        "z": 0
+      },
+      "rotation": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 1
+      },
+      "scaling": {
+        "x": 1,
+        "y": 1,
+        "z": 1
+      },
+      "parentId": "upper-body",
+      "sortIndex": 100,
+      "visible": true,
+      "isLocked": false
+    },
+    {
+      "id": "upper-body",
+      "name": "upper-body",
+      "position": {
+        "x": 0,
+        "y": -2.8,
+        "z": 0
+      },
+      "rotation": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 1
+      },
+      "scaling": {
+        "x": 1,
+        "y": 1,
+        "z": 1
+      },
+      "parentId": "humanoid",
+      "sortIndex": 100,
+      "visible": true,
+      "isLocked": false
+    },
+    {
+      "id": "leg-left-lower",
+      "name": "leg-left-lower",
+      "position": {
+        "x": 0,
+        "y": -2,
+        "z": 0
+      },
+      "rotation": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 1
+      },
+      "scaling": {
+        "x": 1,
+        "y": 1,
+        "z": 1
+      },
+      "parentId": "node_1769857745513",
+      "sortIndex": 300,
+      "visible": true,
+      "isLocked": false
+    },
+    {
+      "id": "humanoid",
+      "name": "humanoid",
+      "position": {
+        "x": -0.6085341572761536,
+        "y": 8.025453567504883,
+        "z": 0
+      },
+      "rotation": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 1
+      },
+      "scaling": {
+        "x": 1,
+        "y": 1,
+        "z": 1
+      },
+      "parentId": null,
+      "sortIndex": 700,
+      "visible": true,
+      "isLocked": false
+    },
+    {
+      "id": "left-arm",
+      "name": "left-arm",
+      "position": {
+        "x": -2.1,
+        "y": 2,
+        "z": 0
+      },
+      "rotation": {
+        "x": 0.3826834323650898,
+        "y": 0,
+        "z": 0,
+        "w": 0.9238795325112867
+      },
+      "scaling": {
+        "x": 1,
+        "y": 1,
+        "z": 1
+      },
+      "parentId": "upper-body",
+      "sortIndex": 300,
+      "visible": true,
+      "isLocked": false
+    },
+    {
+      "id": "node_1769857745513",
+      "name": "leg-left",
+      "position": {
+        "x": -1,
+        "y": -3.9,
+        "z": 0
+      },
+      "rotation": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 1
+      },
+      "scaling": {
+        "x": 1,
+        "y": 1,
+        "z": 1
+      },
+      "parentId": "humanoid",
+      "sortIndex": 500,
+      "visible": true,
+      "isLocked": false
+    },
+    {
+      "id": "right-arm",
+      "name": "right-arm",
+      "position": {
+        "x": 2.1,
+        "y": 2,
+        "z": 0
+      },
+      "rotation": {
+        "x": 0.3826834323650898,
+        "y": 0,
+        "z": 0,
+        "w": 0.9238795325112867
+      },
+      "scaling": {
+        "x": 1,
+        "y": 1,
+        "z": 1
+      },
+      "parentId": "upper-body",
+      "sortIndex": 400,
+      "visible": true,
+      "isLocked": false
+    },
+    {
+      "id": "right-arm-lower",
+      "name": "right-arm-lower",
+      "position": {
+        "x": 0,
+        "y": -1.55,
+        "z": 0
+      },
+      "rotation": {
+        "x": 0.3826834323650898,
+        "y": 0,
+        "z": 0,
+        "w": 0.9238795325112867
+      },
+      "scaling": {
+        "x": 1,
+        "y": 1,
+        "z": 1
+      },
+      "parentId": "right-arm",
+      "sortIndex": 300,
+      "visible": true,
+      "isLocked": false
+    }
+  ]
+}

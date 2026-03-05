@@ -15,7 +15,8 @@ import {
 } from "@babylonjs/core";
 import "@babylonjs/core/Debug/debugLayer";
 import "@babylonjs/inspector";
-
+import { markModified } from "./assembly_manager.js"; // Added
+import { recordState } from "./assembly_historyManager.js"; // Added
 
 export let engine;
 export let scene;
@@ -224,33 +225,6 @@ function createAxisIndicator(scene) {
 	});
 }
 
-function addLabel(scene, text, parent, colorName) {
-	const plane = MeshBuilder.CreatePlane("gizmo_label_" + text, {size: 1.2}, scene);
-	plane.parent = parent;
-	plane.position.y += 0.8;
-	plane.billboardMode = 7; // BILLBOARDMODE_ALL
-	plane.renderingGroupId = 1;
-	plane.isPickable = false;
-
-	const dt = new DynamicTexture("dt_" + text, {width: 64, height: 64}, scene);
-	dt.hasAlpha = true;
-	const ctx = dt.getContext();
-	ctx.clearRect(0, 0, 64, 64);
-	ctx.font = "bold 48px monospace";
-	ctx.fillStyle = colorName;
-	ctx.textAlign = "center";
-	ctx.textBaseline = "middle";
-	ctx.fillText(text, 32, 32);
-	dt.update();
-
-	const mat = new StandardMaterial("labelMat_" + text, scene);
-	mat.diffuseTexture = dt;
-	mat.emissiveColor = Color3.White();
-	mat.disableLighting = true;
-	mat.useAlphaFromDiffuseTexture = true;
-	plane.material = mat;
-}
-
 // Added: Setup Scene Settings UI (Background, Ambient, Diffuse, Ground)
 export function setupSceneSettings() {
 	const btnScene = document.getElementById("btn-menu-scene");
@@ -288,8 +262,10 @@ export function setupSceneSettings() {
 			if (scene) {
 				const c3 = Color3.FromHexString(e.target.value);
 				scene.clearColor = new Color4(c3.r, c3.g, c3.b, 1);
+				markModified(); // Added
 			}
 		};
+		inputBg.onchange = () => recordState(); // Added
 	}
 
 	if (inputIntensity) {
@@ -298,9 +274,11 @@ export function setupSceneSettings() {
 			if (scene) {
 				const light = scene.getLightByName("hemiLight");
 				if (light) light.intensity = val;
+				markModified(); // Added
 			}
 			if (labelIntensity) labelIntensity.innerText = val.toFixed(1);
 		};
+		inputIntensity.onchange = () => recordState(); // Added
 	}
 
 	if (inputDiffuse) {
@@ -308,8 +286,10 @@ export function setupSceneSettings() {
 			if (scene) {
 				const light = scene.getLightByName("hemiLight");
 				if (light) light.diffuse = Color3.FromHexString(e.target.value);
+				markModified(); // Added
 			}
 		};
+		inputDiffuse.onchange = () => recordState(); // Added
 	}
 
 	if (inputGround) {
@@ -317,7 +297,36 @@ export function setupSceneSettings() {
 			if (scene) {
 				const light = scene.getLightByName("hemiLight");
 				if (light) light.groundColor = Color3.FromHexString(e.target.value);
+				markModified(); // Added
 			}
 		};
+		inputGround.onchange = () => recordState(); // Added
 	}
+}
+
+function addLabel(scene, text, parent, colorName) {
+	const plane = MeshBuilder.CreatePlane("gizmo_label_" + text, {size: 1.2}, scene);
+	plane.parent = parent;
+	plane.position.y += 0.8;
+	plane.billboardMode = 7; // BILLBOARDMODE_ALL
+	plane.renderingGroupId = 1;
+	plane.isPickable = false;
+
+	const dt = new DynamicTexture("dt_" + text, {width: 64, height: 64}, scene);
+	dt.hasAlpha = true;
+	const ctx = dt.getContext();
+	ctx.clearRect(0, 0, 64, 64);
+	ctx.font = "bold 48px monospace";
+	ctx.fillStyle = colorName;
+	ctx.textAlign = "center";
+	ctx.textBaseline = "middle";
+	ctx.fillText(text, 32, 32);
+	dt.update();
+
+	const mat = new StandardMaterial("labelMat_" + text, scene);
+	mat.diffuseTexture = dt;
+	mat.emissiveColor = Color3.White();
+	mat.disableLighting = true;
+	mat.useAlphaFromDiffuseTexture = true;
+	plane.material = mat;
 }
