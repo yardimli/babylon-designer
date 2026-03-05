@@ -46,6 +46,8 @@ export function updatePropertyEditor(targets) {
 
 	const editor = document.getElementById("property-editor");
 	const header = document.getElementById("properties-header");
+	const filenameContainer = document.getElementById("prop-filename-container"); // Added
+	const filenameEl = document.getElementById("prop-filename"); // Added
 
 	if (observer) {
 		scene.onBeforeRenderObservable.remove(observer);
@@ -60,6 +62,9 @@ export function updatePropertyEditor(targets) {
 		if (visInput) visInput.checked = false;
 		const lockInput = document.getElementById("prop-locked"); // Added
 		if (lockInput) lockInput.checked = false; // Added
+
+		// Hide filename container when nothing is selected
+		if (filenameContainer) filenameContainer.classList.add("hidden");
 
 		document.getElementById("light-properties").classList.add("hidden");
 		if (header) header.innerText = "Properties";
@@ -87,10 +92,36 @@ export function updatePropertyEditor(targets) {
 			header.innerHTML = `Properties <span class="ml-2 text-sm font-normal opacity-50 border border-base-content/20 px-2 rounded align-middle">${typeLabel}</span>`;
 			document.getElementById("prop-id").value = target.name;
 			document.getElementById("prop-id").disabled = false;
+
+			// --- Added: Display filename ---
+			let filename = "";
+			let current = target;
+			// Traverse up to find the assembly root which holds the sourceFile metadata
+			while (current) {
+				if (current.metadata && current.metadata.isAssemblyRoot && current.metadata.sourceFile) {
+					filename = current.metadata.sourceFile.replace(".json", "");
+					break;
+				}
+				current = current.parent;
+			}
+
+			if (filenameContainer && filenameEl) {
+				if (filename) {
+					filenameEl.innerText = `Part File: ${filename}`;
+					filenameContainer.classList.remove("hidden");
+				} else {
+					filenameContainer.classList.add("hidden");
+				}
+			}
+			// -------------------------------
+
 		} else {
 			header.innerHTML = `Properties <span class="ml-2 text-sm font-normal opacity-50 border border-base-content/20 px-2 rounded align-middle">${targets.length} Selected</span>`;
 			document.getElementById("prop-id").value = "---";
 			document.getElementById("prop-id").disabled = true;
+
+			// Hide filename container for multiple selections
+			if (filenameContainer) filenameContainer.classList.add("hidden");
 		}
 	}
 
