@@ -8,7 +8,7 @@ import { createTransformNode } from "./part_transformNodeManager.js";
 import { recordState } from "./part_historyManager.js";
 import { refreshPartGraph, setNodeParent } from "./part_treeViewManager.js";
 import { updateCSG, getNegativeMaterial } from "./part_csgManager.js";
-import { updateGizmoAttachment } from "./part_gizmoControl.js"; // Added to refresh gizmo when lock changes
+import { updateGizmoAttachment } from "./part_gizmoControl.js";
 
 let observer = null;
 
@@ -41,7 +41,7 @@ createVec3Input("Scale", "scl", transformContainer);
 
 export function updatePropertyEditor(targets) {
 	if (!Array.isArray(targets)) {
-		targets = targets ? [targets] : [];
+		targets = targets ? [targets] :[];
 	}
 
 	const editor = document.getElementById("property-editor");
@@ -58,8 +58,8 @@ export function updatePropertyEditor(targets) {
 		// Reset checkboxes
 		const visInput = document.getElementById("prop-visible");
 		if (visInput) visInput.checked = false;
-		const lockInput = document.getElementById("prop-locked"); // Added
-		if (lockInput) lockInput.checked = false; // Added
+		const lockInput = document.getElementById("prop-locked");
+		if (lockInput) lockInput.checked = false;
 
 		document.getElementById("light-properties").classList.add("hidden");
 		if (header) header.innerText = "Properties";
@@ -80,7 +80,7 @@ export function updatePropertyEditor(targets) {
 					typeLabel = t ? (t.charAt(0).toUpperCase() + t.slice(1)) : "Light";
 				}
 				else if (target.metadata.isTransformNode) typeLabel = "Node";
-				else if (target.metadata.isShape) typeLabel = "Shape"; // Added Shape label
+				else if (target.metadata.isShape) typeLabel = "Shape";
 			} else {
 				typeLabel = target.getClassName();
 			}
@@ -188,7 +188,7 @@ function syncUIFromTargets(targets) {
 		visInput.indeterminate = someEnabled && !allEnabled;
 	}
 
-	// Locked Sync (Added)
+	// Locked Sync
 	const lockInput = document.getElementById("prop-locked");
 	if (lockInput) {
 		const allLocked = targets.every(t => t.metadata && t.metadata.isLocked);
@@ -231,7 +231,6 @@ function syncUIFromTargets(targets) {
 	document.getElementById("scl-y").value = sy !== null ? sy.toFixed(2) : "";
 	document.getElementById("scl-z").value = sz !== null ? sz.toFixed(2) : "";
 
-	// ... (Light and Texture Scale sync code remains same) ...
 	const allLights = targets.every(t => t.metadata && t.metadata.isLightProxy);
 	if (allLights) {
 		const spotLightProxies = targets.filter(t => {
@@ -315,7 +314,7 @@ function bindInputs(targets) {
 		const sz = getVal("scl-z");
 
 		targets.forEach(mesh => {
-			if (mesh.metadata && mesh.metadata.isLocked) return; // Double check
+			if (mesh.metadata && mesh.metadata.isLocked) return;
 
 			// Position
 			if (px !== null) mesh.position.x = px;
@@ -356,7 +355,7 @@ function bindInputs(targets) {
 
 	// Disable transform inputs if locked
 	document.querySelectorAll("#transform-container input").forEach(input => {
-		input.disabled = isLocked; // Disable UI
+		input.disabled = isLocked;
 		input.oninput = updateTargets;
 		input.onchange = () => {
 			if (!isLocked) {
@@ -380,7 +379,7 @@ function bindInputs(targets) {
 		};
 	}
 
-	// Bind Locked Checkbox (Added)
+	// Bind Locked Checkbox
 	const lockInput = document.getElementById("prop-locked");
 	if (lockInput) {
 		lockInput.onchange = (e) => {
@@ -399,7 +398,6 @@ function bindInputs(targets) {
 		};
 	}
 
-	// ... (Rest of bindings: Texture Scale, ID, Shadows, CSG) ...
 	// Bind Texture Scale
 	const uInput = document.getElementById("prop-mat-uscale");
 	const vInput = document.getElementById("prop-mat-vscale");
@@ -513,11 +511,10 @@ function bindInputs(targets) {
 }
 
 function updateParentDropdown(targets) {
-	// ... (Existing implementation) ...
 	const select = document.getElementById("prop-parent");
 	select.innerHTML = '<option value="">None</option>';
 
-	const potentialParents = [];
+	const potentialParents =[];
 	part.meshes.forEach(m => {
 		if (isUserMesh(m) && !targets.includes(m)) potentialParents.push(m);
 	});
@@ -566,9 +563,12 @@ function updateParentDropdown(targets) {
 }
 
 function updateMaterialDropdown(targets) {
-	// ... (Existing implementation) ...
 	const select = document.getElementById("prop-material");
+	const hintContainer = document.getElementById("prop-material-hint"); // Added: hint container reference
+	const hintText = hintContainer ? hintContainer.querySelector("span") : null; // Added: hint text reference
+
 	select.innerHTML = '<option value="">None</option>';
+	if (hintContainer) hintContainer.classList.add("hidden"); // Added: reset hint visibility
 
 	if (targets.some(t => t.metadata && t.metadata.isTransformNode)) {
 		select.closest(".form-control").classList.add("hidden");
@@ -576,7 +576,11 @@ function updateMaterialDropdown(targets) {
 	}
 	select.closest(".form-control").classList.remove("hidden");
 
-	part.materials.forEach(mat => {
+	// Modified: Filter external materials and sort them alphabetically
+	const externalMaterials = part.materials.filter(mat => mat.metadata && mat.metadata.isExternal);
+	externalMaterials.sort((a, b) => a.name.localeCompare(b.name));
+
+	externalMaterials.forEach(mat => {
 		const option = document.createElement("option");
 		option.value = mat.id;
 		option.text = mat.name;
@@ -586,7 +590,22 @@ function updateMaterialDropdown(targets) {
 	if (targets.length > 0) {
 		const firstMat = targets[0].material;
 		const allSame = targets.every(t => t.material === firstMat);
-		if (allSame && firstMat) select.value = firstMat.id;
+
+		if (allSame && firstMat) {
+			// Modified: Check if the assigned material is an external material
+			if (firstMat.metadata && firstMat.metadata.isExternal) {
+				select.value = firstMat.id;
+			} else {
+				select.value = ""; // Select "None" in the dropdown
+				// Added: Show hint label for internal generated materials
+				if (hintContainer && hintText) {
+					hintText.innerText = `Internal material assigned: ${firstMat.name}`;
+					hintContainer.classList.remove("hidden");
+				}
+			}
+		} else {
+			select.value = "";
+		}
 	}
 
 	select.onchange = () => {
@@ -598,6 +617,10 @@ function updateMaterialDropdown(targets) {
 				t.material = mat;
 			}
 		});
+
+		// Added: Hide the hint label when the user manually changes the material
+		if (hintContainer) hintContainer.classList.add("hidden");
+
 		updateCSG();
 		markModified();
 		recordState();
@@ -605,7 +628,6 @@ function updateMaterialDropdown(targets) {
 }
 
 function bindLightInputs(targets) {
-	// ... (Existing implementation) ...
 	const lights = targets.map(t => part.getLightByID(t.metadata.lightId)).filter(l => l);
 	if (lights.length === 0) return;
 
@@ -735,12 +757,11 @@ function bindLightInputs(targets) {
 }
 
 function bindDuplicateButton(targets) {
-	// ... (Existing implementation) ...
 	const btn = document.getElementById("btn-duplicate-asset");
 	if (!btn) return;
 
 	btn.onclick = () => {
-		const newSelection = [];
+		const newSelection =[];
 		targets.forEach(node => {
 			const newNode = duplicateHierarchy(node, node.parent);
 			if (newNode) newSelection.push(newNode);
@@ -760,7 +781,6 @@ function bindDuplicateButton(targets) {
 }
 
 function duplicateHierarchy(node, parent) {
-	// ... (Existing implementation) ...
 	let newNode = null;
 	const baseId = node.name + "_dup";
 	const newId = getUniqueId(part, baseId);
@@ -815,7 +835,6 @@ function duplicateHierarchy(node, parent) {
 }
 
 function bindDeleteButton(targets) {
-	// ... (Existing implementation) ...
 	const btn = document.getElementById("btn-delete-asset");
 	if (!btn) return;
 
@@ -849,5 +868,5 @@ function isUserMesh(mesh) {
 	return mesh.name !== "previewSphere" &&
 		!mesh.name.startsWith("gizmo") &&
 		mesh.name !== "hdrSkyBox" &&
-		(mesh.metadata?.isPrimitive || mesh.metadata?.isLightProxy || mesh.metadata?.isShape); // Added isShape
+		(mesh.metadata?.isPrimitive || mesh.metadata?.isLightProxy || mesh.metadata?.isShape);
 }

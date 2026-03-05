@@ -553,6 +553,30 @@
       "visible": true,
       "sortIndex": 2400,
       "isLocked": false
+    },
+    {
+      "id": "pc-screen_inst",
+      "sourceFile": "pc-screen.json",
+      "position": {
+        "x": -15.684036254882812,
+        "y": 0.47999998927116394,
+        "z": 1.1467939615249634
+      },
+      "rotation": {
+        "x": 0,
+        "y": 0.21643961474187665,
+        "z": 0,
+        "w": 0.9762960069417411
+      },
+      "scaling": {
+        "x": 0.500000015082328,
+        "y": 0.5,
+        "z": 0.500000015082328
+      },
+      "name": "pc-screen_inst",
+      "visible": true,
+      "sortIndex": 2500,
+      "isLocked": false
     }
   ],
   "lights": [

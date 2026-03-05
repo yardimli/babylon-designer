@@ -1,0 +1,124 @@
+{
+  "version": 1.5,
+  "materialFiles": [
+    "generic.json"
+  ],
+  "lights": [],
+  "meshes": [
+    {
+      "id": "Cube_1772717696475",
+      "name": "Cube_1772717696475",
+      "position": {
+        "x": 0,
+        "y": 0.5,
+        "z": 0
+      },
+      "rotation": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 1
+      },
+      "scaling": {
+        "x": 5,
+        "y": 3,
+        "z": 0.3
+      },
+      "pivot": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "materialId": "gray-96",
+      "uScale": 1,
+      "vScale": 1,
+      "parentId": null,
+      "receiveShadows": false,
+      "castShadows": true,
+      "sortIndex": 0,
+      "visible": true,
+      "isNegative": false,
+      "originalMaterialId": null,
+      "isLocked": false,
+      "isPrimitive": true,
+      "type": "Cube"
+    },
+    {
+      "id": "Cube_1772717722734",
+      "name": "Cube_1772717722734",
+      "position": {
+        "x": 0,
+        "y": -0.6,
+        "z": -0.27
+      },
+      "rotation": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 1
+      },
+      "scaling": {
+        "x": 1,
+        "y": 2.4,
+        "z": 0.2
+      },
+      "pivot": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "materialId": "gray-128",
+      "uScale": 1,
+      "vScale": 1,
+      "parentId": null,
+      "receiveShadows": false,
+      "castShadows": true,
+      "sortIndex": 0,
+      "visible": true,
+      "isNegative": false,
+      "originalMaterialId": null,
+      "isLocked": false,
+      "isPrimitive": true,
+      "type": "Cube"
+    },
+    {
+      "id": "Cube_1772718144513",
+      "name": "Cube_1772718144513",
+      "position": {
+        "x": -0.15,
+        "y": -1.8,
+        "z": -0.25
+      },
+      "rotation": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 1
+      },
+      "scaling": {
+        "x": 1.5,
+        "y": 0.3,
+        "z": 1
+      },
+      "pivot": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "materialId": "gray-128",
+      "uScale": 1,
+      "vScale": 1,
+      "parentId": null,
+      "receiveShadows": false,
+      "castShadows": true,
+      "sortIndex": 0,
+      "visible": true,
+      "isNegative": false,
+      "originalMaterialId": null,
+      "isLocked": false,
+      "isPrimitive": true,
+      "type": "Cube"
+    }
+  ],
+  "transformNodes": []
+}

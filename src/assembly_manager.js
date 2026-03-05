@@ -164,12 +164,32 @@ export async function importSceneAsAsset(filename, position = Vector3.Zero(), sa
 
 		// Meshes
 		if (data.meshes) {
-			data.meshes.forEach(meshData => {
+			// Changed to for...of loop to handle async shape loading
+			for (const meshData of data.meshes) {
 				const meshDataClone = { ...meshData, id: p(meshData.id) };
 				let mesh;
 
 				if (meshData.isShape) {
-					mesh = createShapeMesh(meshData.shapeData, meshData.shapeName || meshData.name, meshDataClone);
+					// Check for shapeFilename reference (New System)
+					if (meshData.shapeFilename) {
+						try {
+							const res = await fetch(`/api/shapes?file=${meshData.shapeFilename}`);
+							const json = await res.json();
+							if (json.success) {
+								mesh = createShapeMesh(json.data, meshData.shapeName || meshData.name, meshDataClone);
+								// Preserve filename in metadata
+								if (mesh && mesh.metadata) mesh.metadata.shapeFilename = meshData.shapeFilename;
+							} else {
+								console.warn("Shape file not found:", meshData.shapeFilename);
+							}
+						} catch (e) {
+							console.error("Error loading shape:", e);
+						}
+					}
+					// Fallback to embedded shapeData (Legacy)
+					else if (meshData.shapeData) {
+						mesh = createShapeMesh(meshData.shapeData, meshData.shapeName || meshData.name, meshDataClone);
+					}
 				} else {
 					mesh = createPrimitive(meshData.type, meshDataClone);
 				}
@@ -216,7 +236,7 @@ export async function importSceneAsAsset(filename, position = Vector3.Zero(), sa
 					mesh.freezeWorldMatrix();
 
 				}
-			});
+			}
 		}
 
 		// 4. Restore Parenting
@@ -265,7 +285,7 @@ export async function importSceneAsAsset(filename, position = Vector3.Zero(), sa
 				const merged = Mesh.MergeMeshes(meshesToMerge, false, true, undefined, false, true);
 				if (merged) {
 					merged.name = rootNode.name + "_visuals";
-					merged.metadata = {isInternal: true};
+					merged.metadata = { isInternal: true };
 					merged.setParent(rootNode);
 
 					merged.receiveShadows = true;
@@ -298,7 +318,7 @@ function serializeAssembly() {
 		version: 1.1,
 		type: "assembly",
 		scenes: [],
-		lights:[]
+		lights: []
 	};
 
 	const roots = scene.transformNodes.filter(node => node.metadata && node.metadata.isAssemblyRoot);
@@ -457,7 +477,7 @@ function createNewAssembly() {
 	clearMaterialManager();
 	selectNode(null);
 
-	const toDispose =[];
+	const toDispose = [];
 	scene.meshes.forEach(m => {
 		if (m.name !== "previewSphere" && m.name !== "hdrSkyBox" && !m.name.startsWith("gizmo")) {
 			toDispose.push(m);
