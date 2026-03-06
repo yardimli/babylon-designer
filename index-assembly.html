@@ -58,8 +58,15 @@
 	<!-- Left Sidebar: Assets -->
 	<div class="w-64 flex-none bg-base-200 p-4 border-r border-base-content/10 flex flex-col gap-4 overflow-y-auto">
 
-		<h2 class="text-xl font-bold mb-2">Available Parts</h2>
-		<div id="parts-list" class="flex flex-col gap-2">
+		<!-- Added flex container for title and refresh button -->
+		<div class="flex items-center justify-between mb-2">
+			<h2 class="text-xl font-bold">Available Parts</h2>
+			<button id="btn-refresh-parts" class="btn btn-xs btn-ghost btn-square" title="Refresh Parts">
+				<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 2v6h-6"/><path d="M3 12a9 9 0 1 0 2.3-6.1L3 8"/><path d="M3 8V2h6"/></svg>
+			</button>
+		</div>
+		<!-- Changed gap-2 to gap-1 for a more compact list -->
+		<div id="parts-list" class="flex flex-col gap-1">
 			<span class="loading loading-spinner"></span>
 		</div>
 

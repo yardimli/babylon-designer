@@ -18,6 +18,12 @@ export function setupAssemblyUI() {
 	loadAvailableScenes(sList);
 	setupCameraControls(); // Added camera controls setup
 
+	// --- Added Refresh Button Binding ---
+	const btnRefreshParts = document.getElementById("btn-refresh-parts");
+	if (btnRefreshParts) {
+		btnRefreshParts.onclick = () => loadAvailableScenes(sList);
+	}
+
 	// --- Added Keyboard Shortcuts ---
 	window.addEventListener("keydown", (e) => {
 		console.log("Key pressed:", e.key); // Debug log for key presses
@@ -63,11 +69,10 @@ function setupGizmoButtons() {
 	const btnRot = document.getElementById("btn-gizmo-rot");
 	const btnScl = document.getElementById("btn-gizmo-scl");
 
-	const setActive = (activeBtn) => {
-		[btnPos, btnRot, btnScl].forEach(btn => {
-			if (btn === activeBtn) btn.classList.add("btn-active");
-			else btn.classList.remove("btn-active");
-		});
+	const setActive = (activeBtn) => {[btnPos, btnRot, btnScl].forEach(btn => {
+		if (btn === activeBtn) btn.classList.add("btn-active");
+		else btn.classList.remove("btn-active");
+	});
 	};
 
 	btnPos.onclick = () => {
@@ -110,13 +115,15 @@ function setupCameraControls() {
 	});
 }
 
-function createDraggableItem(name, category) {
+// Added dataValue parameter to allow storing the full filename (.json) while displaying a clean name
+function createDraggableItem(name, category, dataValue = null) {
 	const div = document.createElement("div");
 	div.className = "btn btn-sm btn-outline btn-secondary cursor-grab";
 	div.innerText = name;
 	div.draggable = true;
 	div.addEventListener("dragstart", (e) => {
-		e.dataTransfer.setData("type", name);
+		// Use dataValue if provided, otherwise fallback to the display name
+		e.dataTransfer.setData("type", dataValue || name);
 		e.dataTransfer.setData("category", category);
 	});
 	return div;
@@ -135,8 +142,14 @@ async function loadAvailableScenes(container) {
 		}
 
 		data.files.forEach(file => {
-			const div = createDraggableItem(file, "scene");
-			div.className = "btn btn-sm btn-outline btn-primary cursor-grab justify-start normal-case overflow-hidden";
+			// Remove .json extension for a cleaner display
+			const displayName = file.replace('.json', '');
+
+			// Pass the original file name as dataValue so importSceneAsAsset can fetch it correctly
+			const div = createDraggableItem(displayName, "scene", file);
+
+			// Changed btn-sm to btn-xs and added w-full for a more compact list layout
+			div.className = "btn btn-xs btn-outline btn-primary cursor-grab justify-start normal-case overflow-hidden w-full";
 			container.appendChild(div);
 		});
 
