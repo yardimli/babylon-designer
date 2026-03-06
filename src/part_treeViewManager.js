@@ -12,7 +12,8 @@ function isGraphNode(node) {
 		return isUserMesh(node);
 	}
 	if (node.getClassName() === "TransformNode") {
-		return node.metadata && node.metadata.isTransformNode;
+		// Also allow imported mesh roots that happen to be TransformNodes
+		return (node.metadata && node.metadata.isTransformNode) || (node.metadata && node.metadata.isMesh);
 	}
 	return false;
 }
@@ -21,7 +22,7 @@ function isUserMesh(mesh) {
 	return mesh.name !== "previewSphere" &&
 		!mesh.name.startsWith("gizmo") &&
 		mesh.name !== "hdrSkyBox" &&
-		(mesh.metadata?.isPrimitive || mesh.metadata?.isLightProxy || mesh.metadata?.isShape);
+		(mesh.metadata?.isPrimitive || mesh.metadata?.isLightProxy || mesh.metadata?.isShape || mesh.metadata?.isMesh); // Added isMesh
 }
 
 function getSortedRoots() {
@@ -182,6 +183,7 @@ function createTreeNode(node, level) {
 	label.innerText = node.name;
 	label.className = "truncate flex-1";
 	if (node.metadata && node.metadata.isTransformNode) label.className += " text-secondary";
+	if (node.metadata && node.metadata.isMesh) label.className += " text-accent"; // Highlight imported meshes
 	row.appendChild(label);
 
 	// Selection Logic (Updated for Shift)

@@ -19,8 +19,8 @@
     }
   },
   "cameraSettings": {
-    "alpha": -0.7457745885152574,
-    "beta": 0.9448190750356276,
+    "alpha": -0.7256895851542101,
+    "beta": 1.090744135063849,
     "radius": 27.373366797075757,
     "target": {
       "x": -0.6717002851423225,
@@ -236,7 +236,7 @@
         "y": 0,
         "z": 0
       },
-      "materialId": "leg-joint",
+      "materialId": "gray-128",
       "uScale": 1,
       "vScale": 1,
       "parentId": "leg-left-lower",
@@ -426,7 +426,7 @@
         "y": 0,
         "z": 0
       },
-      "materialId": "leg-joint",
+      "materialId": "gray-128",
       "uScale": 1,
       "vScale": 1,
       "parentId": "leg-right-lower",
@@ -975,6 +975,78 @@
   ],
   "transformNodes": [
     {
+      "id": "right-arm",
+      "name": "right-arm",
+      "position": {
+        "x": 2.1,
+        "y": 2,
+        "z": 0
+      },
+      "rotation": {
+        "x": 0.3826834323650898,
+        "y": 0,
+        "z": 0,
+        "w": 0.9238795325112867
+      },
+      "scaling": {
+        "x": 1,
+        "y": 1,
+        "z": 1
+      },
+      "parentId": "upper-body",
+      "sortIndex": 400,
+      "visible": true,
+      "isLocked": false
+    },
+    {
+      "id": "right-arm-lower",
+      "name": "right-arm-lower",
+      "position": {
+        "x": 0,
+        "y": -1.55,
+        "z": 0
+      },
+      "rotation": {
+        "x": 0.3826834323650898,
+        "y": 0,
+        "z": 0,
+        "w": 0.9238795325112867
+      },
+      "scaling": {
+        "x": 1,
+        "y": 1,
+        "z": 1
+      },
+      "parentId": "right-arm",
+      "sortIndex": 300,
+      "visible": true,
+      "isLocked": false
+    },
+    {
+      "id": "leg-left-lower",
+      "name": "leg-left-lower",
+      "position": {
+        "x": 0,
+        "y": -2,
+        "z": 0
+      },
+      "rotation": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 1
+      },
+      "scaling": {
+        "x": 1,
+        "y": 1,
+        "z": 1
+      },
+      "parentId": "node_1769857745513",
+      "sortIndex": 300,
+      "visible": true,
+      "isLocked": false
+    },
+    {
       "id": "leg-right-lower",
       "name": "leg-right-lower",
       "position": {
@@ -1163,78 +1235,6 @@
       },
       "parentId": null,
       "sortIndex": 700,
-      "visible": true,
-      "isLocked": false
-    },
-    {
-      "id": "leg-left-lower",
-      "name": "leg-left-lower",
-      "position": {
-        "x": 0,
-        "y": -2,
-        "z": 0
-      },
-      "rotation": {
-        "x": 0,
-        "y": 0,
-        "z": 0,
-        "w": 1
-      },
-      "scaling": {
-        "x": 1,
-        "y": 1,
-        "z": 1
-      },
-      "parentId": "node_1769857745513",
-      "sortIndex": 300,
-      "visible": true,
-      "isLocked": false
-    },
-    {
-      "id": "right-arm-lower",
-      "name": "right-arm-lower",
-      "position": {
-        "x": 0,
-        "y": -1.55,
-        "z": 0
-      },
-      "rotation": {
-        "x": 0.3826834323650898,
-        "y": 0,
-        "z": 0,
-        "w": 0.9238795325112867
-      },
-      "scaling": {
-        "x": 1,
-        "y": 1,
-        "z": 1
-      },
-      "parentId": "right-arm",
-      "sortIndex": 300,
-      "visible": true,
-      "isLocked": false
-    },
-    {
-      "id": "right-arm",
-      "name": "right-arm",
-      "position": {
-        "x": 2.1,
-        "y": 2,
-        "z": 0
-      },
-      "rotation": {
-        "x": 0.3826834323650898,
-        "y": 0,
-        "z": 0,
-        "w": 0.9238795325112867
-      },
-      "scaling": {
-        "x": 1,
-        "y": 1,
-        "z": 1
-      },
-      "parentId": "upper-body",
-      "sortIndex": 400,
       "visible": true,
       "isLocked": false
     }

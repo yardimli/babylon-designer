@@ -798,5 +798,37 @@
     "useParallaxOcclusion": false,
     "parallaxScaleBias": 0.05,
     "backFaceCulling": true
+  },
+  {
+    "name": "gray-32",
+    "diffuse": [
+      0.12549019607843137,
+      0.12549019607843137,
+      0.12549019607843137
+    ],
+    "specular": [
+      1,
+      1,
+      1
+    ],
+    "emissive": [
+      0,
+      0,
+      0
+    ],
+    "ambient": [
+      0,
+      0,
+      0
+    ],
+    "alpha": 1,
+    "specularPower": 128,
+    "diffuseTexture": null,
+    "bumpTexture": null,
+    "bumpLevel": 1,
+    "useParallax": false,
+    "useParallaxOcclusion": false,
+    "parallaxScaleBias": 0.05,
+    "backFaceCulling": true
   }
 ]

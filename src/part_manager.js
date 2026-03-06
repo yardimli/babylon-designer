@@ -1,7 +1,6 @@
-import { Quaternion, StandardMaterial, Color3, Color4 } from "@babylonjs/core";
-import { part, resetAxisIndicator, getSkipMaterialNames, camera } from "./part.js";
+import { Quaternion, Color3, Color4 } from "@babylonjs/core";
+import { part, resetAxisIndicator, camera } from "./part.js";
 import { setupGizmos, disposeGizmos } from "./part_gizmoControl.js";
-import { updatePropertyEditor } from "./part_propertyEditor.js";
 import { refreshPartGraph } from "./part_treeViewManager.js";
 import { createPrimitive, createShapeMesh } from "./part_ui.js";
 import { createLight } from "./part_lightManager.js";
@@ -11,6 +10,7 @@ import { setupHistory } from "./part_historyManager.js";
 import { selectNode } from "./part_selectionManager.js";
 import { getLoadedMaterialFiles, loadMaterialFile, clearMaterialManager } from "./part_materialManager.js";
 import { updateCSG, getNegativeMaterial } from "./part_csgManager.js";
+import { loadMeshFile } from "./part_meshManager.js";
 
 let currentFileName = null;
 let isModified = false;
@@ -98,13 +98,23 @@ export function serializeScene() {
 	} : null;
 
 	const data = {
-		version: 1.6,
+		version: 1.7,
 		sceneSettings: sceneSettings,
 		cameraSettings: cameraSettings,
 		materialFiles: getLoadedMaterialFiles(),
 		lights: [],
 		meshes: [],
 		transformNodes:[]
+	};
+
+	// Helper to check if a node is a child of an imported mesh
+	const isChildOfImportedMesh = (node) => {
+		let parent = node.parent;
+		while (parent) {
+			if (parent.metadata && parent.metadata.isMesh) return true;
+			parent = parent.parent;
+		}
+		return false;
 	};
 
 	part.meshes.forEach(mesh => {
@@ -132,6 +142,15 @@ export function serializeScene() {
 	part.transformNodes.forEach(node => {
 		if (node.metadata && node.metadata.isInternal) return;
 
+		// Skip nodes that are part of an imported mesh hierarchy
+		if (isChildOfImportedMesh(node)) return;
+
+		// Handle Imported Mesh Roots (GLTF __root__ is often a TransformNode or Mesh)
+		if (node.metadata && node.metadata.isMesh) {
+			saveMeshNode(node, data);
+			return;
+		}
+
 		if (node.metadata && node.metadata.isTransformNode) {
 			let rot = { x: 0, y: 0, z: 0, w: 1 };
 			if (node.rotationQuaternion) {
@@ -156,6 +175,15 @@ export function serializeScene() {
 	});
 
 	part.meshes.forEach(mesh => {
+		// Skip internal or children of imported meshes
+		if (isChildOfImportedMesh(mesh)) return;
+
+		// Handle Imported Mesh Roots (if they are Meshes)
+		if (mesh.metadata && mesh.metadata.isMesh) {
+			saveMeshNode(mesh, data);
+			return;
+		}
+
 		if (mesh.metadata && (mesh.metadata.isPrimitive || mesh.metadata.isShape)) {
 			let rot = { x: 0, y: 0, z: 0, w: 1 };
 			if (mesh.rotationQuaternion) {
@@ -213,6 +241,32 @@ export function serializeScene() {
 	return data;
 }
 
+// Helper to save common properties for imported meshes
+function saveMeshNode(node, data) {
+	let rot = { x: 0, y: 0, z: 0, w: 1 };
+	if (node.rotationQuaternion) {
+		rot = { x: node.rotationQuaternion.x, y: node.rotationQuaternion.y, z: node.rotationQuaternion.z, w: node.rotationQuaternion.w };
+	} else {
+		const q = Quaternion.FromEulerVector(node.rotation);
+		rot = { x: q.x, y: q.y, z: q.z, w: q.w };
+	}
+
+	data.meshes.push({
+		isImportedMesh: true,
+		id: node.id,
+		name: node.name,
+		meshFilename: node.metadata.meshFilename,
+		position: { x: node.position.x, y: node.position.y, z: node.position.z },
+		rotation: rot,
+		scaling: { x: node.scaling.x, y: node.scaling.y, z: node.scaling.z },
+		parentId: node.parent ? node.parent.id : null,
+		castShadows: node.metadata.castShadows || false,
+		sortIndex: node.metadata.sortIndex || 0,
+		visible: node.isEnabled(),
+		isLocked: node.metadata.isLocked || false
+	});
+}
+
 async function saveSceneInternal(name) {
 	const data = serializeScene();
 	try {
@@ -248,10 +302,10 @@ export async function loadSceneData(data) {
 	const toDispose =[];
 	part.meshes.forEach(m => {
 		if (m.name === "previewSphere") return;
-		if (m.metadata && (m.metadata.isPrimitive || m.metadata.isShape || m.metadata.isLightProxy || m.metadata.isTransformNodeProxy || m.metadata.isCSGResult)) toDispose.push(m);
+		if (m.metadata && (m.metadata.isPrimitive || m.metadata.isShape || m.metadata.isLightProxy || m.metadata.isTransformNodeProxy || m.metadata.isCSGResult || m.metadata.isMesh)) toDispose.push(m);
 	});
 	part.transformNodes.forEach(t => {
-		if (t.name !== "axisRoot" && t.metadata && t.metadata.isTransformNode) toDispose.push(t);
+		if (t.name !== "axisRoot" && t.metadata && (t.metadata.isTransformNode || t.metadata.isMesh)) toDispose.push(t);
 	});
 	part.lights.forEach(l => {
 		if (l.name !== "hemiLight" && l.name !== "light") toDispose.push(l);
@@ -332,7 +386,10 @@ export async function loadSceneData(data) {
 		// Modified: Use for...of loop to handle async shape loading
 		for (const meshData of data.meshes) {
 			let mesh;
-			if (meshData.isPrimitive) {
+			if (meshData.isImportedMesh) {
+				// Load GLTF/GLB
+				mesh = await loadMeshFile(meshData.meshFilename, meshData);
+			} else if (meshData.isPrimitive) {
 				mesh = createPrimitive(meshData.type, meshData);
 			} else if (meshData.isShape) {
 				// Modified: Load shape from file if filename exists
@@ -492,10 +549,10 @@ function createNewScene() {
 	selectNode(null);
 
 	part.meshes.forEach(m => {
-		if (m.metadata && (m.metadata.isPrimitive || m.metadata.isShape || m.metadata.isLightProxy || m.metadata.isTransformNodeProxy || m.metadata.isCSGResult)) m.dispose();
+		if (m.metadata && (m.metadata.isPrimitive || m.metadata.isShape || m.metadata.isLightProxy || m.metadata.isTransformNodeProxy || m.metadata.isCSGResult || m.metadata.isMesh)) m.dispose();
 	});
 	part.transformNodes.forEach(t => {
-		if (t.name !== "axisRoot" && t.metadata && t.metadata.isTransformNode) t.dispose();
+		if (t.name !== "axisRoot" && t.metadata && (t.metadata.isTransformNode || t.metadata.isMesh)) t.dispose();
 	});
 	part.lights.forEach(l => {
 		if (l.name !== "hemiLight") l.dispose();

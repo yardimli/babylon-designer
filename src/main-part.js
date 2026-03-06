@@ -4,6 +4,7 @@ import { setupGizmos } from "./part_gizmoControl.js";
 import { setupMaterialManager } from "./part_materialManager.js";
 import { setupSceneManager } from "./part_manager.js";
 import { setupAlignmentManager } from "./part_alignmentManager.js";
+import { setupMeshManager } from "./part_meshManager.js";
 
 // Initialize
 const canvas = document.getElementById("renderCanvas");
@@ -12,6 +13,7 @@ const scene = createPart(canvas);
 setupGizmos(scene);
 setupUI();
 setupMaterialManager();
+setupMeshManager();
 setupSceneManager();
 setupAlignmentManager();
 

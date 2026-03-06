@@ -1,4 +1,4 @@
-import { MeshBuilder, Vector3, Quaternion, TransformNode, Color3, Color4, StandardMaterial, Mesh } from "@babylonjs/core";
+import { MeshBuilder, Vector3, Quaternion, TransformNode, Color3, Color4, StandardMaterial, Mesh, Matrix } from "@babylonjs/core";
 import earcut from 'earcut';
 import { part, getUniqueId, camera } from "./part.js";
 import { setGizmoMode } from "./part_gizmoControl.js";
@@ -11,7 +11,8 @@ import { recordState } from "./part_historyManager.js";
 import { selectNode } from "./part_selectionManager.js";
 import { updateCSG, getNegativeMaterial } from "./part_csgManager.js";
 
-const primitives = ["Cube", "Sphere", "Cylinder", "Plane", "Ground", "Cone", "Pyramid", "Empty"];
+// Added "Wedge" to the list of primitives
+const primitives = ["Cube", "Sphere", "Cylinder", "Plane", "Ground", "Cone", "Pyramid", "Wedge", "Empty"];
 const lights = ["Point", "Spot"];
 
 // Store references to grid meshes
@@ -25,7 +26,7 @@ export function setupUI() {
 
 	setupGizmoButtons();
 	setupCameraControls();
-	setupGridControls(); // Added
+	setupGridControls();
 	setupSceneSettings();
 
 	window.addEventListener("keydown", (e) => {
@@ -552,6 +553,23 @@ export function createPrimitive(type, savedData = null) {
 			break;
 		case "Pyramid":
 			mesh = MeshBuilder.CreateCylinder(id, { diameterTop: 0, tessellation: 4, height: 1 }, part);
+			break;
+		case "Wedge": // Added Wedge
+			// Right-Angle Wedge (Ramp shape)
+			const wedgeShape = [
+				new Vector3(-0.5, 0, -0.5),
+				new Vector3(0.5, 0, -0.5),
+				new Vector3(-0.5, 0, 0.5)
+			];
+			mesh = MeshBuilder.ExtrudePolygon(id, {
+				shape: wedgeShape,
+				depth: 1,
+				sideOrientation: MeshBuilder.FRONTSIDE,
+				wrap: true
+			}, part, earcut);
+			// Center the mesh geometry (ExtrudePolygon pivots at bottom)
+			// Move Y down by 0.5 so pivot is at center of height
+			mesh.bakeTransformIntoVertices(Matrix.Translation(0, -0.5, 0));
 			break;
 	}
 

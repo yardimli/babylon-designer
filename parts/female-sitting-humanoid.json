@@ -1,5 +1,33 @@
 {
-  "version": 1.5,
+  "version": 1.7,
+  "sceneSettings": {
+    "clearColor": {
+      "r": 0.1,
+      "g": 0.1,
+      "b": 0.1
+    },
+    "ambientIntensity": 1,
+    "diffuseColor": {
+      "r": 1,
+      "g": 1,
+      "b": 1
+    },
+    "groundColor": {
+      "r": 0,
+      "g": 0,
+      "b": 0
+    }
+  },
+  "cameraSettings": {
+    "alpha": -1.6626849110914559,
+    "beta": 1.1119373425508075,
+    "radius": 29.716539935573753,
+    "target": {
+      "x": 0,
+      "y": 0,
+      "z": 0
+    }
+  },
   "materialFiles": [
     "generic.json"
   ],
@@ -94,7 +122,7 @@
         "y": 0,
         "z": 0
       },
-      "materialId": "white",
+      "materialId": null,
       "uScale": 1,
       "vScale": 1,
       "parentId": "head",
@@ -936,7 +964,7 @@
       "parentId": "upper-body",
       "receiveShadows": false,
       "castShadows": true,
-      "sortIndex": 500,
+      "sortIndex": 600,
       "visible": true,
       "isNegative": false,
       "originalMaterialId": null,
@@ -974,7 +1002,7 @@
       "parentId": "upper-body",
       "receiveShadows": false,
       "castShadows": true,
-      "sortIndex": 400,
+      "sortIndex": 500,
       "visible": true,
       "isNegative": false,
       "originalMaterialId": null,
@@ -1013,7 +1041,7 @@
       "parentId": "upper-body",
       "receiveShadows": false,
       "castShadows": true,
-      "sortIndex": 200,
+      "sortIndex": 300,
       "visible": true,
       "isNegative": true,
       "originalMaterialId": "negativeMat",
@@ -1052,7 +1080,7 @@
       "parentId": "upper-body",
       "receiveShadows": false,
       "castShadows": true,
-      "sortIndex": 300,
+      "sortIndex": 400,
       "visible": true,
       "isNegative": true,
       "originalMaterialId": "negativeMat",
@@ -1062,12 +1090,65 @@
       "shapeFilename": "woman-torso-subtract.json"
     },
     {
-      "id": "long-hair_1772519182504",
-      "name": "long-hair_1772519182504",
+      "isImportedMesh": true,
+      "id": "head1_glb",
+      "name": "head1_glb",
+      "meshFilename": "head1.glb",
       "position": {
-        "x": 1.7402667999267578,
-        "y": -1.2839298248291016,
-        "z": 0.5071879029273987
+        "x": -0.0014658570289611816,
+        "y": 0.4245471954345703,
+        "z": 0
+      },
+      "rotation": {
+        "x": 0,
+        "y": 1,
+        "z": 0,
+        "w": 6.123233932053594e-17
+      },
+      "scaling": {
+        "x": 0.05000000074505806,
+        "y": 0.03999999910593033,
+        "z": 0.03999999910593033
+      },
+      "parentId": "head",
+      "castShadows": true,
+      "sortIndex": 100,
+      "visible": true,
+      "isLocked": false
+    }
+  ],
+  "transformNodes": [
+    {
+      "id": "leg-right-lower",
+      "name": "leg-right-lower",
+      "position": {
+        "x": 0,
+        "y": -2,
+        "z": 0
+      },
+      "rotation": {
+        "x": -0.7071067811865475,
+        "y": 0,
+        "z": 0,
+        "w": 0.7071067811865476
+      },
+      "scaling": {
+        "x": 1,
+        "y": 1,
+        "z": 1
+      },
+      "parentId": "leg-right",
+      "sortIndex": 300,
+      "visible": true,
+      "isLocked": false
+    },
+    {
+      "id": "leg-right",
+      "name": "leg-right",
+      "position": {
+        "x": 1.05,
+        "y": -4,
+        "z": 0
       },
       "rotation": {
         "x": 0.7071067811865475,
@@ -1076,32 +1157,111 @@
         "w": 0.7071067811865476
       },
       "scaling": {
-        "x": 0.5,
-        "y": 0.8999999761581421,
-        "z": 0.30000001192092896
+        "x": 1,
+        "y": 1,
+        "z": 1
       },
-      "pivot": {
+      "parentId": "humanoid",
+      "sortIndex": 400,
+      "visible": true,
+      "isLocked": false
+    },
+    {
+      "id": "leg-left-lower",
+      "name": "leg-left-lower",
+      "position": {
         "x": 0,
-        "y": 0,
+        "y": -2,
         "z": 0
       },
-      "materialId": "white",
-      "uScale": 1,
-      "vScale": 1,
-      "parentId": "head",
-      "receiveShadows": false,
-      "castShadows": true,
+      "rotation": {
+        "x": -0.7071067811865475,
+        "y": 0,
+        "z": 0,
+        "w": 0.7071067811865476
+      },
+      "scaling": {
+        "x": 1,
+        "y": 1,
+        "z": 1
+      },
+      "parentId": "node_1769857745513",
+      "sortIndex": 300,
+      "visible": true,
+      "isLocked": false
+    },
+    {
+      "id": "node_1769857745513",
+      "name": "leg-left",
+      "position": {
+        "x": -1,
+        "y": -3.9,
+        "z": 0
+      },
+      "rotation": {
+        "x": 0.7071067811865475,
+        "y": 0,
+        "z": 0,
+        "w": 0.7071067811865476
+      },
+      "scaling": {
+        "x": 1,
+        "y": 1,
+        "z": 1
+      },
+      "parentId": "humanoid",
+      "sortIndex": 500,
+      "visible": true,
+      "isLocked": false
+    },
+    {
+      "id": "upper-body",
+      "name": "upper-body",
+      "position": {
+        "x": 0,
+        "y": -2.8,
+        "z": 0
+      },
+      "rotation": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 1
+      },
+      "scaling": {
+        "x": 1,
+        "y": 1,
+        "z": 1
+      },
+      "parentId": "humanoid",
       "sortIndex": 100,
       "visible": true,
-      "isNegative": false,
-      "originalMaterialId": null,
-      "isLocked": false,
-      "isShape": true,
-      "shapeName": "long-hair",
-      "shapeFilename": "long-hair.json"
-    }
-  ],
-  "transformNodes": [
+      "isLocked": false
+    },
+    {
+      "id": "left-arm-lower",
+      "name": "left-arm-lower",
+      "position": {
+        "x": 0,
+        "y": -1.55,
+        "z": 0
+      },
+      "rotation": {
+        "x": 0.3826834323650898,
+        "y": 0,
+        "z": 0,
+        "w": 0.9238795325112867
+      },
+      "scaling": {
+        "x": 1,
+        "y": 1,
+        "z": 1
+      },
+      "parentId": "left-arm",
+      "sortIndex": 300,
+      "visible": true,
+      "isLocked": false
+    },
     {
       "id": "humanoid",
       "name": "humanoid",
@@ -1146,7 +1306,7 @@
         "z": 1
       },
       "parentId": "upper-body",
-      "sortIndex": 600,
+      "sortIndex": 700,
       "visible": true,
       "isLocked": false
     },
@@ -1194,7 +1354,7 @@
         "z": 1
       },
       "parentId": "upper-body",
-      "sortIndex": 700,
+      "sortIndex": 800,
       "visible": true,
       "isLocked": false
     },
@@ -1219,150 +1379,6 @@
       },
       "parentId": "right-arm",
       "sortIndex": 300,
-      "visible": true,
-      "isLocked": false
-    },
-    {
-      "id": "leg-left-lower",
-      "name": "leg-left-lower",
-      "position": {
-        "x": 0,
-        "y": -2,
-        "z": 0
-      },
-      "rotation": {
-        "x": -0.7071067811865475,
-        "y": 0,
-        "z": 0,
-        "w": 0.7071067811865476
-      },
-      "scaling": {
-        "x": 1,
-        "y": 1,
-        "z": 1
-      },
-      "parentId": "node_1769857745513",
-      "sortIndex": 300,
-      "visible": true,
-      "isLocked": false
-    },
-    {
-      "id": "leg-right",
-      "name": "leg-right",
-      "position": {
-        "x": 1.05,
-        "y": -4,
-        "z": 0
-      },
-      "rotation": {
-        "x": 0.7071067811865475,
-        "y": 0,
-        "z": 0,
-        "w": 0.7071067811865476
-      },
-      "scaling": {
-        "x": 1,
-        "y": 1,
-        "z": 1
-      },
-      "parentId": "humanoid",
-      "sortIndex": 400,
-      "visible": true,
-      "isLocked": false
-    },
-    {
-      "id": "leg-right-lower",
-      "name": "leg-right-lower",
-      "position": {
-        "x": 0,
-        "y": -2,
-        "z": 0
-      },
-      "rotation": {
-        "x": -0.7071067811865475,
-        "y": 0,
-        "z": 0,
-        "w": 0.7071067811865476
-      },
-      "scaling": {
-        "x": 1,
-        "y": 1,
-        "z": 1
-      },
-      "parentId": "leg-right",
-      "sortIndex": 300,
-      "visible": true,
-      "isLocked": false
-    },
-    {
-      "id": "left-arm-lower",
-      "name": "left-arm-lower",
-      "position": {
-        "x": 0,
-        "y": -1.55,
-        "z": 0
-      },
-      "rotation": {
-        "x": 0.3826834323650898,
-        "y": 0,
-        "z": 0,
-        "w": 0.9238795325112867
-      },
-      "scaling": {
-        "x": 1,
-        "y": 1,
-        "z": 1
-      },
-      "parentId": "left-arm",
-      "sortIndex": 300,
-      "visible": true,
-      "isLocked": false
-    },
-    {
-      "id": "upper-body",
-      "name": "upper-body",
-      "position": {
-        "x": 0,
-        "y": -2.8,
-        "z": 0
-      },
-      "rotation": {
-        "x": 0,
-        "y": 0,
-        "z": 0,
-        "w": 1
-      },
-      "scaling": {
-        "x": 1,
-        "y": 1,
-        "z": 1
-      },
-      "parentId": "humanoid",
-      "sortIndex": 100,
-      "visible": true,
-      "isLocked": false
-    },
-    {
-      "id": "node_1769857745513",
-      "name": "leg-left",
-      "position": {
-        "x": -1,
-        "y": -3.9,
-        "z": 0
-      },
-      "rotation": {
-        "x": 0.7071067811865475,
-        "y": 0,
-        "z": 0,
-        "w": 0.7071067811865476
-      },
-      "scaling": {
-        "x": 1,
-        "y": 1,
-        "z": 1
-      },
-      "parentId": "humanoid",
-      "sortIndex": 500,
       "visible": true,
       "isLocked": false
     }

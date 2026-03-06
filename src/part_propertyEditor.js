@@ -81,6 +81,7 @@ export function updatePropertyEditor(targets) {
 				}
 				else if (target.metadata.isTransformNode) typeLabel = "Node";
 				else if (target.metadata.isShape) typeLabel = "Shape";
+				else if (target.metadata.isMesh) typeLabel = "Imported Mesh";
 			} else {
 				typeLabel = target.getClassName();
 			}
@@ -615,6 +616,13 @@ function updateMaterialDropdown(targets) {
 				t.metadata.originalMaterialId = mat ? mat.id : null;
 			} else {
 				t.material = mat;
+
+				// Added: If target is an imported mesh group, apply material to all children
+				if (t.metadata && t.metadata.isMesh) {
+					t.getChildMeshes().forEach(child => {
+						child.material = mat;
+					});
+				}
 			}
 		});
 
@@ -820,6 +828,21 @@ function duplicateHierarchy(node, parent) {
 		if (newNode.metadata && newNode.metadata.isNegative) {
 			newNode.material = getNegativeMaterial(part);
 		}
+	} else if (node.metadata && node.metadata.isMesh) {
+		// Duplicate Imported Mesh (Clone the root)
+		newNode = node.clone(newId, parent);
+		newNode.id = newId;
+		newNode.name = newId;
+		// Clone metadata
+		if (node.metadata) newNode.metadata = JSON.parse(JSON.stringify(node.metadata));
+
+		// Ensure children are cloned and shadow casters set
+		// Babylon's clone() on a root node usually clones descendants.
+		// We need to re-apply shadow casting logic to the new hierarchy.
+		if (newNode.metadata.castShadows) {
+			setShadowCaster(newNode, true);
+			newNode.getChildMeshes().forEach(c => setShadowCaster(c, true));
+		}
 	}
 
 	if (newNode) {
@@ -852,6 +875,13 @@ function bindDeleteButton(targets) {
 				if (node instanceof AbstractMesh) {
 					setShadowCaster(node, false);
 				}
+
+				// Added: If imported mesh, ensure we dispose the whole hierarchy properly
+				// (node.dispose() usually does this, but we want to be explicit about shadow cleanup)
+				if (node.metadata && node.metadata.isMesh) {
+					node.getChildMeshes().forEach(c => setShadowCaster(c, false));
+				}
+
 				node.dispose();
 			});
 
@@ -868,5 +898,5 @@ function isUserMesh(mesh) {
 	return mesh.name !== "previewSphere" &&
 		!mesh.name.startsWith("gizmo") &&
 		mesh.name !== "hdrSkyBox" &&
-		(mesh.metadata?.isPrimitive || mesh.metadata?.isLightProxy || mesh.metadata?.isShape);
+		(mesh.metadata?.isPrimitive || mesh.metadata?.isLightProxy || mesh.metadata?.isShape || mesh.metadata?.isMesh); // Added isMesh
 }

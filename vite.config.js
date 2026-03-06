@@ -39,7 +39,13 @@ const fileSystemMiddleware = () => {
 								sendJson({ success: false, error: 'File not found' });
 							}
 						} else {
-							const files = fs.readdirSync(baseDir).filter(file => file.endsWith('.json'));
+							// Filter for specific extensions based on directory
+							let files = fs.readdirSync(baseDir);
+							if (dirName === 'meshes') {
+								files = files.filter(file => file.endsWith('.glb') || file.endsWith('.gltf'));
+							} else {
+								files = files.filter(file => file.endsWith('.json'));
+							}
 							sendJson({ success: true, files });
 						}
 						return true;
@@ -112,6 +118,25 @@ const fileSystemMiddleware = () => {
 					}
 				}
 
+				// 2. Serve Static Meshes from meshes/ (NEW)
+				if (req.method === 'GET' && req.url.startsWith('/meshes/')) {
+					const relativePath = req.url.replace('/meshes/', '');
+					const safePath = path.normalize(relativePath).replace(/^(\.\.[\/\\])+/, '');
+					const filePath = path.resolve(__dirname, 'meshes', safePath);
+					if (fs.existsSync(filePath)) {
+						const ext = path.extname(filePath).toLowerCase();
+						const mimeTypes = {
+							'.glb': 'model/gltf-binary',
+							'.gltf': 'model/gltf+json',
+							'.bin': 'application/octet-stream'
+						};
+						res.setHeader('Content-Type', mimeTypes[ext] || 'application/octet-stream');
+						const stream = fs.createReadStream(filePath);
+						stream.pipe(res);
+						return;
+					}
+				}
+
 				if (req.method === 'POST' && req.url.startsWith('/api/upload-texture')) {
 					const url = new URL(req.url, `http://${req.headers.host}`);
 					const filename = url.searchParams.get('name');
@@ -141,9 +166,12 @@ const fileSystemMiddleware = () => {
 				if (req.url.startsWith('/api/materials')) {
 					if (handleEndpoint(req, res, 'materials')) return;
 				}
-				//  Shapes Endpoint
 				if (req.url.startsWith('/api/shapes')) {
 					if (handleEndpoint(req, res, 'shapes')) return;
+				}
+				// Meshes Endpoint (NEW)
+				if (req.url.startsWith('/api/meshes')) {
+					if (handleEndpoint(req, res, 'meshes')) return;
 				}
 				next();
 			});

@@ -57,11 +57,27 @@ export function setupGizmos(scene) {
 
 				let target = null;
 
+				// Helper to find root of imported mesh
+				const getImportedMeshRoot = (m) => {
+					let check = m;
+					while (check) {
+						if (check.metadata && check.metadata.isMesh) return check;
+						check = check.parent;
+					}
+					return null;
+				};
+
+				const importedRoot = getImportedMeshRoot(mesh);
+
 				if (mesh.metadata && mesh.metadata.isTransformNodeProxy) {
 					target = mesh.parent;
 				}
 				else if (mesh.metadata && mesh.metadata.isCSGResult) {
 					target = scene.getMeshByID(mesh.metadata.originalMeshId);
+				}
+				else if (importedRoot) {
+					// If clicked part of an imported mesh, select the root
+					target = importedRoot;
 				}
 				else {
 					target = mesh;
