@@ -315,6 +315,30 @@
       "isLocked": false
     },
     {
+      "id": "parcel-with-tape_inst_dup",
+      "sourceFile": "parcel-with-tape.json",
+      "position": {
+        "x": -12.309301376342773,
+        "y": 0.8850345611572266,
+        "z": -6.641672611236572
+      },
+      "rotation": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 1
+      },
+      "scaling": {
+        "x": 0.5,
+        "y": 0.4000000059604645,
+        "z": 0.4000000059604645
+      },
+      "name": "parcel-with-tape_inst",
+      "visible": true,
+      "sortIndex": 1300,
+      "isLocked": false
+    },
+    {
       "id": "brick-wall_inst_dup_3",
       "sourceFile": "brick-wall.json",
       "position": {
@@ -582,7 +606,7 @@
       "id": "humanoid-2_inst",
       "sourceFile": "humanoid-2.json",
       "position": {
-        "x": -11.771195411682129,
+        "x": -12.498702049255371,
         "y": -2.147792339324951,
         "z": -7.807840347290039
       },
@@ -633,11 +657,11 @@
   ],
   "sceneSettings": {
     "clearColor": {
-      "r": 0.27058823529411763,
-      "g": 0.27058823529411763,
-      "b": 0.27058823529411763
+      "r": 0.2,
+      "g": 0.2,
+      "b": 0.2
     },
-    "ambientIntensity": 0.7,
+    "ambientIntensity": 0.9,
     "diffuseColor": {
       "r": 1,
       "g": 1,
@@ -650,9 +674,9 @@
     }
   },
   "camera": {
-    "alpha": -2.699163219697865,
-    "beta": 1.0527576973368562,
-    "radius": 40.42024624200408,
+    "alpha": -2.5187101453318763,
+    "beta": 1.0416718962477716,
+    "radius": 45.08182511800417,
     "target": {
       "x": 0,
       "y": 0,

@@ -8,7 +8,7 @@ import { createTransformNode } from "./assembly_transformNodeManager.js";
 import { recordState } from "./assembly_historyManager.js";
 import { refreshSceneGraph, setNodeParent } from "./assembly_treeViewManager.js";
 import { updateCSG, getNegativeMaterial } from "./assembly_csgManager.js";
-import { updateGizmoAttachment } from "./assembly_gizmoControl.js"; // Added
+import { updateGizmoAttachment } from "./assembly_gizmoControl.js";
 
 let observer = null;
 
@@ -46,8 +46,8 @@ export function updatePropertyEditor(targets) {
 
 	const editor = document.getElementById("property-editor");
 	const header = document.getElementById("properties-header");
-	const filenameContainer = document.getElementById("prop-filename-container"); // Added
-	const filenameEl = document.getElementById("prop-filename"); // Added
+	const filenameContainer = document.getElementById("prop-filename-container");
+	const filenameEl = document.getElementById("prop-filename");
 
 	if (observer) {
 		scene.onBeforeRenderObservable.remove(observer);
@@ -60,8 +60,8 @@ export function updatePropertyEditor(targets) {
 		// Reset checkboxes
 		const visInput = document.getElementById("prop-visible");
 		if (visInput) visInput.checked = false;
-		const lockInput = document.getElementById("prop-locked"); // Added
-		if (lockInput) lockInput.checked = false; // Added
+		const lockInput = document.getElementById("prop-locked");
+		if (lockInput) lockInput.checked = false;
 
 		// Hide filename container when nothing is selected
 		if (filenameContainer) filenameContainer.classList.add("hidden");
@@ -93,7 +93,7 @@ export function updatePropertyEditor(targets) {
 			document.getElementById("prop-id").value = target.name;
 			document.getElementById("prop-id").disabled = false;
 
-			// --- Added: Display filename ---
+			// --- Display filename ---
 			let filename = "";
 			let current = target;
 			// Traverse up to find the assembly root which holds the sourceFile metadata
@@ -113,7 +113,6 @@ export function updatePropertyEditor(targets) {
 					filenameContainer.classList.add("hidden");
 				}
 			}
-			// -------------------------------
 
 		} else {
 			header.innerHTML = `Properties <span class="ml-2 text-sm font-normal opacity-50 border border-base-content/20 px-2 rounded align-middle">${targets.length} Selected</span>`;
@@ -211,7 +210,7 @@ function syncUIFromTargets(targets) {
 		visInput.indeterminate = someEnabled && !allEnabled;
 	}
 
-	// Locked Sync (Added)
+	// Locked Sync
 	const lockInput = document.getElementById("prop-locked");
 	if (lockInput) {
 		const allLocked = targets.every(t => t.metadata && t.metadata.isLocked);
@@ -308,7 +307,7 @@ function bindInputs(targets) {
 		const sz = getVal("scl-z");
 
 		targets.forEach(mesh => {
-			if (mesh.metadata && mesh.metadata.isLocked) return; // Double check
+			if (mesh.metadata && mesh.metadata.isLocked) return;
 
 			if (px !== null) mesh.position.x = px;
 			if (py !== null) mesh.position.y = py;
@@ -346,7 +345,7 @@ function bindInputs(targets) {
 
 	// Disable transform inputs if locked
 	document.querySelectorAll("#transform-container input").forEach(input => {
-		input.disabled = isLocked; // Disable UI
+		input.disabled = isLocked;
 		input.oninput = updateTargets;
 		input.onchange = () => {
 			if (!isLocked) {
@@ -370,7 +369,7 @@ function bindInputs(targets) {
 		};
 	}
 
-	// Bind Locked Checkbox (Added)
+	// Bind Locked Checkbox
 	const lockInput = document.getElementById("prop-locked");
 	if (lockInput) {
 		lockInput.onchange = (e) => {
@@ -445,7 +444,6 @@ function bindInputs(targets) {
 }
 
 function updateParentDropdown(targets) {
-	// ... (Existing implementation) ...
 	const select = document.getElementById("prop-parent");
 	select.innerHTML = '<option value="">None</option>';
 
@@ -497,7 +495,6 @@ function updateParentDropdown(targets) {
 }
 
 function updateMaterialDropdown(targets) {
-	// ... (Existing implementation) ...
 	const select = document.getElementById("prop-material");
 	select.innerHTML = '<option value="">None</option>';
 
@@ -531,7 +528,6 @@ function updateMaterialDropdown(targets) {
 }
 
 function bindLightInputs(targets) {
-	// ... (Existing implementation) ...
 	const lights = targets.map(t => scene.getLightByID(t.metadata.lightId)).filter(l => l);
 	if (lights.length === 0) return;
 
@@ -661,7 +657,6 @@ function bindLightInputs(targets) {
 }
 
 function bindDuplicateButton(targets) {
-	// ... (Existing implementation) ...
 	const btn = document.getElementById("btn-duplicate-asset");
 	if (!btn) return;
 
@@ -686,7 +681,6 @@ function bindDuplicateButton(targets) {
 }
 
 function duplicateHierarchy(node, parent) {
-	// ... (Existing implementation) ...
 	let newNode = null;
 	const baseId = node.name + "_dup";
 	const newId = getUniqueId(scene, baseId);
@@ -735,16 +729,19 @@ function duplicateHierarchy(node, parent) {
 			newNode = createTransformNode(savedData, scene);
 		}
 	}
-	else if (node.metadata && (node.metadata.isPrimitive || node.metadata.isShape)) {
-		newNode = node.clone(newId, parent);
-		newNode.id = newId;
-		if (node.metadata) newNode.metadata = JSON.parse(JSON.stringify(node.metadata));
-		newNode.receiveShadows = node.receiveShadows;
-		if (newNode.metadata && newNode.metadata.castShadows) setShadowCaster(newNode, true);
+	// Added support for duplicating isInternal meshes (e.g., imported parts) and skipping temporary CSG results
+	else if (node.metadata && !node.metadata.isCSGResult && (node.metadata.isPrimitive || node.metadata.isShape || node.metadata.isInternal)) {
+		if (node instanceof AbstractMesh) {
+			newNode = node.clone(newId, parent);
+			newNode.id = newId;
+			if (node.metadata) newNode.metadata = JSON.parse(JSON.stringify(node.metadata));
+			newNode.receiveShadows = node.receiveShadows;
+			if (newNode.metadata && newNode.metadata.castShadows) setShadowCaster(newNode, true);
 
-		// Apply negative material if duplicated mesh is negative
-		if (newNode.metadata && newNode.metadata.isNegative) {
-			newNode.material = getNegativeMaterial(scene);
+			// Apply negative material if duplicated mesh is negative
+			if (newNode.metadata && newNode.metadata.isNegative) {
+				newNode.material = getNegativeMaterial(scene);
+			}
 		}
 	}
 
@@ -759,7 +756,8 @@ function duplicateHierarchy(node, parent) {
 		newNode.setEnabled(node.isEnabled());
 
 		node.getChildren().forEach(child => {
-			if (child.metadata && (child.metadata.isPrimitive || child.metadata.isShape || child.metadata.isLightProxy || child.metadata.isTransformNode)) {
+			// Added support for traversing and duplicating isInternal children
+			if (child.metadata && !child.metadata.isCSGResult && (child.metadata.isPrimitive || child.metadata.isShape || child.metadata.isLightProxy || child.metadata.isTransformNode || child.metadata.isInternal)) {
 				duplicateHierarchy(child, newNode);
 			}
 		});
@@ -768,7 +766,6 @@ function duplicateHierarchy(node, parent) {
 }
 
 function bindDeleteButton(targets) {
-	// ... (Existing implementation) ...
 	const btn = document.getElementById("btn-delete-asset");
 	if (!btn) return;
 
