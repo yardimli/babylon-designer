@@ -251,6 +251,19 @@ function saveMeshNode(node, data) {
 		rot = { x: q.x, y: q.y, z: q.z, w: q.w };
 	}
 
+	// Added: Determine Material ID for imported mesh
+	// Only save if it's an external material (from library)
+	let materialId = null;
+	if (node.material && node.material.metadata && node.material.metadata.isExternal) {
+		materialId = node.material.id;
+	} else {
+		// If root doesn't have material (e.g. TransformNode), check children
+		const children = node.getChildMeshes(false);
+		if (children.length > 0 && children[0].material && children[0].material.metadata && children[0].material.metadata.isExternal) {
+			materialId = children[0].material.id;
+		}
+	}
+
 	data.meshes.push({
 		isImportedMesh: true,
 		id: node.id,
@@ -263,7 +276,8 @@ function saveMeshNode(node, data) {
 		castShadows: node.metadata.castShadows || false,
 		sortIndex: node.metadata.sortIndex || 0,
 		visible: node.isEnabled(),
-		isLocked: node.metadata.isLocked || false
+		isLocked: node.metadata.isLocked || false,
+		materialId: materialId // Save the material ID
 	});
 }
 

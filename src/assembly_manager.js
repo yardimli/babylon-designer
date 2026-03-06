@@ -1,4 +1,5 @@
-import { TransformNode, Quaternion, Vector3, Color3, Color4, StandardMaterial, Mesh } from "@babylonjs/core";
+import { TransformNode, Quaternion, Vector3, Color3, Color4, StandardMaterial, Mesh, SceneLoader } from "@babylonjs/core";
+import "@babylonjs/loaders/glTF"; // Enable GLTF/GLB loader
 import { scene, camera, resetAxisIndicator, getUniqueId, engine } from "./assembly_scene.js";
 import { setupGizmos, disposeGizmos } from "./assembly_gizmoControl.js";
 import { updatePropertyEditor } from "./assembly_propertyEditor.js";
@@ -169,7 +170,64 @@ export async function importSceneAsAsset(filename, position = Vector3.Zero(), sa
 				const meshDataClone = { ...meshData, id: p(meshData.id) };
 				let mesh;
 
-				if (meshData.isShape) {
+				// Handle Imported Mesh (GLTF/GLB)
+				if (meshData.isImportedMesh && meshData.meshFilename) {
+					try {
+						// Import mesh from file
+						const importResult = await SceneLoader.ImportMeshAsync("", "/meshes/", meshData.meshFilename, scene);
+
+						if (importResult.meshes.length > 0) {
+							mesh = importResult.meshes[0]; // The root of the imported GLTF
+
+							// Configure Root
+							mesh.id = meshDataClone.id;
+							mesh.name = meshData.name;
+
+							// Apply Transform
+							mesh.position.set(meshData.position.x, meshData.position.y, meshData.position.z);
+							if (meshData.rotation.w !== undefined) {
+								if (!mesh.rotationQuaternion) mesh.rotationQuaternion = new Quaternion();
+								mesh.rotationQuaternion.set(meshData.rotation.x, meshData.rotation.y, meshData.rotation.z, meshData.rotation.w);
+							} else {
+								mesh.rotationQuaternion = Quaternion.FromEulerAngles(meshData.rotation.x, meshData.rotation.y, meshData.rotation.z);
+							}
+							mesh.scaling.set(meshData.scaling.x, meshData.scaling.y, meshData.scaling.z);
+
+							// Apply Metadata
+							if (!mesh.metadata) mesh.metadata = {};
+							mesh.metadata.isInternal = true; // Hide from tree
+							mesh.metadata.isMesh = true; // Mark as imported mesh
+							mesh.metadata.meshFilename = meshData.meshFilename;
+
+							// Apply Material to children if specified (overriding GLB materials)
+							if (meshData.materialId) {
+								const mat = scene.getMaterialByID(meshData.materialId);
+								if (mat) {
+									mesh.material = mat;
+									mesh.getChildMeshes().forEach(c => c.material = mat);
+								}
+							}
+
+							// Apply Shadows
+							if (meshData.castShadows) {
+								setShadowCaster(mesh, true);
+								mesh.getChildMeshes().forEach(c => setShadowCaster(c, true));
+							}
+
+							// Mark children as internal and pickable
+							importResult.meshes.forEach(m => {
+								if (m !== mesh) {
+									if (!m.metadata) m.metadata = {};
+									m.metadata.isInternal = true;
+									m.isPickable = true; // Allow picking to bubble up
+								}
+							});
+						}
+					} catch (e) {
+						console.error("Failed to load imported mesh:", meshData.meshFilename, e);
+					}
+				}
+				else if (meshData.isShape) {
 					// Check for shapeFilename reference (New System)
 					if (meshData.shapeFilename) {
 						try {
@@ -200,7 +258,7 @@ export async function importSceneAsAsset(filename, position = Vector3.Zero(), sa
 						mesh.metadata.originalMaterialId = meshData.originalMaterialId;
 					}
 
-					if (meshData.materialId) {
+					if (meshData.materialId && !meshData.isImportedMesh) {
 						const mat = scene.getMaterialByID(meshData.materialId);
 						if (mat) {
 							if (meshData.isNegative) {
@@ -233,7 +291,10 @@ export async function importSceneAsAsset(filename, position = Vector3.Zero(), sa
 
 					if (meshData.visible !== undefined) mesh.setEnabled(meshData.visible);
 
-					mesh.freezeWorldMatrix();
+					// Freeze world matrix for performance on static parts, unless it's a hierarchy (like GLTF)
+					if (!meshData.isImportedMesh) {
+						mesh.freezeWorldMatrix();
+					}
 
 				}
 			}
@@ -265,6 +326,7 @@ export async function importSceneAsAsset(filename, position = Vector3.Zero(), sa
 		updateCSG();
 
 		// 5. Merge Meshes for the imported part
+		// Note: We skip merging for imported GLTF meshes to preserve their structure/materials
 		let merge_meshes = true;
 		if (merge_meshes) {
 			const allChildMeshes = rootNode.getChildMeshes(false);
@@ -273,6 +335,18 @@ export async function importSceneAsAsset(filename, position = Vector3.Zero(), sa
 
 			allChildMeshes.forEach(m => {
 				if (m.metadata && m.metadata.isLightProxy) return;
+
+				// Skip imported GLTF hierarchies from merging
+				let isImported = false;
+				let check = m;
+				while(check) {
+					if (check.metadata && check.metadata.isMesh) {
+						isImported = true;
+						break;
+					}
+					check = check.parent;
+				}
+				if (isImported) return;
 
 				if (m.isVisible && m.isEnabled()) {
 					meshesToMerge.push(m);
@@ -293,7 +367,10 @@ export async function importSceneAsAsset(filename, position = Vector3.Zero(), sa
 
 					merged.isPickable = true;
 				}
-			}[...meshesToMerge, ...meshesToDispose].forEach(m => {
+			}
+
+			// Only dispose primitives that were merged. Don't touch GLTF meshes.
+			[...meshesToMerge, ...meshesToDispose].forEach(m => {
 				if (!m.isDisposed()) m.dispose();
 			});
 		}

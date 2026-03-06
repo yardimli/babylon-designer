@@ -104,6 +104,17 @@ export async function loadMeshFile(filename, savedState = null) {
 			if (savedState.castShadows !== undefined) {
 				root.metadata.castShadows = savedState.castShadows;
 			}
+
+			// Added: Restore Material
+			if (savedState.materialId) {
+				const mat = part.getMaterialByID(savedState.materialId);
+				if (mat) {
+					if (root.material !== undefined) root.material = mat;
+					root.getChildMeshes().forEach(m => {
+						m.material = mat;
+					});
+				}
+			}
 		} else {
 			// New Import defaults
 			root.position.y = 0;

@@ -22,7 +22,7 @@
       0
     ],
     "alpha": 1,
-    "specularPower": 128,
+    "specularPower": 256,
     "diffuseTexture": null,
     "bumpTexture": null,
     "bumpLevel": 1,
