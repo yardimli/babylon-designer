@@ -1,9 +1,9 @@
 import { HighlightLayer, Color3, AbstractMesh } from "@babylonjs/core";
 import { scene } from "./assembly_scene.js";
-import { updateGizmoAttachment } from "./assembly_gizmoControl.js"; // Updated
-import { updatePropertyEditor } from "./assembly_propertyEditor.js"; // Updated
-import { highlightInTree } from "./assembly_treeViewManager.js"; // Updated
-import { updateAlignButton } from "./assembly_alignmentManager.js"; // Added
+import { updateGizmoAttachment } from "./assembly_gizmoControl.js";
+import { updatePropertyEditor } from "./assembly_propertyEditor.js";
+import { highlightInTree } from "./assembly_treeViewManager.js";
+import { updateAlignButton } from "./assembly_alignmentManager.js";
 
 let selectedNodes = [];
 let highlightLayer = null;

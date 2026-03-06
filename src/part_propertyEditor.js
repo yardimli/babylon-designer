@@ -564,11 +564,11 @@ function updateParentDropdown(targets) {
 
 function updateMaterialDropdown(targets) {
 	const select = document.getElementById("prop-material");
-	const hintContainer = document.getElementById("prop-material-hint"); // Added: hint container reference
-	const hintText = hintContainer ? hintContainer.querySelector("span") : null; // Added: hint text reference
+	const hintContainer = document.getElementById("prop-material-hint");
+	const hintText = hintContainer ? hintContainer.querySelector("span") : null;
 
 	select.innerHTML = '<option value="">None</option>';
-	if (hintContainer) hintContainer.classList.add("hidden"); // Added: reset hint visibility
+	if (hintContainer) hintContainer.classList.add("hidden");
 
 	if (targets.some(t => t.metadata && t.metadata.isTransformNode)) {
 		select.closest(".form-control").classList.add("hidden");

@@ -3,7 +3,7 @@ import { setupUI } from "./part_ui.js";
 import { setupGizmos } from "./part_gizmoControl.js";
 import { setupMaterialManager } from "./part_materialManager.js";
 import { setupSceneManager } from "./part_manager.js";
-import { setupAlignmentManager } from "./part_alignmentManager.js"; // Added
+import { setupAlignmentManager } from "./part_alignmentManager.js";
 
 // Initialize
 const canvas = document.getElementById("renderCanvas");
@@ -13,7 +13,7 @@ setupGizmos(scene);
 setupUI();
 setupMaterialManager();
 setupSceneManager();
-setupAlignmentManager(); // Added
+setupAlignmentManager();
 
 // Start loop
 scene.getEngine().runRenderLoop(() => {

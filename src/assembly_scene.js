@@ -15,8 +15,8 @@ import {
 } from "@babylonjs/core";
 import "@babylonjs/core/Debug/debugLayer";
 import "@babylonjs/inspector";
-import { markModified } from "./assembly_manager.js"; // Added
-import { recordState } from "./assembly_historyManager.js"; // Added
+import { markModified } from "./assembly_manager.js";
+import { recordState } from "./assembly_historyManager.js";
 
 export let engine;
 export let scene;
@@ -225,7 +225,7 @@ function createAxisIndicator(scene) {
 	});
 }
 
-// Added: Setup Scene Settings UI (Background, Ambient, Diffuse, Ground)
+// Setup Scene Settings UI (Background, Ambient, Diffuse, Ground)
 export function setupSceneSettings() {
 	const btnScene = document.getElementById("btn-menu-scene");
 	const modal = document.getElementById("scene_settings_modal");
@@ -262,10 +262,10 @@ export function setupSceneSettings() {
 			if (scene) {
 				const c3 = Color3.FromHexString(e.target.value);
 				scene.clearColor = new Color4(c3.r, c3.g, c3.b, 1);
-				markModified(); // Added
+				markModified();
 			}
 		};
-		inputBg.onchange = () => recordState(); // Added
+		inputBg.onchange = () => recordState();
 	}
 
 	if (inputIntensity) {
@@ -274,11 +274,11 @@ export function setupSceneSettings() {
 			if (scene) {
 				const light = scene.getLightByName("hemiLight");
 				if (light) light.intensity = val;
-				markModified(); // Added
+				markModified();
 			}
 			if (labelIntensity) labelIntensity.innerText = val.toFixed(1);
 		};
-		inputIntensity.onchange = () => recordState(); // Added
+		inputIntensity.onchange = () => recordState();
 	}
 
 	if (inputDiffuse) {
@@ -286,10 +286,10 @@ export function setupSceneSettings() {
 			if (scene) {
 				const light = scene.getLightByName("hemiLight");
 				if (light) light.diffuse = Color3.FromHexString(e.target.value);
-				markModified(); // Added
+				markModified();
 			}
 		};
-		inputDiffuse.onchange = () => recordState(); // Added
+		inputDiffuse.onchange = () => recordState();
 	}
 
 	if (inputGround) {
@@ -297,10 +297,10 @@ export function setupSceneSettings() {
 			if (scene) {
 				const light = scene.getLightByName("hemiLight");
 				if (light) light.groundColor = Color3.FromHexString(e.target.value);
-				markModified(); // Added
+				markModified();
 			}
 		};
-		inputGround.onchange = () => recordState(); // Added
+		inputGround.onchange = () => recordState();
 	}
 }
 

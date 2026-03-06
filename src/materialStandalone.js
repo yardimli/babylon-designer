@@ -53,7 +53,7 @@ const ui = {
 	// Checkboxes
 	useParallax: document.getElementById('mat-use-parallax'),
 	useParallaxOcclusion: document.getElementById('mat-use-parallax-occlusion'),
-	backFaceCulling: document.getElementById('mat-back-face-culling'), // Added
+	backFaceCulling: document.getElementById('mat-back-face-culling'),
 
 	// Buttons
 	btnRefresh: document.getElementById('btn-refresh-files'),
@@ -111,7 +111,7 @@ function createDefaultMaterialData (name) {
 		useParallax: false,
 		useParallaxOcclusion: false,
 		parallaxScaleBias: 0.05,
-		backFaceCulling: true // Added default
+		backFaceCulling: true
 	};
 }
 
@@ -127,7 +127,7 @@ function updatePreviewFromData (data) {
 	previewMaterial.specularPower = data.specularPower;
 
 	// Apply Back Face Culling
-	previewMaterial.backFaceCulling = (data.backFaceCulling !== undefined) ? data.backFaceCulling : true; // Added
+	previewMaterial.backFaceCulling = (data.backFaceCulling !== undefined) ? data.backFaceCulling : true;
 
 	// Handle Diffuse Texture
 	if (data.diffuseTexture) {
@@ -184,7 +184,7 @@ function updateUIFromData (data) {
 	// Checkboxes
 	ui.useParallax.checked = data.useParallax;
 	ui.useParallaxOcclusion.checked = data.useParallaxOcclusion;
-	ui.backFaceCulling.checked = (data.backFaceCulling !== undefined) ? data.backFaceCulling : true; // Added
+	ui.backFaceCulling.checked = (data.backFaceCulling !== undefined) ? data.backFaceCulling : true;
 
 	// Textures
 	ui.diffusePath.innerText = data.diffuseTexture || 'No file selected';
@@ -210,7 +210,7 @@ function updateDataFromUI () {
 
 	data.useParallax = ui.useParallax.checked;
 	data.useParallaxOcclusion = ui.useParallaxOcclusion.checked;
-	data.backFaceCulling = ui.backFaceCulling.checked; // Added
+	data.backFaceCulling = ui.backFaceCulling.checked;
 
 	// Update Labels
 	ui.lAlpha.innerText = data.alpha.toFixed(2);
@@ -370,16 +370,16 @@ async function loadLibrary (filename) {
 							useParallax: false,
 							useParallaxOcclusion: false,
 							parallaxScaleBias: 0.05,
-							backFaceCulling: mat.backFaceCulling !== undefined ? mat.backFaceCulling : true // Added
+							backFaceCulling: mat.backFaceCulling !== undefined ? mat.backFaceCulling : true
 						};
 					}
 					// Ensure backFaceCulling exists for loaded standard materials
-					if (mat.backFaceCulling === undefined) mat.backFaceCulling = true; // Added
+					if (mat.backFaceCulling === undefined) mat.backFaceCulling = true;
 					return mat;
 				});
 			} else {
 				currentLibrary = [json.data];
-				if (currentLibrary[0].backFaceCulling === undefined) currentLibrary[0].backFaceCulling = true; // Added
+				if (currentLibrary[0].backFaceCulling === undefined) currentLibrary[0].backFaceCulling = true;
 			}
 
 			ui.inpFilename.value = filename.replace('.json', '');
@@ -455,7 +455,7 @@ function bindEvents () {
 		el.addEventListener('input', updateDataFromUI);
 	});
 
-	[ui.useParallax, ui.useParallaxOcclusion, ui.backFaceCulling].forEach(el => { // Added backFaceCulling
+	[ui.useParallax, ui.useParallaxOcclusion, ui.backFaceCulling].forEach(el => {
 		el.addEventListener('change', updateDataFromUI);
 	});
 

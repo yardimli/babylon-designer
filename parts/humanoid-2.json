@@ -1,5 +1,33 @@
 {
-  "version": 1.5,
+  "version": 1.6,
+  "sceneSettings": {
+    "clearColor": {
+      "r": 0.3607843137254902,
+      "g": 0.3607843137254902,
+      "b": 0.3607843137254902
+    },
+    "ambientIntensity": 1,
+    "diffuseColor": {
+      "r": 1,
+      "g": 1,
+      "b": 1
+    },
+    "groundColor": {
+      "r": 0,
+      "g": 0,
+      "b": 0
+    }
+  },
+  "cameraSettings": {
+    "alpha": -0.7457745885152574,
+    "beta": 0.9448190750356276,
+    "radius": 27.373366797075757,
+    "target": {
+      "x": -0.6717002851423225,
+      "y": 2.106616220392572,
+      "z": 0.5796531182451502
+    }
+  },
   "materialFiles": [
     "generic.json"
   ],
@@ -947,30 +975,6 @@
   ],
   "transformNodes": [
     {
-      "id": "left-arm-lower",
-      "name": "left-arm-lower",
-      "position": {
-        "x": 0,
-        "y": -1.55,
-        "z": 0
-      },
-      "rotation": {
-        "x": 0.3826834323650898,
-        "y": 0,
-        "z": 0,
-        "w": 0.9238795325112867
-      },
-      "scaling": {
-        "x": 1,
-        "y": 1,
-        "z": 1
-      },
-      "parentId": "left-arm",
-      "sortIndex": 300,
-      "visible": true,
-      "isLocked": false
-    },
-    {
       "id": "leg-right-lower",
       "name": "leg-right-lower",
       "position": {
@@ -995,131 +999,11 @@
       "isLocked": false
     },
     {
-      "id": "leg-right",
-      "name": "leg-right",
-      "position": {
-        "x": 1.05,
-        "y": -4,
-        "z": 0
-      },
-      "rotation": {
-        "x": 0,
-        "y": 0,
-        "z": 0,
-        "w": 1
-      },
-      "scaling": {
-        "x": 1,
-        "y": 1,
-        "z": 1
-      },
-      "parentId": "humanoid",
-      "sortIndex": 400,
-      "visible": true,
-      "isLocked": false
-    },
-    {
-      "id": "head",
-      "name": "head",
+      "id": "left-arm-lower",
+      "name": "left-arm-lower",
       "position": {
         "x": 0,
-        "y": 2.7,
-        "z": 0
-      },
-      "rotation": {
-        "x": 0,
-        "y": 0,
-        "z": 0,
-        "w": 1
-      },
-      "scaling": {
-        "x": 1,
-        "y": 1,
-        "z": 1
-      },
-      "parentId": "upper-body",
-      "sortIndex": 100,
-      "visible": true,
-      "isLocked": false
-    },
-    {
-      "id": "upper-body",
-      "name": "upper-body",
-      "position": {
-        "x": 0,
-        "y": -2.8,
-        "z": 0
-      },
-      "rotation": {
-        "x": 0,
-        "y": 0,
-        "z": 0,
-        "w": 1
-      },
-      "scaling": {
-        "x": 1,
-        "y": 1,
-        "z": 1
-      },
-      "parentId": "humanoid",
-      "sortIndex": 100,
-      "visible": true,
-      "isLocked": false
-    },
-    {
-      "id": "leg-left-lower",
-      "name": "leg-left-lower",
-      "position": {
-        "x": 0,
-        "y": -2,
-        "z": 0
-      },
-      "rotation": {
-        "x": 0,
-        "y": 0,
-        "z": 0,
-        "w": 1
-      },
-      "scaling": {
-        "x": 1,
-        "y": 1,
-        "z": 1
-      },
-      "parentId": "node_1769857745513",
-      "sortIndex": 300,
-      "visible": true,
-      "isLocked": false
-    },
-    {
-      "id": "humanoid",
-      "name": "humanoid",
-      "position": {
-        "x": -0.6085341572761536,
-        "y": 8.025453567504883,
-        "z": 0
-      },
-      "rotation": {
-        "x": 0,
-        "y": 0,
-        "z": 0,
-        "w": 1
-      },
-      "scaling": {
-        "x": 1,
-        "y": 1,
-        "z": 1
-      },
-      "parentId": null,
-      "sortIndex": 700,
-      "visible": true,
-      "isLocked": false
-    },
-    {
-      "id": "left-arm",
-      "name": "left-arm",
-      "position": {
-        "x": -2.1,
-        "y": 2,
+        "y": -1.55,
         "z": 0
       },
       "rotation": {
@@ -1133,7 +1017,7 @@
         "y": 1,
         "z": 1
       },
-      "parentId": "upper-body",
+      "parentId": "left-arm",
       "sortIndex": 300,
       "visible": true,
       "isLocked": false
@@ -1163,10 +1047,82 @@
       "isLocked": false
     },
     {
-      "id": "right-arm",
-      "name": "right-arm",
+      "id": "upper-body",
+      "name": "upper-body",
       "position": {
-        "x": 2.1,
+        "x": 0,
+        "y": -2.8,
+        "z": 0
+      },
+      "rotation": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 1
+      },
+      "scaling": {
+        "x": 1,
+        "y": 1,
+        "z": 1
+      },
+      "parentId": "humanoid",
+      "sortIndex": 100,
+      "visible": true,
+      "isLocked": false
+    },
+    {
+      "id": "head",
+      "name": "head",
+      "position": {
+        "x": 0,
+        "y": 2.7,
+        "z": 0
+      },
+      "rotation": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 1
+      },
+      "scaling": {
+        "x": 1,
+        "y": 1,
+        "z": 1
+      },
+      "parentId": "upper-body",
+      "sortIndex": 100,
+      "visible": true,
+      "isLocked": false
+    },
+    {
+      "id": "leg-right",
+      "name": "leg-right",
+      "position": {
+        "x": 1.05,
+        "y": -4,
+        "z": 0
+      },
+      "rotation": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 1
+      },
+      "scaling": {
+        "x": 1,
+        "y": 1,
+        "z": 1
+      },
+      "parentId": "humanoid",
+      "sortIndex": 400,
+      "visible": true,
+      "isLocked": false
+    },
+    {
+      "id": "left-arm",
+      "name": "left-arm",
+      "position": {
+        "x": -2.1,
         "y": 2,
         "z": 0
       },
@@ -1182,7 +1138,55 @@
         "z": 1
       },
       "parentId": "upper-body",
-      "sortIndex": 400,
+      "sortIndex": 300,
+      "visible": true,
+      "isLocked": false
+    },
+    {
+      "id": "humanoid",
+      "name": "humanoid",
+      "position": {
+        "x": -0.6085341572761536,
+        "y": 8.025453567504883,
+        "z": 0
+      },
+      "rotation": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 1
+      },
+      "scaling": {
+        "x": 1,
+        "y": 1,
+        "z": 1
+      },
+      "parentId": null,
+      "sortIndex": 700,
+      "visible": true,
+      "isLocked": false
+    },
+    {
+      "id": "leg-left-lower",
+      "name": "leg-left-lower",
+      "position": {
+        "x": 0,
+        "y": -2,
+        "z": 0
+      },
+      "rotation": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 1
+      },
+      "scaling": {
+        "x": 1,
+        "y": 1,
+        "z": 1
+      },
+      "parentId": "node_1769857745513",
+      "sortIndex": 300,
       "visible": true,
       "isLocked": false
     },
@@ -1207,6 +1211,30 @@
       },
       "parentId": "right-arm",
       "sortIndex": 300,
+      "visible": true,
+      "isLocked": false
+    },
+    {
+      "id": "right-arm",
+      "name": "right-arm",
+      "position": {
+        "x": 2.1,
+        "y": 2,
+        "z": 0
+      },
+      "rotation": {
+        "x": 0.3826834323650898,
+        "y": 0,
+        "z": 0,
+        "w": 0.9238795325112867
+      },
+      "scaling": {
+        "x": 1,
+        "y": 1,
+        "z": 1
+      },
+      "parentId": "upper-body",
+      "sortIndex": 400,
       "visible": true,
       "isLocked": false
     }

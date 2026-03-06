@@ -10,11 +10,19 @@ export function setupMaterialManager() {
 	const btnImport = document.getElementById("btn-import-mat");
 	const modal = document.getElementById("import_mat_modal");
 	const listContainer = document.getElementById("import-mat-list");
+	const btnRefresh = document.getElementById("btn-refresh-materials");
 
 	if (btnImport) {
 		btnImport.onclick = () => {
 			refreshServerMaterialList(listContainer, modal);
 			modal.showModal();
+		};
+	}
+
+	// Added: Refresh button logic for materials
+	if (btnRefresh) {
+		btnRefresh.onclick = () => {
+			refreshServerMaterialList(listContainer, modal);
 		};
 	}
 }
@@ -73,7 +81,7 @@ function createMaterialFromData(data, filename) {
 	mat.diffuseColor = new Color3(...(data.diffuse || data.albedo || [1, 1, 1]));
 	mat.specularColor = new Color3(...(data.specular || [1, 1, 1]));
 	mat.emissiveColor = new Color3(...(data.emissive || [0, 0, 0]));
-	mat.ambientColor = new Color3(...(data.ambient || [0, 0, 0]));
+	mat.ambientColor = new Color3(...(data.ambient ||[0, 0, 0]));
 
 	mat.alpha = data.alpha !== undefined ? data.alpha : 1.0;
 	mat.specularPower = data.specularPower !== undefined ? data.specularPower : 128;
@@ -119,14 +127,18 @@ async function refreshServerMaterialList(container, modal) {
 
 		data.files.forEach(file => {
 			const btn = document.createElement("button");
-			btn.className = "btn btn-sm btn-ghost justify-start font-normal normal-case text-left w-full";
+			// Modified: Changed btn-sm to btn-xs for compact list
+			btn.className = "btn btn-xs btn-ghost justify-start font-normal normal-case text-left w-full";
+
+			// Modified: Remove .json extension for display
+			const displayName = file.replace('.json', '');
 
 			// Check if already loaded
 			if (loadedMaterialFiles.has(file)) {
-				btn.innerHTML = `<span>${file}</span> <span class="badge badge-xs badge-success ml-auto">Loaded</span>`;
+				btn.innerHTML = `<span>${displayName}</span> <span class="badge badge-xs badge-success ml-auto">Loaded</span>`;
 				btn.disabled = true;
 			} else {
-				btn.innerText = file;
+				btn.innerText = displayName;
 				btn.onclick = async () => {
 					await loadMaterialFile(file);
 					modal.close();

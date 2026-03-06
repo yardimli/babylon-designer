@@ -729,7 +729,6 @@ function duplicateHierarchy(node, parent) {
 			newNode = createTransformNode(savedData, scene);
 		}
 	}
-	// Added support for duplicating isInternal meshes (e.g., imported parts) and skipping temporary CSG results
 	else if (node.metadata && !node.metadata.isCSGResult && (node.metadata.isPrimitive || node.metadata.isShape || node.metadata.isInternal)) {
 		if (node instanceof AbstractMesh) {
 			newNode = node.clone(newId, parent);
@@ -756,7 +755,6 @@ function duplicateHierarchy(node, parent) {
 		newNode.setEnabled(node.isEnabled());
 
 		node.getChildren().forEach(child => {
-			// Added support for traversing and duplicating isInternal children
 			if (child.metadata && !child.metadata.isCSGResult && (child.metadata.isPrimitive || child.metadata.isShape || child.metadata.isLightProxy || child.metadata.isTransformNode || child.metadata.isInternal)) {
 				duplicateHierarchy(child, newNode);
 			}

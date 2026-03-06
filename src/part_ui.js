@@ -11,8 +11,8 @@ import { recordState } from "./part_historyManager.js";
 import { selectNode } from "./part_selectionManager.js";
 import { updateCSG, getNegativeMaterial } from "./part_csgManager.js";
 
-const primitives = ["Cube", "Sphere", "Cylinder", "Plane", "Ground", "Cone", "Pyramid", "Empty"];
-const lights = ["Point", "Spot"];
+const primitives =["Cube", "Sphere", "Cylinder", "Plane", "Ground", "Cone", "Pyramid", "Empty"];
+const lights =["Point", "Spot"];
 
 export function setupUI() {
 	const pList = document.getElementById("primitives-list");
@@ -24,7 +24,6 @@ export function setupUI() {
 	setupCameraControls();
 	setupSceneSettings();
 
-	// --- Added Keyboard Shortcuts ---
 	window.addEventListener("keydown", (e) => {
 		if (e.key === "Escape") {
 			// Check if any modal is open to prevent accidental deselection when closing a modal
@@ -47,6 +46,14 @@ export function setupUI() {
 
 	// Load saved shapes
 	fetchShapes(sList);
+
+	const btnRefreshShapes = document.getElementById("btn-refresh-shapes");
+	if (btnRefreshShapes) {
+		btnRefreshShapes.onclick = () => {
+			sList.innerHTML = "";
+			fetchShapes(sList);
+		};
+	}
 
 	canvas.addEventListener("dragover", (e) => e.preventDefault());
 	canvas.addEventListener("drop", async (e) => {
@@ -206,6 +213,7 @@ function setupSceneSettings() {
 				// Convert Hex to Color3 then to Color4 (Alpha 1)
 				const c3 = Color3.FromHexString(e.target.value);
 				part.clearColor = new Color4(c3.r, c3.g, c3.b, 1);
+				markModified();
 			}
 		};
 	}
@@ -218,6 +226,7 @@ function setupSceneSettings() {
 				const light = part.getLightByName("hemiLight");
 				if (light) {
 					light.intensity = val;
+					markModified();
 				}
 			}
 			if (labelIntensity) labelIntensity.innerText = val.toFixed(1);
@@ -231,6 +240,7 @@ function setupSceneSettings() {
 				const light = part.getLightByName("hemiLight");
 				if (light) {
 					light.diffuse = Color3.FromHexString(e.target.value);
+					markModified();
 				}
 			}
 		};
@@ -243,6 +253,7 @@ function setupSceneSettings() {
 				const light = part.getLightByName("hemiLight");
 				if (light) {
 					light.groundColor = Color3.FromHexString(e.target.value);
+					markModified();
 				}
 			}
 		};
@@ -251,7 +262,8 @@ function setupSceneSettings() {
 
 function createDraggableItem(name, category) {
 	const div = document.createElement("div");
-	div.className = "btn btn-sm btn-outline btn-secondary cursor-grab truncate";
+	// Modified: Changed btn-sm to btn-xs for a more compact list
+	div.className = "btn btn-xs btn-outline btn-secondary cursor-grab truncate";
 	div.innerText = name;
 	div.draggable = true;
 	div.addEventListener("dragstart", (e) => {
@@ -295,11 +307,11 @@ export function createShapeMesh(shapeData, name, savedState = null) {
 	else if (shapeData.shapes) {
 		// Reconstruct geometry
 		const solids = [];
-		const holes = [];
+		const holes =[];
 
 		// Helper to convert shape object to Vector3 array
 		const getPoints = (shape) => {
-			const points = [];
+			const points =[];
 			if (shape.type === 'rect') {
 				points.push(
 					new Vector3(shape.x, 0, shape.y),
@@ -344,7 +356,7 @@ export function createShapeMesh(shapeData, name, savedState = null) {
 			if (shape.isHole) {
 				holes.push({ points });
 			} else {
-				solids.push({ points, myHoles: [] });
+				solids.push({ points, myHoles:[] });
 			}
 		});
 
@@ -359,7 +371,7 @@ export function createShapeMesh(shapeData, name, savedState = null) {
 		});
 
 		// Store generated meshes to merge them later
-		const meshes = [];
+		const meshes =[];
 
 		// Create Meshes
 		solids.forEach((solid, i) => {

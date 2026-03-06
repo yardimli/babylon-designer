@@ -28,7 +28,7 @@ export function getSkipMaterialNames() {
 		"default material", "lightMat", "transformNodeMat",
 		"gizmo_axisX_mat", "gizmo_axisY_mat", "gizmo_axisZ_mat",
 		"centerMat", "labelMat_X", "labelMat_Y", "labelMat_Z",
-		"negativeMat" // Added to prevent exporting the internal CSG material
+		"negativeMat" // prevent exporting the internal CSG material
 	];
 
 	return skipMaterialNames;

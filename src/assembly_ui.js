@@ -16,15 +16,12 @@ export function setupAssemblyUI() {
 
 	setupGizmoButtons();
 	loadAvailableScenes(sList);
-	setupCameraControls(); // Added camera controls setup
-
-	// --- Added Refresh Button Binding ---
+	setupCameraControls();
 	const btnRefreshParts = document.getElementById("btn-refresh-parts");
 	if (btnRefreshParts) {
 		btnRefreshParts.onclick = () => loadAvailableScenes(sList);
 	}
 
-	// --- Added Keyboard Shortcuts ---
 	window.addEventListener("keydown", (e) => {
 		console.log("Key pressed:", e.key); // Debug log for key presses
 		if (e.key === "Escape") {
@@ -115,7 +112,6 @@ function setupCameraControls() {
 	});
 }
 
-// Added dataValue parameter to allow storing the full filename (.json) while displaying a clean name
 function createDraggableItem(name, category, dataValue = null) {
 	const div = document.createElement("div");
 	div.className = "btn btn-sm btn-outline btn-secondary cursor-grab";

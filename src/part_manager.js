@@ -1,5 +1,5 @@
-import { Quaternion, StandardMaterial, Color3 } from "@babylonjs/core";
-import { part, resetAxisIndicator, getSkipMaterialNames } from "./part.js";
+import { Quaternion, StandardMaterial, Color3, Color4 } from "@babylonjs/core";
+import { part, resetAxisIndicator, getSkipMaterialNames, camera } from "./part.js";
 import { setupGizmos, disposeGizmos } from "./part_gizmoControl.js";
 import { updatePropertyEditor } from "./part_propertyEditor.js";
 import { refreshPartGraph } from "./part_treeViewManager.js";
@@ -80,12 +80,31 @@ function openLoadModal() {
 }
 
 export function serializeScene() {
+	const hemiLight = part.getLightByName("hemiLight");
+
+	// Modified: Save colors as RGB objects instead of Hex strings
+	const sceneSettings = {
+		clearColor: { r: part.clearColor.r, g: part.clearColor.g, b: part.clearColor.b },
+		ambientIntensity: hemiLight ? hemiLight.intensity : 1,
+		diffuseColor: hemiLight ? { r: hemiLight.diffuse.r, g: hemiLight.diffuse.g, b: hemiLight.diffuse.b } : { r: 1, g: 1, b: 1 },
+		groundColor: hemiLight ? { r: hemiLight.groundColor.r, g: hemiLight.groundColor.g, b: hemiLight.groundColor.b } : { r: 0, g: 0, b: 0 }
+	};
+
+	const cameraSettings = camera ? {
+		alpha: camera.alpha,
+		beta: camera.beta,
+		radius: camera.radius,
+		target: { x: camera.target.x, y: camera.target.y, z: camera.target.z }
+	} : null;
+
 	const data = {
-		version: 1.5,
+		version: 1.6,
+		sceneSettings: sceneSettings,
+		cameraSettings: cameraSettings,
 		materialFiles: getLoadedMaterialFiles(),
 		lights: [],
 		meshes: [],
-		transformNodes: []
+		transformNodes:[]
 	};
 
 	part.meshes.forEach(mesh => {
@@ -104,7 +123,7 @@ export function serializeScene() {
 					parentId: light.parent ? light.parent.id : null,
 					sortIndex: mesh.metadata.sortIndex || 0,
 					visible: mesh.isEnabled(),
-					isLocked: mesh.metadata.isLocked || false // Added
+					isLocked: mesh.metadata.isLocked || false
 				});
 			}
 		}
@@ -131,7 +150,7 @@ export function serializeScene() {
 				parentId: node.parent ? node.parent.id : null,
 				sortIndex: node.metadata.sortIndex || 0,
 				visible: node.isEnabled(),
-				isLocked: node.metadata.isLocked || false // Added
+				isLocked: node.metadata.isLocked || false
 			});
 		}
 	});
@@ -175,7 +194,7 @@ export function serializeScene() {
 				visible: mesh.isEnabled(),
 				isNegative: mesh.metadata.isNegative || false,
 				originalMaterialId: mesh.metadata.originalMaterialId || null,
-				isLocked: mesh.metadata.isLocked || false // Added
+				isLocked: mesh.metadata.isLocked || false
 			};
 
 			if (mesh.metadata.isPrimitive) {
@@ -183,9 +202,8 @@ export function serializeScene() {
 				meshData.type = mesh.metadata.type;
 			} else if (mesh.metadata.isShape) {
 				meshData.isShape = true;
-				// meshData.shapeData = mesh.metadata.shapeData; // Modified: Do not save shape data
 				meshData.shapeName = mesh.metadata.shapeName;
-				meshData.shapeFilename = mesh.metadata.shapeFilename; // Modified: Save filename reference
+				meshData.shapeFilename = mesh.metadata.shapeFilename;
 			}
 
 			data.meshes.push(meshData);
@@ -227,7 +245,7 @@ export async function loadSceneData(data) {
 	clearShadowManagers();
 	clearMaterialManager();
 
-	const toDispose = [];
+	const toDispose =[];
 	part.meshes.forEach(m => {
 		if (m.name === "previewSphere") return;
 		if (m.metadata && (m.metadata.isPrimitive || m.metadata.isShape || m.metadata.isLightProxy || m.metadata.isTransformNodeProxy || m.metadata.isCSGResult)) toDispose.push(m);
@@ -246,6 +264,50 @@ export async function loadSceneData(data) {
 
 	const idMap = new Map();
 
+	// Added: Restore scene settings
+	if (data.sceneSettings) {
+		if (data.sceneSettings.clearColor) {
+			// Modified: Handle Object {r,g,b} or legacy Hex string
+			if (typeof data.sceneSettings.clearColor === "string") {
+				const c3 = Color3.FromHexString(data.sceneSettings.clearColor);
+				part.clearColor = new Color4(c3.r, c3.g, c3.b, 1);
+			} else {
+				const cc = data.sceneSettings.clearColor;
+				part.clearColor = new Color4(cc.r, cc.g, cc.b, 1);
+			}
+		}
+		const hemiLight = part.getLightByName("hemiLight");
+		if (hemiLight) {
+			if (data.sceneSettings.ambientIntensity !== undefined) hemiLight.intensity = data.sceneSettings.ambientIntensity;
+
+			// Modified: Load diffuseColor (Object) or fallback to ambientDiffuse (Hex)
+			if (data.sceneSettings.diffuseColor) {
+				const dc = data.sceneSettings.diffuseColor;
+				hemiLight.diffuse = new Color3(dc.r, dc.g, dc.b);
+			} else if (data.sceneSettings.ambientDiffuse) {
+				hemiLight.diffuse = Color3.FromHexString(data.sceneSettings.ambientDiffuse);
+			}
+
+			// Modified: Load groundColor (Object) or fallback to ambientGround (Hex)
+			if (data.sceneSettings.groundColor) {
+				const gc = data.sceneSettings.groundColor;
+				hemiLight.groundColor = new Color3(gc.r, gc.g, gc.b);
+			} else if (data.sceneSettings.ambientGround) {
+				hemiLight.groundColor = Color3.FromHexString(data.sceneSettings.ambientGround);
+			}
+		}
+	}
+
+	// Added: Restore camera settings
+	if (data.cameraSettings && camera) {
+		camera.alpha = data.cameraSettings.alpha;
+		camera.beta = data.cameraSettings.beta;
+		camera.radius = data.cameraSettings.radius;
+		if (data.cameraSettings.target) {
+			camera.target.set(data.cameraSettings.target.x, data.cameraSettings.target.y, data.cameraSettings.target.z);
+		}
+	}
+
 	if (data.materialFiles) {
 		for (const filename of data.materialFiles) {
 			await loadMaterialFile(filename);
@@ -259,7 +321,7 @@ export async function loadSceneData(data) {
 				idMap.set(nodeData.id, node.id);
 				if (node.metadata) {
 					node.metadata.sortIndex = nodeData.sortIndex || 0;
-					node.metadata.isLocked = nodeData.isLocked || false; // Added
+					node.metadata.isLocked = nodeData.isLocked || false;
 				}
 				if (nodeData.visible !== undefined) node.setEnabled(nodeData.visible);
 			}
@@ -330,7 +392,7 @@ export async function loadSceneData(data) {
 				mesh.receiveShadows = !!meshData.receiveShadows;
 				if (mesh.metadata) {
 					mesh.metadata.sortIndex = meshData.sortIndex || 0;
-					mesh.metadata.isLocked = meshData.isLocked || false; // Added
+					mesh.metadata.isLocked = meshData.isLocked || false;
 					if (meshData.shapeFilename) mesh.metadata.shapeFilename = meshData.shapeFilename; // Ensure it sticks
 				}
 				if (meshData.visible !== undefined) mesh.setEnabled(meshData.visible);
@@ -377,7 +439,7 @@ export async function loadSceneData(data) {
 				}
 				if (proxy.metadata) {
 					proxy.metadata.sortIndex = lightData.sortIndex || 0;
-					proxy.metadata.isLocked = lightData.isLocked || false; // Added
+					proxy.metadata.isLocked = lightData.isLocked || false;
 				}
 				if (lightData.visible !== undefined) proxy.setEnabled(lightData.visible);
 			}

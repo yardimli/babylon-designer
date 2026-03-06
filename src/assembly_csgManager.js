@@ -1,4 +1,4 @@
-import { CSG, StandardMaterial, Color3, Matrix } from "@babylonjs/core"; // Added Matrix
+import { CSG, StandardMaterial, Color3, Matrix } from "@babylonjs/core";
 import { scene } from "./assembly_scene.js";
 import { setShadowCaster } from "./assembly_shadowManager.js";
 

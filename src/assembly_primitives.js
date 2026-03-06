@@ -1,5 +1,5 @@
 import { MeshBuilder, Vector3, Quaternion } from "@babylonjs/core";
-import earcut from 'earcut'; // Added for shape extrusion
+import earcut from 'earcut';
 import { scene, getUniqueId, camera } from "./assembly_scene.js";
 import { setShadowCaster } from "./assembly_shadowManager.js";
 

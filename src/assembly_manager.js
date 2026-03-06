@@ -1,5 +1,5 @@
-import { TransformNode, Quaternion, Vector3, Color3, Color4, StandardMaterial, Mesh } from "@babylonjs/core"; // Added Color4
-import { scene, camera, resetAxisIndicator, getUniqueId, engine } from "./assembly_scene.js"; // Added camera
+import { TransformNode, Quaternion, Vector3, Color3, Color4, StandardMaterial, Mesh } from "@babylonjs/core";
+import { scene, camera, resetAxisIndicator, getUniqueId, engine } from "./assembly_scene.js";
 import { setupGizmos, disposeGizmos } from "./assembly_gizmoControl.js";
 import { updatePropertyEditor } from "./assembly_propertyEditor.js";
 import { refreshSceneGraph } from "./assembly_treeViewManager.js";
@@ -317,7 +317,7 @@ function serializeAssembly() {
 		type: "assembly",
 		scenes: [],
 		lights:[],
-		sceneSettings: {} // Added
+		sceneSettings: {}
 	};
 
 	// Save Scene Settings
@@ -352,7 +352,7 @@ function serializeAssembly() {
 			name: node.name,
 			visible: node.isEnabled(),
 			sortIndex: node.metadata.sortIndex,
-			isLocked: node.metadata.isLocked || false // Added
+			isLocked: node.metadata.isLocked || false
 		});
 	});
 
@@ -372,7 +372,7 @@ function serializeAssembly() {
 					name: mesh.name,
 					parentId: light.parent ? light.parent.id : null,
 					visible: mesh.isEnabled(),
-					isLocked: mesh.metadata.isLocked || false // Added
+					isLocked: mesh.metadata.isLocked || false
 				});
 			}
 		}
@@ -431,7 +431,7 @@ export async function loadAssemblyData(data) {
 				root.scaling.set(s.scaling.x, s.scaling.y, s.scaling.z);
 				if (s.visible !== undefined) root.setEnabled(s.visible);
 				if (s.sortIndex !== undefined) root.metadata.sortIndex = s.sortIndex;
-				if (s.isLocked !== undefined) root.metadata.isLocked = s.isLocked; // Added
+				if (s.isLocked !== undefined) root.metadata.isLocked = s.isLocked;
 			}
 		}
 	}
@@ -453,7 +453,7 @@ export async function loadAssemblyData(data) {
 					}
 				}
 				if (l.visible !== undefined) proxy.setEnabled(l.visible);
-				if (l.isLocked !== undefined) proxy.metadata.isLocked = l.isLocked; // Added
+				if (l.isLocked !== undefined) proxy.metadata.isLocked = l.isLocked;
 			}
 		});
 	}

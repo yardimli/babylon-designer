@@ -3,7 +3,7 @@ import { part } from "./part.js";
 import { updateGizmoAttachment } from "./part_gizmoControl.js";
 import { updatePropertyEditor } from "./part_propertyEditor.js";
 import { highlightInTree } from "./part_treeViewManager.js";
-import { updateAlignButton } from "./part_alignmentManager.js"; // Added
+import { updateAlignButton } from "./part_alignmentManager.js";
 
 let selectedNodes = [];
 let highlightLayer = null;
