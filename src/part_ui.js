@@ -11,8 +11,11 @@ import { recordState } from "./part_historyManager.js";
 import { selectNode } from "./part_selectionManager.js";
 import { updateCSG, getNegativeMaterial } from "./part_csgManager.js";
 
-const primitives =["Cube", "Sphere", "Cylinder", "Plane", "Ground", "Cone", "Pyramid", "Empty"];
-const lights =["Point", "Spot"];
+const primitives = ["Cube", "Sphere", "Cylinder", "Plane", "Ground", "Cone", "Pyramid", "Empty"];
+const lights = ["Point", "Spot"];
+
+// Store references to grid meshes
+const gridMeshes = { xy: null, xz: null, yz: null };
 
 export function setupUI() {
 	const pList = document.getElementById("primitives-list");
@@ -22,6 +25,7 @@ export function setupUI() {
 
 	setupGizmoButtons();
 	setupCameraControls();
+	setupGridControls(); // Added
 	setupSceneSettings();
 
 	window.addEventListener("keydown", (e) => {
@@ -170,6 +174,67 @@ function setupCameraControls() {
 	});
 }
 
+// Added function to handle grid controls
+function setupGridControls() {
+	const btnXY = document.getElementById("btn-grid-xy");
+	const btnXZ = document.getElementById("btn-grid-xz");
+	const btnYZ = document.getElementById("btn-grid-yz");
+
+	const toggle = (plane, btn) => {
+		if (!gridMeshes[plane]) {
+			gridMeshes[plane] = createGrid(plane);
+		}
+		const isVisible = !gridMeshes[plane].isEnabled();
+		gridMeshes[plane].setEnabled(isVisible);
+
+		if (isVisible) btn.classList.add("btn-active");
+		else btn.classList.remove("btn-active");
+	};
+
+	if (btnXY) btnXY.onclick = () => toggle("xy", btnXY);
+	if (btnXZ) btnXZ.onclick = () => toggle("xz", btnXZ);
+	if (btnYZ) btnYZ.onclick = () => toggle("yz", btnYZ);
+}
+
+// Helper to create grid lines
+function createGrid(plane) {
+	const size = 20; // 20 units total size
+	const spacing = 1; // 1 unit spacing
+	const half = size / 2;
+	const lines = [];
+
+	// Grid color
+	const color = new Color3(0.3, 0.3, 0.3);
+
+	for (let i = -half; i <= half; i += spacing) {
+		if (plane === "xz") {
+			// Constant X, varying Z
+			lines.push([new Vector3(i, 0, -half), new Vector3(i, 0, half)]);
+			// Constant Z, varying X
+			lines.push([new Vector3(-half, 0, i), new Vector3(half, 0, i)]);
+		} else if (plane === "xy") {
+			// Constant X, varying Y
+			lines.push([new Vector3(i, -half, 0), new Vector3(i, half, 0)]);
+			// Constant Y, varying X
+			lines.push([new Vector3(-half, i, 0), new Vector3(half, i, 0)]);
+		} else if (plane === "yz") {
+			// Constant Y, varying Z
+			lines.push([new Vector3(0, i, -half), new Vector3(0, i, half)]);
+			// Constant Z, varying Y
+			lines.push([new Vector3(0, -half, i), new Vector3(0, half, i)]);
+		}
+	}
+
+	const grid = MeshBuilder.CreateLineSystem("grid_" + plane, { lines: lines }, part);
+	grid.color = color;
+	grid.isPickable = false;
+	// Mark as internal so it doesn't get exported or show in tree view
+	grid.metadata = { isInternal: true };
+	// Start hidden
+	grid.setEnabled(false);
+	return grid;
+}
+
 // Added function to handle scene settings (Background & Ambient Light)
 function setupSceneSettings() {
 	const btnScene = document.getElementById("btn-menu-scene");
@@ -307,11 +372,11 @@ export function createShapeMesh(shapeData, name, savedState = null) {
 	else if (shapeData.shapes) {
 		// Reconstruct geometry
 		const solids = [];
-		const holes =[];
+		const holes = [];
 
 		// Helper to convert shape object to Vector3 array
 		const getPoints = (shape) => {
-			const points =[];
+			const points = [];
 			if (shape.type === 'rect') {
 				points.push(
 					new Vector3(shape.x, 0, shape.y),
@@ -356,7 +421,7 @@ export function createShapeMesh(shapeData, name, savedState = null) {
 			if (shape.isHole) {
 				holes.push({ points });
 			} else {
-				solids.push({ points, myHoles:[] });
+				solids.push({ points, myHoles: [] });
 			}
 		});
 
@@ -371,7 +436,7 @@ export function createShapeMesh(shapeData, name, savedState = null) {
 		});
 
 		// Store generated meshes to merge them later
-		const meshes =[];
+		const meshes = [];
 
 		// Create Meshes
 		solids.forEach((solid, i) => {
